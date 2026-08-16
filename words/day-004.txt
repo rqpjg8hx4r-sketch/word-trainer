@@ -1,35 +1,116 @@
-Day: 4
+﻿# Day: 4
+# Topics: Family and Friends | Entertainment and Media
 
-Topics: Food & Drink
-
-can | n. | 罐头 candy | n. | 糖果 carrot | n. | 胡萝卜 cereal | n. |
-麦片 cheese | n. | 奶酪 chef | n. | 主厨 chicken | n. | 鸡肉 chilli |
-n. | 辣椒 chips | n. | 薯片 chocolate | n. | 巧克力 coffee | n. | 咖啡
-cola | n. | 可乐 cook | n. & v. | 厨师；烹饪 cooker | n. | 厨具 cream |
-n. | 奶油 cup | n. | 杯子 curry | n. | 咖喱 cut | n. | 切口；伤口 hungry
-| adj. | 饥饿的 ice | n. | 冰 ice cream | n. | 冰淇淋 jam | n. | 果酱
-juice | n. | 果汁 kitchen | n. | 厨房 knife | n. | 刀 lemon | n. | 柠檬
-lemonade | n. | 柠檬水 lunch | n. | 午餐 main course | n. | 主菜 meal |
-n. | 一餐 meat | n. | 肉 melon | n. | 瓜 menu | n. | 菜单 milk | n. |
-牛奶 mineral water | n. | 矿泉水 mushroom | n. | 蘑菇 sausage | n. |
-香肠 slice | n. | 薄片 snack | n. | 点心；小吃 soup | n. | 汤 steak |
-n. | 牛排 strawberry | n. | 草莓 sugar | n. | 糖 sweet | n. & adj. |
-糖果；甜的 tea | n. | 茶 thirsty | adj. | 口渴的 toast | n. | 烤面包
-tomato | n. | 番茄 vegetable | n. | 蔬菜 waiter | n. | 男服务员 waitress
-| n. | 女服务员 wash up | phr. | 洗餐具 yog(h)urt | n. | 酸奶 apple |
-n. | 苹果 bake | v. | 烘焙 banana | n. | 香蕉 barbecue | n. & v. |
-烤肉；烧烤 biscuit | n. | 饼干 boil | v. | 烧开；煮沸 boiled | adj. |
-煮沸的 bottle | n. | 瓶子 bowl | n. | 碗 box | n. | 盒；箱 bread | n. |
-面包 break | n. | 休息 breakfast | n. | 早餐 burger | n. | 汉堡 butter |
-n. | 黄油 cafe/café | n. | 咖啡馆；小餐馆 cafeteria | n. | 自助餐厅 cake
-| n. | 蛋糕 delicious | adj. | 美味的 dessert | n. | 甜点 dinner | n. |
-晚餐 dish | n. | 餐具；菜肴 drink | n. & v. | 饮料；喝 eat | v. | 吃 egg
-| n. | 鸡蛋 fish | n. | 鱼，鱼肉 food | n. | 食物 fork | n. | 叉子
-fridge | n. | 冰箱 fried | adj. | 油炸的 fruit | n. | 水果 garlic | n. |
-大蒜 glass | n. | 玻璃杯 grape | n. | 葡萄 grilled | adj. | 烤的 honey |
-n. | 蜂蜜 oil | n. | 油 omelette | n. | 煎蛋卷 onion | n. | 洋葱 orange
-| n. | 橙子 pasta | n. | 意大利面 pear | n. | 梨 pepper | n. | 胡椒
-picnic | n. | 野餐 piece of cake | phr. | (一)块蛋糕 pizza | n. | 比萨饼
-plate | n. | 盘子 potato | n. | 土豆 rice | n. | 米饭 roast | v. & adj.
-| 烤；烤过的 salad | n. | 沙拉 salt | n. | 盐 sandwich | n. | 三明治
-sauce | n. | 调味汁
+aunt | n. | 阿姨；姑妈
+boy | n. | 男孩
+brother | n. | 兄弟
+child | n. | 孩子
+cousin | n. | 表兄弟姐妹
+dad(dy) | n. | 爸爸
+daughter | n. | 女儿
+family | n. | 家庭
+father | n. | 父亲
+friend | n. | 朋友
+friendly | adj. | 友好的
+girl | n. | 女孩
+grandchild | n. | （外）孙子；（外）孙女
+grand(d)ad | n. | 爷爷；外公
+granddaughter | n. | （外）孙女
+grandfather | n. | 爷爷；外公
+grandma | n. | 奶奶；外婆
+grandmother | n. | 奶奶；外婆
+grandpa | n. | 爷爷；外公
+grandparent | n. | 祖父母
+grandson | n. | （外）孙子
+granny | n. | 奶奶；外婆
+group | n. | 组；群
+guest | n. | 客人；宾客
+guy | n. | 男人；小伙子
+husband | n. | 丈夫
+love | n. & v. | 爱；爱恋
+maried | adj. | 已婚的
+Miss |  | 小姐
+mother | n. | 母亲
+Mr |  | 先生
+Mrs |  | 夫人
+Ms |  | 女士
+mum(my) | n. | 妈妈
+neighbour | n. | 邻居
+parent | n. | 父母
+pen-friend | n. | 笔友
+sister | n. | 姐妹
+son | n. | 儿子
+surname | n. | 姓氏
+teenager | n. | 青少年
+uncle | n. | 姑父；姨父
+wife | n. | 妻子
+act | v. | 表演
+actor | n. | 男演员
+adventure | n. | 冒险
+advertisement | n. | 广告
+art | n. | 艺术；美术
+article | n. | 文章；报道
+board game | n. | 棋盘游戏
+book | n. | 书籍
+card | n. | 卡片
+cartoon | n. | 漫画；动画片
+CD (player) | n. | CD（播放器）
+chess | n. | 国际象棋
+festival | n. | 节日；会演
+film | n. & v. | 电影；把……拍摄成影片
+fun | n. | 乐趣
+go out |  | （尤指为娱乐而）出门
+group | n. | 组；乐团
+guitar | n. | 吉他
+hip hop | n. | 嘻哈舞曲；嘻哈文化
+instrument | n. | 乐器
+keyboard | n. | 琴键；键盘
+laugh | n. & v. | 笑
+listen to |  | 听
+look at |  | 看
+photography | n. | 摄影
+piano | n. | 钢琴
+picture | n. | 照片；图画
+play | n. | 游戏；戏剧
+pop (music) | n. | 流行音乐
+practice | n. | 实践；练习
+practise | v. | 练习；训练
+programme | n. | 节目
+project | n. & v. | 项目；放映
+radio | n. | 收音机
+read | v. | 阅读
+rock (concert) | n. | 摇滚音乐会
+cinema | n. | 电影院
+classical (music) | n. | 古典音乐
+competition | n. | 比赛；竞赛
+concert | n. | 音乐会
+dance | n. & v. | 舞蹈；跳舞
+dancer | n. | 舞蹈演员
+draw | v. | 画
+drawing | n. & v. | 图画；绘画
+disco | n. | 迪斯科
+drum | n. | 鼓
+DVD (player) | n. | DVD（播放器）
+exhibition | n. | 展览
+magazine | n. | 杂志；期刊
+MP3 player | n. | MP3播放器
+museum | n. | 博物馆
+music | n. | 音乐
+musician | n. | 音乐家
+news | n. | 新闻
+newspaper | n. | 报纸
+opera | n. | 歌剧
+paint | v. | 用颜料画
+painter | n. | 画家
+photograph | n. | 照片；相片
+photographer | n. | 摄影师
+screen | n. | 屏幕
+show | n. | 演出；展览
+sing | v. | 唱歌
+singer | n. | 歌手
+song | n. | 歌曲
+television / TV | n. | 电视机
+theatre | n. | 戏院；剧场
+ticket | n. | 票
+video (game) | n. | 电子游戏
+watch | v. | 观看
