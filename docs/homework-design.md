@@ -97,6 +97,8 @@ The interface has two focus-preserving top-level tabs: **背单词** and **口�
 6. Hide controls for missing Q/A text or missing cue segments.
 7. Keep the existing offline word cache; speaking failures must not break word study.
 
+Remote discovery and individual content reads stop waiting after 60 seconds. If a local library cache exists, the website immediately keeps using it; otherwise it shows a clear read-failure message instead of waiting indefinitely.
+
 Filename matching is the baseline binding rule. When no fingerprints exist, a matching MP3, M4A, or OGG remains playable; without cues, only the complete recording is offered. When both cue fingerprints exist, the website additionally requires the TXT and audio hashes to match. A mismatch means only part of a fingerprinted set changed, so text remains visible while stale audio and segment buttons stay hidden.
 
 The local one-click preview exposes a read-only `/__homework-index.json` endpoint so the same Day selector can discover local files. GitHub Pages uses the GitHub Contents API instead.

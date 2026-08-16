@@ -282,7 +282,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div id="appVersion" style="font-size:10px;color:#94A3B8;margin-top:2px;">v2.9</div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div id="appVersion" style="font-size:10px;color:#94A3B8;margin-top:2px;">v2.11</div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -870,6 +870,19 @@ function parseLibraryMeta(text, filename) {
   };
 }
 
+async function fetchWithTimeout(resource, options={}, timeoutMs=60000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(resource, { ...options, signal:controller.signal });
+  } catch (error) {
+    if (error?.name === 'AbortError') throw new Error('读取超过60秒');
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function refreshRemoteLibraries() {
   const select = document.getElementById('librarySelect');
   const status = document.getElementById('libraryStatus');
@@ -893,14 +906,14 @@ async function refreshRemoteLibraries() {
     let files;
     if (info) {
       const api = `https://api.github.com/repos/${encodeURIComponent(info.owner)}/${encodeURIComponent(info.repo)}/contents/homework`;
-      const res = await fetch(api, {
+      const res = await fetchWithTimeout(api, {
         headers: { 'Accept':'application/vnd.github+json' },
         cache: 'no-store'
       });
       if (!res.ok) throw new Error(res.status === 404 ? '还没有 homework 文件夹' : `GitHub API ${res.status}`);
       files = (await res.json()).filter(x => x.type === 'file' && /^word\d{3}\.txt$/i.test(x.name));
     } else {
-      const res = await fetch('/__homework-index.json', { cache:'no-store' });
+      const res = await fetchWithTimeout('/__homework-index.json', { cache:'no-store' });
       if (!res.ok) throw new Error('请通过 start-word-trainer.cmd 打开本地预览');
       files = (await res.json()).files
         .filter(name => /^word\d{3}\.txt$/i.test(name))
@@ -909,7 +922,7 @@ async function refreshRemoteLibraries() {
     if (!files.length) throw new Error('homework 中没有找到 word###.txt');
 
     const loaded = await Promise.all(files.map(async f => {
-      const r = await fetch(f.download_url, { cache:'no-store' });
+      const r = await fetchWithTimeout(f.download_url, { cache:'no-store' });
       if (!r.ok) throw new Error(`无法读取 ${f.name}`);
       const text = await r.text();
       const words = parseImportedWords(text);
@@ -1374,7 +1387,7 @@ async function findSpeakingAudio(baseName) {
   for (const extension of ['mp3', 'm4a', 'ogg']) {
     const audioName = `${baseName}.${extension}`;
     try {
-      const response = await fetch(`homework/${audioName}`, { method:'HEAD', cache:'no-store' });
+      const response = await fetchWithTimeout(`homework/${audioName}`, { method:'HEAD', cache:'no-store' });
       if (response.ok) return audioName;
     } catch (error) {}
   }
@@ -1394,7 +1407,7 @@ async function loadSpeakingHomework(requestedDay='') {
     const baseName = `speaking${dayNumber}`;
     const textUrl = `homework/${baseName}.txt`;
     const cueUrl = `homework/${baseName}.cues.json`;
-    const homeworkResponse = await fetch(textUrl, { cache:'no-store' });
+    const homeworkResponse = await fetchWithTimeout(textUrl, { cache:'no-store' });
     if (!homeworkResponse.ok) throw new Error('口语作业内容读取失败');
     const homeworkBytes = await homeworkResponse.arrayBuffer();
     const homeworkHash = await sha256Hex(homeworkBytes);
@@ -1403,7 +1416,7 @@ async function loadSpeakingHomework(requestedDay='') {
 
     let cues = null;
     let cuesHash = '';
-    const cuesResponse = await fetch(cueUrl, { cache:'no-store' });
+    const cuesResponse = await fetchWithTimeout(cueUrl, { cache:'no-store' });
     if (cuesResponse.ok) {
       const cuesBytes = await cuesResponse.arrayBuffer();
       cuesHash = await sha256Hex(cuesBytes);
@@ -1421,7 +1434,7 @@ async function loadSpeakingHomework(requestedDay='') {
     let audioHash = '';
     if (audioName) {
       const audioUrl = `homework/${audioName}`;
-      const audioResponse = await fetch(audioUrl, { cache:'no-store' });
+      const audioResponse = await fetchWithTimeout(audioUrl, { cache:'no-store' });
       if (audioResponse.ok) {
         const audioBytes = await audioResponse.arrayBuffer();
         audioHash = await sha256Hex(audioBytes);
