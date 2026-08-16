@@ -267,7 +267,7 @@
       </select>
       <button class="btn btn-secondary" style="width:auto;padding:9px 12px;" onclick="refreshRemoteLibraries()">刷新</button>
     </div>
-    <div id="libraryStatus" class="library-status">词库来源：GitHub /words/*.txt</div>
+    <div id="libraryStatus" class="library-status">网站词库：按 Day 自动加载 · 支持离线</div>
   </div>
 
   <div class="toolbar">
@@ -277,7 +277,7 @@
 
   <div id="importPanel" class="panel" style="display:none;">
     <div class="panel-title">手动导入词库（备用）</div>
-    <div class="muted" style="margin-bottom:8px;">正常情况下只需把日期 TXT 上传到 GitHub 的 words 文件夹。这里保留手动导入作为备用。每行：word | 词性 | 中文释义。</div>
+    <div class="muted" style="margin-bottom:8px;">正常情况下只需把 day-XXX.txt 上传到 GitHub 的 words 文件夹。这里保留手动导入作为备用。每行：word | 词性 | 中文释义。</div>
     <input id="dayTitle" style="width:100%;padding:9px;border:1px solid #CBD5E1;border-radius:9px;margin-bottom:8px;" placeholder="主题，例如 Travel">
     <textarea id="importText" class="import-area" placeholder="apple | n. | 苹果
 banana | n. | 香蕉"></textarea>
@@ -508,6 +508,7 @@ const group2 = [
 
 
 const STORAGE_KEY = 'wordTrainerV1';
+const LIBRARY_CACHE_KEY = 'wordTrainerRemoteLibrariesV1';
 const defaultWords = [...group1, ...group2];
 let currentDayWords = [...defaultWords];
 let currentDayKey = '';
@@ -529,40 +530,81 @@ function loadStore() {
 function saveStore(store) { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }
 function wordKey(w) { return sanitizeWord(w); }
 
-function ensureDay(dateKey=currentDayKey || localDateKey(), words=defaultWords, title='Food & Drink') {
-  const store = loadStore();
-  if (!store.days[dateKey]) {
-    store.days[dateKey] = { title, createdAt:Date.now(), words:words, stats:{} };
-    saveStore(store);
-  }
-  return store.days[dateKey];
+function makeWordId(dayKey, index) {
+  return `${dayKey}--${String(index + 1).padStart(3,'0')}`;
 }
 
-function ensureStat(word) {
+function attachWordIds(dayKey, words) {
+  return (words || []).map((item, index) => ({
+    ...item,
+    id: item.id || makeWordId(dayKey, index)
+  }));
+}
+
+function migrateStatsToIds(dayKey, day) {
+  day.words = attachWordIds(dayKey, day.words || []);
+  day.stats = day.stats || {};
+
+  // 兼容旧版：如果某个英文在本 Day 只出现一次，把旧的“按单词名统计”迁移到新的唯一 ID。
+  // 若同一英文出现多次（例如两个 group），不猜测旧记录属于哪一个，避免错误合并。
+  const counts = {};
+  day.words.forEach(item => {
+    const k = wordKey(item.w);
+    counts[k] = (counts[k] || 0) + 1;
+  });
+  day.words.forEach(item => {
+    if (day.stats[item.id]) return;
+    const oldKey = wordKey(item.w);
+    if (counts[oldKey] === 1 && day.stats[oldKey]) {
+      day.stats[item.id] = day.stats[oldKey];
+    }
+  });
+  return day;
+}
+
+function ensureDay(dayKey=currentDayKey || localDateKey(), words=defaultWords, title='Food & Drink') {
+  const store = loadStore();
+  if (!store.days[dayKey]) {
+    store.days[dayKey] = { title, createdAt:Date.now(), words:attachWordIds(dayKey, words), stats:{} };
+  } else {
+    migrateStatsToIds(dayKey, store.days[dayKey]);
+  }
+  saveStore(store);
+  return store.days[dayKey];
+}
+
+function statKey(item) {
+  return item?.id || wordKey(item?.w || item || '');
+}
+
+function ensureStat(item) {
   const store = loadStore();
   const day = store.days[currentDayKey];
   if (!day) return null;
-  const k = wordKey(word);
+  migrateStatsToIds(currentDayKey, day);
+  const k = statKey(item);
   if (!day.stats[k]) day.stats[k] = { learn:0, quizCorrect:0, quizWrong:0, spellCorrect:0, spellWrong:0, lastAt:0 };
   day.stats[k].lastAt = Date.now();
   saveStore(store);
   return day.stats[k];
 }
 
-function bumpStat(word, field) {
+function bumpStat(item, field) {
   const store = loadStore();
   const day = store.days[currentDayKey];
   if (!day) return;
-  const k = wordKey(word);
+  migrateStatsToIds(currentDayKey, day);
+  const k = statKey(item);
   if (!day.stats[k]) day.stats[k] = { learn:0, quizCorrect:0, quizWrong:0, spellCorrect:0, spellWrong:0, lastAt:0 };
   day.stats[k][field] = (day.stats[k][field] || 0) + 1;
   day.stats[k].lastAt = Date.now();
   saveStore(store);
 }
 
-function getWrongWords(day) {
+function getWrongWords(day, dayKey=currentDayKey) {
+  migrateStatsToIds(dayKey, day);
   return day.words.filter(item => {
-    const st = day.stats[wordKey(item.w)] || {};
+    const st = day.stats[statKey(item)] || {};
     return (st.quizWrong || 0) + (st.spellWrong || 0) > 0;
   });
 }
@@ -571,6 +613,8 @@ function loadDay(dateKey) {
   const store = loadStore();
   const day = store.days[dateKey];
   if (!day) return;
+  migrateStatsToIds(dateKey, day);
+  saveStore(store);
   currentDayKey = dateKey;
   currentDayWords = [...day.words];
   reviewMode = false;
@@ -617,7 +661,8 @@ function importTodayWords() {
     const store = loadStore();
     const old = store.days[key];
     const oldStats = old ? old.stats || {} : {};
-    store.days[key] = { title, createdAt: old?.createdAt || Date.now(), words, stats: oldStats };
+    store.days[key] = { title, createdAt: old?.createdAt || Date.now(), words:attachWordIds(key, words), stats: oldStats };
+    migrateStatsToIds(key, store.days[key]);
     saveStore(store);
     document.getElementById('importText').value = '';
     document.getElementById('importPanel').style.display = 'none';
@@ -632,7 +677,7 @@ function renderHistory() {
   let totalWords=0, totalWrong=0, totalQuizC=0, totalQuizW=0, totalSpellC=0, totalSpellW=0;
   entries.forEach(([_,day])=>{
     totalWords += day.words.length;
-    totalWrong += getWrongWords(day).length;
+    totalWrong += getWrongWords(day, _).length;
     Object.values(day.stats||{}).forEach(st=>{ totalQuizC+=st.quizCorrect||0; totalQuizW+=st.quizWrong||0; totalSpellC+=st.spellCorrect||0; totalSpellW+=st.spellWrong||0; });
   });
   const attempts = totalQuizC+totalQuizW+totalSpellC+totalSpellW;
@@ -648,7 +693,7 @@ function renderHistory() {
   list.innerHTML = entries.map(([date,day])=>{
     let qc=0,qw=0,sc=0,sw=0,learn=0;
     Object.values(day.stats||{}).forEach(st=>{learn+=st.learn||0;qc+=st.quizCorrect||0;qw+=st.quizWrong||0;sc+=st.spellCorrect||0;sw+=st.spellWrong||0;});
-    const wrong = getWrongWords(day).length;
+    const wrong = getWrongWords(day, date).length;
     return `<div class="history-card">
       <div class="history-title">${date} · ${escapeHtml(day.title||'词库')}</div>
       <div class="history-meta">${day.words.length} 词 · 学习浏览 ${learn} 次 · 选义 ${qc}/${qc+qw||0} · 拼写 ${sc}/${sc+sw||0} · 错词 ${wrong}</div>
@@ -666,7 +711,7 @@ function reviewWrongDay(dateKey) {
   const store = loadStore();
   const day = store.days[dateKey];
   if (!day) return;
-  const wrong = getWrongWords(day);
+  const wrong = getWrongWords(day, dateKey);
   if (!wrong.length) return alert('这一天没有错词。');
   currentDayKey = dateKey;
   currentDayWords = [...wrong];
@@ -679,9 +724,52 @@ function reviewWrongDay(dateKey) {
 }
 
 
+// ===== 网站词库离线缓存 =====
+function saveRemoteLibraryCache(libraries) {
+  try {
+    localStorage.setItem(LIBRARY_CACHE_KEY, JSON.stringify({
+      savedAt: Date.now(),
+      libraries
+    }));
+  } catch (e) {
+    console.warn('保存网站词库缓存失败', e);
+  }
+}
+
+function loadRemoteLibraryCache() {
+  try {
+    const raw = localStorage.getItem(LIBRARY_CACHE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Array.isArray(parsed.libraries) || parsed.libraries.length === 0) return null;
+    return parsed;
+  } catch (e) {
+    return null;
+  }
+}
+
+function applyRemoteLibraries(libraries, sourceLabel='网站') {
+  remoteLibraries = (libraries || [])
+    .filter(x => Array.isArray(x.words) && x.words.length)
+    .sort((a,b) => (b.dayNum || 0) - (a.dayNum || 0) || (b.name || '').localeCompare(a.name || ''));
+  remoteLibraryCache = Object.fromEntries(remoteLibraries.map(x => [x.name, x]));
+
+  const select = document.getElementById('librarySelect');
+  if (!remoteLibraries.length) return false;
+
+  select.innerHTML = remoteLibraries.map(lib => {
+    const topic = lib.title ? ` · ${escapeHtml(lib.title)}` : '';
+    return `<option value="${escapeHtml(lib.name)}">${escapeHtml(lib.dayLabel)}${topic} (${lib.words.length}词)</option>`;
+  }).join('');
+
+  selectRemoteLibrary(remoteLibraries[0].name, sourceLabel);
+  return true;
+}
+
 // ===== GitHub Pages 在线 TXT 词库 =====
-// 约定：仓库根目录下建立 words/ 文件夹；每个词库文件名以日期开头，例如 2026-08-17.txt。
-// 每行格式：word | 词性 | 中文释义
+// 约定：仓库根目录下建立 words/ 文件夹；每个学习批次一个文件，例如 day-003.txt、day-004.txt。
+// 可选元数据：# Day: 3  /  # Date: 2026-08-15  /  # Topics: Family and Friends | Entertainment and Media
+// 单词行格式：word | 词性 | 中文释义
 let remoteLibraries = [];
 let remoteLibraryCache = {};
 
@@ -694,77 +782,108 @@ function githubRepoInfo() {
   return { owner, repo };
 }
 
-function titleFromFilename(name) {
-  return name.replace(/\.txt$/i, '').replace(/^\d{4}-\d{2}-\d{2}[-_ ]*/, '').replace(/[-_]+/g, ' ').trim();
-}
-
-function dateFromFilename(name) {
-  const m = name.match(/(\d{4}-\d{2}-\d{2})/);
-  return m ? m[1] : name.replace(/\.txt$/i, '');
+function parseLibraryMeta(text, filename) {
+  const meta = {};
+  text.split(/\r?\n/).forEach(line => {
+    const m = line.match(/^\s*#\s*([^:：]+)\s*[:：]\s*(.*?)\s*$/);
+    if (m) meta[m[1].trim().toLowerCase()] = m[2].trim();
+  });
+  const fm = filename.match(/day[-_ ]*0*(\d+)/i);
+  const dayNum = Number(meta.day || (fm ? fm[1] : 0)) || 0;
+  return {
+    dayNum,
+    dayLabel: dayNum ? `Day ${dayNum}` : filename.replace(/\.txt$/i,''),
+    date: meta.date || '',
+    title: meta.topics || meta.topic || meta.title || ''
+  };
 }
 
 async function refreshRemoteLibraries() {
   const select = document.getElementById('librarySelect');
   const status = document.getElementById('libraryStatus');
+
+  // 1) 先立即使用本地缓存，保证离线也能打开。
+  const cached = loadRemoteLibraryCache();
+  if (cached?.libraries?.length) {
+    applyRemoteLibraries(cached.libraries, '本地缓存');
+    const savedText = cached.savedAt ? new Date(cached.savedAt).toLocaleString() : '';
+    status.innerText += savedText ? ` ｜ 缓存于 ${savedText}` : '';
+  } else {
+    select.innerHTML = '<option value="">正在读取网站词库…</option>';
+    status.innerText = '正在读取网站词库…';
+  }
+
+  // 2) 如果当前不是 GitHub Pages，缓存仍然可用，但不尝试联网同步。
   const info = githubRepoInfo();
   if (!info) {
-    status.innerText = '当前不是 GitHub Pages 地址，使用本地/手动词库。';
-    return false;
+    if (!cached?.libraries?.length) status.innerText = '当前不是 GitHub Pages 地址，使用本地/手动词库。';
+    return !!cached?.libraries?.length;
   }
-  select.innerHTML = '<option value="">正在读取网站词库…</option>';
-  status.innerText = `正在读取 ${info.owner}/${info.repo}/words/ …`;
+
+  // 3) 后台联网检查 GitHub，有新版就覆盖缓存；失败则继续使用缓存。
   try {
     const api = `https://api.github.com/repos/${encodeURIComponent(info.owner)}/${encodeURIComponent(info.repo)}/contents/words`;
-    const res = await fetch(api, { headers: { 'Accept':'application/vnd.github+json' } });
+    const res = await fetch(api, {
+      headers: { 'Accept':'application/vnd.github+json' },
+      cache: 'no-store'
+    });
     if (!res.ok) throw new Error(res.status === 404 ? '还没有 words 文件夹' : `GitHub API ${res.status}`);
-    const files = (await res.json())
-      .filter(x => x.type === 'file' && /\.txt$/i.test(x.name))
-      .sort((a,b) => b.name.localeCompare(a.name));
+
+    const files = (await res.json()).filter(x => x.type === 'file' && /\.txt$/i.test(x.name));
     if (!files.length) throw new Error('words 文件夹里没有 TXT 词库');
 
-    // 启动时把所有历史 TXT 都读取到内存；学习统计仍只保存在本机 localStorage。
     const loaded = await Promise.all(files.map(async f => {
       const r = await fetch(f.download_url, { cache:'no-store' });
       if (!r.ok) throw new Error(`无法读取 ${f.name}`);
       const text = await r.text();
       const words = parseImportedWords(text);
-      return { name:f.name, date:dateFromFilename(f.name), title:titleFromFilename(f.name), words };
+      return { name:f.name, ...parseLibraryMeta(text, f.name), words };
     }));
-    remoteLibraries = loaded.filter(x => x.words.length);
-    remoteLibraryCache = Object.fromEntries(remoteLibraries.map(x => [x.name, x]));
-    if (!remoteLibraries.length) throw new Error('TXT 中没有识别到有效单词');
 
-    select.innerHTML = remoteLibraries.map(lib =>
-      `<option value="${escapeHtml(lib.name)}">${escapeHtml(lib.date)}${lib.title ? ' · '+escapeHtml(lib.title) : ''} (${lib.words.length}词)</option>`
-    ).join('');
-    status.innerText = `已加载 ${remoteLibraries.length} 个历史词库 · 共 ${remoteLibraries.reduce((n,x)=>n+x.words.length,0)} 词`;
-    selectRemoteLibrary(remoteLibraries[0].name);
+    const usable = loaded.filter(x => x.words.length);
+    if (!usable.length) throw new Error('TXT 中没有识别到有效单词');
+
+    saveRemoteLibraryCache(usable);
+    applyRemoteLibraries(usable, '网站最新');
+
+    const total = usable.reduce((n,x)=>n+x.words.length,0);
+    status.innerText += ` ｜ 已同步 ${usable.length} 个词库 · 共 ${total}词`;
     return true;
   } catch(e) {
+    if (cached?.libraries?.length) {
+      const total = cached.libraries.reduce((n,x)=>n+(x.words?.length || 0),0);
+      status.innerText = `离线模式：使用已缓存的 ${cached.libraries.length} 个词库 · 共 ${total}词`;
+      return true;
+    }
     select.innerHTML = '<option value="">网站词库读取失败</option>';
     status.innerText = `网站词库：${e.message}。可继续使用本地记录或手动导入。`;
     return false;
   }
 }
 
-function selectRemoteLibrary(filename) {
+function selectRemoteLibrary(filename, sourceLabel='网站') {
   const lib = remoteLibraryCache[filename];
   if (!lib) return;
-  const key = lib.date;
+  const key = lib.dayNum ? `day-${String(lib.dayNum).padStart(3,'0')}` : filename.replace(/\.txt$/i,'');
   const store = loadStore();
   const old = store.days[key];
   store.days[key] = {
-    title: lib.title || old?.title || '每日词库',
+    title: `${lib.dayLabel}${lib.title ? ' · '+lib.title : ''}`,
+    date: lib.date || old?.date || '',
     createdAt: old?.createdAt || Date.now(),
-    words: lib.words,
+    words: attachWordIds(key, lib.words),
     stats: old?.stats || {}
   };
+  migrateStatsToIds(key, store.days[key]);
   saveStore(store);
   loadDay(key);
   const select = document.getElementById('librarySelect');
   if (select && select.value !== filename) select.value = filename;
   const status = document.getElementById('libraryStatus');
-  if (status) status.innerText = `当前：${key}${lib.title ? ' · '+lib.title : ''} · ${lib.words.length} 词；网站共 ${remoteLibraries.length} 个历史词库`;
+  if (status) {
+    const total = remoteLibraries.reduce((n,x)=>n+x.words.length,0);
+    status.innerText = `当前：${lib.dayLabel}${lib.title ? ' · '+lib.title : ''} · ${lib.words.length}词 ｜ ${sourceLabel}词库 ${remoteLibraries.length} 个 · 共 ${total}词`;
+  }
 }
 
 let activeList = [...group1];
@@ -869,7 +988,7 @@ function updateStreak() {
 // 1. 学习模式
 function renderLearn() {
   const item = activeList[learnIdx];
-  bumpStat(item.w, 'learn');
+  bumpStat(item, 'learn');
   document.getElementById('learnWord').innerText = item.w;
   document.getElementById('learnPos').innerText = item.pos;
   document.getElementById('learnMeaning').innerText = item.m;
@@ -897,7 +1016,7 @@ function renderQuiz() {
   document.getElementById('quizPos').innerText = current.pos;
   document.getElementById('progressBar').style.width = `${Math.round(((activeList.length - quizPool.length) / activeList.length) * 100)}%`;
 
-  let wrongPool = activeList.filter(item => item.w !== current.w).sort(() => 0.5 - Math.random()).slice(0, 3);
+  let wrongPool = activeList.filter(item => wordKey(item.w) !== wordKey(current.w)).sort(() => 0.5 - Math.random()).slice(0, 3);
   let options = [current, ...wrongPool].sort(() => 0.5 - Math.random());
 
   const container = document.getElementById('quizOptions');
@@ -905,21 +1024,22 @@ function renderQuiz() {
   options.forEach(opt => {
     const btn = document.createElement('button');
     btn.className = 'option-btn';
+    btn.dataset.wordId = statKey(opt);
     btn.innerText = `${opt.pos} ${opt.m}`;
     btn.onclick = () => {
       document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-      if (opt.w === current.w) {
+      if (statKey(opt) === statKey(current)) {
         btn.classList.add('correct');
         streak++;
-        bumpStat(current.w, 'quizCorrect');
+        bumpStat(current, 'quizCorrect');
         quizPool.shift();
       } else {
         btn.classList.add('wrong');
         streak = 0;
-        bumpStat(current.w, 'quizWrong');
+        bumpStat(current, 'quizWrong');
         quizPool.push(quizPool.shift());
         document.querySelectorAll('.option-btn').forEach(b => {
-          if (b.innerText.includes(current.m)) b.classList.add('correct');
+          if (b.dataset.wordId === statKey(current)) b.classList.add('correct');
         });
       }
       updateStreak();
@@ -987,7 +1107,7 @@ function pressKey(k) {
   if (currentSpellTyped.length === targetClean.length) {
     if (currentSpellTyped === targetClean) {
       updateSpellSlots('correct');
-      bumpStat(currentSpellTarget.w, 'spellCorrect');
+      bumpStat(currentSpellTarget, 'spellCorrect');
       streak++;
       updateStreak();
       spellPool.shift();
@@ -995,7 +1115,7 @@ function pressKey(k) {
     } else {
       updateSpellSlots('wrong');
       streak = 0;
-      bumpStat(currentSpellTarget.w, 'spellWrong');
+      bumpStat(currentSpellTarget, 'spellWrong');
       updateStreak();
       document.getElementById('spellHint').innerText = `正确拼写: ${currentSpellTarget.w}`;
       spellPool.push(spellPool.shift());
@@ -1044,8 +1164,8 @@ window.addEventListener('keydown', (e) => {
   const dates = Object.keys(store.days).sort();
   if (dates.length === 0) {
     // 第一次启动保留内置 Food & Drink 作为离线兜底。
-    currentDayKey = '2026-08-16';
-    store.days[currentDayKey] = { title:'Food & Drink', createdAt:Date.now(), words:[...defaultWords], stats:{} };
+    currentDayKey = 'day-005';
+    store.days[currentDayKey] = { title:'Day 5 · Food & Drink', createdAt:Date.now(), words:attachWordIds(currentDayKey, defaultWords), stats:{} };
     saveStore(store);
   } else {
     currentDayKey = dates[dates.length - 1];
@@ -1054,7 +1174,7 @@ window.addEventListener('keydown', (e) => {
   updateGroupLabels();
   switchGroup(1, document.getElementById('groupBtn1'));
 
-  // GitHub Pages 上自动发现并加载 words/ 下全部历史 TXT；默认打开最新日期。
+  // GitHub Pages 上自动发现并加载 words/ 下全部历史 TXT；默认打开最大的 Day 编号。
   await refreshRemoteLibraries();
 })();
 </script>
