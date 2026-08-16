@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Food & Drink 单词通</title>
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-light: #EEF2FF;
+      --success: #10B981;
+      --danger: #EF4444;
+      --bg: #F8FAFC;
+      --card: #FFFFFF;
+      --text: #1E293B;
+      --subtext: #64748B;
+    }
+    * { 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      touch-action: manipulation;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container { width: 100%; max-width: 480px; }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .group-selector {
+      display: flex;
+      background: #E2E8F0;
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 10px;
+      gap: 4px;
+    }
+    .group-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 8px 4px;
+      font-size: 13px;
+      font-weight: bold;
+      border-radius: 7px;
+      color: var(--subtext);
+      cursor: pointer;
+    }
+    .group-btn.active {
+      background: white;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
+    .tab-btn {
+      flex: 1;
+      padding: 9px 4px;
+      border: none;
+      border-radius: 10px;
+      background: #E2E8F0;
+      font-weight: bold;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--subtext);
+    }
+    .tab-btn.active { background: var(--primary); color: white; }
+    .progress-bar-bg {
+      background: #E2E8F0;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .progress-bar-fill {
+      background: var(--primary);
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 20px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-align: center;
+      margin-bottom: 12px;
+      border: 1px solid #F1F5F9;
+    }
+    .word-text { font-size: 32px; font-weight: 800; color: var(--primary); margin: 0 0 4px 0; }
+    .pos-text { font-size: 14px; color: var(--subtext); margin-bottom: 8px; }
+    .meaning-text { font-size: 22px; font-weight: 700; color: #334155; margin: 10px 0; }
+    .btn-audio {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #EEF2FF;
+      color: var(--primary);
+      font-size: 20px;
+      border: none;
+      cursor: pointer;
+      margin: 6px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+    }
+    .btn-secondary { background: #F1F5F9; color: #334155; }
+    
+    /* 选项样式 */
+    .options-grid { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 14px; }
+    .option-btn {
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 2px solid #E2E8F0;
+      border-radius: 12px;
+      background: white;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      color: #334155;
+    }
+    .option-btn.correct { background: #DCFCE7; border-color: var(--success); color: #166534; }
+    .option-btn.wrong { background: #FEE2E2; border-color: var(--danger); color: #991B1B; }
+
+    /* 拼写槽位样式 */
+    .spell-slots {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      min-height: 46px;
+      margin: 14px 0 6px 0;
+    }
+    .spell-slot {
+      min-width: 32px;
+      height: 40px;
+      border-bottom: 3px solid #CBD5E1;
+      font-size: 22px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      text-transform: lowercase;
+    }
+    .spell-slot.filled { border-color: var(--primary); }
+    .spell-slot.space { border-bottom: none; width: 14px; color: transparent; }
+    .spell-slot.correct-state { border-color: var(--success); color: var(--success); }
+    .spell-slot.wrong-state { border-color: var(--danger); color: var(--danger); }
+
+    /* 标准 QWERTY 键盘 */
+    .keyboard {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+      user-select: none;
+    }
+    .kb-row {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      touch-action: manipulation;
+    }
+    .kb-key {
+      flex: 1;
+      max-width: 42px;
+      height: 46px;
+      background: white;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1E293B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 0 #CBD5E1;
+    }
+    .kb-key:active {
+      transform: translateY(2px);
+      box-shadow: none;
+      background: #E2E8F0;
+    }
+    .kb-key.action-key {
+      flex: 1.4;
+      max-width: 58px;
+      background: #E2E8F0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .kb-key.space-key {
+      flex: 3;
+      max-width: 140px;
+      font-size: 14px;
+      background: #F1F5F9;
+    }
+
+
+    .toolbar { display:flex; gap:8px; margin-bottom:10px; }
+    .toolbar .btn { padding:10px 12px; font-size:13px; }
+    .panel { background:var(--card); border:1px solid #E2E8F0; border-radius:14px; padding:14px; margin-bottom:12px; }
+    .panel-title { font-size:16px; font-weight:800; margin-bottom:8px; }
+    .import-area { width:100%; min-height:150px; border:1px solid #CBD5E1; border-radius:10px; padding:10px; font-size:14px; resize:vertical; }
+    .muted { color:var(--subtext); font-size:12px; line-height:1.5; }
+    .history-card { background:white; border:1px solid #E2E8F0; border-radius:12px; padding:12px; margin-bottom:8px; text-align:left; }
+    .history-title { font-weight:800; font-size:15px; }
+    .history-meta { color:var(--subtext); font-size:12px; margin-top:4px; line-height:1.5; }
+    .mini-actions { display:flex; gap:7px; margin-top:9px; }
+    .mini-actions button { flex:1; border:none; border-radius:8px; padding:8px; font-weight:700; cursor:pointer; }
+    .summary-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:10px; }
+    .summary-box { background:#F8FAFC; border-radius:10px; padding:10px; }
+    .summary-num { font-size:22px; font-weight:900; color:var(--primary); }
+    .summary-label { font-size:12px; color:var(--subtext); }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h3 style="margin:0; font-size:17px;">🥪 Food & Drink 单词通</h3>
+    <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-secondary" onclick="toggleImportPanel()">📥 导入今日词库</button>
+    <button class="btn btn-secondary" onclick="switchMode('history')">📊 历史记录</button>
+  </div>
+
+  <div id="importPanel" class="panel" style="display:none;">
+    <div class="panel-title">导入今日词库</div>
+    <div class="muted" style="margin-bottom:8px;">每行格式：word | 词性 | 中文释义。也支持 JSON 数组，例如 [{"w":"apple","pos":"n.","m":"苹果"}]。</div>
+    <input id="dayTitle" style="width:100%;padding:9px;border:1px solid #CBD5E1;border-radius:9px;margin-bottom:8px;" placeholder="今日主题，例如 Travel">
+    <textarea id="importText" class="import-area" placeholder="apple | n. | 苹果
+banana | n. | 香蕉"></textarea>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <button class="btn btn-secondary" onclick="toggleImportPanel()">取消</button>
+      <button class="btn" onclick="importTodayWords()">导入并开始学习</button>
+    </div>
+  </div>
+
+  <div class="group-selector">
+    <button id="groupBtn1" class="group-btn active" onclick="switchGroup(1, this)">第 1 页</button>
+    <button id="groupBtn2" class="group-btn" onclick="switchGroup(2, this)">第 2 页</button>
+    <button id="groupBtnAll" class="group-btn" onclick="switchGroup(0, this)">全本</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchMode('learn')">📖 学习模式</button>
+    <button class="tab-btn" onclick="switchMode('quiz')">🎯 选义测试</button>
+    <button class="tab-btn" onclick="switchMode('spell')">🔤 键盘拼写</button>
+    <button class="tab-btn" onclick="switchMode('history')">🕘 历史</button>
+  </div>
+
+  <div class="progress-bar-bg">
+    <div id="progressBar" class="progress-bar-fill"></div>
+  </div>
+
+  <!-- 1. 学习模式 -->
+  <div id="learnSection">
+    <div class="card">
+      <div id="learnWord" class="word-text">word</div>
+      <div id="learnPos" class="pos-text">n.</div>
+      <button class="btn-audio" onclick="speakCurrentLearn()">🔊</button>
+      <div id="learnMeaning" class="meaning-text">释义</div>
+      <div style="display:flex; gap:8px; margin-top:16px;">
+        <button class="btn btn-secondary" style="flex:1;" onclick="prevLearn()">上一个</button>
+        <button class="btn" style="flex:2;" onclick="nextLearn()">记住了，下一个 ➔</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 选义测试模式 -->
+  <div id="quizSection" style="display:none;">
+    <div class="card">
+      <div id="quizWord" class="word-text">word</div>
+      <div id="quizPos" class="pos-text">n.</div>
+      <button class="btn-audio" style="width:42px; height:42px; font-size:18px;" onclick="speakCurrentQuiz()">🔊</button>
+      <div class="options-grid" id="quizOptions"></div>
+    </div>
+  </div>
+
+  <!-- 3. 键盘拼写模式 -->
+  <div id="spellSection" style="display:none;">
+    <div class="card" style="padding-bottom:12px; margin-bottom:8px;">
+      <div id="spellMeaning" class="meaning-text" style="font-size:24px; margin:0 0 2px 0;">释义</div>
+      <div id="spellPos" class="pos-text">n.</div>
+      <button class="btn-audio" style="width:42px; height:42px; font-size:18px;" onclick="speakCurrentSpell()">🔊</button>
+      <div class="spell-slots" id="spellSlots"></div>
+      <div id="spellHint" style="font-size:12px; color:#94A3B8; min-height:16px;"></div>
+    </div>
+
+    <!-- 标准 QWERTY 虚拟键盘 -->
+    <div class="keyboard" id="qwertyKeyboard">
+      <div class="kb-row">
+        <button class="kb-key" onclick="pressKey('q')">Q</button>
+        <button class="kb-key" onclick="pressKey('w')">W</button>
+        <button class="kb-key" onclick="pressKey('e')">E</button>
+        <button class="kb-key" onclick="pressKey('r')">R</button>
+        <button class="kb-key" onclick="pressKey('t')">T</button>
+        <button class="kb-key" onclick="pressKey('y')">Y</button>
+        <button class="kb-key" onclick="pressKey('u')">U</button>
+        <button class="kb-key" onclick="pressKey('i')">I</button>
+        <button class="kb-key" onclick="pressKey('o')">O</button>
+        <button class="kb-key" onclick="pressKey('p')">P</button>
+      </div>
+      <div class="kb-row">
+        <button class="kb-key" onclick="pressKey('a')">A</button>
+        <button class="kb-key" onclick="pressKey('s')">S</button>
+        <button class="kb-key" onclick="pressKey('d')">D</button>
+        <button class="kb-key" onclick="pressKey('f')">F</button>
+        <button class="kb-key" onclick="pressKey('g')">G</button>
+        <button class="kb-key" onclick="pressKey('h')">H</button>
+        <button class="kb-key" onclick="pressKey('j')">J</button>
+        <button class="kb-key" onclick="pressKey('k')">K</button>
+        <button class="kb-key" onclick="pressKey('l')">L</button>
+      </div>
+      <div class="kb-row">
+        <button class="kb-key" onclick="pressKey('z')">Z</button>
+        <button class="kb-key" onclick="pressKey('x')">X</button>
+        <button class="kb-key" onclick="pressKey('c')">C</button>
+        <button class="kb-key" onclick="pressKey('v')">V</button>
+        <button class="kb-key" onclick="pressKey('b')">B</button>
+        <button class="kb-key" onclick="pressKey('n')">N</button>
+        <button class="kb-key" onclick="pressKey('m')">M</button>
+        <button class="kb-key action-key" onclick="pressBackspace()">⌫</button>
+      </div>
+      <div class="kb-row">
+        <button class="kb-key space-key" onclick="pressKey(' ')">Space 空格</button>
+        <button class="kb-key action-key" onclick="clearInput()">清空</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 历史记录 -->
+  <div id="historySection" style="display:none;">
+    <div class="card" style="text-align:left;">
+      <div class="panel-title">学习历史</div>
+      <div id="historySummary" class="summary-grid"></div>
+      <div id="historyList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const group1 = [
+  { w: "can", pos: "n.", m: "罐头" },
+  { w: "candy", pos: "n.", m: "糖果" },
+  { w: "carrot", pos: "n.", m: "胡萝卜" },
+  { w: "cereal", pos: "n.", m: "麦片" },
+  { w: "cheese", pos: "n.", m: "奶酪" },
+  { w: "chef", pos: "n.", m: "主厨" },
+  { w: "chicken", pos: "n.", m: "鸡肉" },
+  { w: "chilli", pos: "n.", m: "辣椒" },
+  { w: "chips", pos: "n.", m: "薯片" },
+  { w: "chocolate", pos: "n.", m: "巧克力" },
+  { w: "coffee", pos: "n.", m: "咖啡" },
+  { w: "cola", pos: "n.", m: "可乐" },
+  { w: "cook", pos: "n. & v.", m: "厨师；烹饪" },
+  { w: "cooker", pos: "n.", m: "厨具" },
+  { w: "cream", pos: "n.", m: "奶油" },
+  { w: "cup", pos: "n.", m: "杯子" },
+  { w: "curry", pos: "n.", m: "咖喱" },
+  { w: "cut", pos: "n.", m: "切口；伤口" },
+  { w: "hungry", pos: "adj.", m: "饥饿的" },
+  { w: "ice", pos: "n.", m: "冰" },
+  { w: "ice cream", pos: "n.", m: "冰淇淋" },
+  { w: "jam", pos: "n.", m: "果酱" },
+  { w: "juice", pos: "n.", m: "果汁" },
+  { w: "kitchen", pos: "n.", m: "厨房" },
+  { w: "knife", pos: "n.", m: "刀" },
+  { w: "lemon", pos: "n.", m: "柠檬" },
+  { w: "lemonade", pos: "n.", m: "柠檬水" },
+  { w: "lunch", pos: "n.", m: "午餐" },
+  { w: "main course", pos: "n.", m: "主菜" },
+  { w: "meal", pos: "n.", m: "一餐" },
+  { w: "meat", pos: "n.", m: "肉" },
+  { w: "melon", pos: "n.", m: "瓜" },
+  { w: "menu", pos: "n.", m: "菜单" },
+  { w: "milk", pos: "n.", m: "牛奶" },
+  { w: "mineral water", pos: "n.", m: "矿泉水" },
+  { w: "mushroom", pos: "n.", m: "蘑菇" },
+  { w: "sausage", pos: "n.", m: "香肠" },
+  { w: "slice", pos: "n.", m: "薄片" },
+  { w: "snack", pos: "n.", m: "点心；小吃" },
+  { w: "soup", pos: "n.", m: "汤" },
+  { w: "steak", pos: "n.", m: "牛排" },
+  { w: "strawberry", pos: "n.", m: "草莓" },
+  { w: "sugar", pos: "n.", m: "糖" },
+  { w: "sweet", pos: "n. & adj.", m: "糖果；甜的" },
+  { w: "tea", pos: "n.", m: "茶" },
+  { w: "thirsty", pos: "adj.", m: "口渴的" },
+  { w: "toast", pos: "n.", m: "烤面包" },
+  { w: "tomato", pos: "n.", m: "番茄" },
+  { w: "vegetable", pos: "n.", m: "蔬菜" },
+  { w: "waiter", pos: "n.", m: "男服务员" },
+  { w: "waitress", pos: "n.", m: "女服务员" },
+  { w: "wash up", pos: "phr.", m: "洗餐具" },
+  { w: "yog(h)urt", pos: "n.", m: "酸奶" }
+];
+
+const group2 = [
+  { w: "apple", pos: "n.", m: "苹果" },
+  { w: "bake", pos: "v.", m: "烘焙" },
+  { w: "banana", pos: "n.", m: "香蕉" },
+  { w: "barbecue", pos: "n. & v.", m: "烤肉；烧烤" },
+  { w: "biscuit", pos: "n.", m: "饼干" },
+  { w: "boil", pos: "v.", m: "烧开；煮沸" },
+  { w: "boiled", pos: "adj.", m: "煮沸的" },
+  { w: "bottle", pos: "n.", m: "瓶子" },
+  { w: "bowl", pos: "n.", m: "碗" },
+  { w: "box", pos: "n.", m: "盒；箱" },
+  { w: "bread", pos: "n.", m: "面包" },
+  { w: "break", pos: "n.", m: "休息" },
+  { w: "breakfast", pos: "n.", m: "早餐" },
+  { w: "burger", pos: "n.", m: "汉堡" },
+  { w: "butter", pos: "n.", m: "黄油" },
+  { w: "cafe/café", pos: "n.", m: "咖啡馆；小餐馆" },
+  { w: "cafeteria", pos: "n.", m: "自助餐厅" },
+  { w: "cake", pos: "n.", m: "蛋糕" },
+  { w: "delicious", pos: "adj.", m: "美味的" },
+  { w: "dessert", pos: "n.", m: "甜点" },
+  { w: "dinner", pos: "n.", m: "晚餐" },
+  { w: "dish", pos: "n.", m: "餐具；菜肴" },
+  { w: "drink", pos: "n. & v.", m: "饮料；喝" },
+  { w: "eat", pos: "v.", m: "吃" },
+  { w: "egg", pos: "n.", m: "鸡蛋" },
+  { w: "fish", pos: "n.", m: "鱼，鱼肉" },
+  { w: "food", pos: "n.", m: "食物" },
+  { w: "fork", pos: "n.", m: "叉子" },
+  { w: "fridge", pos: "n.", m: "冰箱" },
+  { w: "fried", pos: "adj.", m: "油炸的" },
+  { w: "fruit", pos: "n.", m: "水果" },
+  { w: "garlic", pos: "n.", m: "大蒜" },
+  { w: "glass", pos: "n.", m: "玻璃杯" },
+  { w: "grape", pos: "n.", m: "葡萄" },
+  { w: "grilled", pos: "adj.", m: "烤的" },
+  { w: "honey", pos: "n.", m: "蜂蜜" },
+  { w: "oil", pos: "n.", m: "油" },
+  { w: "omelette", pos: "n.", m: "煎蛋卷" },
+  { w: "onion", pos: "n.", m: "洋葱" },
+  { w: "orange", pos: "n.", m: "橙子" },
+  { w: "pasta", pos: "n.", m: "意大利面" },
+  { w: "pear", pos: "n.", m: "梨" },
+  { w: "pepper", pos: "n.", m: "胡椒" },
+  { w: "picnic", pos: "n.", m: "野餐" },
+  { w: "piece of cake", pos: "phr.", m: "(一)块蛋糕" },
+  { w: "pizza", pos: "n.", m: "比萨饼" },
+  { w: "plate", pos: "n.", m: "盘子" },
+  { w: "potato", pos: "n.", m: "土豆" },
+  { w: "rice", pos: "n.", m: "米饭" },
+  { w: "roast", pos: "v. & adj.", m: "烤；烤过的" },
+  { w: "salad", pos: "n.", m: "沙拉" },
+  { w: "salt", pos: "n.", m: "盐" },
+  { w: "sandwich", pos: "n.", m: "三明治" },
+  { w: "sauce", pos: "n.", m: "调味汁" }
+];
+
+
+const STORAGE_KEY = 'wordTrainerV1';
+const defaultWords = [...group1, ...group2];
+let currentDayWords = [...defaultWords];
+let currentDayKey = '';
+let currentGroupType = 1;
+let reviewMode = false;
+
+function localDateKey() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+function loadStore() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { days:{} }; }
+  catch(e) { return { days:{} }; }
+}
+function saveStore(store) { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }
+function wordKey(w) { return sanitizeWord(w); }
+
+function ensureDay(dateKey=currentDayKey || localDateKey(), words=defaultWords, title='Food & Drink') {
+  const store = loadStore();
+  if (!store.days[dateKey]) {
+    store.days[dateKey] = { title, createdAt:Date.now(), words:words, stats:{} };
+    saveStore(store);
+  }
+  return store.days[dateKey];
+}
+
+function ensureStat(word) {
+  const store = loadStore();
+  const day = store.days[currentDayKey];
+  if (!day) return null;
+  const k = wordKey(word);
+  if (!day.stats[k]) day.stats[k] = { learn:0, quizCorrect:0, quizWrong:0, spellCorrect:0, spellWrong:0, lastAt:0 };
+  day.stats[k].lastAt = Date.now();
+  saveStore(store);
+  return day.stats[k];
+}
+
+function bumpStat(word, field) {
+  const store = loadStore();
+  const day = store.days[currentDayKey];
+  if (!day) return;
+  const k = wordKey(word);
+  if (!day.stats[k]) day.stats[k] = { learn:0, quizCorrect:0, quizWrong:0, spellCorrect:0, spellWrong:0, lastAt:0 };
+  day.stats[k][field] = (day.stats[k][field] || 0) + 1;
+  day.stats[k].lastAt = Date.now();
+  saveStore(store);
+}
+
+function getWrongWords(day) {
+  return day.words.filter(item => {
+    const st = day.stats[wordKey(item.w)] || {};
+    return (st.quizWrong || 0) + (st.spellWrong || 0) > 0;
+  });
+}
+
+function loadDay(dateKey) {
+  const store = loadStore();
+  const day = store.days[dateKey];
+  if (!day) return;
+  currentDayKey = dateKey;
+  currentDayWords = [...day.words];
+  reviewMode = false;
+  currentGroupType = 1;
+  updateGroupLabels();
+  switchGroup(1, document.getElementById('groupBtn1'));
+  switchMode('learn');
+}
+
+function updateGroupLabels() {
+  const n = currentDayWords.length;
+  const n1 = Math.ceil(n/2), n2 = n-n1;
+  document.getElementById('groupBtn1').innerText = `第 1 页 (${n1}词)`;
+  document.getElementById('groupBtn2').innerText = `第 2 页 (${n2}词)`;
+  document.getElementById('groupBtnAll').innerText = `全本 (${n}词)`;
+}
+
+function toggleImportPanel() {
+  const p = document.getElementById('importPanel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+
+function parseImportedWords(raw) {
+  raw = raw.trim();
+  if (!raw) return [];
+  if (raw.startsWith('[')) {
+    const arr = JSON.parse(raw);
+    return arr.map(x => ({w:String(x.w||x.word||'').trim(), pos:String(x.pos||'').trim(), m:String(x.m||x.meaning||'').trim()})).filter(x=>x.w&&x.m);
+  }
+  return raw.split(/\r?\n/).map(line => {
+    const parts = line.split(/\s*[|\t,]\s*/);
+    if (parts.length < 2) return null;
+    if (parts.length === 2) return {w:parts[0].trim(), pos:'', m:parts[1].trim()};
+    return {w:parts[0].trim(), pos:parts[1].trim(), m:parts.slice(2).join('，').trim()};
+  }).filter(Boolean).filter(x=>x.w&&x.m);
+}
+
+function importTodayWords() {
+  try {
+    const words = parseImportedWords(document.getElementById('importText').value);
+    if (!words.length) return alert('没有识别到有效单词。');
+    const title = document.getElementById('dayTitle').value.trim() || '今日词库';
+    const key = localDateKey();
+    const store = loadStore();
+    const old = store.days[key];
+    const oldStats = old ? old.stats || {} : {};
+    store.days[key] = { title, createdAt: old?.createdAt || Date.now(), words, stats: oldStats };
+    saveStore(store);
+    document.getElementById('importText').value = '';
+    document.getElementById('importPanel').style.display = 'none';
+    loadDay(key);
+    alert(`已导入 ${words.length} 个单词。`);
+  } catch(e) { alert('导入格式有误：' + e.message); }
+}
+
+function renderHistory() {
+  const store = loadStore();
+  const entries = Object.entries(store.days).sort((a,b)=>b[0].localeCompare(a[0]));
+  let totalWords=0, totalWrong=0, totalQuizC=0, totalQuizW=0, totalSpellC=0, totalSpellW=0;
+  entries.forEach(([_,day])=>{
+    totalWords += day.words.length;
+    totalWrong += getWrongWords(day).length;
+    Object.values(day.stats||{}).forEach(st=>{ totalQuizC+=st.quizCorrect||0; totalQuizW+=st.quizWrong||0; totalSpellC+=st.spellCorrect||0; totalSpellW+=st.spellWrong||0; });
+  });
+  const attempts = totalQuizC+totalQuizW+totalSpellC+totalSpellW;
+  const correct = totalQuizC+totalSpellC;
+  const acc = attempts ? Math.round(correct/attempts*100) : 0;
+  document.getElementById('historySummary').innerHTML = `
+    <div class="summary-box"><div class="summary-num">${entries.length}</div><div class="summary-label">学习天数</div></div>
+    <div class="summary-box"><div class="summary-num">${totalWords}</div><div class="summary-label">累计单词</div></div>
+    <div class="summary-box"><div class="summary-num">${acc}%</div><div class="summary-label">测试正确率</div></div>
+    <div class="summary-box"><div class="summary-num">${totalWrong}</div><div class="summary-label">历史错词</div></div>`;
+  const list = document.getElementById('historyList');
+  if (!entries.length) { list.innerHTML='<div class="muted">还没有学习记录。</div>'; return; }
+  list.innerHTML = entries.map(([date,day])=>{
+    let qc=0,qw=0,sc=0,sw=0,learn=0;
+    Object.values(day.stats||{}).forEach(st=>{learn+=st.learn||0;qc+=st.quizCorrect||0;qw+=st.quizWrong||0;sc+=st.spellCorrect||0;sw+=st.spellWrong||0;});
+    const wrong = getWrongWords(day).length;
+    return `<div class="history-card">
+      <div class="history-title">${date} · ${escapeHtml(day.title||'词库')}</div>
+      <div class="history-meta">${day.words.length} 词 · 学习浏览 ${learn} 次 · 选义 ${qc}/${qc+qw||0} · 拼写 ${sc}/${sc+sw||0} · 错词 ${wrong}</div>
+      <div class="mini-actions">
+        <button onclick="loadDay('${date}')">打开当天</button>
+        <button onclick="reviewWrongDay('${date}')" ${wrong===0?'disabled':''}>复习错词</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function escapeHtml(s) { return String(s).replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c])); }
+
+function reviewWrongDay(dateKey) {
+  const store = loadStore();
+  const day = store.days[dateKey];
+  if (!day) return;
+  const wrong = getWrongWords(day);
+  if (!wrong.length) return alert('这一天没有错词。');
+  currentDayKey = dateKey;
+  currentDayWords = [...wrong];
+  reviewMode = true;
+  currentGroupType = 0;
+  updateGroupLabels();
+  activeList = [...wrong];
+  learnIdx=0; quizPool=[...wrong].sort(()=>0.5-Math.random()); spellPool=[...wrong].sort(()=>0.5-Math.random());
+  switchMode('learn');
+}
+
+let activeList = [...group1];
+let currentMode = 'learn';
+let learnIdx = 0;
+let quizPool = [];
+let spellPool = [];
+let currentSpellTarget = null;
+let currentSpellTyped = "";
+let streak = 0;
+let targetVoice = null;
+
+function sanitizeWord(w) {
+  return w.replace("(h)", "h").split('/')[0].trim().toLowerCase();
+}
+
+// 严格优先绑定 Ava 高保真语音
+function loadVoices() {
+  if (!('speechSynthesis' in window)) return;
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices || voices.length === 0) return;
+
+  targetVoice = voices.find(v => 
+    v.name.toLowerCase().includes('ava') && 
+    (v.name.includes('Enhanced') || v.name.includes('Premium'))
+  ) || voices.find(v => v.name.toLowerCase().includes('ava'))
+    || voices.find(v => 
+      v.lang.startsWith('en') && 
+      (v.name.includes('Enhanced') || v.name.includes('Premium') || v.name.includes('Zoe') || v.name.includes('Samantha'))
+    )
+    || voices.find(v => v.lang === 'en-US') 
+    || voices.find(v => v.lang.startsWith('en'));
+}
+
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(sanitizeWord(text));
+  if (!targetVoice) loadVoices();
+  if (targetVoice) u.voice = targetVoice;
+  u.lang = 'en-US';
+  u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function switchGroup(type, btn) {
+  document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  currentGroupType = type;
+  reviewMode = false;
+  const n1 = Math.ceil(currentDayWords.length / 2);
+  if (type === 1) activeList = currentDayWords.slice(0, n1);
+  else if (type === 2) activeList = currentDayWords.slice(n1);
+  else activeList = [...currentDayWords];
+
+  learnIdx = 0;
+  quizPool = [...activeList].sort(() => 0.5 - Math.random());
+  spellPool = [...activeList].sort(() => 0.5 - Math.random());
+  streak = 0;
+  updateStreak();
+
+  if (currentMode === 'learn') renderLearn();
+  else if (currentMode === 'quiz') renderQuiz();
+  else if (currentMode === 'spell') renderSpell();
+}
+function switchMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  ['learnSection', 'quizSection', 'spellSection', 'historySection'].forEach(id => document.getElementById(id).style.display = 'none');
+
+  const idx = {learn:0, quiz:1, spell:2, history:3}[mode];
+  if (idx !== undefined) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+
+  if (mode === 'learn') {
+    document.getElementById('learnSection').style.display = 'block'; renderLearn();
+  } else if (mode === 'quiz') {
+    document.getElementById('quizSection').style.display = 'block'; quizPool = [...activeList].sort(() => 0.5 - Math.random()); renderQuiz();
+  } else if (mode === 'spell') {
+    document.getElementById('spellSection').style.display = 'block'; spellPool = [...activeList].sort(() => 0.5 - Math.random()); renderSpell();
+  } else {
+    document.getElementById('historySection').style.display = 'block'; renderHistory();
+  }
+}
+function updateStreak() {
+  document.getElementById('streakBadge').innerText = `🔥 连对: ${streak}`;
+}
+
+// 1. 学习模式
+function renderLearn() {
+  const item = activeList[learnIdx];
+  bumpStat(item.w, 'learn');
+  document.getElementById('learnWord').innerText = item.w;
+  document.getElementById('learnPos').innerText = item.pos;
+  document.getElementById('learnMeaning').innerText = item.m;
+  document.getElementById('progressBar').style.width = `${Math.round(((learnIdx + 1) / activeList.length) * 100)}%`;
+  speak(item.w);
+}
+function nextLearn() {
+  learnIdx = (learnIdx + 1) % activeList.length;
+  renderLearn();
+}
+function prevLearn() {
+  learnIdx = (learnIdx - 1 + activeList.length) % activeList.length;
+  renderLearn();
+}
+function speakCurrentLearn() { speak(activeList[learnIdx].w); }
+
+// 2. 选择测试模式
+function renderQuiz() {
+  if (quizPool.length === 0) {
+    alert("🎉 本组选义测试已全部通关！");
+    quizPool = [...activeList].sort(() => 0.5 - Math.random());
+  }
+  const current = quizPool[0];
+  document.getElementById('quizWord').innerText = current.w;
+  document.getElementById('quizPos').innerText = current.pos;
+  document.getElementById('progressBar').style.width = `${Math.round(((activeList.length - quizPool.length) / activeList.length) * 100)}%`;
+
+  let wrongPool = activeList.filter(item => item.w !== current.w).sort(() => 0.5 - Math.random()).slice(0, 3);
+  let options = [current, ...wrongPool].sort(() => 0.5 - Math.random());
+
+  const container = document.getElementById('quizOptions');
+  container.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerText = `${opt.pos} ${opt.m}`;
+    btn.onclick = () => {
+      document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+      if (opt.w === current.w) {
+        btn.classList.add('correct');
+        streak++;
+        bumpStat(current.w, 'quizCorrect');
+        quizPool.shift();
+      } else {
+        btn.classList.add('wrong');
+        streak = 0;
+        bumpStat(current.w, 'quizWrong');
+        quizPool.push(quizPool.shift());
+        document.querySelectorAll('.option-btn').forEach(b => {
+          if (b.innerText.includes(current.m)) b.classList.add('correct');
+        });
+      }
+      updateStreak();
+      setTimeout(renderQuiz, 750);
+    };
+    container.appendChild(btn);
+  });
+  speak(current.w);
+}
+function speakCurrentQuiz() { if (quizPool[0]) speak(quizPool[0].w); }
+
+// 3. 键盘拼写模式
+function renderSpell() {
+  if (spellPool.length === 0) {
+    alert("🏆 太棒了！本组单词全部拼写正确！");
+    spellPool = [...activeList].sort(() => 0.5 - Math.random());
+  }
+  currentSpellTarget = spellPool[0];
+  currentSpellTyped = "";
+  document.getElementById('spellMeaning').innerText = currentSpellTarget.m;
+  document.getElementById('spellPos').innerText = currentSpellTarget.pos;
+  document.getElementById('spellHint').innerText = `剩余: ${spellPool.length} 词`;
+  document.getElementById('progressBar').style.width = `${Math.round(((activeList.length - spellPool.length) / activeList.length) * 100)}%`;
+  
+  updateSpellSlots();
+  speak(currentSpellTarget.w);
+}
+
+function updateSpellSlots(state = "") {
+  const targetClean = sanitizeWord(currentSpellTarget.w);
+  const container = document.getElementById('spellSlots');
+  container.innerHTML = '';
+
+  for (let i = 0; i < targetClean.length; i++) {
+    const char = targetClean[i];
+    const slot = document.createElement('div');
+    slot.className = 'spell-slot';
+
+    if (char === ' ') {
+      slot.className += ' space';
+      slot.innerText = ' ';
+    } else {
+      const typedChar = currentSpellTyped[i] || '';
+      slot.innerText = typedChar;
+      if (typedChar) slot.classList.add('filled');
+      if (state === 'correct') slot.classList.add('correct-state');
+      if (state === 'wrong') slot.classList.add('wrong-state');
+    }
+    container.appendChild(slot);
+  }
+}
+
+function pressKey(k) {
+  if (!currentSpellTarget) return;
+  const targetClean = sanitizeWord(currentSpellTarget.w);
+  if (currentSpellTyped.length >= targetClean.length) return;
+
+  if (targetClean[currentSpellTyped.length] === ' ' && k !== ' ') {
+    currentSpellTyped += ' ';
+  }
+  
+  currentSpellTyped += k.toLowerCase();
+  updateSpellSlots();
+
+  if (currentSpellTyped.length === targetClean.length) {
+    if (currentSpellTyped === targetClean) {
+      updateSpellSlots('correct');
+      speak(currentSpellTarget.w);
+      bumpStat(currentSpellTarget.w, 'spellCorrect');
+      streak++;
+      updateStreak();
+      spellPool.shift();
+      setTimeout(renderSpell, 800);
+    } else {
+      updateSpellSlots('wrong');
+      streak = 0;
+      bumpStat(currentSpellTarget.w, 'spellWrong');
+      updateStreak();
+      document.getElementById('spellHint').innerText = `正确拼写: ${currentSpellTarget.w}`;
+      spellPool.push(spellPool.shift());
+      setTimeout(() => {
+        currentSpellTyped = "";
+        updateSpellSlots();
+        document.getElementById('spellHint').innerText = `剩余: ${spellPool.length} 词`;
+      }, 1400);
+    }
+  }
+}
+
+function pressBackspace() {
+  if (currentSpellTyped.length > 0) {
+    currentSpellTyped = currentSpellTyped.slice(0, -1);
+    const targetClean = sanitizeWord(currentSpellTarget.w);
+    if (currentSpellTyped.length > 0 && targetClean[currentSpellTyped.length - 1] === ' ') {
+      currentSpellTyped = currentSpellTyped.slice(0, -1);
+    }
+    updateSpellSlots();
+  }
+}
+
+function clearInput() {
+  currentSpellTyped = "";
+  updateSpellSlots();
+}
+
+function speakCurrentSpell() {
+  if (currentSpellTarget) speak(currentSpellTarget.w);
+}
+
+// 监听实体机械键盘
+window.addEventListener('keydown', (e) => {
+  if (currentMode !== 'spell') return;
+  if (e.key === 'Backspace') {
+    pressBackspace();
+  } else if (e.key === ' ' || (e.key.length === 1 && e.key.match(/[a-z]/i))) {
+    pressKey(e.key);
+  }
+});
+
+(function initApp(){
+  const today = localDateKey();
+  const store = loadStore();
+  const dates = Object.keys(store.days).sort();
+  if (dates.length === 0) {
+    currentDayKey = today;
+    store.days[currentDayKey] = { title:'Food & Drink', createdAt:Date.now(), words:[...defaultWords], stats:{} };
+    saveStore(store);
+  } else {
+    currentDayKey = store.days[today] ? today : dates[dates.length - 1];
+  }
+  currentDayWords = [...store.days[currentDayKey].words];
+  updateGroupLabels();
+  const first = document.getElementById('groupBtn1');
+  switchGroup(1, first);
+})();
+</script>
+</body>
+</html>
