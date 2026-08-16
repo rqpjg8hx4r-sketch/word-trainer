@@ -642,14 +642,31 @@ function parseImportedWords(raw) {
   if (!raw) return [];
   if (raw.startsWith('[')) {
     const arr = JSON.parse(raw);
-    return arr.map(x => ({w:String(x.w||x.word||'').trim(), pos:String(x.pos||'').trim(), m:String(x.m||x.meaning||'').trim()})).filter(x=>x.w&&x.m);
+    return arr.map(x => ({
+      w:String(x.w||x.word||'').trim(),
+      pos:String(x.pos||'').trim(),
+      m:String(x.m||x.meaning||'').trim()
+    })).filter(x=>x.w&&x.m);
   }
-  return raw.split(/\r?\n/).map(line => {
-    const parts = line.split(/\s*[|\t,]\s*/);
-    if (parts.length < 2) return null;
-    if (parts.length === 2) return {w:parts[0].trim(), pos:'', m:parts[1].trim()};
-    return {w:parts[0].trim(), pos:parts[1].trim(), m:parts.slice(2).join('，').trim()};
-  }).filter(Boolean).filter(x=>x.w&&x.m);
+
+  return raw
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(line => line && !line.startsWith('#'))
+    .map(line => {
+      const parts = line.split(/\s*[|\t,]\s*/);
+      if (parts.length < 2) return null;
+      if (parts.length === 2) {
+        return {w:parts[0].trim(), pos:'', m:parts[1].trim()};
+      }
+      return {
+        w:parts[0].trim(),
+        pos:parts[1].trim(),
+        m:parts.slice(2).join('，').trim()
+      };
+    })
+    .filter(Boolean)
+    .filter(x=>x.w&&x.m);
 }
 
 function importTodayWords() {
