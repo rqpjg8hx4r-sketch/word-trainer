@@ -2,7 +2,12 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="单词学习器">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F8FAFC">
   <title>Food & Drink 单词通</title>
   <style>
     :root {
@@ -25,7 +30,7 @@
       background-color: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 12px;
+      padding: calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -240,25 +245,40 @@
     .summary-num { font-size:22px; font-weight:900; color:var(--primary); }
     .summary-label { font-size:12px; color:var(--subtext); }
 
+    .voice-status { font-size:11px; color:var(--subtext); text-align:center; margin:-3px 0 9px; }
+    .library-panel { background:white; border:1px solid #E2E8F0; border-radius:12px; padding:10px; margin-bottom:10px; }
+    .library-row { display:flex; gap:8px; align-items:center; }
+    .library-select { flex:1; min-width:0; padding:9px; border:1px solid #CBD5E1; border-radius:9px; background:white; color:var(--text); font-size:13px; }
+    .library-status { font-size:11px; color:var(--subtext); margin-top:6px; line-height:1.4; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="header">
-    <h3 style="margin:0; font-size:17px;">🥪 Food & Drink 单词通</h3>
+    <h3 style="margin:0; font-size:17px;">📚 每日单词学习器</h3>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
+  <div class="library-panel">
+    <div class="library-row">
+      <select id="librarySelect" class="library-select" onchange="selectRemoteLibrary(this.value)">
+        <option value="">正在读取网站词库…</option>
+      </select>
+      <button class="btn btn-secondary" style="width:auto;padding:9px 12px;" onclick="refreshRemoteLibraries()">刷新</button>
+    </div>
+    <div id="libraryStatus" class="library-status">词库来源：GitHub /words/*.txt</div>
+  </div>
+
   <div class="toolbar">
-    <button class="btn btn-secondary" onclick="toggleImportPanel()">📥 导入今日词库</button>
-    <button class="btn btn-secondary" onclick="switchMode('history')">📊 历史记录</button>
+    <button class="btn btn-secondary" onclick="toggleImportPanel()">📥 手动导入（备用）</button>
+    <button class="btn btn-secondary" onclick="switchMode('history')">📊 学习历史</button>
   </div>
 
   <div id="importPanel" class="panel" style="display:none;">
-    <div class="panel-title">导入今日词库</div>
-    <div class="muted" style="margin-bottom:8px;">每行格式：word | 词性 | 中文释义。也支持 JSON 数组，例如 [{"w":"apple","pos":"n.","m":"苹果"}]。</div>
-    <input id="dayTitle" style="width:100%;padding:9px;border:1px solid #CBD5E1;border-radius:9px;margin-bottom:8px;" placeholder="今日主题，例如 Travel">
+    <div class="panel-title">手动导入词库（备用）</div>
+    <div class="muted" style="margin-bottom:8px;">正常情况下只需把日期 TXT 上传到 GitHub 的 words 文件夹。这里保留手动导入作为备用。每行：word | 词性 | 中文释义。</div>
+    <input id="dayTitle" style="width:100%;padding:9px;border:1px solid #CBD5E1;border-radius:9px;margin-bottom:8px;" placeholder="主题，例如 Travel">
     <textarea id="importText" class="import-area" placeholder="apple | n. | 苹果
 banana | n. | 香蕉"></textarea>
     <div style="display:flex;gap:8px;margin-top:8px;">
@@ -279,6 +299,8 @@ banana | n. | 香蕉"></textarea>
     <button class="tab-btn" onclick="switchMode('spell')">🔤 键盘拼写</button>
     <button class="tab-btn" onclick="switchMode('history')">🕘 历史</button>
   </div>
+
+  <div id="voiceStatus" class="voice-status">🔊 正在检测系统英文语音…</div>
 
   <div class="progress-bar-bg">
     <div id="progressBar" class="progress-bar-fill"></div>
@@ -656,6 +678,95 @@ function reviewWrongDay(dateKey) {
   switchMode('learn');
 }
 
+
+// ===== GitHub Pages 在线 TXT 词库 =====
+// 约定：仓库根目录下建立 words/ 文件夹；每个词库文件名以日期开头，例如 2026-08-17.txt。
+// 每行格式：word | 词性 | 中文释义
+let remoteLibraries = [];
+let remoteLibraryCache = {};
+
+function githubRepoInfo() {
+  const host = location.hostname;
+  if (!host.endsWith('.github.io')) return null;
+  const owner = host.split('.')[0];
+  const firstPath = location.pathname.split('/').filter(Boolean)[0] || '';
+  const repo = firstPath || `${owner}.github.io`;
+  return { owner, repo };
+}
+
+function titleFromFilename(name) {
+  return name.replace(/\.txt$/i, '').replace(/^\d{4}-\d{2}-\d{2}[-_ ]*/, '').replace(/[-_]+/g, ' ').trim();
+}
+
+function dateFromFilename(name) {
+  const m = name.match(/(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : name.replace(/\.txt$/i, '');
+}
+
+async function refreshRemoteLibraries() {
+  const select = document.getElementById('librarySelect');
+  const status = document.getElementById('libraryStatus');
+  const info = githubRepoInfo();
+  if (!info) {
+    status.innerText = '当前不是 GitHub Pages 地址，使用本地/手动词库。';
+    return false;
+  }
+  select.innerHTML = '<option value="">正在读取网站词库…</option>';
+  status.innerText = `正在读取 ${info.owner}/${info.repo}/words/ …`;
+  try {
+    const api = `https://api.github.com/repos/${encodeURIComponent(info.owner)}/${encodeURIComponent(info.repo)}/contents/words`;
+    const res = await fetch(api, { headers: { 'Accept':'application/vnd.github+json' } });
+    if (!res.ok) throw new Error(res.status === 404 ? '还没有 words 文件夹' : `GitHub API ${res.status}`);
+    const files = (await res.json())
+      .filter(x => x.type === 'file' && /\.txt$/i.test(x.name))
+      .sort((a,b) => b.name.localeCompare(a.name));
+    if (!files.length) throw new Error('words 文件夹里没有 TXT 词库');
+
+    // 启动时把所有历史 TXT 都读取到内存；学习统计仍只保存在本机 localStorage。
+    const loaded = await Promise.all(files.map(async f => {
+      const r = await fetch(f.download_url, { cache:'no-store' });
+      if (!r.ok) throw new Error(`无法读取 ${f.name}`);
+      const text = await r.text();
+      const words = parseImportedWords(text);
+      return { name:f.name, date:dateFromFilename(f.name), title:titleFromFilename(f.name), words };
+    }));
+    remoteLibraries = loaded.filter(x => x.words.length);
+    remoteLibraryCache = Object.fromEntries(remoteLibraries.map(x => [x.name, x]));
+    if (!remoteLibraries.length) throw new Error('TXT 中没有识别到有效单词');
+
+    select.innerHTML = remoteLibraries.map(lib =>
+      `<option value="${escapeHtml(lib.name)}">${escapeHtml(lib.date)}${lib.title ? ' · '+escapeHtml(lib.title) : ''} (${lib.words.length}词)</option>`
+    ).join('');
+    status.innerText = `已加载 ${remoteLibraries.length} 个历史词库 · 共 ${remoteLibraries.reduce((n,x)=>n+x.words.length,0)} 词`;
+    selectRemoteLibrary(remoteLibraries[0].name);
+    return true;
+  } catch(e) {
+    select.innerHTML = '<option value="">网站词库读取失败</option>';
+    status.innerText = `网站词库：${e.message}。可继续使用本地记录或手动导入。`;
+    return false;
+  }
+}
+
+function selectRemoteLibrary(filename) {
+  const lib = remoteLibraryCache[filename];
+  if (!lib) return;
+  const key = lib.date;
+  const store = loadStore();
+  const old = store.days[key];
+  store.days[key] = {
+    title: lib.title || old?.title || '每日词库',
+    createdAt: old?.createdAt || Date.now(),
+    words: lib.words,
+    stats: old?.stats || {}
+  };
+  saveStore(store);
+  loadDay(key);
+  const select = document.getElementById('librarySelect');
+  if (select && select.value !== filename) select.value = filename;
+  const status = document.getElementById('libraryStatus');
+  if (status) status.innerText = `当前：${key}${lib.title ? ' · '+lib.title : ''} · ${lib.words.length} 词；网站共 ${remoteLibraries.length} 个历史词库`;
+}
+
 let activeList = [...group1];
 let currentMode = 'learn';
 let learnIdx = 0;
@@ -671,10 +782,18 @@ function sanitizeWord(w) {
 }
 
 // 严格优先绑定 Ava 高保真语音
+function updateVoiceStatus() {
+  const el = document.getElementById('voiceStatus');
+  if (!el) return;
+  if (!('speechSynthesis' in window)) { el.innerText = '🔇 当前浏览器不支持系统语音'; return; }
+  if (!targetVoice) { el.innerText = '🔊 尚未检测到英文语音（点一次喇叭可重试）'; return; }
+  el.innerText = `🔊 当前语音：${targetVoice.name} · ${targetVoice.lang}`;
+}
+
 function loadVoices() {
-  if (!('speechSynthesis' in window)) return;
+  if (!('speechSynthesis' in window)) { updateVoiceStatus(); return; }
   const voices = window.speechSynthesis.getVoices();
-  if (!voices || voices.length === 0) return;
+  if (!voices || voices.length === 0) { updateVoiceStatus(); return; }
 
   targetVoice = voices.find(v => 
     v.name.toLowerCase().includes('ava') && 
@@ -686,6 +805,7 @@ function loadVoices() {
     )
     || voices.find(v => v.lang === 'en-US') 
     || voices.find(v => v.lang.startsWith('en'));
+  updateVoiceStatus();
 }
 
 if ('speechSynthesis' in window) {
@@ -825,7 +945,7 @@ function renderSpell() {
   document.getElementById('progressBar').style.width = `${Math.round(((activeList.length - spellPool.length) / activeList.length) * 100)}%`;
   
   updateSpellSlots();
-  speak(currentSpellTarget.w);
+  // 拼写模式默认静音：只有点击喇叭时才发音。
 }
 
 function updateSpellSlots(state = "") {
@@ -867,7 +987,6 @@ function pressKey(k) {
   if (currentSpellTyped.length === targetClean.length) {
     if (currentSpellTyped === targetClean) {
       updateSpellSlots('correct');
-      speak(currentSpellTarget.w);
       bumpStat(currentSpellTarget.w, 'spellCorrect');
       streak++;
       updateStreak();
@@ -919,21 +1038,24 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
-(function initApp(){
-  const today = localDateKey();
+(async function initApp(){
+  loadVoices();
   const store = loadStore();
   const dates = Object.keys(store.days).sort();
   if (dates.length === 0) {
-    currentDayKey = today;
+    // 第一次启动保留内置 Food & Drink 作为离线兜底。
+    currentDayKey = '2026-08-16';
     store.days[currentDayKey] = { title:'Food & Drink', createdAt:Date.now(), words:[...defaultWords], stats:{} };
     saveStore(store);
   } else {
-    currentDayKey = store.days[today] ? today : dates[dates.length - 1];
+    currentDayKey = dates[dates.length - 1];
   }
-  currentDayWords = [...store.days[currentDayKey].words];
+  currentDayWords = [...loadStore().days[currentDayKey].words];
   updateGroupLabels();
-  const first = document.getElementById('groupBtn1');
-  switchGroup(1, first);
+  switchGroup(1, document.getElementById('groupBtn1'));
+
+  // GitHub Pages 上自动发现并加载 words/ 下全部历史 TXT；默认打开最新日期。
+  await refreshRemoteLibraries();
 })();
 </script>
 </body>
