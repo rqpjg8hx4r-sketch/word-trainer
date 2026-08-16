@@ -8,7 +8,8 @@
   <meta name="apple-mobile-web-app-title" content="单词学习器">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#F8FAFC">
-  <title>Food & Drink 单词通</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>每日英语</title>
   <style>
     :root {
       --primary: #4F46E5;
@@ -36,7 +37,8 @@
       align-items: center;
       min-height: 100vh;
     }
-    .container { width: 100%; max-width: 480px; }
+    .container { width: 100%; max-width: 760px; }
+    .content-narrow { width:100%; max-width:480px; margin-left:auto; margin-right:auto; }
     .header {
       display: flex;
       justify-content: space-between;
@@ -250,13 +252,37 @@
     .library-row { display:flex; gap:8px; align-items:center; }
     .library-select { flex:1; min-width:0; padding:9px; border:1px solid #CBD5E1; border-radius:9px; background:white; color:var(--text); font-size:13px; }
     .library-status { font-size:11px; color:var(--subtext); margin-top:6px; line-height:1.4; }
+    .offline-status { display:inline-flex; align-items:center; gap:4px; margin-top:7px; padding:4px 8px; border-radius:999px; background:#F1F5F9; color:var(--subtext); font-size:11px; font-weight:800; }
+    .offline-status.ready { background:#ECFDF5; color:#047857; }
+    .offline-status.offline { background:#FEF3C7; color:#B45309; }
+    .main-tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; padding:4px; background:#E2E8F0; border-radius:14px; }
+    .main-tab { border:none; border-radius:10px; padding:13px 10px; background:transparent; color:var(--subtext); font-size:15px; font-weight:900; cursor:pointer; }
+    .main-tab.active { background:white; color:var(--primary); box-shadow:0 2px 6px rgba(15,23,42,.10); }
+    .speaking-card { text-align:left; padding:16px; }
+    .speaking-title { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+    .speaking-title h4 { margin:0; font-size:16px; }
+    .speaking-badge { flex:none; background:#ECFDF5; color:#047857; border-radius:999px; padding:4px 8px; font-size:11px; font-weight:800; }
+    .speaking-item { padding:10px 0; border-top:1px solid #E2E8F0; }
+    .speaking-item:first-of-type { border-top:none; padding-top:0; }
+    .speaking-line { margin:8px 0; color:#334155; font-size:14px; line-height:1.55; }
+    .speaking-line strong { color:var(--primary); }
+    .speaking-audio { display:block; width:100%; margin-top:12px; }
+    .speaking-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+    .speaking-action { border:none; border-radius:9px; padding:8px 11px; background:var(--primary-light); color:var(--primary); font-size:12px; font-weight:800; cursor:pointer; }
+    .speaking-action:disabled { opacity:.45; cursor:not-allowed; }
+    .speaking-status { margin-top:7px; color:var(--subtext); font-size:11px; line-height:1.4; }
+    @media (min-width:700px) {
+      .speaking-card { padding:22px 24px; }
+      .speaking-line { font-size:16px; }
+      .speaking-action { padding:9px 14px; font-size:13px; }
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日单词学习器</h3><div id="appVersion" style="font-size:10px;color:#94A3B8;margin-top:2px;">v2.2</div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div id="appVersion" style="font-size:10px;color:#94A3B8;margin-top:2px;">v2.9</div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -268,8 +294,27 @@
       <button class="btn btn-secondary" style="width:auto;padding:9px 12px;" onclick="refreshRemoteLibraries()">刷新</button>
     </div>
     <div id="libraryStatus" class="library-status">网站词库：按 Day 自动加载 · 支持离线</div>
+    <div id="offlineStatus" class="offline-status">○ 正在准备离线功能</div>
   </div>
 
+  <div class="main-tabs" role="tablist" aria-label="学习区域">
+    <button id="mainTabWords" class="main-tab active" role="tab" aria-selected="true" onclick="switchMainArea('words')">📚 背单词</button>
+    <button id="mainTabSpeaking" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('speaking')">🎧 口语练习</button>
+  </div>
+
+  <div id="speakingArea" role="tabpanel" style="display:none;">
+  <div class="card speaking-card">
+    <div class="speaking-title">
+      <h4 id="speakingHomeworkTitle">🎧 今日口语作业</h4>
+      <span id="speakingHomeworkBadge" class="speaking-badge">正在读取…</span>
+    </div>
+    <div id="speakingHomeworkItems"></div>
+    <audio id="speakingAudio" class="speaking-audio" controls preload="metadata"></audio>
+    <div id="speakingAudioStatus" class="speaking-status">准备读取口语作业…</div>
+  </div>
+  </div>
+
+  <div id="wordsArea" class="content-narrow" role="tabpanel">
   <div class="toolbar">
     <button class="btn btn-secondary" onclick="toggleImportPanel()">📥 手动导入（备用）</button>
     <button class="btn btn-secondary" onclick="switchMode('history')">📊 学习历史</button>
@@ -277,7 +322,7 @@
 
   <div id="importPanel" class="panel" style="display:none;">
     <div class="panel-title">手动导入词库（备用）</div>
-    <div class="muted" style="margin-bottom:8px;">正常情况下只需把 day-XXX.txt 上传到 GitHub 的 words 文件夹。这里保留手动导入作为备用。每行：word | 词性 | 中文释义。</div>
+    <div class="muted" style="margin-bottom:8px;">正常情况下只需上传 homework/word###.txt。这里保留手动导入作为备用。每行：word | 词性 | 中文释义。</div>
     <input id="dayTitle" style="width:100%;padding:9px;border:1px solid #CBD5E1;border-radius:9px;margin-bottom:8px;" placeholder="主题，例如 Travel">
     <textarea id="importText" class="import-area" placeholder="apple | n. | 苹果
 banana | n. | 香蕉"></textarea>
@@ -389,6 +434,7 @@ banana | n. | 香蕉"></textarea>
       <div id="historySummary" class="summary-grid"></div>
       <div id="historyList"></div>
     </div>
+  </div>
   </div>
 </div>
 
@@ -793,7 +839,7 @@ function applyRemoteLibraries(libraries, sourceLabel='网站') {
 }
 
 // ===== GitHub Pages 在线 TXT 词库 =====
-// 约定：仓库根目录下建立 words/ 文件夹；每个学习批次一个文件，例如 day-003.txt、day-004.txt。
+// 最终约定：homework/word###.txt，与 homework/speaking###.txt 通过编号关联。
 // 可选元数据：# Day: 3  /  # Date: 2026-08-15  /  # Topics: Family and Friends | Entertainment and Media
 // 单词行格式：word | 词性 | 中文释义
 let remoteLibraries = [];
@@ -814,7 +860,7 @@ function parseLibraryMeta(text, filename) {
     const m = line.match(/^\s*#\s*([^:：]+)\s*[:：]\s*(.*?)\s*$/);
     if (m) meta[m[1].trim().toLowerCase()] = m[2].trim();
   });
-  const fm = filename.match(/day[-_ ]*0*(\d+)/i);
+  const fm = filename.match(/(?:word|day)[-_ ]*0*(\d+)/i);
   const dayNum = Number(meta.day || (fm ? fm[1] : 0)) || 0;
   return {
     dayNum,
@@ -839,24 +885,28 @@ async function refreshRemoteLibraries() {
     status.innerText = '正在读取网站词库…';
   }
 
-  // 2) 如果当前不是 GitHub Pages，缓存仍然可用，但不尝试联网同步。
+  // 2) GitHub Pages 使用 GitHub API；一键本地预览使用只读的本地文件索引。
   const info = githubRepoInfo();
-  if (!info) {
-    if (!cached?.libraries?.length) status.innerText = '当前不是 GitHub Pages 地址，使用本地/手动词库。';
-    return !!cached?.libraries?.length;
-  }
 
-  // 3) 后台联网检查 GitHub，有新版就覆盖缓存；失败则继续使用缓存。
+  // 3) 后台检查最新文件，有新版就覆盖缓存；失败则继续使用缓存。
   try {
-    const api = `https://api.github.com/repos/${encodeURIComponent(info.owner)}/${encodeURIComponent(info.repo)}/contents/words`;
-    const res = await fetch(api, {
-      headers: { 'Accept':'application/vnd.github+json' },
-      cache: 'no-store'
-    });
-    if (!res.ok) throw new Error(res.status === 404 ? '还没有 words 文件夹' : `GitHub API ${res.status}`);
-
-    const files = (await res.json()).filter(x => x.type === 'file' && /\.txt$/i.test(x.name));
-    if (!files.length) throw new Error('words 文件夹里没有 TXT 词库');
+    let files;
+    if (info) {
+      const api = `https://api.github.com/repos/${encodeURIComponent(info.owner)}/${encodeURIComponent(info.repo)}/contents/homework`;
+      const res = await fetch(api, {
+        headers: { 'Accept':'application/vnd.github+json' },
+        cache: 'no-store'
+      });
+      if (!res.ok) throw new Error(res.status === 404 ? '还没有 homework 文件夹' : `GitHub API ${res.status}`);
+      files = (await res.json()).filter(x => x.type === 'file' && /^word\d{3}\.txt$/i.test(x.name));
+    } else {
+      const res = await fetch('/__homework-index.json', { cache:'no-store' });
+      if (!res.ok) throw new Error('请通过 start-word-trainer.cmd 打开本地预览');
+      files = (await res.json()).files
+        .filter(name => /^word\d{3}\.txt$/i.test(name))
+        .map(name => ({ name, download_url:`homework/${name}` }));
+    }
+    if (!files.length) throw new Error('homework 中没有找到 word###.txt');
 
     const loaded = await Promise.all(files.map(async f => {
       const r = await fetch(f.download_url, { cache:'no-store' });
@@ -903,6 +953,7 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
   migrateStatsToIds(key, store.days[key]);
   saveStore(store);
   loadDay(key);
+  if (lib.dayNum) loadSpeakingHomework(`day${String(lib.dayNum).padStart(3,'0')}`);
   const select = document.getElementById('librarySelect');
   if (select && select.value !== filename) select.value = filename;
   const status = document.getElementById('libraryStatus');
@@ -989,6 +1040,33 @@ function switchGroup(type, btn) {
   else if (currentMode === 'quiz') renderQuiz();
   else if (currentMode === 'spell') renderSpell();
 }
+
+function switchMainArea(area, remember=true) {
+  const showSpeaking = area === 'speaking';
+  document.getElementById('wordsArea').style.display = showSpeaking ? 'none' : 'block';
+  document.getElementById('speakingArea').style.display = showSpeaking ? 'block' : 'none';
+  document.getElementById('streakBadge').style.display = showSpeaking ? 'none' : 'inline-block';
+
+  const wordsTab = document.getElementById('mainTabWords');
+  const speakingTab = document.getElementById('mainTabSpeaking');
+  wordsTab.classList.toggle('active', !showSpeaking);
+  speakingTab.classList.toggle('active', showSpeaking);
+  wordsTab.setAttribute('aria-selected', String(!showSpeaking));
+  speakingTab.setAttribute('aria-selected', String(showSpeaking));
+
+  if (showSpeaking) {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  } else {
+    const audio = document.getElementById('speakingAudio');
+    if (audio) audio.pause();
+    speakingSegmentEnd = null;
+  }
+
+  if (remember) {
+    try { localStorage.setItem('wordTrainerMainArea', showSpeaking ? 'speaking' : 'words'); } catch (e) {}
+  }
+}
+
 function switchMode(mode) {
   currentMode = mode;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1184,7 +1262,244 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+function parseSpeakingHomework(text) {
+  const metadata = {};
+  const items = [];
+  let current = null;
+  let field = '';
+  text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach(rawLine => {
+    const line = rawLine.trim();
+    if (!line) return;
+    const meta = line.match(/^#\s*([^:：]+)\s*[:：]\s*(.*)$/);
+    if (meta) {
+      metadata[meta[1].trim().toLowerCase()] = meta[2].trim();
+      return;
+    }
+    const question = line.match(/^Q(\d+)\s*[:：]\s*(.*)$/i);
+    if (question) {
+      current = { id:`q${Number(question[1])}`, number:Number(question[1]), question:question[2].trim(), answer:'' };
+      items.push(current);
+      field = 'question';
+      return;
+    }
+    const answer = line.match(/^A(\d+)\s*[:：]\s*(.*)$/i);
+    if (answer) {
+      const number = Number(answer[1]);
+      current = items.find(item => item.number === number);
+      if (!current) {
+        current = { id:`q${number}`, number, question:'', answer:'' };
+        items.push(current);
+      }
+      if (current) current.answer = answer[2].trim();
+      field = 'answer';
+      return;
+    }
+    if (current && field) current[field] += `${current[field] ? ' ' : ''}${line}`;
+  });
+  return { title:metadata.title || '今日口语作业', items:items.filter(item => item.question || item.answer).sort((a,b) => a.number-b.number) };
+}
+
+let speakingSegmentEnd = null;
+let speakingAudioObjectUrl = '';
+
+async function sha256Hex(data) {
+  const bytes = data instanceof ArrayBuffer ? data : new TextEncoder().encode(String(data));
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+function setOfflineStatus(text, state='') {
+  const element = document.getElementById('offlineStatus');
+  if (!element) return;
+  element.innerText = text;
+  element.className = `offline-status${state ? ` ${state}` : ''}`;
+}
+
+async function cacheDayForOffline(dayNumber, urls) {
+  if (!('serviceWorker' in navigator)) {
+    setOfflineStatus('当前浏览器不支持完整离线模式');
+    return;
+  }
+  if (!navigator.onLine) {
+    setOfflineStatus('● 离线模式 · 使用已保存内容', 'offline');
+    return;
+  }
+  try {
+    const registration = await navigator.serviceWorker.ready;
+    const worker = registration.active || registration.waiting || registration.installing;
+    if (!worker) throw new Error('Service Worker not ready');
+    setOfflineStatus(`○ 正在保存 Day ${Number(dayNumber)} 离线内容`);
+    worker.postMessage({ type:'CACHE_DAY', day:dayNumber, urls });
+  } catch (error) {
+    setOfflineStatus('离线缓存暂未完成，请保持联网后刷新');
+  }
+}
+
+async function registerOfflineSupport() {
+  if (!('serviceWorker' in navigator) || !window.isSecureContext) {
+    setOfflineStatus('本地文件模式不支持离线缓存');
+    return;
+  }
+  navigator.serviceWorker.addEventListener('message', event => {
+    if (event.data?.type === 'DAY_CACHED') {
+      setOfflineStatus(`✓ Day ${Number(event.data.day)} 离线已就绪`, 'ready');
+    } else if (event.data?.type === 'DAY_CACHE_FAILED') {
+      setOfflineStatus('离线缓存失败，请联网后刷新');
+    }
+  });
+  window.addEventListener('offline', () => setOfflineStatus('● 离线模式 · 使用已保存内容', 'offline'));
+  window.addEventListener('online', () => setOfflineStatus('○ 已联网，正在检查更新'));
+  try {
+    await navigator.serviceWorker.register('./service-worker.js', { scope:'./' });
+    if (navigator.storage?.persist) navigator.storage.persist().catch(() => false);
+    if (!navigator.onLine) setOfflineStatus('● 离线模式 · 使用已保存内容', 'offline');
+  } catch (error) {
+    setOfflineStatus('离线功能注册失败');
+  }
+}
+
+function playSpeakingRange(start, end, label) {
+  const audio = document.getElementById('speakingAudio');
+  if (!audio.src || !Number.isFinite(start) || !Number.isFinite(end) || end <= start) return;
+  speakingSegmentEnd = end;
+  audio.currentTime = start;
+  audio.play().then(() => {
+    document.getElementById('speakingAudioStatus').innerText = `正在播放 ${label}`;
+  }).catch(() => {
+    document.getElementById('speakingAudioStatus').innerText = '浏览器阻止了播放，请再点击一次';
+  });
+}
+
+async function findSpeakingAudio(baseName) {
+  for (const extension of ['mp3', 'm4a', 'ogg']) {
+    const audioName = `${baseName}.${extension}`;
+    try {
+      const response = await fetch(`homework/${audioName}`, { method:'HEAD', cache:'no-store' });
+      if (response.ok) return audioName;
+    } catch (error) {}
+  }
+  return '';
+}
+
+async function loadSpeakingHomework(requestedDay='') {
+  const audio = document.getElementById('speakingAudio');
+  const speakingAudioStatus = document.getElementById('speakingAudioStatus');
+  const itemsContainer = document.getElementById('speakingHomeworkItems');
+
+  try {
+    const match = String(requestedDay || 'day005').match(/(\d{1,3})/);
+    if (!match) throw new Error('口语 Day 编号无效');
+    const dayNumber = String(Number(match[1])).padStart(3, '0');
+    const dayLabel = `Day ${Number(dayNumber)}`;
+    const baseName = `speaking${dayNumber}`;
+    const textUrl = `homework/${baseName}.txt`;
+    const cueUrl = `homework/${baseName}.cues.json`;
+    const homeworkResponse = await fetch(textUrl, { cache:'no-store' });
+    if (!homeworkResponse.ok) throw new Error('口语作业内容读取失败');
+    const homeworkBytes = await homeworkResponse.arrayBuffer();
+    const homeworkHash = await sha256Hex(homeworkBytes);
+    const homework = parseSpeakingHomework(new TextDecoder().decode(homeworkBytes));
+    if (!homework.items.length) throw new Error(`${baseName}.txt 中没有识别到 Q/A`);
+
+    let cues = null;
+    let cuesHash = '';
+    const cuesResponse = await fetch(cueUrl, { cache:'no-store' });
+    if (cuesResponse.ok) {
+      const cuesBytes = await cuesResponse.arrayBuffer();
+      cuesHash = await sha256Hex(cuesBytes);
+      cues = JSON.parse(new TextDecoder().decode(cuesBytes));
+    }
+
+    const cueAudioName = cues?.audio || '';
+    const hasFingerprint = /^[a-f0-9]{64}$/i.test(cues?.sourceHash || '')
+      && /^[a-f0-9]{64}$/i.test(cues?.audioHash || '');
+    const textFingerprintMatches = !hasFingerprint || cues.sourceHash.toLowerCase() === homeworkHash;
+    const audioName = textFingerprintMatches
+      ? (new RegExp(`^${baseName}\\.(mp3|m4a|ogg)$`, 'i').test(cueAudioName) ? cueAudioName : await findSpeakingAudio(baseName))
+      : '';
+    let verifiedAudio = false;
+    let audioHash = '';
+    if (audioName) {
+      const audioUrl = `homework/${audioName}`;
+      const audioResponse = await fetch(audioUrl, { cache:'no-store' });
+      if (audioResponse.ok) {
+        const audioBytes = await audioResponse.arrayBuffer();
+        audioHash = await sha256Hex(audioBytes);
+        verifiedAudio = !hasFingerprint || audioHash === cues.audioHash.toLowerCase();
+        if (verifiedAudio) {
+          if (speakingAudioObjectUrl) URL.revokeObjectURL(speakingAudioObjectUrl);
+          const contentType = audioResponse.headers.get('Content-Type') || 'audio/mpeg';
+          speakingAudioObjectUrl = URL.createObjectURL(new Blob([audioBytes], { type:contentType }));
+          audio.src = speakingAudioObjectUrl;
+        }
+      }
+    }
+
+    if (verifiedAudio) {
+      audio.style.display = 'block';
+      audio.load();
+      cacheDayForOffline(dayNumber, [
+        { url:textUrl, sha256:homeworkHash },
+        ...(cues ? [{ url:cueUrl, sha256:cuesHash }] : []),
+        { url:`homework/${audioName}`, sha256:audioHash }
+      ]);
+    } else {
+      if (speakingAudioObjectUrl) URL.revokeObjectURL(speakingAudioObjectUrl);
+      speakingAudioObjectUrl = '';
+      audio.removeAttribute('src');
+      audio.style.display = 'none';
+      cues = null;
+      setOfflineStatus(`Day ${Number(dayNumber)} 文字已读取，录音尚未配套`, 'offline');
+    }
+
+    document.getElementById('speakingHomeworkTitle').innerText = `🎧 ${homework.title || '今日口语作业'}`;
+    document.getElementById('speakingHomeworkBadge').innerText = `${dayLabel} · ${homework.items.length} Items`;
+    itemsContainer.innerHTML = homework.items.map(item => {
+      const number = item.number;
+      const qCue = cues?.segments?.[`q${number}`];
+      const aCue = cues?.segments?.[`a${number}`];
+      const question = item.question ? `<p class="speaking-line"><strong>Q${number}:</strong> ${escapeHtml(item.question)}</p>` : '';
+      const answer = item.answer ? `<p class="speaking-line"><strong>A${number}:</strong> ${escapeHtml(item.answer)}</p>` : '';
+      const actions = [
+        qCue ? `<button class="speaking-action" onclick="playSpeakingRange(${Number(qCue.start)},${Number(qCue.end)},'Q${number}')">▶ 听问题</button>` : '',
+        aCue ? `<button class="speaking-action" onclick="playSpeakingRange(${Number(aCue.start)},${Number(aCue.end)},'A${number}')">▶ 听答案</button>` : '',
+        qCue && aCue ? `<button class="speaking-action" onclick="playSpeakingRange(${Number(qCue.start)},${Number(aCue.end)},'Q${number} + A${number}')">▶ 连续播放</button>` : ''
+      ].join('');
+      return `<div class="speaking-item">
+        ${question}${answer}
+        ${actions ? `<div class="speaking-actions">${actions}</div>` : ''}
+      </div>`;
+    }).join('');
+    speakingAudioStatus.innerText = verifiedAudio
+      ? cues
+        ? hasFingerprint ? '文字、时间点和录音版本一致，可分段播放' : '按同名文件配套，可分段播放'
+        : '暂无分段时间点，可播放完整录音'
+      : '文本已加载，已有指纹显示录音尚未更新';
+  } catch (error) {
+    document.getElementById('speakingHomeworkBadge').innerText = '暂不可用';
+    itemsContainer.innerHTML = '<div class="muted">口语作业暂时无法读取，请稍后刷新。</div>';
+    audio.removeAttribute('src');
+    audio.style.display = 'none';
+    speakingAudioStatus.innerText = error.message;
+  }
+}
+
 (async function initApp(){
+  await registerOfflineSupport();
+  const speakingAudio = document.getElementById('speakingAudio');
+  speakingAudio.addEventListener('timeupdate', () => {
+    if (speakingSegmentEnd !== null && speakingAudio.currentTime >= speakingSegmentEnd) {
+      speakingAudio.pause();
+      speakingSegmentEnd = null;
+      document.getElementById('speakingAudioStatus').innerText = '片段播放完成';
+    }
+  });
+  speakingAudio.addEventListener('ended', () => { speakingSegmentEnd = null; });
+  loadSpeakingHomework('day005');
+  let initialMainArea = 'words';
+  try { initialMainArea = localStorage.getItem('wordTrainerMainArea') || 'words'; } catch (e) {}
+  switchMainArea(initialMainArea, false);
+
   loadVoices();
   const store = loadStore();
   const dates = Object.keys(store.days).sort();
@@ -1200,7 +1515,7 @@ window.addEventListener('keydown', (e) => {
   updateGroupLabels();
   switchGroup(1, document.getElementById('groupBtn1'));
 
-  // GitHub Pages 上自动发现并加载 words/ 下全部历史 TXT；默认打开最大的 Day 编号。
+  // GitHub Pages 上自动发现 homework/word###.txt；默认打开最大的有效 Day 编号。
   await refreshRemoteLibraries();
 })();
 </script>

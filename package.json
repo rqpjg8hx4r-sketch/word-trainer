@@ -1,0 +1,11 @@
+{
+  "name": "word-trainer",
+  "version": "2.9.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/content.test.js && playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "audio": "speaking004.m4a",
+  "sourceHash": "7b7ce0fa213b6df2fc2fca5ddc63de1458c24ec218588fddbd365b43c8011b62",
+  "audioHash": "d6e8623ce9d42b6cae521cecae030f43cd57c6ed5aa5ce33d7b9a1d2926c1b09",
+  "segments": {
+    "q1": { "start": 0.343, "end": 4.292 },
+    "a1": { "start": 4.961, "end": 12.432 },
+    "q2": { "start": 12.933, "end": 14.997 },
+    "a2": { "start": 15.567, "end": 23.688 },
+    "q3": { "start": 24.527, "end": 26.588 },
+    "a3": { "start": 27.079, "end": 35.278 }
+  }
+}
