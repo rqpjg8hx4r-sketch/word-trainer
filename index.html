@@ -256,7 +256,7 @@
 
 <div class="container">
   <div class="header">
-    <h3 style="margin:0; font-size:17px;">📚 每日单词学习器</h3>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日单词学习器</h3><div id="appVersion" style="font-size:10px;color:#94A3B8;margin-top:2px;">v2.2</div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -508,7 +508,7 @@ const group2 = [
 
 
 const STORAGE_KEY = 'wordTrainerV1';
-const LIBRARY_CACHE_KEY = 'wordTrainerRemoteLibrariesV1';
+const LIBRARY_CACHE_KEY = 'wordTrainerRemoteLibrariesV2';
 const defaultWords = [...group1, ...group2];
 let currentDayWords = [...defaultWords];
 let currentDayKey = '';
@@ -652,7 +652,7 @@ function parseImportedWords(raw) {
   return raw
     .split(/\r?\n/)
     .map(line => line.trim())
-    .filter(line => line && !line.startsWith('#'))
+    .filter(line => { const clean = line.replace(/^\uFEFF/, '').trim(); return clean && !clean.startsWith('#'); })
     .map(line => {
       const parts = line.split(/\s*[|\t,]\s*/);
       if (parts.length < 2) return null;
@@ -766,7 +766,16 @@ function loadRemoteLibraryCache() {
 }
 
 function applyRemoteLibraries(libraries, sourceLabel='网站') {
-  remoteLibraries = (libraries || [])
+  // 双保险：无论来自网站还是旧缓存，任何以 # 开头的“词条”都视为元数据并丢弃。
+  libraries = (libraries || []).map(lib => ({
+    ...lib,
+    words: (lib.words || []).filter(item => {
+      const w = String(item?.w || '').trim().replace(/^\uFEFF/, '');
+      return w && !w.startsWith('#');
+    })
+  }));
+
+  remoteLibraries = libraries
     .filter(x => Array.isArray(x.words) && x.words.length)
     .sort((a,b) => (b.dayNum || 0) - (a.dayNum || 0) || (b.name || '').localeCompare(a.name || ''));
   remoteLibraryCache = Object.fromEntries(remoteLibraries.map(x => [x.name, x]));
