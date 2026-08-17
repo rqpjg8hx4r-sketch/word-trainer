@@ -93,6 +93,8 @@ Speaking uses child-focused controls instead of the browser's native audio contr
 
 The word-study area uses the full iPad content width for toolbars, mode selectors, and the on-screen keyboard while keeping reading cards centered at a comfortable width. Learn mode optionally advances and speaks words every 2, 5, or 10 seconds (5 seconds by default); this automation stops when leaving Learn mode, switching to Speaking, or putting the page in the background.
 
+The header keeps a small application version for troubleshooting and shows the selected Day's last complete device-sync time. This timestamp advances only after both the online word library and the matching speaking bundle are confirmed; offline reopening displays the stored time rather than the current clock.
+
 1. Discover non-empty `word###.txt` files.
 2. Sort by day number and open the largest valid Day by default.
 3. When the selected word Day changes, try to load the matching speaking Day.

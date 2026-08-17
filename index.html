@@ -292,7 +292,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.14</span> · <span id="appBuildDate">08/17 11:21</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.15</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -874,6 +874,41 @@ function applyRemoteLibraries(libraries, sourceLabel='网站') {
 // 单词行格式：word | 词性 | 中文释义
 let remoteLibraries = [];
 let remoteLibraryCache = {};
+const wordSyncedDays = new Set();
+const speakingCachedDays = new Set();
+
+function loadDaySyncTimes() {
+  try { return JSON.parse(localStorage.getItem('wordTrainerDaySyncV1') || '{}'); }
+  catch (error) { return {}; }
+}
+
+function formatSyncTime(timestamp) {
+  const date = new Date(timestamp);
+  if (!Number.isFinite(date.getTime())) return '尚未完成';
+  const now = new Date();
+  const sameDay = date.getFullYear() === now.getFullYear()
+    && date.getMonth() === now.getMonth()
+    && date.getDate() === now.getDate();
+  const time = date.toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit', hour12:false });
+  return sameDay ? `今天 ${time}` : date.toLocaleString('zh-CN', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false });
+}
+
+function showDaySyncStatus(dayNumber) {
+  const element = document.getElementById('appSyncStatus');
+  if (!element) return;
+  const timestamp = loadDaySyncTimes()[String(Number(dayNumber))];
+  element.innerText = `同步：${formatSyncTime(timestamp)}`;
+}
+
+function completeDaySync(dayNumber) {
+  const day = Number(dayNumber);
+  if (!wordSyncedDays.has(day) || !speakingCachedDays.has(day)) return;
+  const times = loadDaySyncTimes();
+  times[String(day)] = Date.now();
+  try { localStorage.setItem('wordTrainerDaySyncV1', JSON.stringify(times)); } catch (error) {}
+  const selected = remoteLibraryCache[document.getElementById('librarySelect')?.value];
+  if (selected?.dayNum === day) showDaySyncStatus(day);
+}
 
 function githubRepoInfo() {
   const host = location.hostname;
@@ -963,6 +998,10 @@ async function refreshRemoteLibraries() {
     if (!usable.length) throw new Error('TXT 中没有识别到有效单词');
 
     saveRemoteLibraryCache(usable);
+    usable.forEach(library => {
+      if (library.dayNum) wordSyncedDays.add(library.dayNum);
+    });
+    speakingCachedDays.forEach(day => completeDaySync(day));
     applyRemoteLibraries(usable, '网站最新');
 
     const total = usable.reduce((n,x)=>n+x.words.length,0);
@@ -984,6 +1023,7 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
   const lib = remoteLibraryCache[filename];
   if (!lib) return;
   const key = lib.dayNum ? `day-${String(lib.dayNum).padStart(3,'0')}` : filename.replace(/\.txt$/i,'');
+  if (lib.dayNum) showDaySyncStatus(lib.dayNum);
   const store = loadStore();
   const old = store.days[key];
   store.days[key] = {
@@ -1447,6 +1487,8 @@ async function registerOfflineSupport() {
   }
   navigator.serviceWorker.addEventListener('message', event => {
     if (event.data?.type === 'DAY_CACHED') {
+      speakingCachedDays.add(Number(event.data.day));
+      completeDaySync(event.data.day);
       setOfflineStatus(`✓ Day ${Number(event.data.day)} 离线已就绪`, 'ready');
     } else if (event.data?.type === 'DAY_CACHE_FAILED') {
       setOfflineStatus('离线缓存失败，请联网后刷新');

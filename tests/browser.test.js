@@ -22,8 +22,8 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.14');
-  await expect(page.locator('#appBuildDate')).toHaveText(/^\d{2}\/\d{2} \d{2}:\d{2}$/);
+  await expect(page.locator('#appVersion')).toHaveText('v2.15');
+  await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(2);
 
