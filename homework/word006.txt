@@ -1,0 +1,104 @@
+﻿# Day: 6
+# Topics: Health, Medicine and Exercise | Hobbies and Leisure
+
+accident | n. | 事故
+doctor | n. | 医生
+lie down |  | 躺下
+ambulance | n. | 救护车
+Dr |  | 医生；博士
+medicine | n. | 药
+appointment | n. | 预约
+ear | n. | 耳朵
+neck | n. | 脖子
+arm | n. | 手臂
+exercise | n. & v. | 练习
+nose | n. | 鼻子
+baby | n. | 婴儿
+eye | n. | 眼睛
+nurse | n. | 护士
+back | n. | 背部
+face | n. | 脸
+pain | n. | 疼痛
+blood | n. | 血液
+fall | v. | 摔倒
+problem | n. | 问题
+body | n. | 身体
+feel | v. | 感觉
+rest | n. | 休息
+brain | n. | 大脑
+finger | n. | 手指
+run | v. | 跑步
+break | v. | 折断
+fit | adj. | 健康的
+sick | adj. | 生病的
+check | v. | 检查
+foot | n. | 脚
+soap | n. | 肥皂
+chemist | n. | 药剂师
+hair | n. | 头发
+stomach | n. | 胃
+clean | adj. & v. | 干净的；清扫
+hand | n. | 手
+stomach ache | n. | 胃疼
+cold | n. | 感冒
+head | n. | 头
+swim | v. | 游泳
+comb | n. | 梳子
+health | n. | 健康
+temperature | n. | 温度
+cut | v. | 切
+hear | v. | 听到
+tired | adj. | 累的
+danger | n. | 危险
+heart | n. | 心脏
+tooth | n. | 牙
+dangerous | adj. | 危险的
+hospital | n. | 医院
+toothache | n. | 牙疼
+dead | adj. | 死亡的
+hurt | v. | 伤害
+toothbrush | n. | 牙刷
+dentist | n. | 牙医
+ill | adj. | 生病的
+walk | v. | 走
+die | v. | 死亡
+leg | n. | 腿
+well | adj. | 身体好的
+barbecue | n. & v. | 烤肉；烧烤
+cycling | n. | 骑脚踏车
+MP3 player | n. | MP3播放器
+beach | n. | 海滩
+dance | n. & v. | 跳舞
+museum | n. | 博物馆
+bicycle | n. | 自行车
+draw | n. | 画
+music | n. | 音乐
+bike | n. | 自行车
+DVD (player) | n. | DVD（播放器）
+musician | n. | 音乐家
+book | n. | 书
+festival | n. | 节日
+paint | n. & v. | 油漆；画画
+camera | n. | 照相机；摄影机
+go out |  | 出去
+park | n. | 公园
+camp | n. | 营地
+go shopping |  | 购物
+party | n. | 派对
+camping | n. & v. | 露营
+guitar | n. | 吉他
+photograph | n. & v. | 照片；摄影
+campsite | n. | 野营地
+hobby | n. | 业余爱好
+picnic | n. | 野餐
+CD (player) | n. | CD（播放器）
+holidays | n. | 假日
+quiz | n. | 智力游戏
+club | n. | 俱乐部
+join | v. | 加入
+tent | n. | 帐篷
+collect | v. | 收集
+magazine | n. | 杂志
+video game | n. | 视频游戏
+computer | n. | 电脑
+member | n. | 成员
