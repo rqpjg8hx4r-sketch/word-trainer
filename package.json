@@ -3,7 +3,7 @@
   "version": "2.16.0",
   "private": true,
   "scripts": {
-    "build": "node scripts/generate-homework-index.js",
+    "build": "node scripts/build-site.js",
     "test": "node --test tests/content.test.js && playwright test"
   },
   "devDependencies": {

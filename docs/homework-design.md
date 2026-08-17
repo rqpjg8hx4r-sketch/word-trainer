@@ -107,7 +107,7 @@ Remote discovery and individual content reads stop waiting after 60 seconds. If 
 
 Filename matching is the baseline binding rule. When no fingerprints exist, a matching MP3, M4A, or OGG remains playable; without cues, only the complete recording is offered. When both cue fingerprints exist, the website additionally requires the TXT and audio hashes to match. A mismatch means only part of a fingerprinted set changed, so text remains visible while stale audio and segment buttons stay hidden.
 
-The local one-click preview exposes a read-only `/__homework-index.json` endpoint so the same Day selector can discover local files. GitHub Pages uses the GitHub Contents API instead. Other static hosting providers read the same-origin `homework/index.json`; configure their build command as `npm run build` so this ignored file is regenerated automatically from the current contents of `homework/` before every deployment.
+The local one-click preview exposes a read-only `/__homework-index.json` endpoint so the same Day selector can discover local files. GitHub Pages uses the GitHub Contents API instead. Cloudflare Workers Static Assets reads the same-origin `homework/index.json` generated inside a clean `dist/` directory. Configure Cloudflare with build command `npm run build` and deploy command `npx wrangler deploy`; `wrangler.jsonc` publishes only `dist/`.
 
 ## Offline behavior
 
