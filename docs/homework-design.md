@@ -111,6 +111,7 @@ The local one-click preview exposes a read-only `/__homework-index.json` endpoin
 - After a verified speaking Day loads successfully, its TXT, cue JSON, and complete daily audio are cached as one versioned set.
 - Cached file hashes are compared before writing. Unchanged resources are not rewritten; changed resources replace the old set only after every expected hash has been verified.
 - The UI reports `离线已就绪` only after the complete matching set is available.
+- During a Service Worker version change, offline saving waits for the active worker and retries up to three times before asking the user to refresh.
 - Word libraries retain the existing `localStorage` offline cache and learning history remains local.
 - Cached audio must support HTTP Range responses so Q/A seeking continues to work offline.
 - Navigation checks the network first and falls back to the cached app shell; this allows new deployments to replace old UI code when online.

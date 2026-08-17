@@ -5,7 +5,7 @@
   "audioHash": "ab12785302ac3e96abe7b8e8c4fd66bb7149a9817be48ab344ff89a800160cfc",
   "segments": {
     "q1": { "start": 0.658, "end": 4 },
-    "a1": { "start": 4.972, "end": 11.621 },
+    "a1": { "start": 4.982, "end": 11.621 },
     "q2": { "start": 12.075, "end": 14.034 },
     "a2": { "start": 14.655, "end": 22.554 },
     "q3": { "start": 23.082, "end": 25.815 },

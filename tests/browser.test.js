@@ -22,7 +22,7 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.12');
+  await expect(page.locator('#appVersion')).toHaveText('v2.13');
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(2);
 
@@ -48,7 +48,8 @@ test('missing cue file falls back to same-name complete audio', async ({ browser
   await page.route('**/homework/speaking005.cues.json', route => route.fulfill({ status:404, body:'Not found' }));
   await page.goto('/index.html');
   await page.getByRole('tab', { name:/口语练习/ }).click();
-  await expect(page.locator('#speakingAudio')).toBeVisible();
+  await expect(page.locator('#speakingAudio')).toBeHidden();
+  await expect(page.locator('#speakingPlayer')).toBeVisible();
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(0);
   await expect(page.locator('#speakingAudioStatus')).toContainText('可播放完整录音');
   await context.close();
