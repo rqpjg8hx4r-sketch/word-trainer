@@ -292,7 +292,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.15</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.16</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -971,13 +971,14 @@ async function refreshRemoteLibraries() {
     status.innerText = '正在读取网站词库…';
   }
 
-  // 2) GitHub Pages 使用 GitHub API；一键本地预览使用只读的本地文件索引。
+  // 2) GitHub Pages 使用 GitHub API；一键本地预览使用只读的本地文件索引；
+  // 其他静态托管读取仓库内随站点部署的同源文件清单，避免跨域请求被拦截。
   const info = githubRepoInfo();
 
   // 3) 后台检查最新文件，有新版就覆盖缓存；失败则继续使用缓存。
   try {
     let files;
-    if (info) {
+    if (location.hostname.endsWith('.github.io')) {
       const api = `https://api.github.com/repos/${encodeURIComponent(info.owner)}/${encodeURIComponent(info.repo)}/contents/homework`;
       const res = await fetchWithTimeout(api, {
         headers: { 'Accept':'application/vnd.github+json' },
@@ -985,9 +986,15 @@ async function refreshRemoteLibraries() {
       });
       if (!res.ok) throw new Error(res.status === 404 ? '还没有 homework 文件夹' : `GitHub API ${res.status}`);
       files = (await res.json()).filter(x => x.type === 'file' && /^word\d{3}\.txt$/i.test(x.name));
-    } else {
+    } else if (!info) {
       const res = await fetchWithTimeout('/__homework-index.json', { cache:'no-store' });
       if (!res.ok) throw new Error('请通过 start-word-trainer.cmd 打开本地预览');
+      files = (await res.json()).files
+        .filter(name => /^word\d{3}\.txt$/i.test(name))
+        .map(name => ({ name, download_url:`homework/${name}` }));
+    } else {
+      const res = await fetchWithTimeout('homework/index.json', { cache:'no-store' });
+      if (!res.ok) throw new Error(`网站词库索引 ${res.status}`);
       files = (await res.json()).files
         .filter(name => /^word\d{3}\.txt$/i.test(name))
         .map(name => ({ name, download_url:`homework/${name}` }));
