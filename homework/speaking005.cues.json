@@ -4,8 +4,8 @@
   "sourceHash": "31ea42468d8e77bacd0283843f6f10783cfde2ef0918efac3bb53c831a204eff",
   "audioHash": "ab12785302ac3e96abe7b8e8c4fd66bb7149a9817be48ab344ff89a800160cfc",
   "segments": {
-    "q1": { "start": 0.658, "end": 2.848 },
-    "a1": { "start": 3.172, "end": 11.621 },
+    "q1": { "start": 0.658, "end": 4 },
+    "a1": { "start": 4.972, "end": 11.621 },
     "q2": { "start": 12.075, "end": 14.034 },
     "a2": { "start": 14.655, "end": 22.554 },
     "q3": { "start": 23.082, "end": 25.815 },
