@@ -912,11 +912,19 @@ function completeDaySync(dayNumber) {
 
 function githubRepoInfo() {
   const host = location.hostname;
-  if (!host.endsWith('.github.io')) return null;
-  const owner = host.split('.')[0];
-  const firstPath = location.pathname.split('/').filter(Boolean)[0] || '';
-  const repo = firstPath || `${owner}.github.io`;
-  return { owner, repo };
+  if (host.endsWith('.github.io')) {
+    const owner = host.split('.')[0];
+    const firstPath = location.pathname.split('/').filter(Boolean)[0] || '';
+    const repo = firstPath || `${owner}.github.io`;
+    return { owner, repo };
+  }
+
+  // 本地预览由 start-word-trainer.cmd 提供文件索引；其他静态托管
+  // （例如 EdgeOne Pages）统一从项目的 GitHub 仓库发现 homework 文件。
+  if (location.protocol === 'file:' || host === 'localhost' || host === '127.0.0.1' || host === '::1') {
+    return null;
+  }
+  return { owner: 'rqpjg8hx4r-sketch', repo: 'word-trainer' };
 }
 
 function parseLibraryMeta(text, filename) {
