@@ -266,10 +266,15 @@
     .speaking-item:first-of-type { border-top:none; padding-top:0; }
     .speaking-line { margin:8px 0; color:#334155; font-size:14px; line-height:1.55; }
     .speaking-line strong { color:var(--primary); }
-    .speaking-audio { display:block; width:100%; margin-top:12px; }
+    .speaking-audio { display:none; }
     .speaking-actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
     .speaking-action { border:none; border-radius:9px; padding:8px 11px; background:var(--primary-light); color:var(--primary); font-size:12px; font-weight:800; cursor:pointer; }
     .speaking-action:disabled { opacity:.45; cursor:not-allowed; }
+    .speaking-player { display:none; flex-wrap:wrap; align-items:center; gap:8px; margin-top:12px; padding:10px; border-radius:12px; background:#F8FAFC; }
+    .speaking-player-label { width:100%; color:var(--subtext); font-size:11px; font-weight:800; }
+    .speed-group { display:flex; flex-wrap:wrap; gap:5px; }
+    .speed-btn, .player-btn { border:none; border-radius:9px; padding:8px 10px; background:white; color:#334155; font-size:12px; font-weight:800; cursor:pointer; box-shadow:0 1px 3px rgba(15,23,42,.08); }
+    .speed-btn.active, .player-btn.active { background:var(--primary); color:white; }
     .speaking-status { margin-top:7px; color:var(--subtext); font-size:11px; line-height:1.4; }
     @media (min-width:700px) {
       .speaking-card { padding:22px 24px; }
@@ -282,7 +287,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div id="appVersion" style="font-size:10px;color:#94A3B8;margin-top:2px;">v2.11</div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div id="appVersion" style="font-size:10px;color:#94A3B8;margin-top:2px;">v2.12</div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -309,7 +314,20 @@
       <span id="speakingHomeworkBadge" class="speaking-badge">正在读取…</span>
     </div>
     <div id="speakingHomeworkItems"></div>
-    <audio id="speakingAudio" class="speaking-audio" controls preload="metadata"></audio>
+    <audio id="speakingAudio" class="speaking-audio" preload="metadata"></audio>
+    <div id="speakingPlayer" class="speaking-player">
+      <div class="speaking-player-label">播放速度</div>
+      <div class="speed-group">
+        <button class="speed-btn" data-speed="0.75" onclick="setSpeakingSpeed(0.75)">0.75×</button>
+        <button class="speed-btn active" data-speed="0.85" onclick="setSpeakingSpeed(0.85)">0.85×</button>
+        <button class="speed-btn" data-speed="1" onclick="setSpeakingSpeed(1)">1.0×</button>
+        <button class="speed-btn" data-speed="1.25" onclick="setSpeakingSpeed(1.25)">1.25×</button>
+      </div>
+      <button class="player-btn" onclick="playSpeakingFull()">▶ 整段</button>
+      <button id="speakingPauseBtn" class="player-btn" onclick="toggleSpeakingPause()">⏸ 暂停</button>
+      <button class="player-btn" onclick="replaySpeakingMoment()">↩ 重听刚才</button>
+      <button id="speakingRepeatBtn" class="player-btn" onclick="toggleSpeakingRepeat()">🔁 循环关闭</button>
+    </div>
     <div id="speakingAudioStatus" class="speaking-status">准备读取口语作业…</div>
   </div>
   </div>
@@ -1313,6 +1331,10 @@ function parseSpeakingHomework(text) {
 }
 
 let speakingSegmentEnd = null;
+let speakingSegmentStart = 0;
+let speakingSegmentLabel = '整段录音';
+let speakingRepeatEnabled = false;
+let speakingPlaybackRate = 0.85;
 let speakingAudioObjectUrl = '';
 
 async function sha256Hex(data) {
@@ -1374,13 +1396,67 @@ async function registerOfflineSupport() {
 function playSpeakingRange(start, end, label) {
   const audio = document.getElementById('speakingAudio');
   if (!audio.src || !Number.isFinite(start) || !Number.isFinite(end) || end <= start) return;
+  speakingSegmentStart = start;
   speakingSegmentEnd = end;
+  speakingSegmentLabel = label;
   audio.currentTime = start;
+  audio.playbackRate = speakingPlaybackRate;
   audio.play().then(() => {
     document.getElementById('speakingAudioStatus').innerText = `正在播放 ${label}`;
   }).catch(() => {
     document.getElementById('speakingAudioStatus').innerText = '浏览器阻止了播放，请再点击一次';
   });
+}
+
+function setSpeakingSpeed(rate) {
+  speakingPlaybackRate = rate;
+  const audio = document.getElementById('speakingAudio');
+  audio.playbackRate = rate;
+  document.querySelectorAll('.speed-btn').forEach(button => {
+    button.classList.toggle('active', Number(button.dataset.speed) === rate);
+  });
+  document.getElementById('speakingAudioStatus').innerText = `播放速度 ${rate}×`;
+}
+
+function playSpeakingFull() {
+  const audio = document.getElementById('speakingAudio');
+  if (!audio.src) return;
+  speakingSegmentStart = 0;
+  speakingSegmentEnd = null;
+  speakingSegmentLabel = '整段录音';
+  audio.currentTime = 0;
+  audio.playbackRate = speakingPlaybackRate;
+  audio.play().catch(() => {
+    document.getElementById('speakingAudioStatus').innerText = '浏览器阻止了播放，请再点击一次';
+  });
+}
+
+function toggleSpeakingPause() {
+  const audio = document.getElementById('speakingAudio');
+  if (!audio.src) return;
+  if (audio.paused) {
+    audio.playbackRate = speakingPlaybackRate;
+    audio.play().catch(() => {});
+  } else {
+    audio.pause();
+  }
+}
+
+function replaySpeakingMoment() {
+  const audio = document.getElementById('speakingAudio');
+  if (!audio.src) return;
+  audio.currentTime = Math.max(speakingSegmentStart, audio.currentTime - 2);
+  audio.playbackRate = speakingPlaybackRate;
+  audio.play().catch(() => {});
+  document.getElementById('speakingAudioStatus').innerText = '重听刚才约 2 秒';
+}
+
+function toggleSpeakingRepeat() {
+  speakingRepeatEnabled = !speakingRepeatEnabled;
+  const button = document.getElementById('speakingRepeatBtn');
+  button.classList.toggle('active', speakingRepeatEnabled);
+  button.innerText = speakingRepeatEnabled ? '🔁 循环开启' : '🔁 循环关闭';
+  document.getElementById('speakingAudioStatus').innerText = speakingRepeatEnabled ? '将反复播放当前片段' : '已关闭循环播放';
 }
 
 async function findSpeakingAudio(baseName) {
@@ -1449,7 +1525,9 @@ async function loadSpeakingHomework(requestedDay='') {
     }
 
     if (verifiedAudio) {
-      audio.style.display = 'block';
+      audio.style.display = 'none';
+      document.getElementById('speakingPlayer').style.display = 'flex';
+      audio.playbackRate = speakingPlaybackRate;
       audio.load();
       cacheDayForOffline(dayNumber, [
         { url:textUrl, sha256:homeworkHash },
@@ -1461,6 +1539,7 @@ async function loadSpeakingHomework(requestedDay='') {
       speakingAudioObjectUrl = '';
       audio.removeAttribute('src');
       audio.style.display = 'none';
+      document.getElementById('speakingPlayer').style.display = 'none';
       cues = null;
       setOfflineStatus(`Day ${Number(dayNumber)} 文字已读取，录音尚未配套`, 'offline');
     }
@@ -1493,6 +1572,7 @@ async function loadSpeakingHomework(requestedDay='') {
     itemsContainer.innerHTML = '<div class="muted">口语作业暂时无法读取，请稍后刷新。</div>';
     audio.removeAttribute('src');
     audio.style.display = 'none';
+    document.getElementById('speakingPlayer').style.display = 'none';
     speakingAudioStatus.innerText = error.message;
   }
 }
@@ -1502,12 +1582,30 @@ async function loadSpeakingHomework(requestedDay='') {
   const speakingAudio = document.getElementById('speakingAudio');
   speakingAudio.addEventListener('timeupdate', () => {
     if (speakingSegmentEnd !== null && speakingAudio.currentTime >= speakingSegmentEnd) {
-      speakingAudio.pause();
-      speakingSegmentEnd = null;
-      document.getElementById('speakingAudioStatus').innerText = '片段播放完成';
+      if (speakingRepeatEnabled) {
+        speakingAudio.currentTime = speakingSegmentStart;
+        speakingAudio.play().catch(() => {});
+      } else {
+        speakingAudio.pause();
+        document.getElementById('speakingAudioStatus').innerText = '片段播放完成';
+      }
     }
   });
-  speakingAudio.addEventListener('ended', () => { speakingSegmentEnd = null; });
+  speakingAudio.addEventListener('play', () => {
+    document.getElementById('speakingPauseBtn').innerText = '⏸ 暂停';
+    document.getElementById('speakingAudioStatus').innerText = `正在播放 ${speakingSegmentLabel}`;
+  });
+  speakingAudio.addEventListener('pause', () => {
+    document.getElementById('speakingPauseBtn').innerText = '▶ 继续';
+  });
+  speakingAudio.addEventListener('ended', () => {
+    if (speakingRepeatEnabled) {
+      speakingAudio.currentTime = speakingSegmentStart;
+      speakingAudio.play().catch(() => {});
+    } else {
+      document.getElementById('speakingAudioStatus').innerText = '播放完成';
+    }
+  });
   loadSpeakingHomework('day005');
   let initialMainArea = 'words';
   try { initialMainArea = localStorage.getItem('wordTrainerMainArea') || 'words'; } catch (e) {}

@@ -89,6 +89,8 @@ Times are seconds from the start of the daily audio. `sourceHash` and `audioHash
 
 The interface has two focus-preserving top-level tabs: **背单词** and **口语练习**. Only one learning area is visible at a time, while the Day selector remains shared. The last selected top-level tab is remembered locally.
 
+Speaking uses child-focused controls instead of the browser's native audio controls: 0.75×, 0.85×, 1.0×, and 1.25× speed choices; pause/resume; a two-second rewind for repeating the most recent word; and optional looping of the active Q, A, Q+A, or full recording.
+
 1. Discover non-empty `word###.txt` files.
 2. Sort by day number and open the largest valid Day by default.
 3. When the selected word Day changes, try to load the matching speaking Day.
