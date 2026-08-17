@@ -1,0 +1,32 @@
+{
+    "version":  1,
+    "segments":  {
+                     "q1":  {
+                                "start":  1.067,
+                                "end":  3.268
+                            },
+                     "a1":  {
+                                "start":  4.06,
+                                "end":  11.835
+                            },
+                     "q2":  {
+                                "start":  12.042,
+                                "end":  14.072
+                            },
+                     "a2":  {
+                                "start":  14.966,
+                                "end":  24.544
+                            },
+                     "q3":  {
+                                "start":  26.148,
+                                "end":  28.315
+                            },
+                     "a3":  {
+                                "start":  29.416,
+                                "end":  40.15
+                            }
+                 },
+    "audio":  "speaking006.m4a",
+    "sourceHash":  "4aa9eda7d2813903630a38904abbc3383d2b444d7328e7dc286d9dbb5708e625",
+    "audioHash":  "986ba197296755ca4c10040ce68c2e3981390ccfa4299880dc3efa06a79ce377"
+}
