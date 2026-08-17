@@ -22,9 +22,25 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.13');
+  await expect(page.locator('#appVersion')).toHaveText('v2.14');
+  await expect(page.locator('#appBuildDate')).toHaveText(/^\d{2}\/\d{2} \d{2}:\d{2}$/);
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(2);
+
+  const widths = await page.evaluate(() => ({
+    words:document.querySelector('#wordsArea').getBoundingClientRect().width,
+    tabs:document.querySelector('.main-tabs').getBoundingClientRect().width,
+    card:document.querySelector('#learnSection .study-card').getBoundingClientRect().width
+  }));
+  expect(Math.abs(widths.words - widths.tabs)).toBeLessThanOrEqual(1);
+  expect(widths.card).toBeLessThanOrEqual(480);
+
+  const firstWord = await page.locator('#learnWord').innerText();
+  await page.getByRole('button', { name:'⏱ 自动：关' }).click();
+  await page.getByRole('button', { name:'2秒' }).click();
+  await expect(page.getByRole('button', { name:'⏱ 自动：开' })).toBeVisible();
+  await expect.poll(() => page.locator('#learnWord').innerText(), { timeout:3_500 }).not.toBe(firstWord);
+  await page.getByRole('button', { name:'⏱ 自动：开' }).click();
 
   await page.getByRole('button', { name:'📥 手动导入（备用）' }).click();
   await expect(page.locator('#importPanel')).toBeVisible();

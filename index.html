@@ -38,7 +38,8 @@
       min-height: 100vh;
     }
     .container { width: 100%; max-width: 760px; }
-    .content-narrow { width:100%; max-width:480px; margin-left:auto; margin-right:auto; }
+    .content-narrow { width:100%; max-width:760px; margin-left:auto; margin-right:auto; }
+    .study-card { width:100%; max-width:480px; margin-left:auto; margin-right:auto; }
     .header {
       display: flex;
       justify-content: space-between;
@@ -197,7 +198,7 @@
     }
     .kb-key {
       flex: 1;
-      max-width: 42px;
+      max-width: 64px;
       height: 46px;
       background: white;
       border: 1px solid #CBD5E1;
@@ -218,14 +219,14 @@
     }
     .kb-key.action-key {
       flex: 1.4;
-      max-width: 58px;
+      max-width: 76px;
       background: #E2E8F0;
       font-size: 14px;
       font-weight: 600;
     }
     .kb-key.space-key {
       flex: 3;
-      max-width: 140px;
+      max-width: 240px;
       font-size: 14px;
       background: #F1F5F9;
     }
@@ -275,6 +276,10 @@
     .speed-group { display:flex; flex-wrap:wrap; gap:5px; }
     .speed-btn, .player-btn { border:none; border-radius:9px; padding:8px 10px; background:white; color:#334155; font-size:12px; font-weight:800; cursor:pointer; box-shadow:0 1px 3px rgba(15,23,42,.08); }
     .speed-btn.active, .player-btn.active { background:var(--primary); color:white; }
+    .learn-controls { display:grid; grid-template-columns:1fr 1.15fr 2fr; gap:8px; margin-top:16px; }
+    .auto-learn-options { display:none; justify-content:center; align-items:center; gap:6px; margin-top:10px; }
+    .auto-delay-btn { border:none; border-radius:999px; padding:7px 12px; background:#F1F5F9; color:#475569; font-size:12px; font-weight:800; cursor:pointer; }
+    .auto-delay-btn.active { background:var(--primary-light); color:var(--primary); box-shadow:inset 0 0 0 1px #C7D2FE; }
     .speaking-status { margin-top:7px; color:var(--subtext); font-size:11px; line-height:1.4; }
     @media (min-width:700px) {
       .speaking-card { padding:22px 24px; }
@@ -287,7 +292,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div id="appVersion" style="font-size:10px;color:#94A3B8;margin-top:2px;">v2.13</div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.14</span> · <span id="appBuildDate">08/17 11:21</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -371,21 +376,28 @@ banana | n. | 香蕉"></textarea>
 
   <!-- 1. 学习模式 -->
   <div id="learnSection">
-    <div class="card">
+    <div class="card study-card">
       <div id="learnWord" class="word-text">word</div>
       <div id="learnPos" class="pos-text">n.</div>
       <button class="btn-audio" onclick="speakCurrentLearn()">🔊</button>
       <div id="learnMeaning" class="meaning-text">释义</div>
-      <div style="display:flex; gap:8px; margin-top:16px;">
-        <button class="btn btn-secondary" style="flex:1;" onclick="prevLearn()">上一个</button>
-        <button class="btn" style="flex:2;" onclick="nextLearn()">记住了，下一个 ➔</button>
+      <div class="learn-controls">
+        <button class="btn btn-secondary" onclick="prevLearn()">上一个</button>
+        <button id="autoLearnToggle" class="btn btn-secondary" onclick="toggleAutoLearn()">⏱ 自动：关</button>
+        <button class="btn" onclick="nextLearn()">记住了，下一个 ➔</button>
+      </div>
+      <div id="autoLearnOptions" class="auto-learn-options">
+        <span class="muted">停留</span>
+        <button class="auto-delay-btn" data-delay="2000" onclick="setAutoLearnDelay(2000)">2秒</button>
+        <button class="auto-delay-btn active" data-delay="5000" onclick="setAutoLearnDelay(5000)">5秒</button>
+        <button class="auto-delay-btn" data-delay="10000" onclick="setAutoLearnDelay(10000)">10秒</button>
       </div>
     </div>
   </div>
 
   <!-- 2. 选义测试模式 -->
   <div id="quizSection" style="display:none;">
-    <div class="card">
+    <div class="card study-card">
       <div id="quizWord" class="word-text">word</div>
       <div id="quizPos" class="pos-text">n.</div>
       <button class="btn-audio" style="width:42px; height:42px; font-size:18px;" onclick="speakCurrentQuiz()">🔊</button>
@@ -395,7 +407,7 @@ banana | n. | 香蕉"></textarea>
 
   <!-- 3. 键盘拼写模式 -->
   <div id="spellSection" style="display:none;">
-    <div class="card" style="padding-bottom:12px; margin-bottom:8px;">
+    <div class="card study-card" style="padding-bottom:12px; margin-bottom:8px;">
       <div id="spellMeaning" class="meaning-text" style="font-size:24px; margin:0 0 2px 0;">释义</div>
       <div id="spellPos" class="pos-text">n.</div>
       <button class="btn-audio" style="width:42px; height:42px; font-size:18px;" onclick="speakCurrentSpell()">🔊</button>
@@ -997,6 +1009,9 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
 let activeList = [...group1];
 let currentMode = 'learn';
 let learnIdx = 0;
+let autoLearnEnabled = false;
+let autoLearnDelay = 5000;
+let autoLearnTimer = null;
 let quizPool = [];
 let spellPool = [];
 let currentSpellTarget = null;
@@ -1086,6 +1101,7 @@ function switchMainArea(area, remember=true) {
   speakingTab.setAttribute('aria-selected', String(showSpeaking));
 
   if (showSpeaking) {
+    stopAutoLearn();
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   } else {
     const audio = document.getElementById('speakingAudio');
@@ -1099,6 +1115,7 @@ function switchMainArea(area, remember=true) {
 }
 
 function switchMode(mode) {
+  if (mode !== 'learn') stopAutoLearn();
   currentMode = mode;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   ['learnSection', 'quizSection', 'spellSection', 'historySection'].forEach(id => document.getElementById(id).style.display = 'none');
@@ -1122,6 +1139,7 @@ function updateStreak() {
 
 // 1. 学习模式
 function renderLearn() {
+  clearTimeout(autoLearnTimer);
   const item = activeList[learnIdx];
   bumpStat(item, 'learn');
   document.getElementById('learnWord').innerText = item.w;
@@ -1129,6 +1147,10 @@ function renderLearn() {
   document.getElementById('learnMeaning').innerText = item.m;
   document.getElementById('progressBar').style.width = `${Math.round(((learnIdx + 1) / activeList.length) * 100)}%`;
   speak(item.w);
+  if (autoLearnEnabled) autoLearnTimer = setTimeout(() => {
+    learnIdx = (learnIdx + 1) % activeList.length;
+    renderLearn();
+  }, autoLearnDelay);
 }
 function nextLearn() {
   learnIdx = (learnIdx + 1) % activeList.length;
@@ -1139,6 +1161,44 @@ function prevLearn() {
   renderLearn();
 }
 function speakCurrentLearn() { speak(activeList[learnIdx].w); }
+
+function updateAutoLearnControls() {
+  const toggle = document.getElementById('autoLearnToggle');
+  const options = document.getElementById('autoLearnOptions');
+  if (!toggle || !options) return;
+  toggle.innerText = autoLearnEnabled ? '⏱ 自动：开' : '⏱ 自动：关';
+  toggle.classList.toggle('btn-secondary', !autoLearnEnabled);
+  options.style.display = autoLearnEnabled ? 'flex' : 'none';
+  document.querySelectorAll('.auto-delay-btn').forEach(button => {
+    button.classList.toggle('active', Number(button.dataset.delay) === autoLearnDelay);
+  });
+}
+
+function toggleAutoLearn() {
+  autoLearnEnabled = !autoLearnEnabled;
+  clearTimeout(autoLearnTimer);
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  updateAutoLearnControls();
+  if (autoLearnEnabled) renderLearn();
+}
+
+function setAutoLearnDelay(delay) {
+  autoLearnDelay = delay;
+  updateAutoLearnControls();
+  if (autoLearnEnabled) renderLearn();
+}
+
+function stopAutoLearn() {
+  autoLearnEnabled = false;
+  clearTimeout(autoLearnTimer);
+  autoLearnTimer = null;
+  updateAutoLearnControls();
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopAutoLearn();
+});
+window.addEventListener('pagehide', stopAutoLearn);
 
 // 2. 选择测试模式
 function renderQuiz() {

@@ -91,6 +91,8 @@ The interface has two focus-preserving top-level tabs: **背单词** and **口�
 
 Speaking uses child-focused controls instead of the browser's native audio controls: 0.75×, 0.85×, 1.0×, and 1.25× speed choices; pause/resume; a two-second rewind for repeating the most recent word; and optional looping of the active Q, A, Q+A, or full recording.
 
+The word-study area uses the full iPad content width for toolbars, mode selectors, and the on-screen keyboard while keeping reading cards centered at a comfortable width. Learn mode optionally advances and speaks words every 2, 5, or 10 seconds (5 seconds by default); this automation stops when leaving Learn mode, switching to Speaking, or putting the page in the background.
+
 1. Discover non-empty `word###.txt` files.
 2. Sort by day number and open the largest valid Day by default.
 3. When the selected word Day changes, try to load the matching speaking Day.

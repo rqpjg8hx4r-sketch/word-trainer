@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'word-trainer-v2.13';
+const CACHE_VERSION = 'word-trainer-v2.14';
 const CONTENT_CACHE = 'word-trainer-homework-v1';
 const APP_SHELL = ['./', './index.html', './manifest.webmanifest'];
 
