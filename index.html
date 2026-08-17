@@ -179,6 +179,7 @@
     }
     .spell-slot.filled { border-color: var(--primary); }
     .spell-slot.space { border-bottom: none; width: 14px; color: transparent; }
+    .spell-slot.fixed { border-bottom:none; min-width:14px; color:#64748B; }
     .spell-slot.correct-state { border-color: var(--success); color: var(--success); }
     .spell-slot.wrong-state { border-color: var(--danger); color: var(--danger); }
 
@@ -453,6 +454,7 @@ banana | n. | 香蕉"></textarea>
       <div class="kb-row">
         <button class="kb-key space-key" onclick="pressKey(' ')">Space 空格</button>
         <button class="kb-key action-key" onclick="clearInput()">清空</button>
+        <button class="kb-key action-key" onclick="skipSpell()">跳过此词 ➜</button>
       </div>
     </div>
   </div>
@@ -1078,6 +1080,22 @@ function sanitizeWord(w) {
   return w.replace("(h)", "h").split('/')[0].trim().toLowerCase();
 }
 
+function spellingTarget(w) {
+  return String(w || '').split('/')[0].trim().toLowerCase();
+}
+
+function isSpellInputCharacter(char) {
+  return /^[a-z]$/i.test(char || '');
+}
+
+function advanceSpellFixedCharacters() {
+  if (!currentSpellTarget) return;
+  const target = spellingTarget(currentSpellTarget.w);
+  while (currentSpellTyped.length < target.length && !isSpellInputCharacter(target[currentSpellTyped.length])) {
+    currentSpellTyped += target[currentSpellTyped.length];
+  }
+}
+
 // 严格优先绑定 Ava 高保真语音
 function updateVoiceStatus() {
   const el = document.getElementById('voiceStatus');
@@ -1309,6 +1327,7 @@ function renderSpell() {
   }
   currentSpellTarget = spellPool[0];
   currentSpellTyped = "";
+  advanceSpellFixedCharacters();
   document.getElementById('spellMeaning').innerText = currentSpellTarget.m;
   document.getElementById('spellPos').innerText = currentSpellTarget.pos;
   document.getElementById('spellHint').innerText = `剩余: ${spellPool.length} 词`;
@@ -1319,7 +1338,7 @@ function renderSpell() {
 }
 
 function updateSpellSlots(state = "") {
-  const targetClean = sanitizeWord(currentSpellTarget.w);
+  const targetClean = spellingTarget(currentSpellTarget.w);
   const container = document.getElementById('spellSlots');
   container.innerHTML = '';
 
@@ -1331,6 +1350,9 @@ function updateSpellSlots(state = "") {
     if (char === ' ') {
       slot.className += ' space';
       slot.innerText = ' ';
+    } else if (!isSpellInputCharacter(char)) {
+      slot.className += ' fixed';
+      slot.innerText = char;
     } else {
       const typedChar = currentSpellTyped[i] || '';
       slot.innerText = typedChar;
@@ -1344,14 +1366,17 @@ function updateSpellSlots(state = "") {
 
 function pressKey(k) {
   if (!currentSpellTarget) return;
-  const targetClean = sanitizeWord(currentSpellTarget.w);
+  const targetClean = spellingTarget(currentSpellTarget.w);
+  advanceSpellFixedCharacters();
   if (currentSpellTyped.length >= targetClean.length) return;
 
-  if (targetClean[currentSpellTyped.length] === ' ' && k !== ' ') {
-    currentSpellTyped += ' ';
+  // 空格、括号、连字符和数字由程序自动填入，屏幕键盘只负责字母。
+  if (!isSpellInputCharacter(k)) {
+    updateSpellSlots();
+    return;
   }
-  
   currentSpellTyped += k.toLowerCase();
+  advanceSpellFixedCharacters();
   updateSpellSlots();
 
   if (currentSpellTyped.length === targetClean.length) {
@@ -1380,18 +1405,28 @@ function pressKey(k) {
 
 function pressBackspace() {
   if (currentSpellTyped.length > 0) {
-    currentSpellTyped = currentSpellTyped.slice(0, -1);
-    const targetClean = sanitizeWord(currentSpellTarget.w);
-    if (currentSpellTyped.length > 0 && targetClean[currentSpellTyped.length - 1] === ' ') {
+    const targetClean = spellingTarget(currentSpellTarget.w);
+    while (currentSpellTyped.length > 0 && !isSpellInputCharacter(targetClean[currentSpellTyped.length - 1])) {
       currentSpellTyped = currentSpellTyped.slice(0, -1);
     }
+    if (currentSpellTyped.length > 0) currentSpellTyped = currentSpellTyped.slice(0, -1);
     updateSpellSlots();
   }
 }
 
 function clearInput() {
   currentSpellTyped = "";
+  advanceSpellFixedCharacters();
   updateSpellSlots();
+}
+
+function skipSpell() {
+  if (!currentSpellTarget) return;
+  bumpStat(currentSpellTarget, 'spellWrong');
+  streak = 0;
+  updateStreak();
+  spellPool.shift();
+  renderSpell();
 }
 
 function speakCurrentSpell() {

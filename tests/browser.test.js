@@ -153,3 +153,33 @@ test('a missing latest speaking day cannot overwrite an older selection', async 
   await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 5');
   await context.close();
 });
+
+test('spelling skips fixed punctuation and always allows moving on', async ({ page }) => {
+  await page.goto('/index.html');
+  await expect(page.locator('#librarySelect option')).toHaveCount(3);
+  await page.locator('#librarySelect').selectOption('word004.txt');
+  await page.evaluate(() => {
+    const words = remoteLibraryCache['word004.txt'].words;
+    const punctuated = words.find(item => item.w === 'classical (music)');
+    const next = words.find(item => item.w === 'aunt');
+    activeList = [punctuated, next];
+    spellPool = [punctuated, next];
+    currentMode = 'spell';
+    document.getElementById('spellSection').style.display = 'block';
+    renderSpell();
+  });
+
+  await expect(page.locator('#spellSlots .fixed')).toHaveCount(2);
+  for (const letter of ['C', 'L', 'A', 'S', 'S', 'I', 'C', 'A', 'L', 'M', 'U', 'S', 'I', 'C']) {
+    await page.locator('#qwertyKeyboard').getByRole('button', { name:letter, exact:true }).click();
+  }
+  await expect(page.locator('#spellMeaning')).toHaveText('阿姨；姑妈');
+
+  await page.evaluate(() => {
+    const words = remoteLibraryCache['word004.txt'].words;
+    spellPool = [words.find(item => item.w === 'classical (music)'), words.find(item => item.w === 'aunt')];
+    renderSpell();
+  });
+  await page.getByRole('button', { name:'跳过此词 ➜' }).click();
+  await expect(page.locator('#spellMeaning')).toHaveText('阿姨；姑妈');
+});
