@@ -292,7 +292,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.16</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.17</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -1451,6 +1451,8 @@ let speakingSegmentLabel = '整段录音';
 let speakingRepeatEnabled = false;
 let speakingPlaybackRate = 0.85;
 let speakingAudioObjectUrl = '';
+let speakingLoadRequestId = 0;
+let currentSpeakingDay = 0;
 
 async function sha256Hex(data) {
   const bytes = data instanceof ArrayBuffer ? data : new TextEncoder().encode(String(data));
@@ -1467,29 +1469,29 @@ function setOfflineStatus(text, state='') {
 
 async function cacheDayForOffline(dayNumber, urls, attempt=0) {
   if (!('serviceWorker' in navigator)) {
-    setOfflineStatus('当前浏览器不支持完整离线模式');
+    if (Number(dayNumber) === currentSpeakingDay) setOfflineStatus('当前浏览器不支持完整离线模式');
     return;
   }
   if (!navigator.onLine) {
-    setOfflineStatus('● 离线模式 · 使用已保存内容', 'offline');
+    if (Number(dayNumber) === currentSpeakingDay) setOfflineStatus('● 离线模式 · 使用已保存内容', 'offline');
     return;
   }
   try {
     const registration = await navigator.serviceWorker.ready;
     let worker = registration.active || navigator.serviceWorker.controller;
     if (!worker && attempt < 3) {
-      setOfflineStatus(`○ 正在准备 Day ${Number(dayNumber)} 离线缓存`);
+      if (Number(dayNumber) === currentSpeakingDay) setOfflineStatus(`○ 正在准备 Day ${Number(dayNumber)} 离线缓存`);
       setTimeout(() => cacheDayForOffline(dayNumber, urls, attempt + 1), 1500 * (attempt + 1));
       return;
     }
     if (!worker) throw new Error('Service Worker not ready');
-    setOfflineStatus(`○ 正在保存 Day ${Number(dayNumber)} 离线内容`);
+    if (Number(dayNumber) === currentSpeakingDay) setOfflineStatus(`○ 正在保存 Day ${Number(dayNumber)} 离线内容`);
     worker.postMessage({ type:'CACHE_DAY', day:dayNumber, urls });
   } catch (error) {
     if (attempt < 3) {
-      setOfflineStatus(`○ 离线缓存准备中，正在自动重试 ${attempt + 1}/3`);
+      if (Number(dayNumber) === currentSpeakingDay) setOfflineStatus(`○ 离线缓存准备中，正在自动重试 ${attempt + 1}/3`);
       setTimeout(() => cacheDayForOffline(dayNumber, urls, attempt + 1), 1500 * (attempt + 1));
-    } else {
+    } else if (Number(dayNumber) === currentSpeakingDay) {
       setOfflineStatus('离线缓存暂未完成，请保持联网后刷新');
     }
   }
@@ -1502,10 +1504,11 @@ async function registerOfflineSupport() {
   }
   navigator.serviceWorker.addEventListener('message', event => {
     if (event.data?.type === 'DAY_CACHED') {
-      speakingCachedDays.add(Number(event.data.day));
+      const cachedDay = Number(event.data.day);
+      speakingCachedDays.add(cachedDay);
       completeDaySync(event.data.day);
-      setOfflineStatus(`✓ Day ${Number(event.data.day)} 离线已就绪`, 'ready');
-    } else if (event.data?.type === 'DAY_CACHE_FAILED') {
+      if (cachedDay === currentSpeakingDay) setOfflineStatus(`✓ Day ${cachedDay} 离线已就绪`, 'ready');
+    } else if (event.data?.type === 'DAY_CACHE_FAILED' && Number(event.data.day) === currentSpeakingDay) {
       setOfflineStatus('离线缓存失败，请联网后刷新');
     }
   });
@@ -1598,20 +1601,23 @@ async function findSpeakingAudio(baseName) {
 }
 
 async function loadSpeakingHomework(requestedDay='') {
+  const requestId = ++speakingLoadRequestId;
   const audio = document.getElementById('speakingAudio');
   const speakingAudioStatus = document.getElementById('speakingAudioStatus');
   const itemsContainer = document.getElementById('speakingHomeworkItems');
+  let dayNumber = '';
 
   try {
     const match = String(requestedDay || 'day005').match(/(\d{1,3})/);
     if (!match) throw new Error('口语 Day 编号无效');
-    const dayNumber = String(Number(match[1])).padStart(3, '0');
+    dayNumber = String(Number(match[1])).padStart(3, '0');
+    currentSpeakingDay = Number(dayNumber);
     const dayLabel = `Day ${Number(dayNumber)}`;
     const baseName = `speaking${dayNumber}`;
     const textUrl = `homework/${baseName}.txt`;
     const cueUrl = `homework/${baseName}.cues.json`;
     const homeworkResponse = await fetchWithTimeout(textUrl, { cache:'no-store' });
-    if (!homeworkResponse.ok) throw new Error('口语作业内容读取失败');
+    if (!homeworkResponse.ok) throw new Error(homeworkResponse.status === 404 ? '口语作业尚未上传' : '口语作业内容读取失败');
     const homeworkBytes = await homeworkResponse.arrayBuffer();
     const homeworkHash = await sha256Hex(homeworkBytes);
     const homework = parseSpeakingHomework(new TextDecoder().decode(homeworkBytes));
@@ -1635,23 +1641,26 @@ async function loadSpeakingHomework(requestedDay='') {
       : '';
     let verifiedAudio = false;
     let audioHash = '';
+    let audioBytes = null;
+    let audioContentType = 'audio/mpeg';
     if (audioName) {
       const audioUrl = `homework/${audioName}`;
       const audioResponse = await fetchWithTimeout(audioUrl, { cache:'no-store' });
       if (audioResponse.ok) {
-        const audioBytes = await audioResponse.arrayBuffer();
+        audioBytes = await audioResponse.arrayBuffer();
         audioHash = await sha256Hex(audioBytes);
         verifiedAudio = !hasFingerprint || audioHash === cues.audioHash.toLowerCase();
-        if (verifiedAudio) {
-          if (speakingAudioObjectUrl) URL.revokeObjectURL(speakingAudioObjectUrl);
-          const contentType = audioResponse.headers.get('Content-Type') || 'audio/mpeg';
-          speakingAudioObjectUrl = URL.createObjectURL(new Blob([audioBytes], { type:contentType }));
-          audio.src = speakingAudioObjectUrl;
-        }
+        audioContentType = audioResponse.headers.get('Content-Type') || 'audio/mpeg';
       }
     }
 
+    // 用户切换 Day 后，较早发出的慢请求不得覆盖最后一次选择。
+    if (requestId !== speakingLoadRequestId) return;
+
     if (verifiedAudio) {
+      if (speakingAudioObjectUrl) URL.revokeObjectURL(speakingAudioObjectUrl);
+      speakingAudioObjectUrl = URL.createObjectURL(new Blob([audioBytes], { type:audioContentType }));
+      audio.src = speakingAudioObjectUrl;
       audio.style.display = 'none';
       document.getElementById('speakingPlayer').style.display = 'flex';
       audio.playbackRate = speakingPlaybackRate;
@@ -1695,12 +1704,19 @@ async function loadSpeakingHomework(requestedDay='') {
         : '暂无分段时间点，可播放完整录音'
       : '文本已加载，已有指纹显示录音尚未更新';
   } catch (error) {
-    document.getElementById('speakingHomeworkBadge').innerText = '暂不可用';
-    itemsContainer.innerHTML = '<div class="muted">口语作业暂时无法读取，请稍后刷新。</div>';
+    if (requestId !== speakingLoadRequestId) return;
+    const day = Number(dayNumber);
+    document.getElementById('speakingHomeworkBadge').innerText = day ? `Day ${day} · 暂无口语` : '暂不可用';
+    itemsContainer.innerHTML = day
+      ? `<div class="muted">Day ${day} 尚未上传口语作业，可以从上方选择其他 Day。</div>`
+      : '<div class="muted">口语作业暂时无法读取，请稍后刷新。</div>';
+    if (speakingAudioObjectUrl) URL.revokeObjectURL(speakingAudioObjectUrl);
+    speakingAudioObjectUrl = '';
     audio.removeAttribute('src');
     audio.style.display = 'none';
     document.getElementById('speakingPlayer').style.display = 'none';
     speakingAudioStatus.innerText = error.message;
+    if (day) setOfflineStatus(`Day ${day} 单词已读取，口语尚未上传`, 'offline');
   }
 }
 
@@ -1733,7 +1749,6 @@ async function loadSpeakingHomework(requestedDay='') {
       document.getElementById('speakingAudioStatus').innerText = '播放完成';
     }
   });
-  loadSpeakingHomework('day005');
   let initialMainArea = 'words';
   try { initialMainArea = localStorage.getItem('wordTrainerMainArea') || 'words'; } catch (e) {}
   switchMainArea(initialMainArea, false);
@@ -1754,7 +1769,8 @@ async function loadSpeakingHomework(requestedDay='') {
   switchGroup(1, document.getElementById('groupBtn1'));
 
   // GitHub Pages 上自动发现 homework/word###.txt；默认打开最大的有效 Day 编号。
-  await refreshRemoteLibraries();
+  const librariesReady = await refreshRemoteLibraries();
+  if (!librariesReady) loadSpeakingHomework('day005');
 })();
 </script>
 </body>

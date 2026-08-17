@@ -22,10 +22,10 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.16');
+  await expect(page.locator('#appVersion')).toHaveText('v2.17');
   await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
   await expect(page).toHaveTitle('每日英语');
-  await expect(page.locator('#librarySelect option')).toHaveCount(2);
+  await expect(page.locator('#librarySelect option')).toHaveCount(3);
 
   const widths = await page.evaluate(() => ({
     words:document.querySelector('#wordsArea').getBoundingClientRect().width,
@@ -50,9 +50,10 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await expect(page.locator('#spellSection')).toBeVisible();
 
   await page.getByRole('tab', { name:/口语练习/ }).click();
+  await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(9);
   await page.getByRole('button', { name:'▶ 听问题' }).nth(1).click();
-  await expect.poll(() => page.locator('#speakingAudio').evaluate(audio => audio.currentTime)).toBeCloseTo(12.075, 2);
+  await expect.poll(() => page.locator('#speakingAudio').evaluate(audio => audio.currentTime)).toBeCloseTo(12.042, 2);
 
   await page.locator('#librarySelect').selectOption('word004.txt');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
@@ -63,6 +64,7 @@ test('missing cue file falls back to same-name complete audio', async ({ browser
   const page = await context.newPage();
   await page.route('**/homework/speaking005.cues.json', route => route.fulfill({ status:404, body:'Not found' }));
   await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word005.txt');
   await page.getByRole('tab', { name:/口语练习/ }).click();
   await expect(page.locator('#speakingAudio')).toBeHidden();
   await expect(page.locator('#speakingPlayer')).toBeVisible();
@@ -80,6 +82,7 @@ test('changed speaking text rejects stale cues and audio', async ({ browser }) =
     body:'Q1: This is newly updated text.\nA1: The old recording must not play.'
   }));
   await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word005.txt');
   await page.getByRole('tab', { name:/口语练习/ }).click();
   await expect(page.locator('#speakingHomeworkItems')).toContainText('newly updated text');
   await expect(page.locator('#speakingAudio')).toBeHidden();
@@ -92,7 +95,7 @@ test('visited days reopen and seek while offline', async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto('/index.html');
-  await waitForDayReady(page, 5);
+  await waitForDayReady(page, 6);
   await page.locator('#librarySelect').selectOption('word004.txt');
   await waitForDayReady(page, 4);
   await page.locator('#librarySelect').selectOption('word005.txt');
@@ -100,12 +103,53 @@ test('visited days reopen and seek while offline', async ({ browser }) => {
 
   await context.setOffline(true);
   await page.reload();
-  await expect(page.locator('#learnWord')).toContainText('can');
+  await expect(page.locator('#learnWord')).toContainText('accident');
   await page.getByRole('tab', { name:/口语练习/ }).click();
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(9);
   await page.getByRole('button', { name:'▶ 听问题' }).nth(1).click();
-  await expect.poll(() => page.locator('#speakingAudio').evaluate(audio => audio.currentTime)).toBeCloseTo(12.075, 2);
+  await expect.poll(() => page.locator('#speakingAudio').evaluate(audio => audio.currentTime)).toBeCloseTo(12.042, 2);
+  await page.locator('#librarySelect').selectOption('word005.txt');
+  await expect(page.locator('#speakingHomeworkItems')).toContainText('What is your favourite subject');
   await page.locator('#librarySelect').selectOption('word004.txt');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
+  await context.close();
+});
+
+test('a slower previous day cannot overwrite the latest selection', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.route('**/homework/speaking005.m4a', async route => {
+    const response = await route.fetch();
+    await new Promise(resolve => setTimeout(resolve, 800));
+    await route.fulfill({ response });
+  });
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word005.txt');
+  await page.locator('#librarySelect').selectOption('word006.txt');
+  await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
+  await expect(page.locator('#speakingHomeworkItems')).toContainText('Is there a sports centre near your home');
+  await page.waitForTimeout(1_000);
+  await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
+  await context.close();
+});
+
+test('a missing latest speaking day cannot overwrite an older selection', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  let markDay6Requested;
+  const day6Requested = new Promise(resolve => { markDay6Requested = resolve; });
+  await page.route('**/homework/speaking006.txt', async route => {
+    markDay6Requested();
+    await new Promise(resolve => setTimeout(resolve, 800));
+    await route.fulfill({ status:404, body:'Not found' });
+  });
+  await page.goto('/index.html');
+  await day6Requested;
+  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await page.locator('#librarySelect').selectOption('word005.txt');
+  await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 5');
+  await expect(page.locator('#speakingHomeworkItems')).toContainText('What is your favourite subject');
+  await page.waitForTimeout(1_000);
+  await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 5');
   await context.close();
 });
