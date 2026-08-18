@@ -1,0 +1,63 @@
+﻿# Day: 7
+# Topics: House and Home
+
+address | n. | 地址
+desk | n. | 书桌
+kitchen | n. | 厨房
+apartment | n. | 公寓
+dining room | n. | 餐厅
+lamp | n. | 台灯
+armchair | n. | 扶手椅
+door | n. | 门
+light | n. | 灯
+bath(tub) | n. | 浴缸
+downstairs | adv. & adj. | 在楼下；楼下的
+live | v. | 生活
+bathroom | n. | 浴室
+drawer | n. | 抽屉
+living room | n. | 客厅
+bed | n. | 床
+DVD (player) | n. | DVD（播放器）
+oven | n. | 烤炉
+bedroom | n. | 卧室
+entrance | n. | 入口
+pillow | n. | 枕头
+bin | n. | 垃圾桶；箱子
+flat | n. | 公寓
+refrigerator | n. | 冰箱
+blanket | n. | 毯子
+floor | n. | 楼层；地面
+roof | n. | 房顶
+bookcase | n. | 书柜
+fridge | n. | 冰箱
+room | n. | 房间
+bookshelf | n. | 书架
+furniture | n. | 家具
+rubbish | n. | 垃圾
+bowl | n. | 碗
+garage | n. | 车库
+safe | adj. | 安全的
+box | n. | 盒子
+garden | n. | 花园
+shelf | n. | 架子；隔板
+carpet | n. | 地毯
+gas | n. | 煤气
+shower | n. | 淋浴
+chair | n. | 椅子
+gate | n. | 大门
+sink | n. | 水槽
+clock | n. | 钟表
+hall | n. | 大厅
+sitting room | n. | 客厅
+computer | n. | 电脑
+heating | n. & v. | 加热
+sofa | n. | 沙发
+cooker | n. | 厨具
+home | n. | 家
+stay | v. | 待在
+cupboard | n. | 橱柜
+house | n. | 房子
+toilet | n. | 厕所
+curtain | n. | 窗帘
+key | n. | 钥匙
+towel | n. | 毛巾
