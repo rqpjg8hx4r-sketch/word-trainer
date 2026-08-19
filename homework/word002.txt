@@ -1,0 +1,97 @@
+# Day: 2
+# Topics: Communication and Technology | Clothes and Accessories
+
+address | n. | 地址
+DVD (player) | n. | DVD（播放器）
+photograph | n. | 照片；相片
+at/@ | prep./symbol | 某用户在某服务器
+email | n. & v. | 电子邮件；发电子邮件
+photography | n. | 摄影
+by post | phr. | 邮寄
+envelope | n. | 信封
+phone | n. | 电话
+call | v. | 呼叫
+file | n. | 文件；文件夹
+printer | n. | 打印机
+camera | n. | 照相机；摄影机
+information | n. | 信息
+screen | n. | 屏幕
+CD (player) | n. | CD（播放器）
+internet | n. | 因特网
+software | n. | 软件
+cell phone | n. | 手机
+keyboard | n. | 键盘
+talk | n. & v. | 谈话；说话
+chat | v. | 聊天
+laptop (computer) | n. | 笔记本电脑
+telephone | n. | 电话
+click | v. | 点击
+mobile (phone) | n. | 手机
+text | n. & v. | 文本；发短信
+computer | n. | 电脑
+mouse | n. | 鼠标
+video | n. | 视频；录像
+conversation | n. | 交谈；谈话
+MP3 player | n. | MP3播放器
+web | n. | 网络
+digital | adj. | 数码的
+net | n. | 网络
+web page | n. | 网页
+digital camera | n. | 数码相机
+online | adj. | 在线的
+website | n. | 网站
+dot | n. | 点
+password | n. | 密码
+download | n. & v. | 已下载的数据资料；下载
+PC | n. | 个人电脑
+bag | n. | 包；袋
+handbag | n. | 手提包
+sock | n. | 袜子
+bathing suit | n. | 浴衣
+hat | n. | 帽子
+suit | n. | 套装；西装
+belt | n. | 皮带
+jacket | n. | 夹克衫
+sunglasses | n. | 太阳镜
+blouse | n. | 女士衬衫
+jeans | n. | 牛仔裤
+sweater | n. | 毛衣
+boot | n. | 靴子
+jewellery/jewelry | n. | 珠宝
+swimming costume | n. | 游泳衣
+bracelet | n. | 手镯；手链
+jumper | n. | 针织套衫
+swimsuit | n. | 游泳衣
+cap | n. | 半沿帽
+kit | n. | 全套衣服及装备
+tie | n. | 领带
+chain | n. | 链子
+necklace | n. | 项链
+tights | n. | 连裤袜；紧身裤
+clothes | n. | 衣服
+pocket | n. | 口袋
+trainers | n. | 运动鞋
+coat | n. | 大衣
+purse | n. | 女士钱包
+trousers | n. | 裤子
+costume | n. | 服装；戏装
+raincoat | n. | 雨衣
+try on | v. | 试穿
+dress | n. | 连衣裙
+ring | n. | 戒指
+T-shirt | n. | T恤衫
+earring | n. | 耳环
+scarf | n. | 围巾
+umbrella | n. | 雨伞
+fashion | n. | 时尚；时装
+shirt | n. | 衬衫
+uniform | n. | 制服
+get dressed | v. | 穿好衣服
+shoes | n. | 鞋
+wallet | n. | 钱包
+glasses | n. | 眼镜；玻璃
+shorts | n. | 短裤
+watch | n. | 手表
+glove | n. | 手套
+skirt | n. | 短裙
+wear | v. | 穿；戴

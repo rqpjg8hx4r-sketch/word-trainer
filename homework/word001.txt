@@ -1,0 +1,45 @@
+# Day: 1
+# Topics: Appliances | Colours
+
+camera | n. | 照相机；摄影机
+electricity | n. | 电
+oven | n. | 烤箱
+CD (player) | n. | CD（播放器）
+fridge | n. | 冰箱
+PC | n. | 个人电脑
+cell phone | n. | 手机
+gas | n. | 气体；煤气
+phone | n. | 电话
+clock | n. | 钟表
+heating | n. | 暖气
+radio | n. | 收音机
+computer | n. | 电脑
+lamp | n. | 灯
+telephone | n. | 电话
+cooker | n. | 炉灶
+laptop | n. | 笔记本电脑
+television/TV | n. | 电视机
+digital camera | n. | 数码相机
+lights | n. | 灯光
+video | n. | 视频；录像
+DVD (player) | n. | DVD（播放器）
+mobile (phone) | n. | 手机
+washing machine | n. | 洗衣机
+electric | adj. | 电的
+MP3 player | n. | MP3播放器
+black | adj. & n. | 黑色的；黑色
+grey/gray | adj. & n. | 灰色的；灰色
+red | adj. & n. | 红色的；红色
+blue | adj. & n. | 蓝色的；蓝色
+light | adj. | 浅色的；明亮的
+silver | adj. & n. | 银色的；银色
+brown | adj. & n. | 棕色的；棕色
+orange | adj. & n. | 橙色的；橙色
+white | adj. & n. | 白色的；白色
+dark | adj. & n. | 深色的；黑暗的
+pale | adj. | 浅色的；苍白的
+yellow | adj. & n. | 黄色的；黄色
+golden | adj. | 金色的
+pink | adj. & n. | 粉色的；粉色
+green | adj. & n. | 绿色的；绿色
+purple | adj. & n. | 紫色的；紫色
