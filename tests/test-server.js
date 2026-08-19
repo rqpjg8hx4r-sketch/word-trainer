@@ -7,12 +7,13 @@ const mime = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
   '.m4a': 'audio/mp4', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg',
+  '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp',
   '.webmanifest': 'application/manifest+json; charset=utf-8'
 };
 
 function homeworkIndex() {
   const files = fs.readdirSync(path.join(root, 'homework'))
-    .filter(file => /^word\d{3}\.txt$/.test(file))
+    .filter(file => file !== 'index.json')
     .sort((a, b) => b.localeCompare(a));
   return { files };
 }

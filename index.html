@@ -257,13 +257,15 @@
     .offline-status { display:inline-flex; align-items:center; gap:4px; margin-top:7px; padding:4px 8px; border-radius:999px; background:#F1F5F9; color:var(--subtext); font-size:11px; font-weight:800; }
     .offline-status.ready { background:#ECFDF5; color:#047857; }
     .offline-status.offline { background:#FEF3C7; color:#B45309; }
-    .main-tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:12px 0; padding:4px; background:#E2E8F0; border-radius:14px; }
+    .main-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:12px 0; padding:4px; background:#E2E8F0; border-radius:14px; }
     .main-tab { border:none; border-radius:10px; padding:13px 10px; background:transparent; color:var(--subtext); font-size:15px; font-weight:900; cursor:pointer; }
     .main-tab.active { background:white; color:var(--primary); box-shadow:0 2px 6px rgba(15,23,42,.10); }
+    .main-tab:disabled { opacity:.38; cursor:not-allowed; }
     .speaking-card { text-align:left; padding:16px; }
     .speaking-title { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
     .speaking-title h4 { margin:0; font-size:16px; }
     .speaking-badge { flex:none; background:#ECFDF5; color:#047857; border-radius:999px; padding:4px 8px; font-size:11px; font-weight:800; }
+    .speaking-homework-image { display:none; width:100%; max-height:460px; object-fit:contain; margin:4px 0 14px; border-radius:12px; background:#F8FAFC; }
     .speaking-item { padding:10px 0; border-top:1px solid #E2E8F0; }
     .speaking-item:first-of-type { border-top:none; padding-top:0; }
     .speaking-line { margin:8px 0; color:#334155; font-size:14px; line-height:1.55; }
@@ -282,18 +284,23 @@
     .auto-delay-btn { border:none; border-radius:999px; padding:7px 12px; background:#F1F5F9; color:#475569; font-size:12px; font-weight:800; cursor:pointer; }
     .auto-delay-btn.active { background:var(--primary-light); color:var(--primary); box-shadow:inset 0 0 0 1px #C7D2FE; }
     .speaking-status { margin-top:7px; color:var(--subtext); font-size:11px; line-height:1.4; }
+    .listening-card { text-align:left; padding:18px 16px; }
+    .listening-audio { display:none; width:100%; margin-top:14px; }
+    .listening-note { margin-top:10px; color:var(--subtext); font-size:12px; line-height:1.5; }
     @media (min-width:700px) {
       .speaking-card { padding:22px 24px; }
       .speaking-line { font-size:16px; }
       .speaking-action { padding:9px 14px; font-size:13px; }
+      .listening-card { padding:22px 24px; }
     }
+    @media (max-width:430px) { .main-tab { padding:12px 5px; font-size:13px; } }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.17</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.18</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -311,6 +318,7 @@
   <div class="main-tabs" role="tablist" aria-label="学习区域">
     <button id="mainTabWords" class="main-tab active" role="tab" aria-selected="true" onclick="switchMainArea('words')">📚 背单词</button>
     <button id="mainTabSpeaking" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('speaking')">🎧 口语练习</button>
+    <button id="mainTabListening" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('listening')">🎵 听力练习</button>
   </div>
 
   <div id="speakingArea" role="tabpanel" style="display:none;">
@@ -319,6 +327,7 @@
       <h4 id="speakingHomeworkTitle">🎧 今日口语作业</h4>
       <span id="speakingHomeworkBadge" class="speaking-badge">正在读取…</span>
     </div>
+    <img id="speakingHomeworkImage" class="speaking-homework-image" alt="口语作业题目图片">
     <div id="speakingHomeworkItems"></div>
     <audio id="speakingAudio" class="speaking-audio" preload="metadata"></audio>
     <div id="speakingPlayer" class="speaking-player">
@@ -336,6 +345,17 @@
     </div>
     <div id="speakingAudioStatus" class="speaking-status">准备读取口语作业…</div>
   </div>
+  </div>
+
+  <div id="listeningArea" role="tabpanel" style="display:none;">
+    <div class="card listening-card">
+      <div class="speaking-title">
+        <h4 style="margin:0;">🎵 今日听力练习</h4>
+        <span id="listeningBadge" class="speaking-badge">正在读取…</span>
+      </div>
+      <audio id="listeningAudio" class="listening-audio" controls preload="metadata"></audio>
+      <div id="listeningStatus" class="listening-note">准备读取听力练习…</div>
+    </div>
   </div>
 
   <div id="wordsArea" class="content-narrow" role="tabpanel">
@@ -854,7 +874,7 @@ function applyRemoteLibraries(libraries, sourceLabel='网站') {
   }));
 
   remoteLibraries = libraries
-    .filter(x => Array.isArray(x.words) && x.words.length)
+    .filter(x => Array.isArray(x.words) && (x.words.length || x.hasSpeaking || x.hasListening))
     .sort((a,b) => (b.dayNum || 0) - (a.dayNum || 0) || (b.name || '').localeCompare(a.name || ''));
   remoteLibraryCache = Object.fromEntries(remoteLibraries.map(x => [x.name, x]));
 
@@ -863,7 +883,11 @@ function applyRemoteLibraries(libraries, sourceLabel='网站') {
 
   select.innerHTML = remoteLibraries.map(lib => {
     const topic = lib.title ? ` · ${escapeHtml(lib.title)}` : '';
-    return `<option value="${escapeHtml(lib.name)}">${escapeHtml(lib.dayLabel)}${topic} (${lib.words.length}词)</option>`;
+    const contents = [
+      lib.words.length ? `${lib.words.length}词` : '',
+      lib.hasListening ? '听力' : ''
+    ].filter(Boolean).join(' · ');
+    return `<option value="${escapeHtml(lib.name)}">${escapeHtml(lib.dayLabel)}${topic}${contents ? ` (${contents})` : ''}</option>`;
   }).join('');
 
   selectRemoteLibrary(remoteLibraries[0].name, sourceLabel);
@@ -987,36 +1011,54 @@ async function refreshRemoteLibraries() {
         cache: 'no-store'
       });
       if (!res.ok) throw new Error(res.status === 404 ? '还没有 homework 文件夹' : `GitHub API ${res.status}`);
-      files = (await res.json()).filter(x => x.type === 'file' && /^word\d{3}\.txt$/i.test(x.name));
+      files = (await res.json()).filter(x => x.type === 'file');
     } else if (!info) {
       const res = await fetchWithTimeout('/__homework-index.json', { cache:'no-store' });
       if (!res.ok) throw new Error('请通过 start-word-trainer.cmd 打开本地预览');
       files = (await res.json()).files
-        .filter(name => /^word\d{3}\.txt$/i.test(name))
         .map(name => ({ name, download_url:`homework/${name}` }));
     } else {
       const res = await fetchWithTimeout('homework/index.json', { cache:'no-store' });
       if (!res.ok) throw new Error(`网站词库索引 ${res.status}`);
       files = (await res.json()).files
-        .filter(name => /^word\d{3}\.txt$/i.test(name))
         .map(name => ({ name, download_url:`homework/${name}` }));
     }
-    if (!files.length) throw new Error('homework 中没有找到 word###.txt');
+    if (!files.length) throw new Error('homework 中没有找到作业文件');
 
-    const loaded = await Promise.all(files.map(async f => {
+    const wordFiles = files.filter(file => /^word\d{3}\.txt$/i.test(file.name));
+    const loaded = await Promise.all(wordFiles.map(async f => {
       const r = await fetchWithTimeout(f.download_url, { cache:'no-store' });
       if (!r.ok) throw new Error(`无法读取 ${f.name}`);
       const text = await r.text();
       const words = parseImportedWords(text);
-      return { name:f.name, ...parseLibraryMeta(text, f.name), words };
+      return { name:f.name, ...parseLibraryMeta(text, f.name), words, hasWord:true, hasSpeaking:false, hasListening:false };
     }));
 
-    const usable = loaded.filter(x => x.words.length);
-    if (!usable.length) throw new Error('TXT 中没有识别到有效单词');
+    const byDay = new Map(loaded.filter(x => x.words.length).map(library => [library.dayNum, library]));
+    files.forEach(file => {
+      const match = file.name.match(/^(word|speaking|listening)(\d{3})\.(txt|mp3|m4a|ogg)$/i);
+      if (!match) return;
+      const dayNum = Number(match[2]);
+      let library = byDay.get(dayNum);
+      if (!library) {
+        library = {
+          name:`day${match[2]}`,
+          dayNum,
+          dayLabel:`Day ${dayNum}`,
+          date:'', title:'', words:[], hasWord:false, hasSpeaking:false, hasListening:false
+        };
+        byDay.set(dayNum, library);
+      }
+      if (match[1].toLowerCase() === 'speaking' && match[3].toLowerCase() === 'txt') library.hasSpeaking = true;
+      if (match[1].toLowerCase() === 'listening' && /^(mp3|m4a|ogg)$/i.test(match[3])) library.hasListening = true;
+    });
+
+    const usable = [...byDay.values()].filter(x => x.words.length || x.hasSpeaking || x.hasListening);
+    if (!usable.length) throw new Error('homework 中没有识别到有效作业');
 
     saveRemoteLibraryCache(usable);
     usable.forEach(library => {
-      if (library.dayNum) wordSyncedDays.add(library.dayNum);
+      if (library.dayNum && library.words.length) wordSyncedDays.add(library.dayNum);
     });
     speakingCachedDays.forEach(day => completeDaySync(day));
     applyRemoteLibraries(usable, '网站最新');
@@ -1041,25 +1083,42 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
   if (!lib) return;
   const key = lib.dayNum ? `day-${String(lib.dayNum).padStart(3,'0')}` : filename.replace(/\.txt$/i,'');
   if (lib.dayNum) showDaySyncStatus(lib.dayNum);
-  const store = loadStore();
-  const old = store.days[key];
-  store.days[key] = {
-    title: `${lib.dayLabel}${lib.title ? ' · '+lib.title : ''}`,
-    date: lib.date || old?.date || '',
-    createdAt: old?.createdAt || Date.now(),
-    words: attachWordIds(key, lib.words),
-    stats: old?.stats || {}
-  };
-  migrateStatsToIds(key, store.days[key]);
-  saveStore(store);
-  loadDay(key);
-  if (lib.dayNum) loadSpeakingHomework(`day${String(lib.dayNum).padStart(3,'0')}`);
+  const hasWords = Array.isArray(lib.words) && lib.words.length > 0;
+  document.getElementById('mainTabWords').disabled = !hasWords;
+  if (hasWords) {
+    const store = loadStore();
+    const old = store.days[key];
+    store.days[key] = {
+      title: `${lib.dayLabel}${lib.title ? ' · '+lib.title : ''}`,
+      date: lib.date || old?.date || '',
+      createdAt: old?.createdAt || Date.now(),
+      words: attachWordIds(key, lib.words),
+      stats: old?.stats || {}
+    };
+    migrateStatsToIds(key, store.days[key]);
+    saveStore(store);
+    loadDay(key);
+  }
+  if (lib.dayNum) {
+    const dayName = `day${String(lib.dayNum).padStart(3,'0')}`;
+    loadSpeakingHomework(dayName);
+    loadListeningHomework(dayName);
+  }
   const select = document.getElementById('librarySelect');
   if (select && select.value !== filename) select.value = filename;
+  if (!hasWords) {
+    setOfflineStatus('听力练习在线播放 · 不加入离线缓存');
+    switchMainArea('listening');
+  }
   const status = document.getElementById('libraryStatus');
   if (status) {
     const total = remoteLibraries.reduce((n,x)=>n+x.words.length,0);
-    status.innerText = `当前：${lib.dayLabel}${lib.title ? ' · '+lib.title : ''} · ${lib.words.length}词 ｜ ${sourceLabel}词库 ${remoteLibraries.length} 个 · 共 ${total}词`;
+    const currentContents = [
+      hasWords ? `${lib.words.length}词` : '暂无单词',
+      lib.hasSpeaking ? '口语' : '',
+      lib.hasListening ? '听力' : ''
+    ].filter(Boolean).join(' · ');
+    status.innerText = `当前：${lib.dayLabel}${lib.title ? ' · '+lib.title : ''} · ${currentContents} ｜ ${sourceLabel}作业 ${remoteLibraries.length} 天 · 共 ${total}词`;
   }
 }
 
@@ -1162,28 +1221,41 @@ function switchGroup(type, btn) {
 
 function switchMainArea(area, remember=true) {
   const showSpeaking = area === 'speaking';
-  document.getElementById('wordsArea').style.display = showSpeaking ? 'none' : 'block';
-  document.getElementById('speakingArea').style.display = showSpeaking ? 'block' : 'none';
-  document.getElementById('streakBadge').style.display = showSpeaking ? 'none' : 'inline-block';
-
+  const showListening = area === 'listening';
+  const showWords = !showSpeaking && !showListening;
   const wordsTab = document.getElementById('mainTabWords');
-  const speakingTab = document.getElementById('mainTabSpeaking');
-  wordsTab.classList.toggle('active', !showSpeaking);
-  speakingTab.classList.toggle('active', showSpeaking);
-  wordsTab.setAttribute('aria-selected', String(!showSpeaking));
-  speakingTab.setAttribute('aria-selected', String(showSpeaking));
+  if (showWords && wordsTab.disabled) area = 'listening';
 
-  if (showSpeaking) {
+  const finalSpeaking = area === 'speaking';
+  const finalListening = area === 'listening';
+  const finalWords = !finalSpeaking && !finalListening;
+  document.getElementById('wordsArea').style.display = finalWords ? 'block' : 'none';
+  document.getElementById('speakingArea').style.display = finalSpeaking ? 'block' : 'none';
+  document.getElementById('listeningArea').style.display = finalListening ? 'block' : 'none';
+  document.getElementById('streakBadge').style.display = finalWords ? 'inline-block' : 'none';
+
+  const speakingTab = document.getElementById('mainTabSpeaking');
+  const listeningTab = document.getElementById('mainTabListening');
+  wordsTab.classList.toggle('active', finalWords);
+  speakingTab.classList.toggle('active', finalSpeaking);
+  listeningTab.classList.toggle('active', finalListening);
+  wordsTab.setAttribute('aria-selected', String(finalWords));
+  speakingTab.setAttribute('aria-selected', String(finalSpeaking));
+  listeningTab.setAttribute('aria-selected', String(finalListening));
+
+  if (!finalWords) {
     stopAutoLearn();
     if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-  } else {
+  }
+  if (!finalSpeaking) {
     const audio = document.getElementById('speakingAudio');
     if (audio) audio.pause();
     speakingSegmentEnd = null;
   }
+  if (!finalListening) document.getElementById('listeningAudio')?.pause();
 
   if (remember) {
-    try { localStorage.setItem('wordTrainerMainArea', showSpeaking ? 'speaking' : 'words'); } catch (e) {}
+    try { localStorage.setItem('wordTrainerMainArea', area); } catch (e) {}
   }
 }
 
@@ -1446,26 +1518,45 @@ window.addEventListener('keydown', (e) => {
 function parseSpeakingHomework(text) {
   const metadata = {};
   const items = [];
+  const contentLines = [];
   let current = null;
   let field = '';
+  let nextNumber = 1;
+
+  function availableNumber() {
+    while (items.some(item => item.number === nextNumber)) nextNumber++;
+    return nextNumber++;
+  }
+
   text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach(rawLine => {
     const line = rawLine.trim();
-    if (!line) return;
     const meta = line.match(/^#\s*([^:：]+)\s*[:：]\s*(.*)$/);
     if (meta) {
       metadata[meta[1].trim().toLowerCase()] = meta[2].trim();
       return;
     }
-    const question = line.match(/^Q(\d+)\s*[:：]\s*(.*)$/i);
+    contentLines.push(rawLine.trimEnd());
+    if (!line) return;
+
+    const question = line.match(/^Q(\d*)\s*[:：]\s*(.*)$/i);
     if (question) {
-      current = { id:`q${Number(question[1])}`, number:Number(question[1]), question:question[2].trim(), answer:'' };
-      items.push(current);
+      const number = question[1] ? Number(question[1]) : availableNumber();
+      nextNumber = Math.max(nextNumber, number + 1);
+      current = items.find(item => item.number === number);
+      if (!current) {
+        current = { id:`q${number}`, number, question:'', answer:'' };
+        items.push(current);
+      }
+      current.question = question[2].trim();
       field = 'question';
       return;
     }
-    const answer = line.match(/^A(\d+)\s*[:：]\s*(.*)$/i);
+    const answer = line.match(/^A(\d*)\s*[:：]\s*(.*)$/i);
     if (answer) {
-      const number = Number(answer[1]);
+      const number = answer[1]
+        ? Number(answer[1])
+        : current && !current.answer ? current.number : availableNumber();
+      nextNumber = Math.max(nextNumber, number + 1);
       current = items.find(item => item.number === number);
       if (!current) {
         current = { id:`q${number}`, number, question:'', answer:'' };
@@ -1477,7 +1568,14 @@ function parseSpeakingHomework(text) {
     }
     if (current && field) current[field] += `${current[field] ? ' ' : ''}${line}`;
   });
-  return { title:metadata.title || '今日口语作业', items:items.filter(item => item.question || item.answer).sort((a,b) => a.number-b.number) };
+  const parsedItems = items
+    .filter((item, index, all) => (item.question || item.answer) && all.indexOf(item) === index)
+    .sort((a,b) => a.number-b.number);
+  if (!parsedItems.length) {
+    const plainText = contentLines.join('\n').trim();
+    if (plainText) parsedItems.push({ id:'text1', number:1, question:'', answer:'', plainText });
+  }
+  return { title:metadata.title || '今日口语作业', items:parsedItems };
 }
 
 let speakingSegmentEnd = null;
@@ -1486,8 +1584,11 @@ let speakingSegmentLabel = '整段录音';
 let speakingRepeatEnabled = false;
 let speakingPlaybackRate = 0.85;
 let speakingAudioObjectUrl = '';
+let speakingImageObjectUrl = '';
 let speakingLoadRequestId = 0;
 let currentSpeakingDay = 0;
+let listeningLoadRequestId = 0;
+let currentListeningDay = 0;
 
 async function sha256Hex(data) {
   const bytes = data instanceof ArrayBuffer ? data : new TextEncoder().encode(String(data));
@@ -1627,12 +1728,108 @@ function toggleSpeakingRepeat() {
 async function findSpeakingAudio(baseName) {
   for (const extension of ['mp3', 'm4a', 'ogg']) {
     const audioName = `${baseName}.${extension}`;
+    const audioUrl = `homework/${audioName}`;
+    if (!navigator.onLine) {
+      try {
+        const cachedResponse = await fetchWithTimeout(audioUrl, { cache:'no-store' });
+        if (cachedResponse.ok) return audioName;
+      } catch (error) {}
+      continue;
+    }
+    let headFailed = false;
+    try {
+      const response = await fetchWithTimeout(audioUrl, { method:'HEAD', cache:'no-store' });
+      if (response.ok) return audioName;
+    } catch (error) { headFailed = true; }
+    if (headFailed) {
+      try {
+        const cachedResponse = await fetchWithTimeout(audioUrl, { cache:'no-store' });
+        if (cachedResponse.ok) return audioName;
+      } catch (error) {}
+    }
+  }
+  return '';
+}
+
+async function findSpeakingImage(baseName) {
+  for (const extension of ['jpg', 'jpeg', 'png', 'webp']) {
+    const imageName = `${baseName}.${extension}`;
+    const imageUrl = `homework/${imageName}`;
+    if (!navigator.onLine) {
+      try {
+        const cachedResponse = await fetchWithTimeout(imageUrl, { cache:'no-store' });
+        if (cachedResponse.ok) return imageName;
+      } catch (error) {}
+      continue;
+    }
+    let headFailed = false;
+    try {
+      const response = await fetchWithTimeout(imageUrl, { method:'HEAD', cache:'no-store' });
+      if (response.ok) return imageName;
+    } catch (error) { headFailed = true; }
+    if (headFailed) {
+      try {
+        const cachedResponse = await fetchWithTimeout(imageUrl, { cache:'no-store' });
+        if (cachedResponse.ok) return imageName;
+      } catch (error) {}
+    }
+  }
+  return '';
+}
+
+async function findListeningAudio(baseName) {
+  for (const extension of ['mp3', 'm4a', 'ogg']) {
+    const audioName = `${baseName}.${extension}`;
     try {
       const response = await fetchWithTimeout(`homework/${audioName}`, { method:'HEAD', cache:'no-store' });
       if (response.ok) return audioName;
     } catch (error) {}
   }
   return '';
+}
+
+async function loadListeningHomework(requestedDay='') {
+  const requestId = ++listeningLoadRequestId;
+  const audio = document.getElementById('listeningAudio');
+  const badge = document.getElementById('listeningBadge');
+  const status = document.getElementById('listeningStatus');
+  const match = String(requestedDay || '').match(/(\d{1,3})/);
+  if (!match) return;
+  const dayNumber = String(Number(match[1])).padStart(3, '0');
+  const day = Number(dayNumber);
+  currentListeningDay = day;
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.style.display = 'none';
+  badge.innerText = `Day ${day}`;
+
+  if (!navigator.onLine) {
+    status.innerText = '听力文件未加入离线缓存，请联网后播放。';
+    return;
+  }
+
+  status.innerText = `正在读取 Day ${day} 听力练习…`;
+  const audioName = await findListeningAudio(`listening${dayNumber}`);
+  if (requestId !== listeningLoadRequestId) return;
+  if (!audioName) {
+    badge.innerText = `Day ${day} · 暂无听力`;
+    status.innerText = `Day ${day} 没有上传听力练习。`;
+    return;
+  }
+
+  audio.src = `homework/${audioName}`;
+  audio.style.display = 'block';
+  audio.load();
+  badge.innerText = `Day ${day} · 听力`;
+  status.innerText = '在线播放，不加入离线缓存。';
+}
+
+function clearSpeakingImage() {
+  const image = document.getElementById('speakingHomeworkImage');
+  if (speakingImageObjectUrl) URL.revokeObjectURL(speakingImageObjectUrl);
+  speakingImageObjectUrl = '';
+  image.removeAttribute('src');
+  image.style.display = 'none';
 }
 
 async function loadSpeakingHomework(requestedDay='') {
@@ -1656,15 +1853,30 @@ async function loadSpeakingHomework(requestedDay='') {
     const homeworkBytes = await homeworkResponse.arrayBuffer();
     const homeworkHash = await sha256Hex(homeworkBytes);
     const homework = parseSpeakingHomework(new TextDecoder().decode(homeworkBytes));
-    if (!homework.items.length) throw new Error(`${baseName}.txt 中没有识别到 Q/A`);
+    if (!homework.items.length) throw new Error(`${baseName}.txt 没有可显示的内容`);
 
     let cues = null;
     let cuesHash = '';
-    const cuesResponse = await fetchWithTimeout(cueUrl, { cache:'no-store' });
-    if (cuesResponse.ok) {
-      const cuesBytes = await cuesResponse.arrayBuffer();
-      cuesHash = await sha256Hex(cuesBytes);
-      cues = JSON.parse(new TextDecoder().decode(cuesBytes));
+    try {
+      const cuesResponse = await fetchWithTimeout(cueUrl, { cache:'no-store' });
+      if (cuesResponse.ok) {
+        const cuesBytes = await cuesResponse.arrayBuffer();
+        cuesHash = await sha256Hex(cuesBytes);
+        cues = JSON.parse(new TextDecoder().decode(cuesBytes));
+      }
+    } catch (error) {}
+
+    const imageName = await findSpeakingImage(baseName);
+    let imageBytes = null;
+    let imageHash = '';
+    let imageContentType = 'image/jpeg';
+    if (imageName) {
+      const imageResponse = await fetchWithTimeout(`homework/${imageName}`, { cache:'no-store' });
+      if (imageResponse.ok) {
+        imageBytes = await imageResponse.arrayBuffer();
+        imageHash = await sha256Hex(imageBytes);
+        imageContentType = imageResponse.headers.get('Content-Type') || imageContentType;
+      }
     }
 
     const cueAudioName = cues?.audio || '';
@@ -1692,6 +1904,17 @@ async function loadSpeakingHomework(requestedDay='') {
     // 用户切换 Day 后，较早发出的慢请求不得覆盖最后一次选择。
     if (requestId !== speakingLoadRequestId) return;
 
+    if (imageBytes) {
+      clearSpeakingImage();
+      speakingImageObjectUrl = URL.createObjectURL(new Blob([imageBytes], { type:imageContentType }));
+      const homeworkImage = document.getElementById('speakingHomeworkImage');
+      homeworkImage.src = speakingImageObjectUrl;
+      homeworkImage.alt = `${dayLabel} 口语作业题目图片`;
+      homeworkImage.style.display = 'block';
+    } else {
+      clearSpeakingImage();
+    }
+
     if (verifiedAudio) {
       if (speakingAudioObjectUrl) URL.revokeObjectURL(speakingAudioObjectUrl);
       speakingAudioObjectUrl = URL.createObjectURL(new Blob([audioBytes], { type:audioContentType }));
@@ -1703,6 +1926,7 @@ async function loadSpeakingHomework(requestedDay='') {
       cacheDayForOffline(dayNumber, [
         { url:textUrl, sha256:homeworkHash },
         ...(cues ? [{ url:cueUrl, sha256:cuesHash }] : []),
+        ...(imageBytes ? [{ url:`homework/${imageName}`, sha256:imageHash }] : []),
         { url:`homework/${audioName}`, sha256:audioHash }
       ]);
     } else {
@@ -1721,15 +1945,18 @@ async function loadSpeakingHomework(requestedDay='') {
       const number = item.number;
       const qCue = cues?.segments?.[`q${number}`];
       const aCue = cues?.segments?.[`a${number}`];
-      const question = item.question ? `<p class="speaking-line"><strong>Q${number}:</strong> ${escapeHtml(item.question)}</p>` : '';
-      const answer = item.answer ? `<p class="speaking-line"><strong>A${number}:</strong> ${escapeHtml(item.answer)}</p>` : '';
+      const plain = item.plainText
+        ? `<p class="speaking-line">${escapeHtml(item.plainText).replace(/\n/g, '<br>')}</p>`
+        : '';
+      const question = !plain && item.question ? `<p class="speaking-line"><strong>Q${number}:</strong> ${escapeHtml(item.question)}</p>` : '';
+      const answer = !plain && item.answer ? `<p class="speaking-line"><strong>A${number}:</strong> ${escapeHtml(item.answer)}</p>` : '';
       const actions = [
         qCue ? `<button class="speaking-action" onclick="playSpeakingRange(${Number(qCue.start)},${Number(qCue.end)},'Q${number}')">▶ 听问题</button>` : '',
         aCue ? `<button class="speaking-action" onclick="playSpeakingRange(${Number(aCue.start)},${Number(aCue.end)},'A${number}')">▶ 听答案</button>` : '',
         qCue && aCue ? `<button class="speaking-action" onclick="playSpeakingRange(${Number(qCue.start)},${Number(aCue.end)},'Q${number} + A${number}')">▶ 连续播放</button>` : ''
       ].join('');
       return `<div class="speaking-item">
-        ${question}${answer}
+        ${plain}${question}${answer}
         ${actions ? `<div class="speaking-actions">${actions}</div>` : ''}
       </div>`;
     }).join('');
@@ -1747,11 +1974,13 @@ async function loadSpeakingHomework(requestedDay='') {
       : '<div class="muted">口语作业暂时无法读取，请稍后刷新。</div>';
     if (speakingAudioObjectUrl) URL.revokeObjectURL(speakingAudioObjectUrl);
     speakingAudioObjectUrl = '';
+    clearSpeakingImage();
     audio.removeAttribute('src');
     audio.style.display = 'none';
     document.getElementById('speakingPlayer').style.display = 'none';
     speakingAudioStatus.innerText = error.message;
-    if (day) setOfflineStatus(`Day ${day} 单词已读取，口语尚未上传`, 'offline');
+    const selected = remoteLibraryCache[document.getElementById('librarySelect')?.value];
+    if (day && selected?.words?.length) setOfflineStatus(`Day ${day} 单词已读取，口语尚未上传`, 'offline');
   }
 }
 

@@ -25,11 +25,19 @@ test('word and speaking TXT files use flat three-digit day names', () => {
   }
 });
 
-test('speaking TXT files contain numbered questions or answers', () => {
+test('speaking TXT files contain displayable text', () => {
   const files = fs.readdirSync(homeworkDir).filter(file => /^speaking\d{3}\.txt$/.test(file));
   for (const file of files) {
-    assert.match(read(file), /^(Q|A)\d+\s*:/m, `${file} has no Q/A labels`);
+    const content = read(file).replace(/^\uFEFF/, '').split(/\r?\n/)
+      .filter(line => !/^\s*#/.test(line))
+      .join('\n').trim();
+    assert.ok(content.length > 0, `${file} has no displayable text`);
   }
+});
+
+test('listening audio uses a flat three-digit day name', () => {
+  const files = fs.readdirSync(homeworkDir).filter(file => /^listening/i.test(file));
+  for (const file of files) assert.match(file, /^listening\d{3}\.(mp3|m4a|ogg)$/i);
 });
 
 test('cue files point to existing audio and contain valid ranges', () => {

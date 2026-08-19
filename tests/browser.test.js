@@ -22,10 +22,12 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.17');
-  await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
+  await expect(page.locator('#appVersion')).toHaveText('v2.18');
   await expect(page).toHaveTitle('每日英语');
-  await expect(page.locator('#librarySelect option')).toHaveCount(3);
+  await expect(page.locator('#librarySelect option')).toHaveCount(5);
+  await page.locator('#librarySelect').selectOption('word007.txt');
+  await page.getByRole('tab', { name:/背单词/ }).click();
+  await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
 
   const widths = await page.evaluate(() => ({
     words:document.querySelector('#wordsArea').getBoundingClientRect().width,
@@ -49,6 +51,7 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await page.getByRole('button', { name:'🔤 键盘拼写' }).click();
   await expect(page.locator('#spellSection')).toBeVisible();
 
+  await page.locator('#librarySelect').selectOption('word006.txt');
   await page.getByRole('tab', { name:/口语练习/ }).click();
   await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(9);
@@ -95,16 +98,22 @@ test('visited days reopen and seek while offline', async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto('/index.html');
-  await waitForDayReady(page, 6);
+  await page.locator('#librarySelect').selectOption('word007.txt');
+  await waitForDayReady(page, 7);
   await page.locator('#librarySelect').selectOption('word004.txt');
   await waitForDayReady(page, 4);
   await page.locator('#librarySelect').selectOption('word005.txt');
   await waitForDayReady(page, 5);
+  await page.locator('#librarySelect').selectOption('word006.txt');
+  await waitForDayReady(page, 6);
 
   await context.setOffline(true);
   await page.reload();
-  await expect(page.locator('#learnWord')).toContainText('accident');
+  await expect(page.locator('#learnWord')).toContainText('centimetre/centimeter/cm');
+  await page.locator('#librarySelect').selectOption('word007.txt');
   await page.getByRole('tab', { name:/口语练习/ }).click();
+  await expect(page.locator('#speakingHomeworkImage')).toBeVisible();
+  await page.locator('#librarySelect').selectOption('word006.txt');
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(9);
   await page.getByRole('button', { name:'▶ 听问题' }).nth(1).click();
   await expect.poll(() => page.locator('#speakingAudio').evaluate(audio => audio.currentTime)).toBeCloseTo(12.042, 2);
@@ -136,15 +145,16 @@ test('a slower previous day cannot overwrite the latest selection', async ({ bro
 test('a missing latest speaking day cannot overwrite an older selection', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
-  let markDay6Requested;
-  const day6Requested = new Promise(resolve => { markDay6Requested = resolve; });
-  await page.route('**/homework/speaking006.txt', async route => {
-    markDay6Requested();
+  let markDay7Requested;
+  const day7Requested = new Promise(resolve => { markDay7Requested = resolve; });
+  await page.route('**/homework/speaking007.txt', async route => {
+    markDay7Requested();
     await new Promise(resolve => setTimeout(resolve, 800));
     await route.fulfill({ status:404, body:'Not found' });
   });
   await page.goto('/index.html');
-  await day6Requested;
+  await page.locator('#librarySelect').selectOption('word007.txt');
+  await day7Requested;
   await page.getByRole('tab', { name:/口语练习/ }).click();
   await page.locator('#librarySelect').selectOption('word005.txt');
   await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 5');
@@ -156,8 +166,9 @@ test('a missing latest speaking day cannot overwrite an older selection', async 
 
 test('spelling skips fixed punctuation and always allows moving on', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(3);
+  await expect(page.locator('#librarySelect option')).toHaveCount(5);
   await page.locator('#librarySelect').selectOption('word004.txt');
+  await page.getByRole('tab', { name:/背单词/ }).click();
   await page.evaluate(() => {
     const words = remoteLibraryCache['word004.txt'].words;
     const punctuated = words.find(item => item.w === 'classical (music)');
@@ -182,4 +193,67 @@ test('spelling skips fixed punctuation and always allows moving on', async ({ pa
   });
   await page.getByRole('button', { name:'跳过此词 ➜' }).click();
   await expect(page.locator('#spellMeaning')).toHaveText('阿姨；姑妈');
+});
+
+test('speaking accepts Q and A labels without numbers', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.route('**/homework/speaking007.txt', route => route.fulfill({
+    status:200,
+    contentType:'text/plain',
+    body:'Q: What is your favourite programme?\nA: I like animal programmes.\n\nQ: Why?\nA: Because I can learn about animals.'
+  }));
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word007.txt');
+  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await expect(page.locator('#speakingHomeworkItems')).toContainText('Q1: What is your favourite programme?');
+  await expect(page.locator('#speakingHomeworkItems')).toContainText('A2: Because I can learn about animals.');
+  await context.close();
+});
+
+test('speaking displays the complete text when there are no Q or A labels', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.route('**/homework/speaking007.txt', route => route.fulfill({
+    status:200,
+    contentType:'text/plain',
+    body:'Listen to this short story.\n\nThe cat sat by the window.\nThen it went outside to play.'
+  }));
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word007.txt');
+  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await expect(page.locator('#speakingHomeworkItems')).toContainText('Listen to this short story.');
+  await expect(page.locator('#speakingHomeworkItems')).toContainText('Then it went outside to play.');
+  await expect(page.locator('#speakingHomeworkItems strong')).toHaveCount(0);
+  await context.close();
+});
+
+test('speaking automatically displays and removes an optional same-name image', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word007.txt');
+  await page.getByRole('tab', { name:/口语练习/ }).click();
+  const image = page.locator('#speakingHomeworkImage');
+  await expect(image).toBeVisible();
+  await expect.poll(() => image.evaluate(element => element.naturalWidth)).toBeGreaterThan(0);
+
+  await page.locator('#librarySelect').selectOption('word006.txt');
+  await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
+  await expect(image).toBeHidden();
+});
+
+test('a day loads its matching listening audio', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.goto('/index.html');
+  await expect(page.locator('#librarySelect option')).toHaveCount(5);
+  await expect(page.locator('#librarySelect')).toHaveValue('word008.txt');
+  await page.getByRole('tab', { name:/听力练习/ }).click();
+  await expect(page.locator('#listeningBadge')).toContainText('Day 8 · 听力');
+  await expect(page.locator('#listeningAudio')).toBeVisible();
+  await expect(page.locator('#listeningAudio')).toHaveAttribute('src', 'homework/listening008.mp3');
+
+  await page.locator('#librarySelect').selectOption('word007.txt');
+  await expect(page.locator('#listeningBadge')).toContainText('Day 7 · 暂无听力');
+  await expect(page.locator('#listeningAudio')).toBeHidden();
+  await context.close();
 });
