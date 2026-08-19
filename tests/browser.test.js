@@ -22,9 +22,9 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.18');
+  await expect(page.locator('#appVersion')).toHaveText('v2.19');
   await expect(page).toHaveTitle('每日英语');
-  await expect(page.locator('#librarySelect option')).toHaveCount(5);
+  await expect(page.locator('#librarySelect option')).toHaveCount(8);
   await page.locator('#librarySelect').selectOption('word007.txt');
   await page.getByRole('tab', { name:/背单词/ }).click();
   await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
@@ -60,6 +60,27 @@ test('existing word and speaking workflows remain available', async ({ page }) =
 
   await page.locator('#librarySelect').selectOption('word004.txt');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
+});
+
+test('word dictation prints the complete day with Chinese cues only', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word002.txt');
+  await page.getByRole('tab', { name:/背单词/ }).click();
+
+  const toolbarLabels = await page.locator('#wordsArea .toolbar button').allTextContents();
+  expect(toolbarLabels).toEqual(['📥 手动导入（备用）', '📊 学习历史', '🖨️ 打印默写']);
+
+  await page.evaluate(() => {
+    window.__printCalled = false;
+    window.print = () => { window.__printCalled = true; };
+  });
+  await page.getByRole('button', { name:'🖨️ 打印默写' }).click();
+
+  await expect(page.locator('#printSheetTitle')).toHaveText('第 2 天单词默写（94词）');
+  await expect(page.locator('#printWordList .print-item')).toHaveCount(94);
+  await expect(page.locator('#printWordList')).toContainText('n. 地址');
+  await expect(page.locator('#printWordList')).not.toContainText('address');
+  await expect.poll(() => page.evaluate(() => window.__printCalled)).toBe(true);
 });
 
 test('missing cue file falls back to same-name complete audio', async ({ browser }) => {
@@ -166,7 +187,7 @@ test('a missing latest speaking day cannot overwrite an older selection', async 
 
 test('spelling skips fixed punctuation and always allows moving on', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(5);
+  await expect(page.locator('#librarySelect option')).toHaveCount(8);
   await page.locator('#librarySelect').selectOption('word004.txt');
   await page.getByRole('tab', { name:/背单词/ }).click();
   await page.evaluate(() => {
@@ -245,7 +266,7 @@ test('a day loads its matching listening audio', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(5);
+  await expect(page.locator('#librarySelect option')).toHaveCount(8);
   await expect(page.locator('#librarySelect')).toHaveValue('word008.txt');
   await page.getByRole('tab', { name:/听力练习/ }).click();
   await expect(page.locator('#listeningBadge')).toContainText('Day 8 · 听力');

@@ -294,13 +294,31 @@
       .listening-card { padding:22px 24px; }
     }
     @media (max-width:430px) { .main-tab { padding:12px 5px; font-size:13px; } }
+    .print-sheet { display:none; }
+    @page { size:A4 portrait; margin:8mm; }
+    @media print {
+      html, body { background:#FFFFFF !important; }
+      body { display:block; margin:0; padding:0 !important; color:#000000; }
+      body > .container { width:100%; max-width:none; }
+      body > .container > * { display:none !important; }
+      body > .container > #printSheet { display:block !important; }
+      .print-sheet { font-family:"Microsoft YaHei", "PingFang SC", sans-serif; }
+      .print-sheet-header { display:flex; align-items:flex-end; justify-content:space-between; gap:8mm; margin-bottom:4mm; padding-bottom:2.5mm; border-bottom:0.4mm solid #000; }
+      .print-sheet-title { font-size:15pt; font-weight:800; white-space:nowrap; }
+      .print-sheet-fields { display:flex; gap:5mm; font-size:9.5pt; white-space:nowrap; }
+      .print-sheet-field { display:inline-block; min-width:25mm; border-bottom:0.25mm solid #000; }
+      .print-list { display:grid; grid-template-columns:repeat(var(--print-columns, 3), minmax(0, 1fr)); grid-auto-rows:6.5mm; column-gap:4mm; }
+      .print-item { display:flex; align-items:flex-end; gap:1.5mm; min-width:0; padding:0.7mm 0; font-size:9.5pt; line-height:1; break-inside:avoid; }
+      .print-cue { flex:none; white-space:nowrap; }
+      .print-blank { flex:1; min-width:7mm; height:3.8mm; border-bottom:0.25mm solid #000; }
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.18</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.19</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -362,6 +380,7 @@
   <div class="toolbar">
     <button class="btn btn-secondary" onclick="toggleImportPanel()">📥 手动导入（备用）</button>
     <button class="btn btn-secondary" onclick="switchMode('history')">📊 学习历史</button>
+    <button class="btn btn-secondary" onclick="printCurrentDay()">🖨️ 打印默写</button>
   </div>
 
   <div id="importPanel" class="panel" style="display:none;">
@@ -488,6 +507,18 @@ banana | n. | 香蕉"></textarea>
     </div>
   </div>
   </div>
+
+  <section id="printSheet" class="print-sheet" aria-hidden="true">
+    <div class="print-sheet-header">
+      <div id="printSheetTitle" class="print-sheet-title">单词默写</div>
+      <div class="print-sheet-fields">
+        <span>姓名：<i class="print-sheet-field"></i></span>
+        <span>日期：<i class="print-sheet-field"></i></span>
+        <span>得分：<i class="print-sheet-field"></i></span>
+      </div>
+    </div>
+    <div id="printWordList" class="print-list"></div>
+  </section>
 </div>
 
 <script>
@@ -728,6 +759,26 @@ function updateGroupLabels() {
   document.getElementById('groupBtn1').innerText = `第 1 页 (${n1}词)`;
   document.getElementById('groupBtn2').innerText = `第 2 页 (${n2}词)`;
   document.getElementById('groupBtnAll').innerText = `全本 (${n}词)`;
+}
+
+function printCurrentDay() {
+  if (!currentDayWords.length) {
+    alert('当前没有可以打印的单词。');
+    return;
+  }
+  const dayMatch = String(currentDayKey).match(/day-?0*(\d+)/i);
+  const title = dayMatch ? `第 ${Number(dayMatch[1])} 天单词默写` : '单词默写';
+  const columns = Math.max(2, Math.min(4, Math.ceil(currentDayWords.length / 38)));
+  const sheet = document.getElementById('printSheet');
+  sheet.style.setProperty('--print-columns', String(columns));
+  document.getElementById('printSheetTitle').innerText = `${title}（${currentDayWords.length}词）`;
+  document.getElementById('printWordList').innerHTML = currentDayWords.map(item => `
+    <div class="print-item">
+      <span class="print-blank"></span>
+      <span class="print-cue">${escapeHtml(item.pos || '')} ${escapeHtml(item.m)}</span>
+    </div>
+  `).join('');
+  requestAnimationFrame(() => window.print());
 }
 
 function toggleImportPanel() {
