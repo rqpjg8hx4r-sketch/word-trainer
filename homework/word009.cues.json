@@ -1,0 +1,558 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word009.mp3",
+  "sourceHash": "e2df43983c8dc9fa2c4df34ce318be4621e463f8d121e26144a3c368647518ed",
+  "audioHash": "14bbc1b7705d27927063d96b7d8eda5741fa22a9957a296d148484c76ef6be2c",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "apartment (building)",
+      "spokenText": "apartment (building)",
+      "start": 0,
+      "end": 2.5
+    },
+    {
+      "index": 1,
+      "sourceText": "entrance",
+      "spokenText": "entrance",
+      "start": 3.25,
+      "end": 4.2
+    },
+    {
+      "index": 2,
+      "sourceText": "pharmacy",
+      "spokenText": "pharmacy",
+      "start": 4.95,
+      "end": 6.35
+    },
+    {
+      "index": 3,
+      "sourceText": "bank",
+      "spokenText": "bank",
+      "start": 7.1,
+      "end": 8.8
+    },
+    {
+      "index": 4,
+      "sourceText": "exit",
+      "spokenText": "exit",
+      "start": 9.55,
+      "end": 10.55
+    },
+    {
+      "index": 5,
+      "sourceText": "police station",
+      "spokenText": "police station",
+      "start": 11.3,
+      "end": 12.45
+    },
+    {
+      "index": 6,
+      "sourceText": "block",
+      "spokenText": "block",
+      "start": 13.2,
+      "end": 14.05
+    },
+    {
+      "index": 7,
+      "sourceText": "factory",
+      "spokenText": "factory",
+      "start": 14.8,
+      "end": 15.75
+    },
+    {
+      "index": 8,
+      "sourceText": "post office",
+      "spokenText": "post office",
+      "start": 16.5,
+      "end": 16.8
+    },
+    {
+      "index": 9,
+      "sourceText": "bookshop",
+      "spokenText": "bookshop",
+      "start": 17.55,
+      "end": 18.5
+    },
+    {
+      "index": 10,
+      "sourceText": "flat",
+      "spokenText": "flat",
+      "start": 19.25,
+      "end": 20.2
+    },
+    {
+      "index": 11,
+      "sourceText": "railway station",
+      "spokenText": "railway station",
+      "start": 20.95,
+      "end": 22.45
+    },
+    {
+      "index": 12,
+      "sourceText": "bookstore",
+      "spokenText": "bookstore",
+      "start": 23.2,
+      "end": 24.5
+    },
+    {
+      "index": 13,
+      "sourceText": "garage",
+      "spokenText": "garage",
+      "start": 25.25,
+      "end": 26.5
+    },
+    {
+      "index": 14,
+      "sourceText": "school",
+      "spokenText": "school",
+      "start": 27.25,
+      "end": 28.8
+    },
+    {
+      "index": 15,
+      "sourceText": "building",
+      "spokenText": "building",
+      "start": 29.55,
+      "end": 30.5
+    },
+    {
+      "index": 16,
+      "sourceText": "grocery store",
+      "spokenText": "grocery store",
+      "start": 31.25,
+      "end": 32.55
+    },
+    {
+      "index": 17,
+      "sourceText": "shop",
+      "spokenText": "shop",
+      "start": 33.3,
+      "end": 34.6
+    },
+    {
+      "index": 18,
+      "sourceText": "cafe/café",
+      "spokenText": "café",
+      "start": 35.35,
+      "end": 36.5
+    },
+    {
+      "index": 19,
+      "sourceText": "guest-house",
+      "spokenText": "guest-house",
+      "start": 37.25,
+      "end": 38.5
+    },
+    {
+      "index": 20,
+      "sourceText": "sports centre",
+      "spokenText": "sports centre",
+      "start": 39.25,
+      "end": 40.6
+    },
+    {
+      "index": 21,
+      "sourceText": "cafeteria",
+      "spokenText": "cafeteria",
+      "start": 41.35,
+      "end": 42.45
+    },
+    {
+      "index": 22,
+      "sourceText": "hospital",
+      "spokenText": "hospital",
+      "start": 43.2,
+      "end": 44.35
+    },
+    {
+      "index": 23,
+      "sourceText": "stadium",
+      "spokenText": "stadium",
+      "start": 45.1,
+      "end": 46.05
+    },
+    {
+      "index": 24,
+      "sourceText": "castle",
+      "spokenText": "castle",
+      "start": 46.8,
+      "end": 47.5
+    },
+    {
+      "index": 25,
+      "sourceText": "hotel",
+      "spokenText": "hotel",
+      "start": 48.25,
+      "end": 49.25
+    },
+    {
+      "index": 26,
+      "sourceText": "supermarket",
+      "spokenText": "supermarket",
+      "start": 50,
+      "end": 51.2
+    },
+    {
+      "index": 27,
+      "sourceText": "cinema",
+      "spokenText": "cinema",
+      "start": 51.95,
+      "end": 52.95
+    },
+    {
+      "index": 28,
+      "sourceText": "house",
+      "spokenText": "house",
+      "start": 53.7,
+      "end": 54.75
+    },
+    {
+      "index": 29,
+      "sourceText": "swimming pool",
+      "spokenText": "swimming pool",
+      "start": 55.5,
+      "end": 58
+    },
+    {
+      "index": 30,
+      "sourceText": "college",
+      "spokenText": "college",
+      "start": 58.75,
+      "end": 59.65
+    },
+    {
+      "index": 31,
+      "sourceText": "library",
+      "spokenText": "library",
+      "start": 60.4,
+      "end": 61.55
+    },
+    {
+      "index": 32,
+      "sourceText": "theatre",
+      "spokenText": "theatre",
+      "start": 62.3,
+      "end": 63.4
+    },
+    {
+      "index": 33,
+      "sourceText": "department store",
+      "spokenText": "department store",
+      "start": 64.15,
+      "end": 65.5
+    },
+    {
+      "index": 34,
+      "sourceText": "lift",
+      "spokenText": "lift",
+      "start": 66.25,
+      "end": 67.2
+    },
+    {
+      "index": 35,
+      "sourceText": "university",
+      "spokenText": "university",
+      "start": 67.95,
+      "end": 69.35
+    },
+    {
+      "index": 36,
+      "sourceText": "disco",
+      "spokenText": "disco",
+      "start": 70.1,
+      "end": 71.1
+    },
+    {
+      "index": 37,
+      "sourceText": "museum",
+      "spokenText": "museum",
+      "start": 71.85,
+      "end": 73.1
+    },
+    {
+      "index": 38,
+      "sourceText": "elevator",
+      "spokenText": "elevator",
+      "start": 73.85,
+      "end": 75.25
+    },
+    {
+      "index": 39,
+      "sourceText": "office",
+      "spokenText": "office",
+      "start": 76,
+      "end": 79.05
+    },
+    {
+      "index": 40,
+      "sourceText": "area",
+      "spokenText": "area",
+      "start": 79.8,
+      "end": 81.15
+    },
+    {
+      "index": 41,
+      "sourceText": "hill",
+      "spokenText": "hill",
+      "start": 81.9,
+      "end": 82.8
+    },
+    {
+      "index": 42,
+      "sourceText": "rainforest",
+      "spokenText": "rainforest",
+      "start": 83.55,
+      "end": 85.7
+    },
+    {
+      "index": 43,
+      "sourceText": "beach",
+      "spokenText": "beach",
+      "start": 86.45,
+      "end": 87.15
+    },
+    {
+      "index": 44,
+      "sourceText": "island",
+      "spokenText": "island",
+      "start": 87.9,
+      "end": 88.95
+    },
+    {
+      "index": 45,
+      "sourceText": "river",
+      "spokenText": "river",
+      "start": 89.7,
+      "end": 91.55
+    },
+    {
+      "index": 46,
+      "sourceText": "campsite",
+      "spokenText": "campsite",
+      "start": 92.3,
+      "end": 93.35
+    },
+    {
+      "index": 47,
+      "sourceText": "lake",
+      "spokenText": "lake",
+      "start": 94.1,
+      "end": 94.95
+    },
+    {
+      "index": 48,
+      "sourceText": "sea",
+      "spokenText": "sea",
+      "start": 95.7,
+      "end": 96.6
+    },
+    {
+      "index": 49,
+      "sourceText": "farm",
+      "spokenText": "farm",
+      "start": 97.35,
+      "end": 98.6
+    },
+    {
+      "index": 50,
+      "sourceText": "mountain",
+      "spokenText": "mountain",
+      "start": 99.35,
+      "end": 100.35
+    },
+    {
+      "index": 51,
+      "sourceText": "sky",
+      "spokenText": "sky",
+      "start": 101.1,
+      "end": 102.2
+    },
+    {
+      "index": 52,
+      "sourceText": "field",
+      "spokenText": "field",
+      "start": 102.95,
+      "end": 104.1
+    },
+    {
+      "index": 53,
+      "sourceText": "path",
+      "spokenText": "path",
+      "start": 104.85,
+      "end": 106.1
+    },
+    {
+      "index": 54,
+      "sourceText": "village",
+      "spokenText": "village",
+      "start": 106.85,
+      "end": 108.05
+    },
+    {
+      "index": 55,
+      "sourceText": "forest",
+      "spokenText": "forest",
+      "start": 108.8,
+      "end": 110.4
+    },
+    {
+      "index": 56,
+      "sourceText": "railway",
+      "spokenText": "railway",
+      "start": 111.15,
+      "end": 112.5
+    },
+    {
+      "index": 57,
+      "sourceText": "wood",
+      "spokenText": "wood",
+      "start": 113.25,
+      "end": 114.6
+    },
+    {
+      "index": 58,
+      "sourceText": "airport",
+      "spokenText": "airport",
+      "start": 115.35,
+      "end": 116.35
+    },
+    {
+      "index": 59,
+      "sourceText": "market",
+      "spokenText": "market",
+      "start": 117.1,
+      "end": 118.1
+    },
+    {
+      "index": 60,
+      "sourceText": "square",
+      "spokenText": "square",
+      "start": 118.85,
+      "end": 119.75
+    },
+    {
+      "index": 61,
+      "sourceText": "bridge",
+      "spokenText": "bridge",
+      "start": 120.5,
+      "end": 121.55
+    },
+    {
+      "index": 62,
+      "sourceText": "motorway",
+      "spokenText": "motorway",
+      "start": 122.3,
+      "end": 123.05
+    },
+    {
+      "index": 63,
+      "sourceText": "station",
+      "spokenText": "station",
+      "start": 123.8,
+      "end": 126.05
+    },
+    {
+      "index": 64,
+      "sourceText": "bus station",
+      "spokenText": "bus station",
+      "start": 126.8,
+      "end": 128.15
+    },
+    {
+      "index": 65,
+      "sourceText": "park",
+      "spokenText": "park",
+      "start": 128.9,
+      "end": 130.2
+    },
+    {
+      "index": 66,
+      "sourceText": "street",
+      "spokenText": "street",
+      "start": 130.95,
+      "end": 132.1
+    },
+    {
+      "index": 67,
+      "sourceText": "bus stop",
+      "spokenText": "bus stop",
+      "start": 132.85,
+      "end": 133.95
+    },
+    {
+      "index": 68,
+      "sourceText": "petrol station",
+      "spokenText": "petrol station",
+      "start": 134.7,
+      "end": 136.55
+    },
+    {
+      "index": 69,
+      "sourceText": "town",
+      "spokenText": "town",
+      "start": 137.3,
+      "end": 138.75
+    },
+    {
+      "index": 70,
+      "sourceText": "car park",
+      "spokenText": "car park",
+      "start": 139.5,
+      "end": 140.8
+    },
+    {
+      "index": 71,
+      "sourceText": "playground",
+      "spokenText": "playground",
+      "start": 141.55,
+      "end": 142.8
+    },
+    {
+      "index": 72,
+      "sourceText": "underground",
+      "spokenText": "underground",
+      "start": 143.55,
+      "end": 145.5
+    },
+    {
+      "index": 73,
+      "sourceText": "city centre",
+      "spokenText": "city centre",
+      "start": 146.25,
+      "end": 147.65
+    },
+    {
+      "index": 74,
+      "sourceText": "road",
+      "spokenText": "road",
+      "start": 148.4,
+      "end": 150.25
+    },
+    {
+      "index": 75,
+      "sourceText": "zoo",
+      "spokenText": "zoo",
+      "start": 151,
+      "end": 151.8
+    },
+    {
+      "index": 76,
+      "sourceText": "corner",
+      "spokenText": "corner",
+      "start": 152.55,
+      "end": 153.4
+    },
+    {
+      "index": 77,
+      "sourceText": "roundabout",
+      "spokenText": "roundabout",
+      "start": 154.15,
+      "end": 155.9
+    }
+  ]
+}
