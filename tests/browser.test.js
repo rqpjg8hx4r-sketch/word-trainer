@@ -100,16 +100,37 @@ test('missing optional word audio falls back to system TTS', async ({ browser })
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word009.txt');
+  await page.locator('#librarySelect').selectOption('word008.txt');
   await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBe(0);
   const spoken = await page.evaluate(() => {
     window.__ttsSpoken = [];
     window.speechSynthesis.cancel = () => {};
     window.speechSynthesis.speak = utterance => window.__ttsSpoken.push(utterance.text);
-    speak(remoteLibraryCache['word009.txt'].words[0].w);
+    speak(remoteLibraryCache['word008.txt'].words[0].w);
     return window.__ttsSpoken;
   });
   expect(spoken).toHaveLength(1);
+  await context.close();
+});
+
+test('a missing word cue falls back to system TTS while other recorded words remain available', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word009.txt');
+  await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBeGreaterThan(0);
+  const result = await page.evaluate(() => {
+    window.__ttsSpoken = [];
+    window.speechSynthesis.cancel = () => {};
+    window.speechSynthesis.speak = utterance => window.__ttsSpoken.push(utterance.text);
+    const hasRecordedEntrance = wordAudioCues.has('entrance');
+    const hasRecordedBlock = wordAudioCues.has('block');
+    speak('block');
+    return { hasRecordedEntrance, hasRecordedBlock, tts:window.__ttsSpoken };
+  });
+  expect(result.hasRecordedEntrance).toBe(true);
+  expect(result.hasRecordedBlock).toBe(false);
+  expect(result.tts).toEqual(['block']);
   await context.close();
 });
 

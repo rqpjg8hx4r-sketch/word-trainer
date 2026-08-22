@@ -164,7 +164,9 @@ npm run audio:words -- homework/word010.txt --voice marin --instructions "自定
 Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.
 ```
 
-生成器逐词调用语音 API，以 WAV 的实际数据长度计算时长，再插入静音并合并为一个 MP3。临时文件在成功或失败后都会删除。API Key 只能通过 `OPENAI_API_KEY` 环境变量提供。
+生成器逐词调用语音 API，以 WAV 的实际数据长度计算时长，并在拼接前检查 16 位 PCM 峰值。低于 -40 dB 的近静音响应会自动重试，最多尝试 3 次；仍为静音时终止生成且不覆盖原 MP3。验证通过后再插入静音并合并为一个 MP3。API Key 只能通过 `OPENAI_API_KEY` 环境变量提供。
+
+调试阶段保留中间文件，目录位于仓库上一级的 `temp/day###/`，例如 `alex-english/temp/day009/007-block.wav`。目录中同时保留 `gap.wav`、`concat.txt`、临时合并的 `output.mp3` 和记录生成参数、时长、峰值的 `generation.json`。近静音响应另存为 `007-block.silent-attempt1.wav` 等文件，方便排查。重新生成同一个 Day 会覆盖同名文件，但不会自动删除该目录。
 
 ## 网页行为
 

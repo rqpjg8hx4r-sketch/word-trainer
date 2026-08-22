@@ -1,5 +1,4 @@
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
@@ -103,6 +102,40 @@ function wavDuration(buffer) {
   return dataSize / byteRate;
 }
 
+function wavPeakDb(buffer) {
+  if (buffer.toString('ascii', 0, 4) !== 'RIFF' || buffer.toString('ascii', 8, 12) !== 'WAVE') {
+    throw new Error('The speech API did not return a valid WAV file.');
+  }
+  let offset = 12;
+  let audioFormat = 0;
+  let bitsPerSample = 0;
+  let dataOffset = 0;
+  let dataSize = 0;
+  while (offset + 8 <= buffer.length) {
+    const id = buffer.toString('ascii', offset, offset + 4);
+    const size = buffer.readUInt32LE(offset + 4);
+    if (id === 'fmt ' && size >= 16) {
+      audioFormat = buffer.readUInt16LE(offset + 8);
+      bitsPerSample = buffer.readUInt16LE(offset + 22);
+    }
+    if (id === 'data') {
+      dataOffset = offset + 8;
+      dataSize = Math.min(size, buffer.length - dataOffset);
+      break;
+    }
+    offset += 8 + size + (size % 2);
+  }
+  if (audioFormat !== 1 || bitsPerSample !== 16 || !dataSize) {
+    throw new Error('Expected 16-bit PCM WAV audio.');
+  }
+  let peak = 0;
+  const end = dataOffset + dataSize - (dataSize % 2);
+  for (let position = dataOffset; position < end; position += 2) {
+    peak = Math.max(peak, Math.abs(buffer.readInt16LE(position)));
+  }
+  return peak ? 20 * Math.log10(peak / 32768) : -Infinity;
+}
+
 async function requestSpeech(apiKey, input, voice, instructions) {
   const response = await fetch('https://api.openai.com/v1/audio/speech', {
     method:'POST',
@@ -134,6 +167,17 @@ function concatPath(file) {
   return file.replaceAll('\\', '/').replaceAll("'", "'\\''");
 }
 
+function partFilename(item) {
+  const slug = item.spokenText
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .slice(0, 48) || 'word';
+  return `${String(item.index + 1).padStart(3, '0')}-${slug}.wav`;
+}
+
 async function generate(options) {
   const inputPath = path.resolve(options.input);
   if (!/^word\d{3}\.txt$/i.test(path.basename(inputPath))) {
@@ -150,67 +194,101 @@ async function generate(options) {
   if (!apiKey) throw new Error('OPENAI_API_KEY is not set.');
   if (!fs.existsSync(options.ffmpeg)) throw new Error(`ffmpeg was not found: ${options.ffmpeg}`);
 
-  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'word-audio-'));
-  try {
-    const wavFiles = [];
-    for (const item of items) {
-      process.stdout.write(`[${item.index + 1}/${items.length}] ${item.spokenText}\n`);
-      const wav = await requestSpeech(apiKey, item.spokenText, options.voice, options.instructions);
-      item.duration = wavDuration(wav);
-      const wavFile = path.join(tempDir, `${String(item.index + 1).padStart(3, '0')}.wav`);
-      fs.writeFileSync(wavFile, wav);
-      wavFiles.push(wavFile);
+  const day = path.basename(inputPath).match(/word(\d{3})\.txt/i)[1];
+  const tempDir = path.resolve(projectRoot, '..', 'temp', `day${day}`);
+  fs.mkdirSync(tempDir, { recursive:true });
+  process.stdout.write(`Keeping intermediate files in ${tempDir}\n`);
+
+  const wavFiles = [];
+  for (const item of items) {
+    process.stdout.write(`[${item.index + 1}/${items.length}] ${item.spokenText}\n`);
+    let wav;
+    let peakDb = -Infinity;
+    const finalPartName = partFilename(item);
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      wav = await requestSpeech(apiKey, item.spokenText, options.voice, options.instructions);
+      peakDb = wavPeakDb(wav);
+      if (peakDb >= -40) break;
+      const silentName = finalPartName.replace(/\.wav$/, `.silent-attempt${attempt}.wav`);
+      fs.writeFileSync(path.join(tempDir, silentName), wav);
+      if (attempt === 3) {
+        throw new Error(`TTS returned silent audio for "${item.spokenText}" after 3 attempts.`);
+      }
+      process.stdout.write(`  silent response (${peakDb.toFixed(1)} dB), retrying ${attempt}/2\n`);
     }
-
-    const concatFiles = [];
-    let gapFile = '';
-    if (options.gap > 0 && items.length > 1) {
-      gapFile = path.join(tempDir, 'gap.wav');
-      runFfmpeg(options.ffmpeg, ['-f', 'lavfi', '-i', `anullsrc=r=24000:cl=mono`, '-t', String(options.gap), '-c:a', 'pcm_s16le', gapFile]);
-    }
-    wavFiles.forEach((file, index) => {
-      concatFiles.push(file);
-      if (gapFile && index < wavFiles.length - 1) concatFiles.push(gapFile);
-    });
-    const concatList = path.join(tempDir, 'concat.txt');
-    fs.writeFileSync(concatList, concatFiles.map(file => `file '${concatPath(file)}'`).join('\n'), 'utf8');
-
-    const tempMp3 = path.join(tempDir, 'output.mp3');
-    runFfmpeg(options.ffmpeg, ['-f', 'concat', '-safe', '0', '-i', concatList, '-ar', '24000', '-ac', '1', '-b:a', '96k', tempMp3]);
-    let cursor = 0;
-    const cueItems = items.map(item => {
-      const start = cursor;
-      const end = start + item.duration;
-      cursor = end + options.gap;
-      return {
-        index:item.index,
-        sourceText:item.sourceText,
-        spokenText:item.spokenText,
-        start:Number(start.toFixed(3)),
-        end:Number(end.toFixed(3))
-      };
-    });
-
-    const basePath = inputPath.slice(0, -path.extname(inputPath).length);
-    const outputMp3 = `${basePath}.mp3`;
-    const outputCues = `${basePath}.cues.json`;
-    const audioBytes = fs.readFileSync(tempMp3);
-    fs.copyFileSync(tempMp3, outputMp3);
-    fs.writeFileSync(outputCues, `${JSON.stringify({
-      version:1,
-      model:'gpt-4o-mini-tts',
-      voice:options.voice,
-      instructions:options.instructions,
-      audio:path.basename(outputMp3),
-      sourceHash:sha256(sourceBytes),
-      audioHash:sha256(audioBytes),
-      gapSeconds:options.gap,
-      items:cueItems
-    }, null, 2)}\n`, 'utf8');
-    process.stdout.write(`Created ${outputMp3}\nCreated ${outputCues}\n`);
-  } finally {
-    fs.rmSync(tempDir, { recursive:true, force:true });
+    item.duration = wavDuration(wav);
+    item.peakDb = peakDb;
+    item.partFile = finalPartName;
+    const wavFile = path.join(tempDir, finalPartName);
+    fs.writeFileSync(wavFile, wav);
+    wavFiles.push(wavFile);
   }
+
+  const concatFiles = [];
+  let gapFile = '';
+  if (options.gap > 0 && items.length > 1) {
+    gapFile = path.join(tempDir, 'gap.wav');
+    runFfmpeg(options.ffmpeg, ['-f', 'lavfi', '-i', `anullsrc=r=24000:cl=mono`, '-t', String(options.gap), '-c:a', 'pcm_s16le', gapFile]);
+  }
+  wavFiles.forEach((file, index) => {
+    concatFiles.push(file);
+    if (gapFile && index < wavFiles.length - 1) concatFiles.push(gapFile);
+  });
+  const concatList = path.join(tempDir, 'concat.txt');
+  fs.writeFileSync(concatList, concatFiles.map(file => `file '${concatPath(file)}'`).join('\n'), 'utf8');
+
+  const tempMp3 = path.join(tempDir, 'output.mp3');
+  runFfmpeg(options.ffmpeg, ['-f', 'concat', '-safe', '0', '-i', concatList, '-ar', '24000', '-ac', '1', '-b:a', '96k', tempMp3]);
+  let cursor = 0;
+  const cueItems = items.map(item => {
+    const start = cursor;
+    const end = start + item.duration;
+    cursor = end + options.gap;
+    return {
+      index:item.index,
+      sourceText:item.sourceText,
+      spokenText:item.spokenText,
+      start:Number(start.toFixed(3)),
+      end:Number(end.toFixed(3))
+    };
+  });
+
+  const basePath = inputPath.slice(0, -path.extname(inputPath).length);
+  const outputMp3 = `${basePath}.mp3`;
+  const outputCues = `${basePath}.cues.json`;
+  const audioBytes = fs.readFileSync(tempMp3);
+  fs.copyFileSync(tempMp3, outputMp3);
+  fs.writeFileSync(outputCues, `${JSON.stringify({
+    version:1,
+    model:'gpt-4o-mini-tts',
+    voice:options.voice,
+    instructions:options.instructions,
+    audio:path.basename(outputMp3),
+    sourceHash:sha256(sourceBytes),
+    audioHash:sha256(audioBytes),
+    gapSeconds:options.gap,
+    items:cueItems
+  }, null, 2)}\n`, 'utf8');
+  fs.writeFileSync(path.join(tempDir, 'generation.json'), `${JSON.stringify({
+    version:1,
+    day:Number(day),
+    source:inputPath,
+    sourceHash:sha256(sourceBytes),
+    model:'gpt-4o-mini-tts',
+    voice:options.voice,
+    instructions:options.instructions,
+    gapSeconds:options.gap,
+    generatedAt:new Date().toISOString(),
+    items:items.map(item => ({
+      index:item.index,
+      sourceText:item.sourceText,
+      spokenText:item.spokenText,
+      file:item.partFile,
+      duration:Number(item.duration.toFixed(3)),
+      peakDb:Number(item.peakDb.toFixed(1))
+    }))
+  }, null, 2)}\n`, 'utf8');
+  process.stdout.write(`Created ${outputMp3}\nCreated ${outputCues}\nKept intermediates in ${tempDir}\n`);
 }
 
 async function main() {
@@ -226,4 +304,4 @@ async function main() {
 
 if (require.main === module) main();
 
-module.exports = { parseArgs, parseWords, spokenForm, wavDuration };
+module.exports = { parseArgs, parseWords, spokenForm, wavDuration, wavPeakDb, partFilename };
