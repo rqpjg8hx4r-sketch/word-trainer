@@ -318,7 +318,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.21</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.22</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -1294,15 +1294,18 @@ async function loadWordPronunciation(dayNumber) {
   clearWordAudio();
   const day = String(Number(dayNumber)).padStart(3, '0');
   const baseName = `word${day}`;
+  const textUrl = `homework/${baseName}.txt`;
+  const cueUrl = `homework/${baseName}.cues.json`;
   try {
     const [textResponse, cuesResponse] = await Promise.all([
-      fetchWithTimeout(`homework/${baseName}.txt`, { cache:'no-store' }),
-      fetchWithTimeout(`homework/${baseName}.cues.json`, { cache:'no-store' })
+      fetchWithTimeout(textUrl, { cache:'no-store' }),
+      fetchWithTimeout(cueUrl, { cache:'no-store' })
     ]);
     if (!textResponse.ok || !cuesResponse.ok) return;
     const [textBytes, cuesBytes] = await Promise.all([
       textResponse.arrayBuffer(), cuesResponse.arrayBuffer()
     ]);
+    const cuesHash = await sha256Hex(cuesBytes);
     const cues = JSON.parse(new TextDecoder().decode(cuesBytes));
     if (!new RegExp(`^${baseName}\\.mp3$`, 'i').test(cues.audio || '')) return;
     if (!/^[a-f0-9]{64}$/i.test(cues.sourceHash || '')
@@ -1328,6 +1331,11 @@ async function loadWordPronunciation(dayNumber) {
     const audio = ensureWordAudio();
     audio.src = wordAudioObjectUrl;
     audio.load();
+    cacheDayForOffline(dayNumber, [
+      { url:textUrl, sha256:await sha256Hex(textBytes) },
+      { url:cueUrl, sha256:cuesHash },
+      { url:`homework/${cues.audio}`, sha256:await sha256Hex(audioBytes) }
+    ]);
   } catch (error) {
     // 录音发音是可选增强；文件缺失、失效或读取失败时由 speak() 回退系统 TTS。
   }

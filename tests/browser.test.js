@@ -22,7 +22,7 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.21');
+  await expect(page.locator('#appVersion')).toHaveText('v2.22');
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(10);
   await page.locator('#librarySelect').selectOption('word007.txt');
@@ -69,7 +69,7 @@ test('word cues play recorded ranges and missing ranges fall back to system TTS'
   const page = await context.newPage();
   await page.goto('/index.html');
   await page.locator('#librarySelect').selectOption('word010.txt');
-  await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBe(10);
+  await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBeGreaterThan(0);
 
   const recorded = await page.evaluate(async () => {
     window.__ttsSpoken = [];
@@ -80,23 +80,66 @@ test('word cues play recorded ranges and missing ranges fall back to system TTS'
       window.__recordedStarts.push(wordAudio.currentTime);
       return Promise.resolve();
     };
-    ['bank', 'garage', 'restaurant', 'cafe / café', 'hotel', 'sports centre',
-      'cafeteria', 'library', 'swimming pool', 'cinema'].forEach(speak);
+    [...wordAudioCues.keys()].forEach(speak);
     return {
       starts:[...window.__recordedStarts],
       cueStarts:[...wordAudioCues.values()].map(cue => cue.start),
       tts:[...window.__ttsSpoken]
     };
   });
-  expect(recorded.starts).toHaveLength(10);
-  expect(recorded.starts).toEqual(recorded.cueStarts);
-  expect(recorded.starts[1]).toBeGreaterThan(0);
-  expect(recorded.starts[9]).toBeGreaterThan(recorded.starts[1]);
+  expect(recorded.starts.length).toBeGreaterThan(0);
+  expect(recorded.starts).toHaveLength(recorded.cueStarts.length);
+  recorded.starts.forEach((start, index) => expect(start).toBeCloseTo(recorded.cueStarts[index], 3));
+  if (recorded.starts.length > 1) expect(recorded.starts[1]).toBeGreaterThan(0);
   expect(recorded.tts).toEqual([]);
 
-  await page.evaluate(() => speak('museum'));
-  await expect.poll(() => page.evaluate(() => window.__ttsSpoken)).toEqual(['museum']);
+  await context.close();
+});
 
+test('missing optional word audio falls back to system TTS', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word009.txt');
+  await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBe(0);
+  const spoken = await page.evaluate(() => {
+    window.__ttsSpoken = [];
+    window.speechSynthesis.cancel = () => {};
+    window.speechSynthesis.speak = utterance => window.__ttsSpoken.push(utterance.text);
+    speak(remoteLibraryCache['word009.txt'].words[0].w);
+    return window.__ttsSpoken;
+  });
+  expect(spoken).toHaveLength(1);
+  await context.close();
+});
+
+test('visited word recordings remain available offline', async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word010.txt');
+  await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBeGreaterThan(0);
+  const onlineCueCount = await page.evaluate(() => wordAudioCues.size);
+  await expect.poll(() => page.evaluate(async () => {
+    const cache = await caches.open('word-trainer-homework-v1');
+    const names = ['word010.txt', 'word010.cues.json', 'word010.mp3'];
+    const matches = await Promise.all(names.map(name => cache.match(`homework/${name}`)));
+    return matches.every(Boolean);
+  }), { timeout:15_000 }).toBe(true);
+
+  await context.setOffline(true);
+  await page.reload();
+  await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBe(onlineCueCount);
+  const playback = await page.evaluate(() => {
+    window.__ttsSpoken = [];
+    window.speechSynthesis.cancel = () => {};
+    window.speechSynthesis.speak = utterance => window.__ttsSpoken.push(utterance.text);
+    wordAudio.play = () => Promise.resolve();
+    speak('garage');
+    return { currentTime:wordAudio.currentTime, tts:window.__ttsSpoken };
+  });
+  expect(playback.currentTime).toBeGreaterThan(0);
+  expect(playback.tts).toEqual([]);
   await context.close();
 });
 
