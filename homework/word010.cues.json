@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "audio": "word010.mp3",
+  "sourceHash": "0e075f9e8bb9001925d0ee5afbde4f6eaaae52469b23a6c86980fcb6dd343918",
+  "audioHash": "a35a1835c90c1c8d67627c95d10eb49c1c4fb8dbc177d3cdab5cc4e1efc1f6e8",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "bank",
+      "spokenText": "bank",
+      "start": 0,
+      "end": 0.544
+    },
+    {
+      "index": 1,
+      "sourceText": "garage",
+      "spokenText": "garage",
+      "start": 1.492,
+      "end": 2.232
+    },
+    {
+      "index": 2,
+      "sourceText": "restaurant",
+      "spokenText": "restaurant",
+      "start": 3.622,
+      "end": 4.284
+    },
+    {
+      "index": 3,
+      "sourceText": "cafe / café",
+      "spokenText": "café",
+      "start": 5.795,
+      "end": 6.346
+    },
+    {
+      "index": 4,
+      "sourceText": "hotel",
+      "spokenText": "hotel",
+      "start": 7.717,
+      "end": 8.478
+    },
+    {
+      "index": 5,
+      "sourceText": "sports centre",
+      "spokenText": "sports centre",
+      "start": 9.769,
+      "end": 10.773
+    },
+    {
+      "index": 6,
+      "sourceText": "cafeteria",
+      "spokenText": "cafeteria",
+      "start": 11.754,
+      "end": 12.556
+    },
+    {
+      "index": 7,
+      "sourceText": "library",
+      "spokenText": "library",
+      "start": 14.16,
+      "end": 14.687
+    },
+    {
+      "index": 8,
+      "sourceText": "swimming pool",
+      "spokenText": "swimming pool",
+      "start": 15.965,
+      "end": 17.151
+    },
+    {
+      "index": 9,
+      "sourceText": "cinema",
+      "spokenText": "cinema",
+      "start": 18.319,
+      "end": 18.799
+    }
+  ]
+}

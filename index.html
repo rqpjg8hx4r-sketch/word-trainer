@@ -318,7 +318,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.19</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.20</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -1152,6 +1152,7 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
   }
   if (lib.dayNum) {
     const dayName = `day${String(lib.dayNum).padStart(3,'0')}`;
+    loadWordPronunciation(lib.dayNum);
     loadSpeakingHomework(dayName);
     loadListeningHomework(dayName);
   }
@@ -1185,6 +1186,12 @@ let currentSpellTarget = null;
 let currentSpellTyped = "";
 let streak = 0;
 let targetVoice = null;
+let wordAudio = null;
+let wordAudioObjectUrl = '';
+let wordAudioCues = new Map();
+let wordAudioSegmentEnd = null;
+let wordAudioFallbackText = '';
+let wordAudioLoadRequestId = 0;
 
 function sanitizeWord(w) {
   return w.replace("(h)", "h").split('/')[0].trim().toLowerCase();
@@ -1238,7 +1245,7 @@ if ('speechSynthesis' in window) {
   loadVoices();
 }
 
-function speak(text) {
+function speakWithSystemTts(text) {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(sanitizeWord(text));
@@ -1247,6 +1254,101 @@ function speak(text) {
   u.lang = 'en-US';
   u.rate = 0.88;
   window.speechSynthesis.speak(u);
+}
+
+function clearWordAudio() {
+  if (wordAudio) {
+    wordAudio.pause();
+    wordAudio.removeAttribute('src');
+  }
+  if (wordAudioObjectUrl) URL.revokeObjectURL(wordAudioObjectUrl);
+  wordAudioObjectUrl = '';
+  wordAudioCues = new Map();
+  wordAudioSegmentEnd = null;
+  wordAudioFallbackText = '';
+}
+
+function ensureWordAudio() {
+  if (wordAudio) return wordAudio;
+  wordAudio = new Audio();
+  wordAudio.preload = 'auto';
+  wordAudio.addEventListener('timeupdate', () => {
+    if (Number.isFinite(wordAudioSegmentEnd) && wordAudio.currentTime >= wordAudioSegmentEnd) {
+      wordAudio.pause();
+      wordAudioSegmentEnd = null;
+      wordAudioFallbackText = '';
+    }
+  });
+  wordAudio.addEventListener('error', () => {
+    const fallbackText = wordAudioFallbackText;
+    wordAudioSegmentEnd = null;
+    wordAudioFallbackText = '';
+    if (fallbackText) speakWithSystemTts(fallbackText);
+  });
+  return wordAudio;
+}
+
+async function loadWordPronunciation(dayNumber) {
+  const requestId = ++wordAudioLoadRequestId;
+  clearWordAudio();
+  const day = String(Number(dayNumber)).padStart(3, '0');
+  const baseName = `word${day}`;
+  try {
+    const [textResponse, cuesResponse] = await Promise.all([
+      fetchWithTimeout(`homework/${baseName}.txt`, { cache:'no-store' }),
+      fetchWithTimeout(`homework/${baseName}.cues.json`, { cache:'no-store' })
+    ]);
+    if (!textResponse.ok || !cuesResponse.ok) return;
+    const [textBytes, cuesBytes] = await Promise.all([
+      textResponse.arrayBuffer(), cuesResponse.arrayBuffer()
+    ]);
+    const cues = JSON.parse(new TextDecoder().decode(cuesBytes));
+    if (!new RegExp(`^${baseName}\\.mp3$`, 'i').test(cues.audio || '')) return;
+    if (!/^[a-f0-9]{64}$/i.test(cues.sourceHash || '')
+        || cues.sourceHash.toLowerCase() !== await sha256Hex(textBytes)) return;
+
+    const audioResponse = await fetchWithTimeout(`homework/${cues.audio}`, { cache:'no-store' });
+    if (!audioResponse.ok) return;
+    const audioBytes = await audioResponse.arrayBuffer();
+    if (!/^[a-f0-9]{64}$/i.test(cues.audioHash || '')
+        || cues.audioHash.toLowerCase() !== await sha256Hex(audioBytes)) return;
+    if (requestId !== wordAudioLoadRequestId) return;
+
+    const validItems = (Array.isArray(cues.items) ? cues.items : []).filter(item =>
+      item && typeof item.sourceText === 'string'
+      && Number.isFinite(Number(item.start)) && Number.isFinite(Number(item.end))
+      && Number(item.start) >= 0 && Number(item.end) > Number(item.start)
+    );
+    if (!validItems.length) return;
+    wordAudioCues = new Map(validItems.map(item => [sanitizeWord(item.sourceText), {
+      start:Number(item.start), end:Number(item.end)
+    }]));
+    wordAudioObjectUrl = URL.createObjectURL(new Blob([audioBytes], { type:'audio/mpeg' }));
+    const audio = ensureWordAudio();
+    audio.src = wordAudioObjectUrl;
+    audio.load();
+  } catch (error) {
+    // 录音发音是可选增强；文件缺失、失效或读取失败时由 speak() 回退系统 TTS。
+  }
+}
+
+function speak(text) {
+  const cue = wordAudioCues.get(sanitizeWord(text));
+  if (!cue || !wordAudio?.src) {
+    speakWithSystemTts(text);
+    return;
+  }
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  wordAudio.pause();
+  wordAudioFallbackText = text;
+  wordAudioSegmentEnd = cue.end;
+  wordAudio.currentTime = cue.start;
+  wordAudio.play().catch(() => {
+    const fallbackText = wordAudioFallbackText;
+    wordAudioFallbackText = '';
+    wordAudioSegmentEnd = null;
+    if (fallbackText) speakWithSystemTts(fallbackText);
+  });
 }
 
 function switchGroup(type, btn) {

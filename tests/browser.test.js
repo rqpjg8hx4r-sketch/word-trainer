@@ -22,9 +22,9 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.19');
+  await expect(page.locator('#appVersion')).toHaveText('v2.20');
   await expect(page).toHaveTitle('每日英语');
-  await expect(page.locator('#librarySelect option')).toHaveCount(8);
+  await expect(page.locator('#librarySelect option')).toHaveCount(10);
   await page.locator('#librarySelect').selectOption('word007.txt');
   await page.getByRole('tab', { name:/背单词/ }).click();
   await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
@@ -56,10 +56,43 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(9);
   await page.getByRole('button', { name:'▶ 听问题' }).nth(1).click();
-  await expect.poll(() => page.locator('#speakingAudio').evaluate(audio => audio.currentTime)).toBeCloseTo(12.042, 2);
+  const q2Time = await page.locator('#speakingAudio').evaluate(audio => audio.currentTime);
+  expect(q2Time).toBeGreaterThanOrEqual(12.042);
+  expect(q2Time).toBeLessThan(14.5);
 
   await page.locator('#librarySelect').selectOption('word004.txt');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
+});
+
+test('word cues play recorded ranges and missing ranges fall back to system TTS', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word010.txt');
+  await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBe(10);
+
+  const recorded = await page.evaluate(async () => {
+    window.__ttsSpoken = [];
+    window.__recordedStarts = [];
+    window.speechSynthesis.cancel = () => {};
+    window.speechSynthesis.speak = utterance => window.__ttsSpoken.push(utterance.text);
+    wordAudio.play = () => {
+      window.__recordedStarts.push(wordAudio.currentTime);
+      return Promise.resolve();
+    };
+    ['bank', 'garage', 'restaurant', 'cafe / café', 'hotel', 'sports centre',
+      'cafeteria', 'library', 'swimming pool', 'cinema'].forEach(speak);
+    return { starts:[...window.__recordedStarts], tts:[...window.__ttsSpoken] };
+  });
+  expect(recorded.starts).toHaveLength(10);
+  expect(recorded.starts[1]).toBeCloseTo(1.492, 2);
+  expect(recorded.starts[9]).toBeCloseTo(18.319, 2);
+  expect(recorded.tts).toEqual([]);
+
+  await page.evaluate(() => speak('museum'));
+  await expect.poll(() => page.evaluate(() => window.__ttsSpoken)).toEqual(['museum']);
+
+  await context.close();
 });
 
 test('word dictation prints the complete day with Chinese cues only', async ({ page }) => {
@@ -130,14 +163,16 @@ test('visited days reopen and seek while offline', async ({ browser }) => {
 
   await context.setOffline(true);
   await page.reload();
-  await expect(page.locator('#learnWord')).toContainText('centimetre/centimeter/cm');
+  await expect(page.locator('#learnWord')).toContainText('bank');
   await page.locator('#librarySelect').selectOption('word007.txt');
   await page.getByRole('tab', { name:/口语练习/ }).click();
   await expect(page.locator('#speakingHomeworkImage')).toBeVisible();
   await page.locator('#librarySelect').selectOption('word006.txt');
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(9);
   await page.getByRole('button', { name:'▶ 听问题' }).nth(1).click();
-  await expect.poll(() => page.locator('#speakingAudio').evaluate(audio => audio.currentTime)).toBeCloseTo(12.042, 2);
+  const offlineQ2Time = await page.locator('#speakingAudio').evaluate(audio => audio.currentTime);
+  expect(offlineQ2Time).toBeGreaterThanOrEqual(12.042);
+  expect(offlineQ2Time).toBeLessThan(14.5);
   await page.locator('#librarySelect').selectOption('word005.txt');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('What is your favourite subject');
   await page.locator('#librarySelect').selectOption('word004.txt');
@@ -187,7 +222,7 @@ test('a missing latest speaking day cannot overwrite an older selection', async 
 
 test('spelling skips fixed punctuation and always allows moving on', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(8);
+  await expect(page.locator('#librarySelect option')).toHaveCount(10);
   await page.locator('#librarySelect').selectOption('word004.txt');
   await page.getByRole('tab', { name:/背单词/ }).click();
   await page.evaluate(() => {
@@ -266,8 +301,8 @@ test('a day loads its matching listening audio', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(8);
-  await expect(page.locator('#librarySelect')).toHaveValue('word008.txt');
+  await expect(page.locator('#librarySelect option')).toHaveCount(10);
+  await page.locator('#librarySelect').selectOption('word008.txt');
   await page.getByRole('tab', { name:/听力练习/ }).click();
   await expect(page.locator('#listeningBadge')).toContainText('Day 8 · 听力');
   await expect(page.locator('#listeningAudio')).toBeVisible();

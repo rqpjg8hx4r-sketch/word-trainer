@@ -3,6 +3,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const { execFileSync } = require('node:child_process');
+const { wavDuration } = require('../scripts/generate-word-audio');
 
 const root = path.resolve(__dirname, '..');
 const homeworkDir = path.join(root, 'homework');
@@ -23,6 +25,38 @@ test('word and speaking TXT files use flat three-digit day names', () => {
     assert.match(file, /^(word|speaking)\d{3}\.txt$/);
     assert.ok(read(file).trim().length > 0, `${file} must not be empty`);
   }
+});
+
+test('word audio command parses a requested entry limit without calling the API', () => {
+  const output = execFileSync(process.execPath, [
+    path.join(root, 'scripts', 'generate-word-audio.js'),
+    path.join(homeworkDir, 'word010.txt'),
+    '--limit', '10',
+    '--dry-run'
+  ], { encoding:'utf8' });
+  const result = JSON.parse(output);
+  assert.equal(result.count, 10);
+  assert.equal(result.items[0].spokenText, 'bank');
+  assert.equal(result.items[3].spokenText, 'café');
+  assert.equal(result.items[9].spokenText, 'cinema');
+});
+
+test('word audio command handles streaming WAV unknown-length headers', () => {
+  const wav = Buffer.alloc(44 + 48_000);
+  wav.write('RIFF', 0, 'ascii');
+  wav.writeUInt32LE(0xffffffff, 4);
+  wav.write('WAVE', 8, 'ascii');
+  wav.write('fmt ', 12, 'ascii');
+  wav.writeUInt32LE(16, 16);
+  wav.writeUInt16LE(1, 20);
+  wav.writeUInt16LE(1, 22);
+  wav.writeUInt32LE(24_000, 24);
+  wav.writeUInt32LE(48_000, 28);
+  wav.writeUInt16LE(2, 32);
+  wav.writeUInt16LE(16, 34);
+  wav.write('data', 36, 'ascii');
+  wav.writeUInt32LE(0xffffffff, 40);
+  assert.equal(wavDuration(wav), 1);
 });
 
 test('speaking TXT files contain displayable text', () => {
@@ -53,6 +87,25 @@ test('cue files point to existing audio and contain valid ranges', () => {
       assert.match(name, /^[qa]\d+$/);
       assert.ok(Number.isFinite(range.start) && Number.isFinite(range.end));
       assert.ok(range.start >= 0 && range.end > range.start, `${file}: invalid ${name} range`);
+    }
+  }
+});
+
+test('word cue files match their text and audio and contain valid items', () => {
+  const files = fs.readdirSync(homeworkDir).filter(file => /^word\d{3}\.cues\.json$/.test(file));
+  for (const file of files) {
+    const day = file.match(/\d{3}/)[0];
+    const cues = JSON.parse(read(file));
+    assert.equal(cues.audio, `word${day}.mp3`);
+    assert.ok(fs.existsSync(path.join(homeworkDir, cues.audio)), `${cues.audio} is missing`);
+    assert.equal(cues.sourceHash, fileHash(`word${day}.txt`), `${file}: sourceHash is stale`);
+    assert.equal(cues.audioHash, fileHash(cues.audio), `${file}: audioHash is stale`);
+    assert.ok(Array.isArray(cues.items) && cues.items.length > 0, `${file}: items are missing`);
+    for (const item of cues.items) {
+      assert.equal(typeof item.sourceText, 'string');
+      assert.ok(item.sourceText.trim(), `${file}: sourceText is empty`);
+      assert.ok(Number.isFinite(item.start) && Number.isFinite(item.end));
+      assert.ok(item.start >= 0 && item.end > item.start, `${file}: invalid item range`);
     }
   }
 });

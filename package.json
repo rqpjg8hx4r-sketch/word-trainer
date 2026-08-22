@@ -1,9 +1,10 @@
 {
   "name": "word-trainer",
-  "version": "2.19.0",
+  "version": "2.20.0",
   "private": true,
   "scripts": {
     "build": "node scripts/build-site.js",
+    "audio:words": "node scripts/generate-word-audio.js",
     "test": "node --test tests/content.test.js && playwright test"
   },
   "devDependencies": {
