@@ -318,7 +318,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.22</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.23</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -1193,6 +1193,7 @@ let wordAudioCues = new Map();
 let wordAudioSegmentEnd = null;
 let wordAudioFallbackText = '';
 let wordAudioLoadRequestId = 0;
+const WORD_AUDIO_PREROLL_SECONDS = 0.25;
 
 function sanitizeWord(w) {
   return w.replace("(h)", "h").split('/')[0].trim().toLowerCase();
@@ -1351,7 +1352,9 @@ function speak(text) {
   wordAudio.pause();
   wordAudioFallbackText = text;
   wordAudioSegmentEnd = cue.end;
-  wordAudio.currentTime = cue.start;
+  // iPad Safari can begin slightly after an exact MP3 seek point and clip the first phoneme.
+  // Start inside the preceding generated silence to give the decoder a short preroll.
+  wordAudio.currentTime = Math.max(0, cue.start - WORD_AUDIO_PREROLL_SECONDS);
   wordAudio.play().catch(() => {
     const fallbackText = wordAudioFallbackText;
     wordAudioFallbackText = '';

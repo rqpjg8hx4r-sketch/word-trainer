@@ -22,7 +22,7 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.22');
+  await expect(page.locator('#appVersion')).toHaveText('v2.23');
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(10);
   await page.locator('#librarySelect').selectOption('word007.txt');
@@ -83,7 +83,7 @@ test('word cues play recorded ranges and missing ranges fall back to system TTS'
     [...wordAudioCues.keys()].forEach(speak);
     return {
       starts:[...window.__recordedStarts],
-      cueStarts:[...wordAudioCues.values()].map(cue => cue.start),
+      cueStarts:[...wordAudioCues.values()].map(cue => Math.max(0, cue.start - WORD_AUDIO_PREROLL_SECONDS)),
       tts:[...window.__ttsSpoken]
     };
   });

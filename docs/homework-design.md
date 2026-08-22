@@ -156,6 +156,8 @@ npm run audio:words -- homework/word010.txt --voice marin --instructions "自定
 - 最终输出：24 kHz、单声道、96 kbps MP3
 - 相邻词固定插入 0.75 秒静音
 
+0.75 秒静音完整插在前一个分词 WAV 结束与下一个分词 WAV 开始之间，即“单词 WAV → 固定静音 → 下一个单词 WAV”。TTS 返回的 WAV 自身可能含少量首尾静音，因此实际听感间隔可能略长于 0.75 秒。
+
 当前固定单词提示词：
 
 ```text
@@ -173,7 +175,7 @@ Pronounce only the supplied English word or phrase once. Speak in a cheerful and
 1. 选择 Day 后，网页尝试读取同名 `word###.cues.json` 和其中指定的 `word###.mp3`。
 2. TXT、MP3 与 cues 的 SHA-256 必须全部匹配，才启用录音片段。
 3. 学习、选义测试和键盘拼写共用同一个发音入口。
-4. 当前词有 cue 时，跳到 `start` 播放，并在 `end` 停止。
+4. 当前词有 cue 时，从 `start` 前最多 0.25 秒的静音处开始预滚，并在 `end` 停止。预滚用于避免 iPad Safari 在 MP3 非零时间点起播时截掉首音；第一个词最低从 0 秒开始。
 5. cues 或 MP3 缺失、指纹不匹配、当前词没有 cue、浏览器播放失败时，自动回退系统英文 TTS。
 6. 键盘拼写默认静音，只有点击喇叭时发音；“上一个”和“下一个”循环浏览未完成词条，不记为拼写错误。
 
