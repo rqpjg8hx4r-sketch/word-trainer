@@ -5,7 +5,7 @@
   "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
   "audio": "word010.mp3",
   "sourceHash": "0e075f9e8bb9001925d0ee5afbde4f6eaaae52469b23a6c86980fcb6dd343918",
-  "audioHash": "44cdf9a468f3f0fc8f0757a41bfc4e61f4ed2a028f7149f009e6bbb3749130d7",
+  "audioHash": "1047d5e53004a67696425cbebfeb646b7f91b30eaea62f8b89f2a9d752c93947",
   "gapSeconds": 0.75,
   "items": [
     {
@@ -20,63 +20,490 @@
       "sourceText": "garage",
       "spokenText": "garage",
       "start": 1.6,
-      "end": 3
+      "end": 2.95
     },
     {
       "index": 2,
       "sourceText": "restaurant",
       "spokenText": "restaurant",
-      "start": 3.75,
-      "end": 5.4
+      "start": 3.7,
+      "end": 5.95
     },
     {
       "index": 3,
       "sourceText": "cafe / café",
       "spokenText": "café",
-      "start": 6.15,
-      "end": 7.5
+      "start": 6.7,
+      "end": 7.55
     },
     {
       "index": 4,
       "sourceText": "hotel",
       "spokenText": "hotel",
-      "start": 8.25,
-      "end": 9.25
+      "start": 8.3,
+      "end": 9.35
     },
     {
       "index": 5,
       "sourceText": "sports centre",
       "spokenText": "sports centre",
-      "start": 10,
-      "end": 12.1
+      "start": 10.1,
+      "end": 11.65
     },
     {
       "index": 6,
       "sourceText": "cafeteria",
       "spokenText": "cafeteria",
-      "start": 12.85,
-      "end": 14.35
+      "start": 12.4,
+      "end": 13.5
     },
     {
       "index": 7,
       "sourceText": "library",
       "spokenText": "library",
-      "start": 15.1,
-      "end": 16.5
+      "start": 14.25,
+      "end": 15.7
     },
     {
       "index": 8,
       "sourceText": "swimming pool",
       "spokenText": "swimming pool",
-      "start": 17.25,
-      "end": 18.8
+      "start": 16.45,
+      "end": 17.8
     },
     {
       "index": 9,
       "sourceText": "cinema",
       "spokenText": "cinema",
-      "start": 19.55,
-      "end": 20.6
+      "start": 18.55,
+      "end": 19.6
+    },
+    {
+      "index": 10,
+      "sourceText": "museum",
+      "spokenText": "museum",
+      "start": 20.35,
+      "end": 22.55
+    },
+    {
+      "index": 11,
+      "sourceText": "theatre",
+      "spokenText": "theatre",
+      "start": 23.3,
+      "end": 25.25
+    },
+    {
+      "index": 12,
+      "sourceText": "dentist",
+      "spokenText": "dentist",
+      "start": 26,
+      "end": 27.05
+    },
+    {
+      "index": 13,
+      "sourceText": "petrol station",
+      "spokenText": "petrol station",
+      "start": 27.8,
+      "end": 29.1
+    },
+    {
+      "index": 14,
+      "sourceText": "tourist information",
+      "spokenText": "tourist information",
+      "start": 29.85,
+      "end": 32.2
+    },
+    {
+      "index": 15,
+      "sourceText": "doctor",
+      "spokenText": "doctor",
+      "start": 32.95,
+      "end": 33.7
+    },
+    {
+      "index": 16,
+      "sourceText": "post office",
+      "spokenText": "post office",
+      "start": 34.45,
+      "end": 36.1
+    },
+    {
+      "index": 17,
+      "sourceText": "ad / advertisement",
+      "spokenText": "ad",
+      "start": 36.85,
+      "end": 37.65
+    },
+    {
+      "index": 18,
+      "sourceText": "cost",
+      "spokenText": "cost",
+      "start": 38.4,
+      "end": 39.3
+    },
+    {
+      "index": 19,
+      "sourceText": "pound",
+      "spokenText": "pound",
+      "start": 40.05,
+      "end": 41.3
+    },
+    {
+      "index": 20,
+      "sourceText": "assistant",
+      "spokenText": "assistant",
+      "start": 42.05,
+      "end": 43.15
+    },
+    {
+      "index": 21,
+      "sourceText": "credit card",
+      "spokenText": "credit card",
+      "start": 43.9,
+      "end": 45.7
+    },
+    {
+      "index": 22,
+      "sourceText": "price",
+      "spokenText": "price",
+      "start": 46.45,
+      "end": 47.55
+    },
+    {
+      "index": 23,
+      "sourceText": "bill",
+      "spokenText": "bill",
+      "start": 48.3,
+      "end": 49.8
+    },
+    {
+      "index": 24,
+      "sourceText": "customer",
+      "spokenText": "customer",
+      "start": 50.55,
+      "end": 51.45
+    },
+    {
+      "index": 25,
+      "sourceText": "receipt",
+      "spokenText": "receipt",
+      "start": 52.2,
+      "end": 53.05
+    },
+    {
+      "index": 26,
+      "sourceText": "bookshop",
+      "spokenText": "bookshop",
+      "start": 53.8,
+      "end": 55.4
+    },
+    {
+      "index": 27,
+      "sourceText": "department store",
+      "spokenText": "department store",
+      "start": 56.15,
+      "end": 57.55
+    },
+    {
+      "index": 28,
+      "sourceText": "rent",
+      "spokenText": "rent",
+      "start": 58.3,
+      "end": 59.75
+    },
+    {
+      "index": 29,
+      "sourceText": "buy",
+      "spokenText": "buy",
+      "start": 60.5,
+      "end": 61.6
+    },
+    {
+      "index": 30,
+      "sourceText": "dollar",
+      "spokenText": "dollar",
+      "start": 62.35,
+      "end": 63.45
+    },
+    {
+      "index": 31,
+      "sourceText": "shop",
+      "spokenText": "shop",
+      "start": 64.2,
+      "end": 64.95
+    },
+    {
+      "index": 32,
+      "sourceText": "cash",
+      "spokenText": "cash",
+      "start": 65.7,
+      "end": 66.4
+    },
+    {
+      "index": 33,
+      "sourceText": "euro",
+      "spokenText": "euro",
+      "start": 67.15,
+      "end": 68.15
+    },
+    {
+      "index": 34,
+      "sourceText": "shop assistant",
+      "spokenText": "shop assistant",
+      "start": 68.9,
+      "end": 70.9
+    },
+    {
+      "index": 35,
+      "sourceText": "cent",
+      "spokenText": "cent",
+      "start": 71.65,
+      "end": 72.45
+    },
+    {
+      "index": 36,
+      "sourceText": "expensive",
+      "spokenText": "expensive",
+      "start": 73.2,
+      "end": 75.3
+    },
+    {
+      "index": 37,
+      "sourceText": "shopper",
+      "spokenText": "shopper",
+      "start": 76.05,
+      "end": 77.1
+    },
+    {
+      "index": 38,
+      "sourceText": "change",
+      "spokenText": "change",
+      "start": 77.85,
+      "end": 78.95
+    },
+    {
+      "index": 39,
+      "sourceText": "for sale",
+      "spokenText": "for sale",
+      "start": 79.7,
+      "end": 81.1
+    },
+    {
+      "index": 40,
+      "sourceText": "shopping",
+      "spokenText": "shopping",
+      "start": 81.85,
+      "end": 83.9
+    },
+    {
+      "index": 41,
+      "sourceText": "cheap",
+      "spokenText": "cheap",
+      "start": 84.65,
+      "end": 85.45
+    },
+    {
+      "index": 42,
+      "sourceText": "go shopping",
+      "spokenText": "go shopping",
+      "start": 86.2,
+      "end": 87.6
+    },
+    {
+      "index": 43,
+      "sourceText": "spend",
+      "spokenText": "spend",
+      "start": 88.35,
+      "end": 90.15
+    },
+    {
+      "index": 44,
+      "sourceText": "cheque",
+      "spokenText": "cheque",
+      "start": 90.9,
+      "end": 93.5
+    },
+    {
+      "index": 45,
+      "sourceText": "open",
+      "spokenText": "open",
+      "start": 94.25,
+      "end": 95.05
+    },
+    {
+      "index": 46,
+      "sourceText": "store",
+      "spokenText": "store",
+      "start": 95.8,
+      "end": 96.85
+    },
+    {
+      "index": 47,
+      "sourceText": "close",
+      "spokenText": "close",
+      "start": 97.6,
+      "end": 98.85
+    },
+    {
+      "index": 48,
+      "sourceText": "pay (for)",
+      "spokenText": "pay (for)",
+      "start": 99.6,
+      "end": 101.75
+    },
+    {
+      "index": 49,
+      "sourceText": "supermarket",
+      "spokenText": "supermarket",
+      "start": 102.5,
+      "end": 103.95
+    },
+    {
+      "index": 50,
+      "sourceText": "closed",
+      "spokenText": "closed",
+      "start": 104.7,
+      "end": 105.75
+    },
+    {
+      "index": 51,
+      "sourceText": "penny",
+      "spokenText": "penny",
+      "start": 106.5,
+      "end": 107.85
+    },
+    {
+      "index": 52,
+      "sourceText": "try on",
+      "spokenText": "try on",
+      "start": 108.6,
+      "end": 110
+    },
+    {
+      "index": 53,
+      "sourceText": "cloud",
+      "spokenText": "cloud",
+      "start": 110.75,
+      "end": 111.75
+    },
+    {
+      "index": 54,
+      "sourceText": "ice",
+      "spokenText": "ice",
+      "start": 112.5,
+      "end": 113.3
+    },
+    {
+      "index": 55,
+      "sourceText": "thunderstorm",
+      "spokenText": "thunderstorm",
+      "start": 114.05,
+      "end": 115.65
+    },
+    {
+      "index": 56,
+      "sourceText": "cloudy",
+      "spokenText": "cloudy",
+      "start": 116.4,
+      "end": 117.5
+    },
+    {
+      "index": 57,
+      "sourceText": "rain",
+      "spokenText": "rain",
+      "start": 118.25,
+      "end": 119.3
+    },
+    {
+      "index": 58,
+      "sourceText": "warm",
+      "spokenText": "warm",
+      "start": 120.05,
+      "end": 121.05
+    },
+    {
+      "index": 59,
+      "sourceText": "cold",
+      "spokenText": "cold",
+      "start": 121.8,
+      "end": 122.6
+    },
+    {
+      "index": 60,
+      "sourceText": "snow",
+      "spokenText": "snow",
+      "start": 123.35,
+      "end": 124.5
+    },
+    {
+      "index": 61,
+      "sourceText": "weather",
+      "spokenText": "weather",
+      "start": 125.25,
+      "end": 126.2
+    },
+    {
+      "index": 62,
+      "sourceText": "fog",
+      "spokenText": "fog",
+      "start": 126.95,
+      "end": 127.95
+    },
+    {
+      "index": 63,
+      "sourceText": "storm",
+      "spokenText": "storm",
+      "start": 128.7,
+      "end": 130.15
+    },
+    {
+      "index": 64,
+      "sourceText": "wet",
+      "spokenText": "wet",
+      "start": 130.9,
+      "end": 131.7
+    },
+    {
+      "index": 65,
+      "sourceText": "foggy",
+      "spokenText": "foggy",
+      "start": 132.45,
+      "end": 133.35
+    },
+    {
+      "index": 66,
+      "sourceText": "sun",
+      "spokenText": "sun",
+      "start": 134.1,
+      "end": 135.15
+    },
+    {
+      "index": 67,
+      "sourceText": "wind",
+      "spokenText": "wind",
+      "start": 135.9,
+      "end": 138.25
+    },
+    {
+      "index": 68,
+      "sourceText": "hot",
+      "spokenText": "hot",
+      "start": 139,
+      "end": 139.95
+    },
+    {
+      "index": 69,
+      "sourceText": "sunny",
+      "spokenText": "sunny",
+      "start": 140.7,
+      "end": 141.65
+    },
+    {
+      "index": 70,
+      "sourceText": "windy",
+      "spokenText": "windy",
+      "start": 142.4,
+      "end": 143.4
     }
   ]
 }

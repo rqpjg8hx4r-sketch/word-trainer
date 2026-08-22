@@ -41,6 +41,18 @@ test('word audio command parses a requested entry limit without calling the API'
   assert.equal(result.items[9].spokenText, 'cinema');
 });
 
+test('word audio command defaults to all entries when limit is omitted', () => {
+  const output = execFileSync(process.execPath, [
+    path.join(root, 'scripts', 'generate-word-audio.js'),
+    path.join(homeworkDir, 'word010.txt'),
+    '--dry-run'
+  ], { encoding:'utf8' });
+  const result = JSON.parse(output);
+  assert.ok(result.count > 10);
+  assert.equal(result.count, result.items.length);
+  assert.equal(result.items.at(-1).spokenText, 'windy');
+});
+
 test('word audio command handles streaming WAV unknown-length headers', () => {
   const wav = Buffer.alloc(44 + 48_000);
   wav.write('RIFF', 0, 'ascii');

@@ -53,7 +53,9 @@ function parseArgs(argv) {
     else throw new Error(`Unknown argument: ${arg}`);
   }
   if (!options.help && !options.input) throw new Error('A word###.txt path is required.');
-  if (!Number.isInteger(options.limit) || options.limit <= 0) throw new Error('--limit must be a positive integer.');
+  if (options.limit !== Infinity && (!Number.isInteger(options.limit) || options.limit <= 0)) {
+    throw new Error('--limit must be a positive integer.');
+  }
   if (!Number.isFinite(options.gap) || options.gap < 0) throw new Error('--gap must be zero or greater.');
   return options;
 }
