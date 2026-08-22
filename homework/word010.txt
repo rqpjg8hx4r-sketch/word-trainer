@@ -1,0 +1,74 @@
+﻿# Day: 10
+# Topics: Services | Shopping | Weather
+
+bank | n. | 银行
+garage | n. | 车库
+restaurant | n. | 餐馆
+cafe / café | n. | 咖啡馆；小餐馆
+hotel | n. | 酒店
+sports centre | n. | 运动中心
+cafeteria | n. | 自助餐厅
+library | n. | 图书馆
+swimming pool | n. | 游泳池
+cinema | n. | 电影院
+museum | n. | 博物馆
+theatre | n. | 剧场
+dentist | n. | 牙医
+petrol station | n. | 加油站
+tourist information |  | 旅游信息
+doctor | n. | 医生；博士
+post office | n. | 警察局
+ad / advertisement | n. | 广告
+cost | n. & v. | 费用；花费
+pound | n. | 英镑
+assistant | n. | 售货员；助手
+credit card | n. | 信用卡
+price | n. | 价格
+bill | n. | 账单
+customer | n. | 顾客
+receipt | n. | 收据
+bookshop | n. | 书店
+department store | n. | 百货商场
+rent | n. | 租金
+buy | v. | 购买
+dollar | n. | 美元
+shop | n. | 商店
+cash | n. & v. | 现金；支付现金
+euro | n. | 欧元
+shop assistant | n. | 店员
+cent | n. | 分
+expensive | adj. | 昂贵的
+shopper | n. | 顾客
+change | n. & v. | 零钱；改变
+for sale |  | 出售
+shopping | n. & v. | 购物
+cheap | adj. | 便宜的
+go shopping |  | 购物
+spend | v. | 花费
+cheque | n. | 支票
+open | v. & adj. | 打开；营业的
+store | n. | 商店
+close | v. | 关门
+pay (for) | v. | 支付
+supermarket | n. | 超市
+closed | adj. | 关闭的
+penny | n. | 便士
+try on |  | 试穿
+cloud | n. | 云
+ice | n. | 冰
+thunderstorm | n. | 雷暴
+cloudy | adj. | 多云的
+rain | n. | 雨
+warm | adj. | 温暖的
+cold | adj. | 寒冷的
+snow | n. | 雪
+weather | n. | 天气
+fog | n. | 雾
+storm | n. | 暴风雨
+wet | adj. | 湿的
+foggy | adj. | 有雾的
+sun | n. | 太阳
+wind | n. | 风
+hot | adj. | 热的
+sunny | adj. | 阳光明媚的
+windy | adj. | 有风的
