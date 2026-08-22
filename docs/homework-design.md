@@ -139,6 +139,24 @@ A GitHub Actions workflow may run when `homework/speaking###.txt` changes:
 
 Store `OPENAI_API_KEY` only as a GitHub Actions Secret and expose it to the generator as an environment variable. The workflow must never echo the key or embed it in files.
 
+### Approved TTS baseline
+
+The default speaking voice was selected on 2026-08-22 after comparing local samples. Use these settings unless a later listening test explicitly replaces them:
+
+- Model: `gpt-4o-mini-tts`
+- Voice: `marin`
+- Output: MP3
+- Local reference sample (relative to the `word-trainer` repository): `../audio-tools/tts-samples/q1-a1-marin-bright-relaxed.mp3`
+- Target delivery: natural American English; warm, bright, and gently cheerful; relaxed and unhurried at about 85% of normal adult conversational speed; friendly conversation with one child rather than a lesson or textbook reading.
+
+Use the following complete instruction text:
+
+```text
+Speak in natural American English to one school-age child, as if having a friendly face-to-face conversation. Use a warm, bright, upbeat, gently cheerful tone, as if smiling while speaking. Sound encouraging, lively, and confident, but never exaggerated. Keep the pace relaxed and unhurried, at about 85 percent of normal adult conversational speed. Use clear pronunciation without over-enunciating. Use natural conversational rhythm, sentence stress, intonation, and gentle short pauses. Pause naturally after the two-part question before giving the answer. Do not sound like a teacher giving a lesson, a textbook recording, a formal presentation, or mechanical TTS. The child will listen and imitate the pronunciation.
+```
+
+Do not include `Q1:`, `A1:`, or other structural labels in the text sent for speech generation. Preserve natural pauses between questions, answers, and sentences. API credentials must continue to come only from `OPENAI_API_KEY`.
+
 ## Current manual audio
 
 `speaking004.m4a` and `speaking005.m4a` are preserved full recordings. Their cue boundaries were derived from detected pauses and should be checked by listening before publication.
