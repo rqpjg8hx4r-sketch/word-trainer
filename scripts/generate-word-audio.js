@@ -15,9 +15,8 @@ const defaultFfmpeg = path.resolve(
 );
 const defaultInstructions = [
   'Pronounce only the supplied English word or phrase once.',
-  'Use clear, natural American English for a school-age learner.',
-  'Sound bright, upbeat, encouraging, and gently cheerful, as if smiling.',
-  'Use lively, confident intonation and a light vocal tone at a relaxed pace, without adding any other words.'
+  'Speak in a cheerful and positive tone.',
+  'Use clear, natural American English and do not add any other words.'
 ].join(' ');
 
 function usage() {
@@ -199,6 +198,7 @@ async function generate(options) {
       version:1,
       model:'gpt-4o-mini-tts',
       voice:options.voice,
+      instructions:options.instructions,
       audio:path.basename(outputMp3),
       sourceHash:sha256(sourceBytes),
       audioHash:sha256(audioBytes),

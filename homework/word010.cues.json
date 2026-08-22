@@ -2,9 +2,10 @@
   "version": 1,
   "model": "gpt-4o-mini-tts",
   "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
   "audio": "word010.mp3",
   "sourceHash": "0e075f9e8bb9001925d0ee5afbde4f6eaaae52469b23a6c86980fcb6dd343918",
-  "audioHash": "a35a1835c90c1c8d67627c95d10eb49c1c4fb8dbc177d3cdab5cc4e1efc1f6e8",
+  "audioHash": "44cdf9a468f3f0fc8f0757a41bfc4e61f4ed2a028f7149f009e6bbb3749130d7",
   "gapSeconds": 0.75,
   "items": [
     {
@@ -12,70 +13,70 @@
       "sourceText": "bank",
       "spokenText": "bank",
       "start": 0,
-      "end": 0.544
+      "end": 0.85
     },
     {
       "index": 1,
       "sourceText": "garage",
       "spokenText": "garage",
-      "start": 1.492,
-      "end": 2.232
+      "start": 1.6,
+      "end": 3
     },
     {
       "index": 2,
       "sourceText": "restaurant",
       "spokenText": "restaurant",
-      "start": 3.622,
-      "end": 4.284
+      "start": 3.75,
+      "end": 5.4
     },
     {
       "index": 3,
       "sourceText": "cafe / café",
       "spokenText": "café",
-      "start": 5.795,
-      "end": 6.346
+      "start": 6.15,
+      "end": 7.5
     },
     {
       "index": 4,
       "sourceText": "hotel",
       "spokenText": "hotel",
-      "start": 7.717,
-      "end": 8.478
+      "start": 8.25,
+      "end": 9.25
     },
     {
       "index": 5,
       "sourceText": "sports centre",
       "spokenText": "sports centre",
-      "start": 9.769,
-      "end": 10.773
+      "start": 10,
+      "end": 12.1
     },
     {
       "index": 6,
       "sourceText": "cafeteria",
       "spokenText": "cafeteria",
-      "start": 11.754,
-      "end": 12.556
+      "start": 12.85,
+      "end": 14.35
     },
     {
       "index": 7,
       "sourceText": "library",
       "spokenText": "library",
-      "start": 14.16,
-      "end": 14.687
+      "start": 15.1,
+      "end": 16.5
     },
     {
       "index": 8,
       "sourceText": "swimming pool",
       "spokenText": "swimming pool",
-      "start": 15.965,
-      "end": 17.151
+      "start": 17.25,
+      "end": 18.8
     },
     {
       "index": 9,
       "sourceText": "cinema",
       "spokenText": "cinema",
-      "start": 18.319,
-      "end": 18.799
+      "start": 19.55,
+      "end": 20.6
     }
   ]
 }

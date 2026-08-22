@@ -318,7 +318,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.20</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.21</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -493,7 +493,8 @@ banana | n. | 香蕉"></textarea>
       <div class="kb-row">
         <button class="kb-key space-key" onclick="pressKey(' ')">Space 空格</button>
         <button class="kb-key action-key" onclick="clearInput()">清空</button>
-        <button class="kb-key action-key" onclick="skipSpell()">跳过此词 ➜</button>
+        <button class="kb-key action-key" onclick="previousSpell()">← 上一个</button>
+        <button class="kb-key action-key" onclick="nextSpell()">下一个 →</button>
       </div>
     </div>
   </div>
@@ -1645,12 +1646,15 @@ function clearInput() {
   updateSpellSlots();
 }
 
-function skipSpell() {
-  if (!currentSpellTarget) return;
-  bumpStat(currentSpellTarget, 'spellWrong');
-  streak = 0;
-  updateStreak();
-  spellPool.shift();
+function nextSpell() {
+  if (!currentSpellTarget || spellPool.length < 2) return;
+  spellPool.push(spellPool.shift());
+  renderSpell();
+}
+
+function previousSpell() {
+  if (!currentSpellTarget || spellPool.length < 2) return;
+  spellPool.unshift(spellPool.pop());
   renderSpell();
 }
 

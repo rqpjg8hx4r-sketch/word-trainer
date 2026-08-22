@@ -22,7 +22,7 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.20');
+  await expect(page.locator('#appVersion')).toHaveText('v2.21');
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(10);
   await page.locator('#librarySelect').selectOption('word007.txt');
@@ -82,11 +82,16 @@ test('word cues play recorded ranges and missing ranges fall back to system TTS'
     };
     ['bank', 'garage', 'restaurant', 'cafe / café', 'hotel', 'sports centre',
       'cafeteria', 'library', 'swimming pool', 'cinema'].forEach(speak);
-    return { starts:[...window.__recordedStarts], tts:[...window.__ttsSpoken] };
+    return {
+      starts:[...window.__recordedStarts],
+      cueStarts:[...wordAudioCues.values()].map(cue => cue.start),
+      tts:[...window.__ttsSpoken]
+    };
   });
   expect(recorded.starts).toHaveLength(10);
-  expect(recorded.starts[1]).toBeCloseTo(1.492, 2);
-  expect(recorded.starts[9]).toBeCloseTo(18.319, 2);
+  expect(recorded.starts).toEqual(recorded.cueStarts);
+  expect(recorded.starts[1]).toBeGreaterThan(0);
+  expect(recorded.starts[9]).toBeGreaterThan(recorded.starts[1]);
   expect(recorded.tts).toEqual([]);
 
   await page.evaluate(() => speak('museum'));
@@ -220,7 +225,7 @@ test('a missing latest speaking day cannot overwrite an older selection', async 
   await context.close();
 });
 
-test('spelling skips fixed punctuation and always allows moving on', async ({ page }) => {
+test('spelling skips fixed punctuation and supports previous and next navigation', async ({ page }) => {
   await page.goto('/index.html');
   await expect(page.locator('#librarySelect option')).toHaveCount(10);
   await page.locator('#librarySelect').selectOption('word004.txt');
@@ -247,7 +252,11 @@ test('spelling skips fixed punctuation and always allows moving on', async ({ pa
     spellPool = [words.find(item => item.w === 'classical (music)'), words.find(item => item.w === 'aunt')];
     renderSpell();
   });
-  await page.getByRole('button', { name:'跳过此词 ➜' }).click();
+  await page.getByRole('button', { name:'下一个 →' }).click();
+  await expect(page.locator('#spellMeaning')).toHaveText('阿姨；姑妈');
+  await page.getByRole('button', { name:'← 上一个' }).click();
+  await expect(page.locator('#spellMeaning')).toHaveText('古典音乐');
+  await page.getByRole('button', { name:'下一个 →' }).click();
   await expect(page.locator('#spellMeaning')).toHaveText('阿姨；姑妈');
 });
 

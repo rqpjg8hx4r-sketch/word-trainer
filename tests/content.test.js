@@ -97,6 +97,8 @@ test('word cue files match their text and audio and contain valid items', () => 
     const day = file.match(/\d{3}/)[0];
     const cues = JSON.parse(read(file));
     assert.equal(cues.audio, `word${day}.mp3`);
+    assert.equal(typeof cues.instructions, 'string', `${file}: instructions are missing`);
+    assert.ok(cues.instructions.trim(), `${file}: instructions are empty`);
     assert.ok(fs.existsSync(path.join(homeworkDir, cues.audio)), `${cues.audio} is missing`);
     assert.equal(cues.sourceHash, fileHash(`word${day}.txt`), `${file}: sourceHash is stale`);
     assert.equal(cues.audioHash, fileHash(cues.audio), `${file}: audioHash is stale`);
