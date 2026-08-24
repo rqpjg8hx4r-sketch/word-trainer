@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word008.mp3",
+  "sourceHash": "f2c62daab560ec32dc92ed777c0ac80056ba3eb6c4e20235468ec92efe157d10",
+  "audioHash": "4c25c97dba0d68b683461285a921afc08a4505b9a79af02275da63565edf19e6",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "centimetre/centimeter/cm",
+      "spokenText": "centimetre",
+      "start": 0,
+      "end": 2.3
+    },
+    {
+      "index": 1,
+      "sourceText": "kilogram(me)/kg",
+      "spokenText": "kilogramme",
+      "start": 3.05,
+      "end": 4.3
+    },
+    {
+      "index": 2,
+      "sourceText": "quarter",
+      "spokenText": "quarter",
+      "start": 5.05,
+      "end": 7.05
+    },
+    {
+      "index": 3,
+      "sourceText": "day",
+      "spokenText": "day",
+      "start": 7.8,
+      "end": 8.65
+    },
+    {
+      "index": 4,
+      "sourceText": "kilometre/kilometer/km",
+      "spokenText": "kilometre",
+      "start": 9.4,
+      "end": 10.35
+    },
+    {
+      "index": 5,
+      "sourceText": "second",
+      "spokenText": "second",
+      "start": 11.1,
+      "end": 11.9
+    },
+    {
+      "index": 6,
+      "sourceText": "degree",
+      "spokenText": "degree",
+      "start": 12.65,
+      "end": 13.6
+    },
+    {
+      "index": 7,
+      "sourceText": "litre/liter",
+      "spokenText": "litre",
+      "start": 14.35,
+      "end": 15.7
+    },
+    {
+      "index": 8,
+      "sourceText": "temperature",
+      "spokenText": "temperature",
+      "start": 16.45,
+      "end": 17.7
+    },
+    {
+      "index": 9,
+      "sourceText": "gram(me)",
+      "spokenText": "gramme",
+      "start": 18.45,
+      "end": 19.35
+    },
+    {
+      "index": 10,
+      "sourceText": "metre/meter",
+      "spokenText": "metre",
+      "start": 20.1,
+      "end": 21.15
+    },
+    {
+      "index": 11,
+      "sourceText": "week",
+      "spokenText": "week",
+      "start": 21.9,
+      "end": 22.85
+    },
+    {
+      "index": 12,
+      "sourceText": "half",
+      "spokenText": "half",
+      "start": 23.6,
+      "end": 24.9
+    },
+    {
+      "index": 13,
+      "sourceText": "minute",
+      "spokenText": "minute",
+      "start": 25.65,
+      "end": 26.45
+    },
+    {
+      "index": 14,
+      "sourceText": "year",
+      "spokenText": "year",
+      "start": 27.2,
+      "end": 27.9
+    },
+    {
+      "index": 15,
+      "sourceText": "hour",
+      "spokenText": "hour",
+      "start": 28.65,
+      "end": 29.75
+    },
+    {
+      "index": 16,
+      "sourceText": "moment",
+      "spokenText": "moment",
+      "start": 30.5,
+      "end": 31.7
+    },
+    {
+      "index": 17,
+      "sourceText": "able",
+      "spokenText": "able",
+      "start": 32.45,
+      "end": 33.15
+    },
+    {
+      "index": 18,
+      "sourceText": "free",
+      "spokenText": "free",
+      "start": 33.9,
+      "end": 35.4
+    },
+    {
+      "index": 19,
+      "sourceText": "quiet",
+      "spokenText": "quiet",
+      "start": 36.15,
+      "end": 37.05
+    },
+    {
+      "index": 20,
+      "sourceText": "afraid",
+      "spokenText": "afraid",
+      "start": 37.8,
+      "end": 38.8
+    },
+    {
+      "index": 21,
+      "sourceText": "friendly",
+      "spokenText": "friendly",
+      "start": 39.55,
+      "end": 40.5
+    },
+    {
+      "index": 22,
+      "sourceText": "ready",
+      "spokenText": "ready",
+      "start": 41.25,
+      "end": 42.15
+    },
+    {
+      "index": 23,
+      "sourceText": "alone",
+      "spokenText": "alone",
+      "start": 42.9,
+      "end": 45
+    },
+    {
+      "index": 24,
+      "sourceText": "funny",
+      "spokenText": "funny",
+      "start": 45.75,
+      "end": 47.2
+    },
+    {
+      "index": 25,
+      "sourceText": "real",
+      "spokenText": "real",
+      "start": 47.95,
+      "end": 48.85
+    },
+    {
+      "index": 26,
+      "sourceText": "amazing",
+      "spokenText": "amazing",
+      "start": 49.6,
+      "end": 51.05
+    },
+    {
+      "index": 27,
+      "sourceText": "good",
+      "spokenText": "good",
+      "start": 51.8,
+      "end": 53.05
+    },
+    {
+      "index": 28,
+      "sourceText": "rich",
+      "spokenText": "rich",
+      "start": 53.8,
+      "end": 54.6
+    },
+    {
+      "index": 29,
+      "sourceText": "angry",
+      "spokenText": "angry",
+      "start": 55.35,
+      "end": 56.65
+    },
+    {
+      "index": 30,
+      "sourceText": "great",
+      "spokenText": "great",
+      "start": 57.4,
+      "end": 58.85
+    },
+    {
+      "index": 31,
+      "sourceText": "right",
+      "spokenText": "right",
+      "start": 59.6,
+      "end": 60.5
+    },
+    {
+      "index": 32,
+      "sourceText": "bad",
+      "spokenText": "bad",
+      "start": 61.25,
+      "end": 62.3
+    },
+    {
+      "index": 33,
+      "sourceText": "happy",
+      "spokenText": "happy",
+      "start": 63.05,
+      "end": 64.1
+    },
+    {
+      "index": 34,
+      "sourceText": "slow",
+      "spokenText": "slow",
+      "start": 64.85,
+      "end": 65.95
+    },
+    {
+      "index": 35,
+      "sourceText": "beautiful",
+      "spokenText": "beautiful",
+      "start": 66.7,
+      "end": 68.6
+    },
+    {
+      "index": 36,
+      "sourceText": "hard",
+      "spokenText": "hard",
+      "start": 69.35,
+      "end": 70.9
+    },
+    {
+      "index": 37,
+      "sourceText": "small",
+      "spokenText": "small",
+      "start": 71.65,
+      "end": 72.85
+    },
+    {
+      "index": 38,
+      "sourceText": "better",
+      "spokenText": "better",
+      "start": 73.6,
+      "end": 74.45
+    },
+    {
+      "index": 39,
+      "sourceText": "heavy",
+      "spokenText": "heavy",
+      "start": 75.2,
+      "end": 76.3
+    },
+    {
+      "index": 40,
+      "sourceText": "soft",
+      "spokenText": "soft",
+      "start": 77.05,
+      "end": 78
+    },
+    {
+      "index": 41,
+      "sourceText": "big",
+      "spokenText": "big",
+      "start": 78.75,
+      "end": 79.85
+    },
+    {
+      "index": 42,
+      "sourceText": "high",
+      "spokenText": "high",
+      "start": 80.6,
+      "end": 81.45
+    },
+    {
+      "index": 43,
+      "sourceText": "sorry",
+      "spokenText": "sorry",
+      "start": 82.2,
+      "end": 83.5
+    },
+    {
+      "index": 44,
+      "sourceText": "bored",
+      "spokenText": "bored",
+      "start": 84.25,
+      "end": 85
+    },
+    {
+      "index": 45,
+      "sourceText": "hungry",
+      "spokenText": "hungry",
+      "start": 85.75,
+      "end": 87.05
+    },
+    {
+      "index": 46,
+      "sourceText": "special",
+      "spokenText": "special",
+      "start": 87.8,
+      "end": 89.05
+    },
+    {
+      "index": 47,
+      "sourceText": "boring",
+      "spokenText": "boring",
+      "start": 89.8,
+      "end": 90.8
+    },
+    {
+      "index": 48,
+      "sourceText": "important",
+      "spokenText": "important",
+      "start": 91.55,
+      "end": 92.8
+    },
+    {
+      "index": 49,
+      "sourceText": "strange",
+      "spokenText": "strange",
+      "start": 93.55,
+      "end": 95.1
+    },
+    {
+      "index": 50,
+      "sourceText": "brave",
+      "spokenText": "brave",
+      "start": 95.85,
+      "end": 96.65
+    },
+    {
+      "index": 51,
+      "sourceText": "interested",
+      "spokenText": "interested",
+      "start": 97.4,
+      "end": 99
+    },
+    {
+      "index": 52,
+      "sourceText": "strong",
+      "spokenText": "strong",
+      "start": 99.75,
+      "end": 100.9
+    },
+    {
+      "index": 53,
+      "sourceText": "brilliant",
+      "spokenText": "brilliant",
+      "start": 101.65,
+      "end": 102.8
+    },
+    {
+      "index": 54,
+      "sourceText": "interesting",
+      "spokenText": "interesting",
+      "start": 103.55,
+      "end": 104.55
+    },
+    {
+      "index": 55,
+      "sourceText": "sure",
+      "spokenText": "sure",
+      "start": 105.3,
+      "end": 106.1
+    },
+    {
+      "index": 56,
+      "sourceText": "busy",
+      "spokenText": "busy",
+      "start": 106.85,
+      "end": 107.85
+    },
+    {
+      "index": 57,
+      "sourceText": "kind",
+      "spokenText": "kind",
+      "start": 108.6,
+      "end": 109.5
+    },
+    {
+      "index": 58,
+      "sourceText": "sweet",
+      "spokenText": "sweet",
+      "start": 110.25,
+      "end": 111.75
+    },
+    {
+      "index": 59,
+      "sourceText": "careful",
+      "spokenText": "careful",
+      "start": 112.5,
+      "end": 113.3
+    },
+    {
+      "index": 60,
+      "sourceText": "lovely",
+      "spokenText": "lovely",
+      "start": 114.05,
+      "end": 115.45
+    },
+    {
+      "index": 61,
+      "sourceText": "tall",
+      "spokenText": "tall",
+      "start": 116.2,
+      "end": 117.15
+    },
+    {
+      "index": 62,
+      "sourceText": "clear",
+      "spokenText": "clear",
+      "start": 117.9,
+      "end": 118.95
+    },
+    {
+      "index": 63,
+      "sourceText": "lucky",
+      "spokenText": "lucky",
+      "start": 119.7,
+      "end": 121
+    },
+    {
+      "index": 64,
+      "sourceText": "terrible",
+      "spokenText": "terrible",
+      "start": 121.75,
+      "end": 122.95
+    },
+    {
+      "index": 65,
+      "sourceText": "clever",
+      "spokenText": "clever",
+      "start": 123.7,
+      "end": 124.55
+    },
+    {
+      "index": 66,
+      "sourceText": "married",
+      "spokenText": "married",
+      "start": 125.3,
+      "end": 126.25
+    },
+    {
+      "index": 67,
+      "sourceText": "tired",
+      "spokenText": "tired",
+      "start": 127,
+      "end": 128.2
+    },
+    {
+      "index": 68,
+      "sourceText": "cool",
+      "spokenText": "cool",
+      "start": 128.95,
+      "end": 129.85
+    },
+    {
+      "index": 69,
+      "sourceText": "modern",
+      "spokenText": "modern",
+      "start": 130.6,
+      "end": 131.75
+    },
+    {
+      "index": 70,
+      "sourceText": "unhappy",
+      "spokenText": "unhappy",
+      "start": 132.5,
+      "end": 134.25
+    },
+    {
+      "index": 71,
+      "sourceText": "different",
+      "spokenText": "different",
+      "start": 135,
+      "end": 135.8
+    },
+    {
+      "index": 72,
+      "sourceText": "nice",
+      "spokenText": "nice",
+      "start": 136.55,
+      "end": 137.65
+    },
+    {
+      "index": 73,
+      "sourceText": "useful",
+      "spokenText": "useful",
+      "start": 138.4,
+      "end": 139.55
+    },
+    {
+      "index": 74,
+      "sourceText": "difficult",
+      "spokenText": "difficult",
+      "start": 140.3,
+      "end": 141.4
+    },
+    {
+      "index": 75,
+      "sourceText": "noisy",
+      "spokenText": "noisy",
+      "start": 142.15,
+      "end": 143.25
+    },
+    {
+      "index": 76,
+      "sourceText": "well",
+      "spokenText": "well",
+      "start": 144,
+      "end": 145.4
+    },
+    {
+      "index": 77,
+      "sourceText": "excellent",
+      "spokenText": "excellent",
+      "start": 146.15,
+      "end": 147.25
+    },
+    {
+      "index": 78,
+      "sourceText": "old",
+      "spokenText": "old",
+      "start": 148,
+      "end": 149.85
+    },
+    {
+      "index": 79,
+      "sourceText": "worried",
+      "spokenText": "worried",
+      "start": 150.6,
+      "end": 151.85
+    },
+    {
+      "index": 80,
+      "sourceText": "famous",
+      "spokenText": "famous",
+      "start": 152.6,
+      "end": 155.15
+    },
+    {
+      "index": 81,
+      "sourceText": "pleasant",
+      "spokenText": "pleasant",
+      "start": 155.9,
+      "end": 157.45
+    },
+    {
+      "index": 82,
+      "sourceText": "wrong",
+      "spokenText": "wrong",
+      "start": 158.2,
+      "end": 160.3
+    },
+    {
+      "index": 83,
+      "sourceText": "fast",
+      "spokenText": "fast",
+      "start": 161.05,
+      "end": 163.15
+    },
+    {
+      "index": 84,
+      "sourceText": "poor",
+      "spokenText": "poor",
+      "start": 163.9,
+      "end": 165.15
+    },
+    {
+      "index": 85,
+      "sourceText": "young",
+      "spokenText": "young",
+      "start": 165.9,
+      "end": 166.8
+    },
+    {
+      "index": 86,
+      "sourceText": "favourite",
+      "spokenText": "favourite",
+      "start": 167.55,
+      "end": 168.7
+    },
+    {
+      "index": 87,
+      "sourceText": "pretty",
+      "spokenText": "pretty",
+      "start": 169.45,
+      "end": 170.55
+    },
+    {
+      "index": 88,
+      "sourceText": "fine",
+      "spokenText": "fine",
+      "start": 171.3,
+      "end": 172.65
+    },
+    {
+      "index": 89,
+      "sourceText": "quick",
+      "spokenText": "quick",
+      "start": 173.4,
+      "end": 174.05
+    }
+  ]
+}

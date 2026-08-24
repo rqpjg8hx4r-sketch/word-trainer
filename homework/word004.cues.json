@@ -1,0 +1,803 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word004.mp3",
+  "sourceHash": "f4e09aae571875204f864c0f14c00aa568975b27fd860d5596951ea842fe92b5",
+  "audioHash": "fb58000c84dc31596476696444fd54a1bd2a98b8a0f29519997a7fed93ba54a6",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "aunt",
+      "spokenText": "aunt",
+      "start": 0,
+      "end": 0.8
+    },
+    {
+      "index": 1,
+      "sourceText": "boy",
+      "spokenText": "boy",
+      "start": 1.55,
+      "end": 3.85
+    },
+    {
+      "index": 2,
+      "sourceText": "brother",
+      "spokenText": "brother",
+      "start": 4.6,
+      "end": 5.5
+    },
+    {
+      "index": 3,
+      "sourceText": "child",
+      "spokenText": "child",
+      "start": 6.25,
+      "end": 7.8
+    },
+    {
+      "index": 4,
+      "sourceText": "cousin",
+      "spokenText": "cousin",
+      "start": 8.55,
+      "end": 9.85
+    },
+    {
+      "index": 5,
+      "sourceText": "dad(dy)",
+      "spokenText": "daddy",
+      "start": 10.6,
+      "end": 13.05
+    },
+    {
+      "index": 6,
+      "sourceText": "daughter",
+      "spokenText": "daughter",
+      "start": 13.8,
+      "end": 14.85
+    },
+    {
+      "index": 7,
+      "sourceText": "family",
+      "spokenText": "family",
+      "start": 15.6,
+      "end": 16.8
+    },
+    {
+      "index": 8,
+      "sourceText": "father",
+      "spokenText": "father",
+      "start": 17.55,
+      "end": 18.5
+    },
+    {
+      "index": 9,
+      "sourceText": "friend",
+      "spokenText": "friend",
+      "start": 19.25,
+      "end": 20.2
+    },
+    {
+      "index": 10,
+      "sourceText": "friendly",
+      "spokenText": "friendly",
+      "start": 20.95,
+      "end": 22.4
+    },
+    {
+      "index": 11,
+      "sourceText": "girl",
+      "spokenText": "girl",
+      "start": 23.15,
+      "end": 24.05
+    },
+    {
+      "index": 12,
+      "sourceText": "grandchild",
+      "spokenText": "grandchild",
+      "start": 24.8,
+      "end": 26.25
+    },
+    {
+      "index": 13,
+      "sourceText": "grand(d)ad",
+      "spokenText": "granddad",
+      "start": 27,
+      "end": 28.2
+    },
+    {
+      "index": 14,
+      "sourceText": "granddaughter",
+      "spokenText": "granddaughter",
+      "start": 28.95,
+      "end": 30.9
+    },
+    {
+      "index": 15,
+      "sourceText": "grandfather",
+      "spokenText": "grandfather",
+      "start": 31.65,
+      "end": 32.8
+    },
+    {
+      "index": 16,
+      "sourceText": "grandma",
+      "spokenText": "grandma",
+      "start": 33.55,
+      "end": 34.85
+    },
+    {
+      "index": 17,
+      "sourceText": "grandmother",
+      "spokenText": "grandmother",
+      "start": 35.6,
+      "end": 37.65
+    },
+    {
+      "index": 18,
+      "sourceText": "grandpa",
+      "spokenText": "grandpa",
+      "start": 38.4,
+      "end": 39.3
+    },
+    {
+      "index": 19,
+      "sourceText": "grandparent",
+      "spokenText": "grandparent",
+      "start": 40.05,
+      "end": 41.45
+    },
+    {
+      "index": 20,
+      "sourceText": "grandson",
+      "spokenText": "grandson",
+      "start": 42.2,
+      "end": 43.3
+    },
+    {
+      "index": 21,
+      "sourceText": "granny",
+      "spokenText": "granny",
+      "start": 44.05,
+      "end": 44.8
+    },
+    {
+      "index": 22,
+      "sourceText": "group",
+      "spokenText": "group",
+      "start": 45.55,
+      "end": 46.95
+    },
+    {
+      "index": 23,
+      "sourceText": "guest",
+      "spokenText": "guest",
+      "start": 47.7,
+      "end": 48.8
+    },
+    {
+      "index": 24,
+      "sourceText": "guy",
+      "spokenText": "guy",
+      "start": 49.55,
+      "end": 50.45
+    },
+    {
+      "index": 25,
+      "sourceText": "husband",
+      "spokenText": "husband",
+      "start": 51.2,
+      "end": 52.35
+    },
+    {
+      "index": 26,
+      "sourceText": "love",
+      "spokenText": "love",
+      "start": 53.1,
+      "end": 53.95
+    },
+    {
+      "index": 27,
+      "sourceText": "maried",
+      "spokenText": "maried",
+      "start": 54.7,
+      "end": 56
+    },
+    {
+      "index": 28,
+      "sourceText": "Miss",
+      "spokenText": "Miss",
+      "start": 56.75,
+      "end": 58.65
+    },
+    {
+      "index": 29,
+      "sourceText": "mother",
+      "spokenText": "mother",
+      "start": 59.4,
+      "end": 60.1
+    },
+    {
+      "index": 30,
+      "sourceText": "Mr",
+      "spokenText": "Mr",
+      "start": 60.85,
+      "end": 61.7
+    },
+    {
+      "index": 31,
+      "sourceText": "Mrs",
+      "spokenText": "Mrs",
+      "start": 62.45,
+      "end": 63.5
+    },
+    {
+      "index": 32,
+      "sourceText": "Ms",
+      "spokenText": "Ms",
+      "start": 64.25,
+      "end": 65.45
+    },
+    {
+      "index": 33,
+      "sourceText": "mum(my)",
+      "spokenText": "mummy",
+      "start": 66.2,
+      "end": 67
+    },
+    {
+      "index": 34,
+      "sourceText": "neighbour",
+      "spokenText": "neighbour",
+      "start": 67.75,
+      "end": 68.6
+    },
+    {
+      "index": 35,
+      "sourceText": "parent",
+      "spokenText": "parent",
+      "start": 69.35,
+      "end": 70.5
+    },
+    {
+      "index": 36,
+      "sourceText": "pen-friend",
+      "spokenText": "pen-friend",
+      "start": 71.25,
+      "end": 72.6
+    },
+    {
+      "index": 37,
+      "sourceText": "sister",
+      "spokenText": "sister",
+      "start": 73.35,
+      "end": 74.35
+    },
+    {
+      "index": 38,
+      "sourceText": "son",
+      "spokenText": "son",
+      "start": 75.1,
+      "end": 76.3
+    },
+    {
+      "index": 39,
+      "sourceText": "surname",
+      "spokenText": "surname",
+      "start": 77.05,
+      "end": 78.6
+    },
+    {
+      "index": 40,
+      "sourceText": "teenager",
+      "spokenText": "teenager",
+      "start": 79.35,
+      "end": 80.65
+    },
+    {
+      "index": 41,
+      "sourceText": "uncle",
+      "spokenText": "uncle",
+      "start": 81.4,
+      "end": 82.25
+    },
+    {
+      "index": 42,
+      "sourceText": "wife",
+      "spokenText": "wife",
+      "start": 83,
+      "end": 84.6
+    },
+    {
+      "index": 43,
+      "sourceText": "act",
+      "spokenText": "act",
+      "start": 85.35,
+      "end": 86.1
+    },
+    {
+      "index": 44,
+      "sourceText": "actor",
+      "spokenText": "actor",
+      "start": 86.85,
+      "end": 88.1
+    },
+    {
+      "index": 45,
+      "sourceText": "adventure",
+      "spokenText": "adventure",
+      "start": 88.85,
+      "end": 90.1
+    },
+    {
+      "index": 46,
+      "sourceText": "advertisement",
+      "spokenText": "advertisement",
+      "start": 90.85,
+      "end": 92.3
+    },
+    {
+      "index": 47,
+      "sourceText": "art",
+      "spokenText": "art",
+      "start": 93.05,
+      "end": 93.95
+    },
+    {
+      "index": 48,
+      "sourceText": "article",
+      "spokenText": "article",
+      "start": 94.7,
+      "end": 95.5
+    },
+    {
+      "index": 49,
+      "sourceText": "board game",
+      "spokenText": "board game",
+      "start": 96.25,
+      "end": 97.45
+    },
+    {
+      "index": 50,
+      "sourceText": "book",
+      "spokenText": "book",
+      "start": 98.2,
+      "end": 99.2
+    },
+    {
+      "index": 51,
+      "sourceText": "card",
+      "spokenText": "card",
+      "start": 99.95,
+      "end": 101.95
+    },
+    {
+      "index": 52,
+      "sourceText": "cartoon",
+      "spokenText": "cartoon",
+      "start": 102.7,
+      "end": 104
+    },
+    {
+      "index": 53,
+      "sourceText": "CD (player)",
+      "spokenText": "CD player",
+      "start": 104.75,
+      "end": 105.85
+    },
+    {
+      "index": 54,
+      "sourceText": "chess",
+      "spokenText": "chess",
+      "start": 106.6,
+      "end": 108
+    },
+    {
+      "index": 55,
+      "sourceText": "festival",
+      "spokenText": "festival",
+      "start": 108.75,
+      "end": 109.7
+    },
+    {
+      "index": 56,
+      "sourceText": "film",
+      "spokenText": "film",
+      "start": 110.45,
+      "end": 112.1
+    },
+    {
+      "index": 57,
+      "sourceText": "fun",
+      "spokenText": "fun",
+      "start": 112.85,
+      "end": 114.15
+    },
+    {
+      "index": 58,
+      "sourceText": "go out",
+      "spokenText": "go out",
+      "start": 114.9,
+      "end": 116.15
+    },
+    {
+      "index": 59,
+      "sourceText": "group",
+      "spokenText": "group",
+      "start": 116.9,
+      "end": 118.2
+    },
+    {
+      "index": 60,
+      "sourceText": "guitar",
+      "spokenText": "guitar",
+      "start": 118.95,
+      "end": 120
+    },
+    {
+      "index": 61,
+      "sourceText": "hip hop",
+      "spokenText": "hip hop",
+      "start": 120.75,
+      "end": 121.95
+    },
+    {
+      "index": 62,
+      "sourceText": "instrument",
+      "spokenText": "instrument",
+      "start": 122.7,
+      "end": 124.15
+    },
+    {
+      "index": 63,
+      "sourceText": "keyboard",
+      "spokenText": "keyboard",
+      "start": 124.9,
+      "end": 126.05
+    },
+    {
+      "index": 64,
+      "sourceText": "laugh",
+      "spokenText": "laugh",
+      "start": 126.8,
+      "end": 128.2
+    },
+    {
+      "index": 65,
+      "sourceText": "listen to",
+      "spokenText": "listen to",
+      "start": 128.95,
+      "end": 130.7
+    },
+    {
+      "index": 66,
+      "sourceText": "look at",
+      "spokenText": "look at",
+      "start": 131.45,
+      "end": 132.9
+    },
+    {
+      "index": 67,
+      "sourceText": "photography",
+      "spokenText": "photography",
+      "start": 133.65,
+      "end": 134.7
+    },
+    {
+      "index": 68,
+      "sourceText": "piano",
+      "spokenText": "piano",
+      "start": 135.45,
+      "end": 136.55
+    },
+    {
+      "index": 69,
+      "sourceText": "picture",
+      "spokenText": "picture",
+      "start": 137.3,
+      "end": 138.75
+    },
+    {
+      "index": 70,
+      "sourceText": "play",
+      "spokenText": "play",
+      "start": 139.5,
+      "end": 140.2
+    },
+    {
+      "index": 71,
+      "sourceText": "pop (music)",
+      "spokenText": "pop music",
+      "start": 140.95,
+      "end": 142.6
+    },
+    {
+      "index": 72,
+      "sourceText": "practice",
+      "spokenText": "practice",
+      "start": 143.35,
+      "end": 145.65
+    },
+    {
+      "index": 73,
+      "sourceText": "practise",
+      "spokenText": "practise",
+      "start": 146.4,
+      "end": 147.95
+    },
+    {
+      "index": 74,
+      "sourceText": "programme",
+      "spokenText": "programme",
+      "start": 148.7,
+      "end": 150
+    },
+    {
+      "index": 75,
+      "sourceText": "project",
+      "spokenText": "project",
+      "start": 150.75,
+      "end": 152.7
+    },
+    {
+      "index": 76,
+      "sourceText": "radio",
+      "spokenText": "radio",
+      "start": 153.45,
+      "end": 154.3
+    },
+    {
+      "index": 77,
+      "sourceText": "read",
+      "spokenText": "read",
+      "start": 155.05,
+      "end": 156.15
+    },
+    {
+      "index": 78,
+      "sourceText": "rock (concert)",
+      "spokenText": "rock concert",
+      "start": 156.9,
+      "end": 159.1
+    },
+    {
+      "index": 79,
+      "sourceText": "cinema",
+      "spokenText": "cinema",
+      "start": 159.85,
+      "end": 161
+    },
+    {
+      "index": 80,
+      "sourceText": "classical (music)",
+      "spokenText": "classical music",
+      "start": 161.75,
+      "end": 165
+    },
+    {
+      "index": 81,
+      "sourceText": "competition",
+      "spokenText": "competition",
+      "start": 165.75,
+      "end": 167.2
+    },
+    {
+      "index": 82,
+      "sourceText": "concert",
+      "spokenText": "concert",
+      "start": 167.95,
+      "end": 169.05
+    },
+    {
+      "index": 83,
+      "sourceText": "dance",
+      "spokenText": "dance",
+      "start": 169.8,
+      "end": 170.85
+    },
+    {
+      "index": 84,
+      "sourceText": "dancer",
+      "spokenText": "dancer",
+      "start": 171.6,
+      "end": 172.7
+    },
+    {
+      "index": 85,
+      "sourceText": "draw",
+      "spokenText": "draw",
+      "start": 173.45,
+      "end": 174.75
+    },
+    {
+      "index": 86,
+      "sourceText": "drawing",
+      "spokenText": "drawing",
+      "start": 175.5,
+      "end": 176.75
+    },
+    {
+      "index": 87,
+      "sourceText": "disco",
+      "spokenText": "disco",
+      "start": 177.5,
+      "end": 178.8
+    },
+    {
+      "index": 88,
+      "sourceText": "drum",
+      "spokenText": "drum",
+      "start": 179.55,
+      "end": 180.55
+    },
+    {
+      "index": 89,
+      "sourceText": "DVD (player)",
+      "spokenText": "DVD player",
+      "start": 181.3,
+      "end": 182.55
+    },
+    {
+      "index": 90,
+      "sourceText": "exhibition",
+      "spokenText": "exhibition",
+      "start": 183.3,
+      "end": 185.35
+    },
+    {
+      "index": 91,
+      "sourceText": "magazine",
+      "spokenText": "magazine",
+      "start": 186.1,
+      "end": 187.25
+    },
+    {
+      "index": 92,
+      "sourceText": "MP3 player",
+      "spokenText": "MP3 player",
+      "start": 188,
+      "end": 190.05
+    },
+    {
+      "index": 93,
+      "sourceText": "museum",
+      "spokenText": "museum",
+      "start": 190.8,
+      "end": 192.4
+    },
+    {
+      "index": 94,
+      "sourceText": "music",
+      "spokenText": "music",
+      "start": 193.15,
+      "end": 194.15
+    },
+    {
+      "index": 95,
+      "sourceText": "musician",
+      "spokenText": "musician",
+      "start": 194.9,
+      "end": 195.95
+    },
+    {
+      "index": 96,
+      "sourceText": "news",
+      "spokenText": "news",
+      "start": 196.7,
+      "end": 197.7
+    },
+    {
+      "index": 97,
+      "sourceText": "newspaper",
+      "spokenText": "newspaper",
+      "start": 198.45,
+      "end": 200.3
+    },
+    {
+      "index": 98,
+      "sourceText": "opera",
+      "spokenText": "opera",
+      "start": 201.05,
+      "end": 201.85
+    },
+    {
+      "index": 99,
+      "sourceText": "paint",
+      "spokenText": "paint",
+      "start": 202.6,
+      "end": 203.35
+    },
+    {
+      "index": 100,
+      "sourceText": "painter",
+      "spokenText": "painter",
+      "start": 204.1,
+      "end": 204.95
+    },
+    {
+      "index": 101,
+      "sourceText": "photograph",
+      "spokenText": "photograph",
+      "start": 205.7,
+      "end": 207.1
+    },
+    {
+      "index": 102,
+      "sourceText": "photographer",
+      "spokenText": "photographer",
+      "start": 207.85,
+      "end": 208.95
+    },
+    {
+      "index": 103,
+      "sourceText": "screen",
+      "spokenText": "screen",
+      "start": 209.7,
+      "end": 211.6
+    },
+    {
+      "index": 104,
+      "sourceText": "show",
+      "spokenText": "show",
+      "start": 212.35,
+      "end": 213.4
+    },
+    {
+      "index": 105,
+      "sourceText": "sing",
+      "spokenText": "sing",
+      "start": 214.15,
+      "end": 216.05
+    },
+    {
+      "index": 106,
+      "sourceText": "singer",
+      "spokenText": "singer",
+      "start": 216.8,
+      "end": 217.9
+    },
+    {
+      "index": 107,
+      "sourceText": "song",
+      "spokenText": "song",
+      "start": 218.65,
+      "end": 219.85
+    },
+    {
+      "index": 108,
+      "sourceText": "television / TV",
+      "spokenText": "television",
+      "start": 220.6,
+      "end": 222.2
+    },
+    {
+      "index": 109,
+      "sourceText": "theatre",
+      "spokenText": "theatre",
+      "start": 222.95,
+      "end": 224.2
+    },
+    {
+      "index": 110,
+      "sourceText": "ticket",
+      "spokenText": "ticket",
+      "start": 224.95,
+      "end": 225.9
+    },
+    {
+      "index": 111,
+      "sourceText": "video (game)",
+      "spokenText": "video game",
+      "start": 226.65,
+      "end": 228.15
+    },
+    {
+      "index": 112,
+      "sourceText": "watch",
+      "spokenText": "watch",
+      "start": 228.9,
+      "end": 229.9
+    }
+  ]
+}

@@ -1,0 +1,432 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word007.mp3",
+  "sourceHash": "47bea1eab3deffcf0aed0184d492329de7018cec82399f105680c44959373d74",
+  "audioHash": "136a4990d8c0d046c92d806b1d93e167c96f0507cf37fca87f54b73818cf9a94",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "address",
+      "spokenText": "address",
+      "start": 0,
+      "end": 1.2
+    },
+    {
+      "index": 1,
+      "sourceText": "desk",
+      "spokenText": "desk",
+      "start": 1.95,
+      "end": 2.8
+    },
+    {
+      "index": 2,
+      "sourceText": "kitchen",
+      "spokenText": "kitchen",
+      "start": 3.55,
+      "end": 4.7
+    },
+    {
+      "index": 3,
+      "sourceText": "apartment",
+      "spokenText": "apartment",
+      "start": 5.45,
+      "end": 6.9
+    },
+    {
+      "index": 4,
+      "sourceText": "dining room",
+      "spokenText": "dining room",
+      "start": 7.65,
+      "end": 9.05
+    },
+    {
+      "index": 5,
+      "sourceText": "lamp",
+      "spokenText": "lamp",
+      "start": 9.8,
+      "end": 10.6
+    },
+    {
+      "index": 6,
+      "sourceText": "armchair",
+      "spokenText": "armchair",
+      "start": 11.35,
+      "end": 12.35
+    },
+    {
+      "index": 7,
+      "sourceText": "door",
+      "spokenText": "door",
+      "start": 13.1,
+      "end": 14.15
+    },
+    {
+      "index": 8,
+      "sourceText": "light",
+      "spokenText": "light",
+      "start": 14.9,
+      "end": 16.15
+    },
+    {
+      "index": 9,
+      "sourceText": "bath(tub)",
+      "spokenText": "bathtub",
+      "start": 16.9,
+      "end": 18.45
+    },
+    {
+      "index": 10,
+      "sourceText": "downstairs",
+      "spokenText": "downstairs",
+      "start": 19.2,
+      "end": 20.6
+    },
+    {
+      "index": 11,
+      "sourceText": "live",
+      "spokenText": "live",
+      "start": 21.35,
+      "end": 22.85
+    },
+    {
+      "index": 12,
+      "sourceText": "bathroom",
+      "spokenText": "bathroom",
+      "start": 23.6,
+      "end": 24.5
+    },
+    {
+      "index": 13,
+      "sourceText": "drawer",
+      "spokenText": "drawer",
+      "start": 25.25,
+      "end": 26.2
+    },
+    {
+      "index": 14,
+      "sourceText": "living room",
+      "spokenText": "living room",
+      "start": 26.95,
+      "end": 28.3
+    },
+    {
+      "index": 15,
+      "sourceText": "bed",
+      "spokenText": "bed",
+      "start": 29.05,
+      "end": 29.9
+    },
+    {
+      "index": 16,
+      "sourceText": "DVD (player)",
+      "spokenText": "DVD player",
+      "start": 30.65,
+      "end": 32.35
+    },
+    {
+      "index": 17,
+      "sourceText": "oven",
+      "spokenText": "oven",
+      "start": 33.1,
+      "end": 34.35
+    },
+    {
+      "index": 18,
+      "sourceText": "bedroom",
+      "spokenText": "bedroom",
+      "start": 35.1,
+      "end": 36.65
+    },
+    {
+      "index": 19,
+      "sourceText": "entrance",
+      "spokenText": "entrance",
+      "start": 37.4,
+      "end": 38.45
+    },
+    {
+      "index": 20,
+      "sourceText": "pillow",
+      "spokenText": "pillow",
+      "start": 39.2,
+      "end": 40.2
+    },
+    {
+      "index": 21,
+      "sourceText": "bin",
+      "spokenText": "bin",
+      "start": 40.95,
+      "end": 42.45
+    },
+    {
+      "index": 22,
+      "sourceText": "flat",
+      "spokenText": "flat",
+      "start": 43.2,
+      "end": 44.5
+    },
+    {
+      "index": 23,
+      "sourceText": "refrigerator",
+      "spokenText": "refrigerator",
+      "start": 45.25,
+      "end": 46.4
+    },
+    {
+      "index": 24,
+      "sourceText": "blanket",
+      "spokenText": "blanket",
+      "start": 47.15,
+      "end": 48.1
+    },
+    {
+      "index": 25,
+      "sourceText": "floor",
+      "spokenText": "floor",
+      "start": 48.85,
+      "end": 50.95
+    },
+    {
+      "index": 26,
+      "sourceText": "roof",
+      "spokenText": "roof",
+      "start": 51.7,
+      "end": 52.85
+    },
+    {
+      "index": 27,
+      "sourceText": "bookcase",
+      "spokenText": "bookcase",
+      "start": 53.6,
+      "end": 55.1
+    },
+    {
+      "index": 28,
+      "sourceText": "fridge",
+      "spokenText": "fridge",
+      "start": 55.85,
+      "end": 57.2
+    },
+    {
+      "index": 29,
+      "sourceText": "room",
+      "spokenText": "room",
+      "start": 57.95,
+      "end": 59.3
+    },
+    {
+      "index": 30,
+      "sourceText": "bookshelf",
+      "spokenText": "bookshelf",
+      "start": 60.05,
+      "end": 61.15
+    },
+    {
+      "index": 31,
+      "sourceText": "furniture",
+      "spokenText": "furniture",
+      "start": 61.9,
+      "end": 62.9
+    },
+    {
+      "index": 32,
+      "sourceText": "rubbish",
+      "spokenText": "rubbish",
+      "start": 63.65,
+      "end": 64.5
+    },
+    {
+      "index": 33,
+      "sourceText": "bowl",
+      "spokenText": "bowl",
+      "start": 65.25,
+      "end": 66.1
+    },
+    {
+      "index": 34,
+      "sourceText": "garage",
+      "spokenText": "garage",
+      "start": 66.85,
+      "end": 67.85
+    },
+    {
+      "index": 35,
+      "sourceText": "safe",
+      "spokenText": "safe",
+      "start": 68.6,
+      "end": 70.35
+    },
+    {
+      "index": 36,
+      "sourceText": "box",
+      "spokenText": "box",
+      "start": 71.1,
+      "end": 71.95
+    },
+    {
+      "index": 37,
+      "sourceText": "garden",
+      "spokenText": "garden",
+      "start": 72.7,
+      "end": 74.65
+    },
+    {
+      "index": 38,
+      "sourceText": "shelf",
+      "spokenText": "shelf",
+      "start": 75.4,
+      "end": 76.3
+    },
+    {
+      "index": 39,
+      "sourceText": "carpet",
+      "spokenText": "carpet",
+      "start": 77.05,
+      "end": 77.85
+    },
+    {
+      "index": 40,
+      "sourceText": "gas",
+      "spokenText": "gas",
+      "start": 78.6,
+      "end": 79.5
+    },
+    {
+      "index": 41,
+      "sourceText": "shower",
+      "spokenText": "shower",
+      "start": 80.25,
+      "end": 83.45
+    },
+    {
+      "index": 42,
+      "sourceText": "chair",
+      "spokenText": "chair",
+      "start": 84.2,
+      "end": 85.35
+    },
+    {
+      "index": 43,
+      "sourceText": "gate",
+      "spokenText": "gate",
+      "start": 86.1,
+      "end": 87.65
+    },
+    {
+      "index": 44,
+      "sourceText": "sink",
+      "spokenText": "sink",
+      "start": 88.4,
+      "end": 89.6
+    },
+    {
+      "index": 45,
+      "sourceText": "clock",
+      "spokenText": "clock",
+      "start": 90.35,
+      "end": 91.3
+    },
+    {
+      "index": 46,
+      "sourceText": "hall",
+      "spokenText": "hall",
+      "start": 92.05,
+      "end": 93.5
+    },
+    {
+      "index": 47,
+      "sourceText": "sitting room",
+      "spokenText": "sitting room",
+      "start": 94.25,
+      "end": 95.4
+    },
+    {
+      "index": 48,
+      "sourceText": "computer",
+      "spokenText": "computer",
+      "start": 96.15,
+      "end": 97.85
+    },
+    {
+      "index": 49,
+      "sourceText": "heating",
+      "spokenText": "heating",
+      "start": 98.6,
+      "end": 99.8
+    },
+    {
+      "index": 50,
+      "sourceText": "sofa",
+      "spokenText": "sofa",
+      "start": 100.55,
+      "end": 101.8
+    },
+    {
+      "index": 51,
+      "sourceText": "cooker",
+      "spokenText": "cooker",
+      "start": 102.55,
+      "end": 103.45
+    },
+    {
+      "index": 52,
+      "sourceText": "home",
+      "spokenText": "home",
+      "start": 104.2,
+      "end": 105.3
+    },
+    {
+      "index": 53,
+      "sourceText": "stay",
+      "spokenText": "stay",
+      "start": 106.05,
+      "end": 107.4
+    },
+    {
+      "index": 54,
+      "sourceText": "cupboard",
+      "spokenText": "cupboard",
+      "start": 108.15,
+      "end": 109.65
+    },
+    {
+      "index": 55,
+      "sourceText": "house",
+      "spokenText": "house",
+      "start": 110.4,
+      "end": 111.55
+    },
+    {
+      "index": 56,
+      "sourceText": "toilet",
+      "spokenText": "toilet",
+      "start": 112.3,
+      "end": 113.3
+    },
+    {
+      "index": 57,
+      "sourceText": "curtain",
+      "spokenText": "curtain",
+      "start": 114.05,
+      "end": 115.5
+    },
+    {
+      "index": 58,
+      "sourceText": "key",
+      "spokenText": "key",
+      "start": 116.25,
+      "end": 117.15
+    },
+    {
+      "index": 59,
+      "sourceText": "towel",
+      "spokenText": "towel",
+      "start": 117.9,
+      "end": 118.9
+    }
+  ]
+}

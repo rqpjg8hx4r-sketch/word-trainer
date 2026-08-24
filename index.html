@@ -21,6 +21,7 @@
       --text: #1E293B;
       --subtext: #64748B;
     }
+    html { overflow-y:scroll; scrollbar-gutter:stable; }
     * { 
       box-sizing: border-box; 
       -webkit-tap-highlight-color: transparent; 
@@ -39,36 +40,12 @@
     }
     .container { width: 100%; max-width: 760px; }
     .content-narrow { width:100%; max-width:760px; margin-left:auto; margin-right:auto; }
-    .study-card { width:100%; max-width:480px; margin-left:auto; margin-right:auto; }
+    .study-card { position:relative; width:100%; margin-left:auto; margin-right:auto; }
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-    }
-    .group-selector {
-      display: flex;
-      background: #E2E8F0;
-      border-radius: 10px;
-      padding: 3px;
-      margin-bottom: 10px;
-      gap: 4px;
-    }
-    .group-btn {
-      flex: 1;
-      border: none;
-      background: transparent;
-      padding: 8px 4px;
-      font-size: 13px;
-      font-weight: bold;
-      border-radius: 7px;
-      color: var(--subtext);
-      cursor: pointer;
-    }
-    .group-btn.active {
-      background: white;
-      color: var(--primary);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     .tabs { display: flex; gap: 6px; margin-bottom: 10px; }
     .tab-btn {
@@ -233,12 +210,7 @@
     }
 
 
-    .toolbar { display:flex; gap:8px; margin-bottom:10px; }
-    .toolbar .btn { padding:10px 12px; font-size:13px; }
-    .toolbar .typing-entry { flex:0 0 auto; width:auto; min-width:52px; padding:8px 9px; font-size:12px; }
-    .panel { background:var(--card); border:1px solid #E2E8F0; border-radius:14px; padding:14px; margin-bottom:12px; }
     .panel-title { font-size:16px; font-weight:800; margin-bottom:8px; }
-    .import-area { width:100%; min-height:150px; border:1px solid #CBD5E1; border-radius:10px; padding:10px; font-size:14px; resize:vertical; }
     .muted { color:var(--subtext); font-size:12px; line-height:1.5; }
     .history-card { background:white; border:1px solid #E2E8F0; border-radius:12px; padding:12px; margin-bottom:8px; text-align:left; }
     .history-title { font-weight:800; font-size:15px; }
@@ -258,7 +230,7 @@
     .offline-status { display:inline-flex; align-items:center; gap:4px; margin-top:7px; padding:4px 8px; border-radius:999px; background:#F1F5F9; color:var(--subtext); font-size:11px; font-weight:800; }
     .offline-status.ready { background:#ECFDF5; color:#047857; }
     .offline-status.offline { background:#FEF3C7; color:#B45309; }
-    .main-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:12px 0; padding:4px; background:#E2E8F0; border-radius:14px; }
+    .main-tabs { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin:12px 0; padding:4px; background:#E2E8F0; border-radius:14px; }
     .main-tab { border:none; border-radius:10px; padding:13px 10px; background:transparent; color:var(--subtext); font-size:15px; font-weight:900; cursor:pointer; }
     .main-tab.active { background:white; color:var(--primary); box-shadow:0 2px 6px rgba(15,23,42,.10); }
     .main-tab:disabled { opacity:.38; cursor:not-allowed; }
@@ -280,7 +252,10 @@
     .speed-group { display:flex; flex-wrap:wrap; gap:5px; }
     .speed-btn, .player-btn { border:none; border-radius:9px; padding:8px 10px; background:white; color:#334155; font-size:12px; font-weight:800; cursor:pointer; box-shadow:0 1px 3px rgba(15,23,42,.08); }
     .speed-btn.active, .player-btn.active { background:var(--primary); color:white; }
-    .learn-controls { display:grid; grid-template-columns:1fr 1.15fr 2fr; gap:8px; margin-top:16px; }
+    .learn-position { position:absolute; top:16px; right:18px; padding:4px 8px; border-radius:999px; background:#F1F5F9; color:var(--subtext); font-size:12px; font-weight:800; font-variant-numeric:tabular-nums; }
+    .streak-badge { position:absolute; top:16px; right:18px; padding:4px 8px; border-radius:999px; background:#FEF3C7; color:#B45309; font-size:12px; font-weight:800; }
+    .learn-controls { display:grid; grid-template-columns:.7fr 1.2fr 1.2fr .7fr; gap:8px; margin-top:16px; }
+    .learn-auto-toggle { width:auto; margin:10px auto 0; padding:9px 16px; font-size:13px; }
     .auto-learn-options { display:none; justify-content:center; align-items:center; gap:6px; margin-top:10px; }
     .auto-delay-btn { border:none; border-radius:999px; padding:7px 12px; background:#F1F5F9; color:#475569; font-size:12px; font-weight:800; cursor:pointer; }
     .auto-delay-btn.active { background:var(--primary-light); color:var(--primary); box-shadow:inset 0 0 0 1px #C7D2FE; }
@@ -297,7 +272,12 @@
       .speaking-action { padding:9px 14px; font-size:13px; }
       .listening-card { padding:22px 24px; }
     }
-    @media (max-width:430px) { .main-tab { padding:11px 3px; font-size:12px; } }
+    @media (max-width:430px) {
+      .main-tabs { gap:3px; }
+      .main-tab { padding:11px 1px; font-size:11px; }
+      .learn-controls { gap:5px; }
+      .learn-controls .btn { padding:10px 4px; font-size:12px; }
+    }
     .print-sheet { display:none; }
     @page { size:A4 portrait; margin:8mm; }
     @media print {
@@ -322,8 +302,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.26</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
-    <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.27</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
   </div>
 
   <div class="library-panel">
@@ -332,6 +311,7 @@
         <option value="">正在读取网站词库…</option>
       </select>
       <button class="btn btn-secondary" style="width:auto;padding:9px 12px;" onclick="refreshRemoteLibraries()">刷新</button>
+      <button class="btn btn-secondary" style="width:auto;padding:9px 11px;" onclick="printCurrentDay()" aria-label="打印默写" title="打印默写">🖨️</button>
     </div>
     <div id="libraryStatus" class="library-status">网站词库：按 Day 自动加载 · 支持离线</div>
     <div id="offlineStatus" class="offline-status">○ 正在准备离线功能</div>
@@ -342,6 +322,7 @@
     <button id="mainTabSpeaking" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('speaking')">🎧 口语练习</button>
     <button id="mainTabListening" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('listening')">🎵 听力练习</button>
     <button id="mainTabPractice" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('practice')">🌱 日常练习</button>
+    <button id="mainTabGame" class="main-tab" role="tab" aria-selected="false" onclick="openTypingTrainer()">🎮 游戏</button>
   </div>
 
   <div id="speakingArea" role="tabpanel" style="display:none;">
@@ -427,31 +408,6 @@
   </div>
 
   <div id="wordsArea" class="content-narrow" role="tabpanel">
-  <div class="toolbar">
-    <button class="btn btn-secondary" onclick="toggleImportPanel()">📥 手动导入（备用）</button>
-    <button class="btn btn-secondary" onclick="switchMode('history')">📊 学习历史</button>
-    <button class="btn btn-secondary typing-entry" onclick="openTypingTrainer()" title="打开 TT 打字训练">⌨️ TT</button>
-    <button class="btn btn-secondary" onclick="printCurrentDay()">🖨️ 打印默写</button>
-  </div>
-
-  <div id="importPanel" class="panel" style="display:none;">
-    <div class="panel-title">手动导入词库（备用）</div>
-    <div class="muted" style="margin-bottom:8px;">正常情况下只需上传 homework/word###.txt。这里保留手动导入作为备用。每行：word | 词性 | 中文释义。</div>
-    <input id="dayTitle" style="width:100%;padding:9px;border:1px solid #CBD5E1;border-radius:9px;margin-bottom:8px;" placeholder="主题，例如 Travel">
-    <textarea id="importText" class="import-area" placeholder="apple | n. | 苹果
-banana | n. | 香蕉"></textarea>
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button class="btn btn-secondary" onclick="toggleImportPanel()">取消</button>
-      <button class="btn" onclick="importTodayWords()">导入并开始学习</button>
-    </div>
-  </div>
-
-  <div class="group-selector">
-    <button id="groupBtn1" class="group-btn active" onclick="switchGroup(1, this)">第 1 页</button>
-    <button id="groupBtn2" class="group-btn" onclick="switchGroup(2, this)">第 2 页</button>
-    <button id="groupBtnAll" class="group-btn" onclick="switchGroup(0, this)">全本</button>
-  </div>
-
   <div class="tabs">
     <button class="tab-btn active" onclick="switchMode('learn')">📖 学习模式</button>
     <button class="tab-btn" onclick="switchMode('quiz')">🎯 选义测试</button>
@@ -468,15 +424,18 @@ banana | n. | 香蕉"></textarea>
   <!-- 1. 学习模式 -->
   <div id="learnSection">
     <div class="card study-card">
+      <div id="learnPosition" class="learn-position">1/1</div>
       <div id="learnWord" class="word-text">word</div>
       <div id="learnPos" class="pos-text">n.</div>
       <button class="btn-audio" onclick="speakCurrentLearn()">🔊</button>
       <div id="learnMeaning" class="meaning-text">释义</div>
       <div class="learn-controls">
-        <button class="btn btn-secondary" onclick="prevLearn()">上一个</button>
-        <button id="autoLearnToggle" class="btn btn-secondary" onclick="toggleAutoLearn()">⏱ 自动：关</button>
-        <button class="btn" onclick="nextLearn()">记住了，下一个 ➔</button>
+        <button class="btn btn-secondary" onclick="jumpLearn(-10)" aria-label="前跳10个">−10</button>
+        <button class="btn btn-secondary" onclick="prevLearn()">← 上一个</button>
+        <button class="btn" onclick="nextLearn()">下一个 →</button>
+        <button class="btn btn-secondary" onclick="jumpLearn(10)" aria-label="后跳10个">+10</button>
       </div>
+      <button id="autoLearnToggle" class="btn btn-secondary learn-auto-toggle" onclick="toggleAutoLearn()">⏱ 自动：关</button>
       <div id="autoLearnOptions" class="auto-learn-options">
         <span class="muted">停留</span>
         <button class="auto-delay-btn" data-delay="2000" onclick="setAutoLearnDelay(2000)">2秒</button>
@@ -489,6 +448,7 @@ banana | n. | 香蕉"></textarea>
   <!-- 2. 选义测试模式 -->
   <div id="quizSection" style="display:none;">
     <div class="card study-card">
+      <span class="streak-badge">🔥 连对 0</span>
       <div id="quizWord" class="word-text">word</div>
       <div id="quizPos" class="pos-text">n.</div>
       <button class="btn-audio" style="width:42px; height:42px; font-size:18px;" onclick="speakCurrentQuiz()">🔊</button>
@@ -499,6 +459,7 @@ banana | n. | 香蕉"></textarea>
   <!-- 3. 键盘拼写模式 -->
   <div id="spellSection" style="display:none;">
     <div class="card study-card" style="padding-bottom:12px; margin-bottom:8px;">
+      <span class="streak-badge">🔥 连对 0</span>
       <div id="spellMeaning" class="meaning-text" style="font-size:24px; margin:0 0 2px 0;">释义</div>
       <div id="spellPos" class="pos-text">n.</div>
       <button class="btn-audio" style="width:42px; height:42px; font-size:18px;" onclick="speakCurrentSpell()">🔊</button>
@@ -693,8 +654,6 @@ const LIBRARY_CACHE_KEY = 'wordTrainerRemoteLibrariesV2';
 const defaultWords = [...group1, ...group2];
 let currentDayWords = [...defaultWords];
 let currentDayKey = '';
-let currentGroupType = 1;
-let reviewMode = false;
 
 function localDateKey() {
   const d = new Date();
@@ -798,19 +757,8 @@ function loadDay(dateKey) {
   saveStore(store);
   currentDayKey = dateKey;
   currentDayWords = [...day.words];
-  reviewMode = false;
-  currentGroupType = 1;
-  updateGroupLabels();
-  switchGroup(1, document.getElementById('groupBtn1'));
+  resetActiveList(currentDayWords);
   switchMode('learn');
-}
-
-function updateGroupLabels() {
-  const n = currentDayWords.length;
-  const n1 = Math.ceil(n/2), n2 = n-n1;
-  document.getElementById('groupBtn1').innerText = `第 1 页 (${n1}词)`;
-  document.getElementById('groupBtn2').innerText = `第 2 页 (${n2}词)`;
-  document.getElementById('groupBtnAll').innerText = `全本 (${n}词)`;
 }
 
 function printCurrentDay() {
@@ -941,11 +889,7 @@ function reviewWrongDay(dateKey) {
   if (!wrong.length) return alert('这一天没有错词。');
   currentDayKey = dateKey;
   currentDayWords = [...wrong];
-  reviewMode = true;
-  currentGroupType = 0;
-  updateGroupLabels();
-  activeList = [...wrong];
-  learnIdx=0; quizPool=[...wrong].sort(()=>0.5-Math.random()); spellPool=[...wrong].sort(()=>0.5-Math.random());
+  resetActiveList(wrong);
   switchMode('learn');
 }
 
@@ -1422,25 +1366,13 @@ function speak(text) {
   });
 }
 
-function switchGroup(type, btn) {
-  document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  currentGroupType = type;
-  reviewMode = false;
-  const n1 = Math.ceil(currentDayWords.length / 2);
-  if (type === 1) activeList = currentDayWords.slice(0, n1);
-  else if (type === 2) activeList = currentDayWords.slice(n1);
-  else activeList = [...currentDayWords];
-
+function resetActiveList(words=currentDayWords) {
+  activeList = [...words];
   learnIdx = 0;
   quizPool = [...activeList].sort(() => 0.5 - Math.random());
   spellPool = [...activeList].sort(() => 0.5 - Math.random());
   streak = 0;
   updateStreak();
-
-  if (currentMode === 'learn') renderLearn();
-  else if (currentMode === 'quiz') renderQuiz();
-  else if (currentMode === 'spell') renderSpell();
 }
 
 function switchMainArea(area, remember=true) {
@@ -1459,19 +1391,20 @@ function switchMainArea(area, remember=true) {
   document.getElementById('speakingArea').style.display = finalSpeaking ? 'block' : 'none';
   document.getElementById('listeningArea').style.display = finalListening ? 'block' : 'none';
   document.getElementById('practiceArea').style.display = finalPractice ? 'block' : 'none';
-  document.getElementById('streakBadge').style.display = finalWords ? 'inline-block' : 'none';
-
   const speakingTab = document.getElementById('mainTabSpeaking');
   const listeningTab = document.getElementById('mainTabListening');
   const practiceTab = document.getElementById('mainTabPractice');
+  const gameTab = document.getElementById('mainTabGame');
   wordsTab.classList.toggle('active', finalWords);
   speakingTab.classList.toggle('active', finalSpeaking);
   listeningTab.classList.toggle('active', finalListening);
   practiceTab.classList.toggle('active', finalPractice);
+  gameTab.classList.remove('active');
   wordsTab.setAttribute('aria-selected', String(finalWords));
   speakingTab.setAttribute('aria-selected', String(finalSpeaking));
   listeningTab.setAttribute('aria-selected', String(finalListening));
   practiceTab.setAttribute('aria-selected', String(finalPractice));
+  gameTab.setAttribute('aria-selected', 'false');
 
   if (!finalWords) {
     stopAutoLearn();
@@ -1516,7 +1449,9 @@ function switchMode(mode) {
   }
 }
 function updateStreak() {
-  document.getElementById('streakBadge').innerText = `🔥 连对: ${streak}`;
+  document.querySelectorAll('.streak-badge').forEach(badge => {
+    badge.innerText = `🔥 连对 ${streak}`;
+  });
 }
 
 // 1. 学习模式
@@ -1527,19 +1462,29 @@ function renderLearn() {
   document.getElementById('learnWord').innerText = item.w;
   document.getElementById('learnPos').innerText = item.pos;
   document.getElementById('learnMeaning').innerText = item.m;
+  document.getElementById('learnPosition').innerText = `${learnIdx + 1}/${activeList.length}`;
   document.getElementById('progressBar').style.width = `${Math.round(((learnIdx + 1) / activeList.length) * 100)}%`;
   speak(item.w);
   if (autoLearnEnabled) autoLearnTimer = setTimeout(() => {
-    learnIdx = (learnIdx + 1) % activeList.length;
-    renderLearn();
+    if (learnIdx < activeList.length - 1) {
+      learnIdx++;
+      renderLearn();
+    } else {
+      autoLearnEnabled = false;
+      updateAutoLearnControls();
+    }
   }, autoLearnDelay);
 }
 function nextLearn() {
-  learnIdx = (learnIdx + 1) % activeList.length;
+  learnIdx = Math.min(activeList.length - 1, learnIdx + 1);
   renderLearn();
 }
 function prevLearn() {
-  learnIdx = (learnIdx - 1 + activeList.length) % activeList.length;
+  learnIdx = Math.max(0, learnIdx - 1);
+  renderLearn();
+}
+function jumpLearn(offset) {
+  learnIdx = Math.max(0, Math.min(activeList.length - 1, learnIdx + offset));
   renderLearn();
 }
 function speakCurrentLearn() { speak(activeList[learnIdx].w); }
@@ -2604,8 +2549,7 @@ async function loadSpeakingHomework(requestedDay='') {
     currentDayKey = dates[dates.length - 1];
   }
   currentDayWords = [...loadStore().days[currentDayKey].words];
-  updateGroupLabels();
-  switchGroup(1, document.getElementById('groupBtn1'));
+  resetActiveList(currentDayWords);
 
   // GitHub Pages 上自动发现 homework/word###.txt；默认打开最大的有效 Day 编号。
   const practiceReady = refreshPracticeLibrary();

@@ -1,0 +1,558 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word003.mp3",
+  "sourceHash": "9d1153b59eb83ca9f71f96c56593efc9f19a06443c4ff32cb37b1f1aa9dee795",
+  "audioHash": "dc1f69272c8cf1caa29304407c6e6eb5c62f3c7756a0e52498e0022222ea5552",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "advanced",
+      "spokenText": "advanced",
+      "start": 0,
+      "end": 1.15
+    },
+    {
+      "index": 1,
+      "sourceText": "eraser",
+      "spokenText": "eraser",
+      "start": 1.9,
+      "end": 3
+    },
+    {
+      "index": 2,
+      "sourceText": "practise",
+      "spokenText": "practise",
+      "start": 3.75,
+      "end": 4.8
+    },
+    {
+      "index": 3,
+      "sourceText": "beginner",
+      "spokenText": "beginner",
+      "start": 5.55,
+      "end": 6.3
+    },
+    {
+      "index": 4,
+      "sourceText": "exam(ination)",
+      "spokenText": "examination",
+      "start": 7.05,
+      "end": 8.5
+    },
+    {
+      "index": 5,
+      "sourceText": "project",
+      "spokenText": "project",
+      "start": 9.25,
+      "end": 10.5
+    },
+    {
+      "index": 6,
+      "sourceText": "biology",
+      "spokenText": "biology",
+      "start": 11.25,
+      "end": 12.25
+    },
+    {
+      "index": 7,
+      "sourceText": "geography",
+      "spokenText": "geography",
+      "start": 13,
+      "end": 14.55
+    },
+    {
+      "index": 8,
+      "sourceText": "pupil",
+      "spokenText": "pupil",
+      "start": 15.3,
+      "end": 16.5
+    },
+    {
+      "index": 9,
+      "sourceText": "blackboard",
+      "spokenText": "blackboard",
+      "start": 17.25,
+      "end": 18.5
+    },
+    {
+      "index": 10,
+      "sourceText": "history",
+      "spokenText": "history",
+      "start": 19.25,
+      "end": 20.8
+    },
+    {
+      "index": 11,
+      "sourceText": "read",
+      "spokenText": "read",
+      "start": 21.55,
+      "end": 22.7
+    },
+    {
+      "index": 12,
+      "sourceText": "board",
+      "spokenText": "board",
+      "start": 23.45,
+      "end": 24.15
+    },
+    {
+      "index": 13,
+      "sourceText": "homework",
+      "spokenText": "homework",
+      "start": 24.9,
+      "end": 26.05
+    },
+    {
+      "index": 14,
+      "sourceText": "remember",
+      "spokenText": "remember",
+      "start": 26.8,
+      "end": 27.95
+    },
+    {
+      "index": 15,
+      "sourceText": "book",
+      "spokenText": "book",
+      "start": 28.7,
+      "end": 29.35
+    },
+    {
+      "index": 16,
+      "sourceText": "information",
+      "spokenText": "information",
+      "start": 30.1,
+      "end": 31.6
+    },
+    {
+      "index": 17,
+      "sourceText": "rubber",
+      "spokenText": "rubber",
+      "start": 32.35,
+      "end": 33.35
+    },
+    {
+      "index": 18,
+      "sourceText": "bookshelf",
+      "spokenText": "bookshelf",
+      "start": 34.1,
+      "end": 35.3
+    },
+    {
+      "index": 19,
+      "sourceText": "instructions",
+      "spokenText": "instructions",
+      "start": 36.05,
+      "end": 37.65
+    },
+    {
+      "index": 20,
+      "sourceText": "ruler",
+      "spokenText": "ruler",
+      "start": 38.4,
+      "end": 39.75
+    },
+    {
+      "index": 21,
+      "sourceText": "chemistry",
+      "spokenText": "chemistry",
+      "start": 40.5,
+      "end": 42.15
+    },
+    {
+      "index": 22,
+      "sourceText": "know",
+      "spokenText": "know",
+      "start": 42.9,
+      "end": 43.85
+    },
+    {
+      "index": 23,
+      "sourceText": "school",
+      "spokenText": "school",
+      "start": 44.6,
+      "end": 45.5
+    },
+    {
+      "index": 24,
+      "sourceText": "class",
+      "spokenText": "class",
+      "start": 46.25,
+      "end": 48.45
+    },
+    {
+      "index": 25,
+      "sourceText": "language",
+      "spokenText": "language",
+      "start": 49.2,
+      "end": 50.8
+    },
+    {
+      "index": 26,
+      "sourceText": "science",
+      "spokenText": "science",
+      "start": 51.55,
+      "end": 52.65
+    },
+    {
+      "index": 27,
+      "sourceText": "classmate",
+      "spokenText": "classmate",
+      "start": 53.4,
+      "end": 54.7
+    },
+    {
+      "index": 28,
+      "sourceText": "learn",
+      "spokenText": "learn",
+      "start": 55.45,
+      "end": 56.6
+    },
+    {
+      "index": 29,
+      "sourceText": "student",
+      "spokenText": "student",
+      "start": 57.35,
+      "end": 58.4
+    },
+    {
+      "index": 30,
+      "sourceText": "classroom",
+      "spokenText": "classroom",
+      "start": 59.15,
+      "end": 60.15
+    },
+    {
+      "index": 31,
+      "sourceText": "lesson",
+      "spokenText": "lesson",
+      "start": 60.9,
+      "end": 61.85
+    },
+    {
+      "index": 32,
+      "sourceText": "studies",
+      "spokenText": "studies",
+      "start": 62.6,
+      "end": 63.7
+    },
+    {
+      "index": 33,
+      "sourceText": "clever",
+      "spokenText": "clever",
+      "start": 64.45,
+      "end": 65.5
+    },
+    {
+      "index": 34,
+      "sourceText": "level",
+      "spokenText": "level",
+      "start": 66.25,
+      "end": 67.05
+    },
+    {
+      "index": 35,
+      "sourceText": "study",
+      "spokenText": "study",
+      "start": 67.8,
+      "end": 69.25
+    },
+    {
+      "index": 36,
+      "sourceText": "coach",
+      "spokenText": "coach",
+      "start": 70,
+      "end": 70.8
+    },
+    {
+      "index": 37,
+      "sourceText": "library",
+      "spokenText": "library",
+      "start": 71.55,
+      "end": 72.95
+    },
+    {
+      "index": 38,
+      "sourceText": "subject",
+      "spokenText": "subject",
+      "start": 73.7,
+      "end": 75.25
+    },
+    {
+      "index": 39,
+      "sourceText": "college",
+      "spokenText": "college",
+      "start": 76,
+      "end": 76.85
+    },
+    {
+      "index": 40,
+      "sourceText": "mark",
+      "spokenText": "mark",
+      "start": 77.6,
+      "end": 78.25
+    },
+    {
+      "index": 41,
+      "sourceText": "teach",
+      "spokenText": "teach",
+      "start": 79,
+      "end": 79.85
+    },
+    {
+      "index": 42,
+      "sourceText": "course",
+      "spokenText": "course",
+      "start": 80.6,
+      "end": 81.95
+    },
+    {
+      "index": 43,
+      "sourceText": "maths/mathematics",
+      "spokenText": "maths",
+      "start": 82.7,
+      "end": 84
+    },
+    {
+      "index": 44,
+      "sourceText": "teacher",
+      "spokenText": "teacher",
+      "start": 84.75,
+      "end": 85.65
+    },
+    {
+      "index": 45,
+      "sourceText": "desk",
+      "spokenText": "desk",
+      "start": 86.4,
+      "end": 87.6
+    },
+    {
+      "index": 46,
+      "sourceText": "note",
+      "spokenText": "note",
+      "start": 88.35,
+      "end": 89.65
+    },
+    {
+      "index": 47,
+      "sourceText": "term",
+      "spokenText": "term",
+      "start": 90.4,
+      "end": 91.55
+    },
+    {
+      "index": 48,
+      "sourceText": "dictionary",
+      "spokenText": "dictionary",
+      "start": 92.3,
+      "end": 93.2
+    },
+    {
+      "index": 49,
+      "sourceText": "physics",
+      "spokenText": "physics",
+      "start": 93.95,
+      "end": 95.1
+    },
+    {
+      "index": 50,
+      "sourceText": "test",
+      "spokenText": "test",
+      "start": 95.85,
+      "end": 96.9
+    },
+    {
+      "index": 51,
+      "sourceText": "diploma",
+      "spokenText": "diploma",
+      "start": 97.65,
+      "end": 98.65
+    },
+    {
+      "index": 52,
+      "sourceText": "practice",
+      "spokenText": "practice",
+      "start": 99.4,
+      "end": 100.55
+    },
+    {
+      "index": 53,
+      "sourceText": "university",
+      "spokenText": "university",
+      "start": 101.3,
+      "end": 102.7
+    },
+    {
+      "index": 54,
+      "sourceText": "ad/advertisement",
+      "spokenText": "ad",
+      "start": 103.45,
+      "end": 104.55
+    },
+    {
+      "index": 55,
+      "sourceText": "email",
+      "spokenText": "email",
+      "start": 105.3,
+      "end": 106.75
+    },
+    {
+      "index": 56,
+      "sourceText": "note",
+      "spokenText": "note",
+      "start": 107.5,
+      "end": 108.25
+    },
+    {
+      "index": 57,
+      "sourceText": "article",
+      "spokenText": "article",
+      "start": 109,
+      "end": 109.8
+    },
+    {
+      "index": 58,
+      "sourceText": "form",
+      "spokenText": "form",
+      "start": 110.55,
+      "end": 111.6
+    },
+    {
+      "index": 59,
+      "sourceText": "notebook",
+      "spokenText": "notebook",
+      "start": 112.35,
+      "end": 113.25
+    },
+    {
+      "index": 60,
+      "sourceText": "bill",
+      "spokenText": "bill",
+      "start": 114,
+      "end": 114.6
+    },
+    {
+      "index": 61,
+      "sourceText": "letter",
+      "spokenText": "letter",
+      "start": 115.35,
+      "end": 116.5
+    },
+    {
+      "index": 62,
+      "sourceText": "passport",
+      "spokenText": "passport",
+      "start": 117.25,
+      "end": 118.35
+    },
+    {
+      "index": 63,
+      "sourceText": "book",
+      "spokenText": "book",
+      "start": 119.1,
+      "end": 119.85
+    },
+    {
+      "index": 64,
+      "sourceText": "licence",
+      "spokenText": "licence",
+      "start": 120.6,
+      "end": 122.35
+    },
+    {
+      "index": 65,
+      "sourceText": "postcard",
+      "spokenText": "postcard",
+      "start": 123.1,
+      "end": 124.3
+    },
+    {
+      "index": 66,
+      "sourceText": "card",
+      "spokenText": "card",
+      "start": 125.05,
+      "end": 126.2
+    },
+    {
+      "index": 67,
+      "sourceText": "magazine",
+      "spokenText": "magazine",
+      "start": 126.95,
+      "end": 127.9
+    },
+    {
+      "index": 68,
+      "sourceText": "project",
+      "spokenText": "project",
+      "start": 128.65,
+      "end": 129.95
+    },
+    {
+      "index": 69,
+      "sourceText": "comic",
+      "spokenText": "comic",
+      "start": 130.7,
+      "end": 131.85
+    },
+    {
+      "index": 70,
+      "sourceText": "menu",
+      "spokenText": "menu",
+      "start": 132.6,
+      "end": 133.55
+    },
+    {
+      "index": 71,
+      "sourceText": "text",
+      "spokenText": "text",
+      "start": 134.3,
+      "end": 135.7
+    },
+    {
+      "index": 72,
+      "sourceText": "diary",
+      "spokenText": "diary",
+      "start": 136.45,
+      "end": 137.15
+    },
+    {
+      "index": 73,
+      "sourceText": "message",
+      "spokenText": "message",
+      "start": 137.9,
+      "end": 139
+    },
+    {
+      "index": 74,
+      "sourceText": "textbook",
+      "spokenText": "textbook",
+      "start": 139.75,
+      "end": 140.95
+    },
+    {
+      "index": 75,
+      "sourceText": "diploma",
+      "spokenText": "diploma",
+      "start": 141.7,
+      "end": 142.7
+    },
+    {
+      "index": 76,
+      "sourceText": "newspaper",
+      "spokenText": "newspaper",
+      "start": 143.45,
+      "end": 145.2
+    },
+    {
+      "index": 77,
+      "sourceText": "ticket",
+      "spokenText": "ticket",
+      "start": 145.95,
+      "end": 147.55
+    }
+  ]
+}

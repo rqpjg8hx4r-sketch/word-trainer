@@ -1,0 +1,761 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word005.mp3",
+  "sourceHash": "a65e2573cb4f5e35056fe0cba663fc53042894ef440797f404ce207713bcaec7",
+  "audioHash": "d7bee7efbc25243f37985a388d850c46dbd490d2ad51eed953049aaae0fac73c",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "can",
+      "spokenText": "can",
+      "start": 0,
+      "end": 2.45
+    },
+    {
+      "index": 1,
+      "sourceText": "candy",
+      "spokenText": "candy",
+      "start": 3.2,
+      "end": 4.15
+    },
+    {
+      "index": 2,
+      "sourceText": "carrot",
+      "spokenText": "carrot",
+      "start": 4.9,
+      "end": 5.9
+    },
+    {
+      "index": 3,
+      "sourceText": "cereal",
+      "spokenText": "cereal",
+      "start": 6.65,
+      "end": 7.55
+    },
+    {
+      "index": 4,
+      "sourceText": "cheese",
+      "spokenText": "cheese",
+      "start": 8.3,
+      "end": 9.45
+    },
+    {
+      "index": 5,
+      "sourceText": "chef",
+      "spokenText": "chef",
+      "start": 10.2,
+      "end": 11.25
+    },
+    {
+      "index": 6,
+      "sourceText": "chicken",
+      "spokenText": "chicken",
+      "start": 12,
+      "end": 13.45
+    },
+    {
+      "index": 7,
+      "sourceText": "chilli",
+      "spokenText": "chilli",
+      "start": 14.2,
+      "end": 15.05
+    },
+    {
+      "index": 8,
+      "sourceText": "chips",
+      "spokenText": "chips",
+      "start": 15.8,
+      "end": 16.75
+    },
+    {
+      "index": 9,
+      "sourceText": "chocolate",
+      "spokenText": "chocolate",
+      "start": 17.5,
+      "end": 19.05
+    },
+    {
+      "index": 10,
+      "sourceText": "coffee",
+      "spokenText": "coffee",
+      "start": 19.8,
+      "end": 20.7
+    },
+    {
+      "index": 11,
+      "sourceText": "cola",
+      "spokenText": "cola",
+      "start": 21.45,
+      "end": 22.75
+    },
+    {
+      "index": 12,
+      "sourceText": "cook",
+      "spokenText": "cook",
+      "start": 23.5,
+      "end": 24.3
+    },
+    {
+      "index": 13,
+      "sourceText": "cooker",
+      "spokenText": "cooker",
+      "start": 25.05,
+      "end": 26.1
+    },
+    {
+      "index": 14,
+      "sourceText": "cream",
+      "spokenText": "cream",
+      "start": 26.85,
+      "end": 27.65
+    },
+    {
+      "index": 15,
+      "sourceText": "cup",
+      "spokenText": "cup",
+      "start": 28.4,
+      "end": 29.7
+    },
+    {
+      "index": 16,
+      "sourceText": "curry",
+      "spokenText": "curry",
+      "start": 30.45,
+      "end": 31.25
+    },
+    {
+      "index": 17,
+      "sourceText": "cut",
+      "spokenText": "cut",
+      "start": 32,
+      "end": 32.55
+    },
+    {
+      "index": 18,
+      "sourceText": "hungry",
+      "spokenText": "hungry",
+      "start": 33.3,
+      "end": 33.95
+    },
+    {
+      "index": 19,
+      "sourceText": "ice",
+      "spokenText": "ice",
+      "start": 34.7,
+      "end": 35.45
+    },
+    {
+      "index": 20,
+      "sourceText": "ice cream",
+      "spokenText": "ice cream",
+      "start": 36.2,
+      "end": 38.5
+    },
+    {
+      "index": 21,
+      "sourceText": "jam",
+      "spokenText": "jam",
+      "start": 39.25,
+      "end": 40.15
+    },
+    {
+      "index": 22,
+      "sourceText": "juice",
+      "spokenText": "juice",
+      "start": 40.9,
+      "end": 42.1
+    },
+    {
+      "index": 23,
+      "sourceText": "kitchen",
+      "spokenText": "kitchen",
+      "start": 42.85,
+      "end": 43.95
+    },
+    {
+      "index": 24,
+      "sourceText": "knife",
+      "spokenText": "knife",
+      "start": 44.7,
+      "end": 45.55
+    },
+    {
+      "index": 25,
+      "sourceText": "lemon",
+      "spokenText": "lemon",
+      "start": 46.3,
+      "end": 47.3
+    },
+    {
+      "index": 26,
+      "sourceText": "lemonade",
+      "spokenText": "lemonade",
+      "start": 48.05,
+      "end": 49
+    },
+    {
+      "index": 27,
+      "sourceText": "lunch",
+      "spokenText": "lunch",
+      "start": 49.75,
+      "end": 52.85
+    },
+    {
+      "index": 28,
+      "sourceText": "main course",
+      "spokenText": "main course",
+      "start": 53.6,
+      "end": 55.3
+    },
+    {
+      "index": 29,
+      "sourceText": "meal",
+      "spokenText": "meal",
+      "start": 56.05,
+      "end": 56.85
+    },
+    {
+      "index": 30,
+      "sourceText": "meat",
+      "spokenText": "meat",
+      "start": 57.6,
+      "end": 58.65
+    },
+    {
+      "index": 31,
+      "sourceText": "melon",
+      "spokenText": "melon",
+      "start": 59.4,
+      "end": 60.2
+    },
+    {
+      "index": 32,
+      "sourceText": "menu",
+      "spokenText": "menu",
+      "start": 60.95,
+      "end": 62.15
+    },
+    {
+      "index": 33,
+      "sourceText": "milk",
+      "spokenText": "milk",
+      "start": 62.9,
+      "end": 63.5
+    },
+    {
+      "index": 34,
+      "sourceText": "mineral water",
+      "spokenText": "mineral water",
+      "start": 64.25,
+      "end": 65.75
+    },
+    {
+      "index": 35,
+      "sourceText": "mushroom",
+      "spokenText": "mushroom",
+      "start": 66.5,
+      "end": 67.7
+    },
+    {
+      "index": 36,
+      "sourceText": "sausage",
+      "spokenText": "sausage",
+      "start": 68.45,
+      "end": 69.7
+    },
+    {
+      "index": 37,
+      "sourceText": "slice",
+      "spokenText": "slice",
+      "start": 70.45,
+      "end": 71.75
+    },
+    {
+      "index": 38,
+      "sourceText": "snack",
+      "spokenText": "snack",
+      "start": 72.5,
+      "end": 74.2
+    },
+    {
+      "index": 39,
+      "sourceText": "soup",
+      "spokenText": "soup",
+      "start": 74.95,
+      "end": 76
+    },
+    {
+      "index": 40,
+      "sourceText": "steak",
+      "spokenText": "steak",
+      "start": 76.75,
+      "end": 77.7
+    },
+    {
+      "index": 41,
+      "sourceText": "strawberry",
+      "spokenText": "strawberry",
+      "start": 78.45,
+      "end": 80
+    },
+    {
+      "index": 42,
+      "sourceText": "sugar",
+      "spokenText": "sugar",
+      "start": 80.75,
+      "end": 81.55
+    },
+    {
+      "index": 43,
+      "sourceText": "sweet",
+      "spokenText": "sweet",
+      "start": 82.3,
+      "end": 83.15
+    },
+    {
+      "index": 44,
+      "sourceText": "tea",
+      "spokenText": "tea",
+      "start": 83.9,
+      "end": 84.95
+    },
+    {
+      "index": 45,
+      "sourceText": "thirsty",
+      "spokenText": "thirsty",
+      "start": 85.7,
+      "end": 88.1
+    },
+    {
+      "index": 46,
+      "sourceText": "toast",
+      "spokenText": "toast",
+      "start": 88.85,
+      "end": 90.15
+    },
+    {
+      "index": 47,
+      "sourceText": "tomato",
+      "spokenText": "tomato",
+      "start": 90.9,
+      "end": 92.45
+    },
+    {
+      "index": 48,
+      "sourceText": "vegetable",
+      "spokenText": "vegetable",
+      "start": 93.2,
+      "end": 94.3
+    },
+    {
+      "index": 49,
+      "sourceText": "waiter",
+      "spokenText": "waiter",
+      "start": 95.05,
+      "end": 95.9
+    },
+    {
+      "index": 50,
+      "sourceText": "waitress",
+      "spokenText": "waitress",
+      "start": 96.65,
+      "end": 97.6
+    },
+    {
+      "index": 51,
+      "sourceText": "wash up",
+      "spokenText": "wash up",
+      "start": 98.35,
+      "end": 99.5
+    },
+    {
+      "index": 52,
+      "sourceText": "yog(h)urt",
+      "spokenText": "yoghurt",
+      "start": 100.25,
+      "end": 101.5
+    },
+    {
+      "index": 53,
+      "sourceText": "apple",
+      "spokenText": "apple",
+      "start": 102.25,
+      "end": 103.05
+    },
+    {
+      "index": 54,
+      "sourceText": "bake",
+      "spokenText": "bake",
+      "start": 103.8,
+      "end": 104.35
+    },
+    {
+      "index": 55,
+      "sourceText": "banana",
+      "spokenText": "banana",
+      "start": 105.1,
+      "end": 106.15
+    },
+    {
+      "index": 56,
+      "sourceText": "barbecue",
+      "spokenText": "barbecue",
+      "start": 106.9,
+      "end": 108.95
+    },
+    {
+      "index": 57,
+      "sourceText": "biscuit",
+      "spokenText": "biscuit",
+      "start": 109.7,
+      "end": 110.7
+    },
+    {
+      "index": 58,
+      "sourceText": "boil",
+      "spokenText": "boil",
+      "start": 111.45,
+      "end": 112.9
+    },
+    {
+      "index": 59,
+      "sourceText": "boiled",
+      "spokenText": "boiled",
+      "start": 113.65,
+      "end": 114.9
+    },
+    {
+      "index": 60,
+      "sourceText": "bottle",
+      "spokenText": "bottle",
+      "start": 115.65,
+      "end": 116.65
+    },
+    {
+      "index": 61,
+      "sourceText": "bowl",
+      "spokenText": "bowl",
+      "start": 117.4,
+      "end": 118.4
+    },
+    {
+      "index": 62,
+      "sourceText": "box",
+      "spokenText": "box",
+      "start": 119.15,
+      "end": 120.85
+    },
+    {
+      "index": 63,
+      "sourceText": "bread",
+      "spokenText": "bread",
+      "start": 121.6,
+      "end": 122.7
+    },
+    {
+      "index": 64,
+      "sourceText": "break",
+      "spokenText": "break",
+      "start": 123.45,
+      "end": 124.45
+    },
+    {
+      "index": 65,
+      "sourceText": "breakfast",
+      "spokenText": "breakfast",
+      "start": 125.2,
+      "end": 126.6
+    },
+    {
+      "index": 66,
+      "sourceText": "burger",
+      "spokenText": "burger",
+      "start": 127.35,
+      "end": 128.95
+    },
+    {
+      "index": 67,
+      "sourceText": "butter",
+      "spokenText": "butter",
+      "start": 129.7,
+      "end": 130.7
+    },
+    {
+      "index": 68,
+      "sourceText": "cafe/café",
+      "spokenText": "café",
+      "start": 131.45,
+      "end": 132.3
+    },
+    {
+      "index": 69,
+      "sourceText": "cafeteria",
+      "spokenText": "cafeteria",
+      "start": 133.05,
+      "end": 134.35
+    },
+    {
+      "index": 70,
+      "sourceText": "cake",
+      "spokenText": "cake",
+      "start": 135.1,
+      "end": 135.9
+    },
+    {
+      "index": 71,
+      "sourceText": "delicious",
+      "spokenText": "delicious",
+      "start": 136.65,
+      "end": 137.8
+    },
+    {
+      "index": 72,
+      "sourceText": "dessert",
+      "spokenText": "dessert",
+      "start": 138.55,
+      "end": 139.7
+    },
+    {
+      "index": 73,
+      "sourceText": "dinner",
+      "spokenText": "dinner",
+      "start": 140.45,
+      "end": 141.35
+    },
+    {
+      "index": 74,
+      "sourceText": "dish",
+      "spokenText": "dish",
+      "start": 142.1,
+      "end": 142.95
+    },
+    {
+      "index": 75,
+      "sourceText": "drink",
+      "spokenText": "drink",
+      "start": 143.7,
+      "end": 144.7
+    },
+    {
+      "index": 76,
+      "sourceText": "eat",
+      "spokenText": "eat",
+      "start": 145.45,
+      "end": 146.5
+    },
+    {
+      "index": 77,
+      "sourceText": "egg",
+      "spokenText": "egg",
+      "start": 147.25,
+      "end": 148.05
+    },
+    {
+      "index": 78,
+      "sourceText": "fish",
+      "spokenText": "fish",
+      "start": 148.8,
+      "end": 150.1
+    },
+    {
+      "index": 79,
+      "sourceText": "food",
+      "spokenText": "food",
+      "start": 150.85,
+      "end": 151.85
+    },
+    {
+      "index": 80,
+      "sourceText": "fork",
+      "spokenText": "fork",
+      "start": 152.6,
+      "end": 153.75
+    },
+    {
+      "index": 81,
+      "sourceText": "fridge",
+      "spokenText": "fridge",
+      "start": 154.5,
+      "end": 155.95
+    },
+    {
+      "index": 82,
+      "sourceText": "fried",
+      "spokenText": "fried",
+      "start": 156.7,
+      "end": 157.5
+    },
+    {
+      "index": 83,
+      "sourceText": "fruit",
+      "spokenText": "fruit",
+      "start": 158.25,
+      "end": 159.75
+    },
+    {
+      "index": 84,
+      "sourceText": "garlic",
+      "spokenText": "garlic",
+      "start": 160.5,
+      "end": 161.5
+    },
+    {
+      "index": 85,
+      "sourceText": "glass",
+      "spokenText": "glass",
+      "start": 162.25,
+      "end": 163.45
+    },
+    {
+      "index": 86,
+      "sourceText": "grape",
+      "spokenText": "grape",
+      "start": 164.2,
+      "end": 165
+    },
+    {
+      "index": 87,
+      "sourceText": "grilled",
+      "spokenText": "grilled",
+      "start": 165.75,
+      "end": 167.35
+    },
+    {
+      "index": 88,
+      "sourceText": "honey",
+      "spokenText": "honey",
+      "start": 168.1,
+      "end": 169.15
+    },
+    {
+      "index": 89,
+      "sourceText": "oil",
+      "spokenText": "oil",
+      "start": 169.9,
+      "end": 171.55
+    },
+    {
+      "index": 90,
+      "sourceText": "omelette",
+      "spokenText": "omelette",
+      "start": 172.3,
+      "end": 173.35
+    },
+    {
+      "index": 91,
+      "sourceText": "onion",
+      "spokenText": "onion",
+      "start": 174.1,
+      "end": 174.9
+    },
+    {
+      "index": 92,
+      "sourceText": "orange",
+      "spokenText": "orange",
+      "start": 175.65,
+      "end": 176.75
+    },
+    {
+      "index": 93,
+      "sourceText": "pasta",
+      "spokenText": "pasta",
+      "start": 177.5,
+      "end": 178.35
+    },
+    {
+      "index": 94,
+      "sourceText": "pear",
+      "spokenText": "pear",
+      "start": 179.1,
+      "end": 180.35
+    },
+    {
+      "index": 95,
+      "sourceText": "pepper",
+      "spokenText": "pepper",
+      "start": 181.1,
+      "end": 182.3
+    },
+    {
+      "index": 96,
+      "sourceText": "picnic",
+      "spokenText": "picnic",
+      "start": 183.05,
+      "end": 185
+    },
+    {
+      "index": 97,
+      "sourceText": "piece of cake",
+      "spokenText": "piece of cake",
+      "start": 185.75,
+      "end": 187.1
+    },
+    {
+      "index": 98,
+      "sourceText": "pizza",
+      "spokenText": "pizza",
+      "start": 187.85,
+      "end": 188.65
+    },
+    {
+      "index": 99,
+      "sourceText": "plate",
+      "spokenText": "plate",
+      "start": 189.4,
+      "end": 190.2
+    },
+    {
+      "index": 100,
+      "sourceText": "potato",
+      "spokenText": "potato",
+      "start": 190.95,
+      "end": 192
+    },
+    {
+      "index": 101,
+      "sourceText": "rice",
+      "spokenText": "rice",
+      "start": 192.75,
+      "end": 194.3
+    },
+    {
+      "index": 102,
+      "sourceText": "roast",
+      "spokenText": "roast",
+      "start": 195.05,
+      "end": 197
+    },
+    {
+      "index": 103,
+      "sourceText": "salad",
+      "spokenText": "salad",
+      "start": 197.75,
+      "end": 198.45
+    },
+    {
+      "index": 104,
+      "sourceText": "salt",
+      "spokenText": "salt",
+      "start": 199.2,
+      "end": 200.1
+    },
+    {
+      "index": 105,
+      "sourceText": "sandwich",
+      "spokenText": "sandwich",
+      "start": 200.85,
+      "end": 202.2
+    },
+    {
+      "index": 106,
+      "sourceText": "sauce",
+      "spokenText": "sauce",
+      "start": 202.95,
+      "end": 203.8
+    }
+  ]
+}

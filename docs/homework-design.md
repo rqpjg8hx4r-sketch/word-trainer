@@ -149,7 +149,9 @@ $env:OPENAI_API_KEY="你的 API Key"
 npm run audio:words -- homework/word010.txt
 ```
 
-不带 `--limit` 时生成 TXT 中的全部词条，并覆盖同目录下的 `word010.mp3` 和 `word010.cues.json`。
+不带 `--limit` 时生成 TXT 中的全部词条。如果同名 `word010.mp3` 已存在，命令会直接跳过，不调用语音 API，也不覆盖 MP3 或 cues，适合在自动化流程中重复执行。
+
+`alex-english` 目录下运行 `word2mp3` 时，会扫描所有 `word###.txt` 并且只生成缺少同名 MP3 的日期；`word2mp3 010` 仍只处理 Day 010。自动化环境可以直接使用仓库内的 `npm run audio:missing`。
 
 常用选项：
 
@@ -162,6 +164,9 @@ npm run audio:words -- homework/word010.txt --dry-run
 
 # 临时覆盖声音或提示词
 npm run audio:words -- homework/word010.txt --voice marin --instructions "自定义提示词"
+
+# 明确需要重新生成时，强制覆盖已有 MP3 和 cues
+npm run audio:words -- homework/word010.txt --force
 ```
 
 默认设置：
@@ -180,7 +185,7 @@ npm run audio:words -- homework/word010.txt --voice marin --instructions "自定
 Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.
 ```
 
-生成器逐词调用语音 API，以 WAV 的实际数据长度计算时长，并在拼接前检查 16 位 PCM 峰值。低于 -40 dB 的近静音响应会自动重试，最多尝试 3 次；仍为静音时终止生成且不覆盖原 MP3。验证通过后再插入静音并合并为一个 MP3。API Key 只能通过 `OPENAI_API_KEY` 环境变量提供。
+生成器逐词调用语音 API。发送前会清理括号、零宽字符、异常空格、弯引号、特殊连字符和末尾标点，例如 `enter (a competition)` 发送为 `enter a competition`，`sport(s)` 发送为 `sports`。生成器以 WAV 的实际数据长度计算时长，并在拼接前检查 16 位 PCM 峰值。低于 -40 dB 的近静音响应会自动重试，最多尝试 3 次；仍为静音时终止生成且不覆盖原 MP3。验证通过后再插入静音并合并为一个 MP3。API Key 只能通过 `OPENAI_API_KEY` 环境变量提供。
 
 调试阶段保留中间文件，目录位于仓库上一级的 `temp/day###/`，例如 `alex-english/temp/day009/007-block.wav`。目录中同时保留 `gap.wav`、`concat.txt`、临时合并的 `output.mp3` 和记录生成参数、时长、峰值的 `generation.json`。近静音响应另存为 `007-block.silent-attempt1.wav` 等文件，方便排查。重新生成同一个 Day 会覆盖同名文件，但不会自动删除该目录。
 
@@ -188,7 +193,11 @@ Pronounce only the supplied English word or phrase once. Speak in a cheerful and
 
 网页有四个顶层区域：**背单词**、**口语练习**、**听力练习**、**日常练习**。前三个区域共享 Day 选择器；日常练习拥有独立素材选择器，不跟随 Day。一次只显示一个区域，并在本地记住上次选择。只有听力内容的 Day 会禁用单词页并自动打开听力页。
 
-单词区工具栏提供较小的 **⌨️ TT** 入口，位于“打印默写”左侧，并使用与其他工具按钮相同的配色。入口把当前 Day 带到独立的 `type.html?day=###` 打字页。
+顶层导航最右侧提供独立的 **🎮 游戏** 入口，位于“日常练习”右侧。入口把当前 Day 带到 `type.html?day=###`，不归属于背单词区域。
+
+背单词默认使用当前 Day 的完整词库，不再划分“第 1 页、第 2 页、全本”。学习卡显示 `当前位置/总词数`，提供上一个、下一个、前跳 10 个和后跳 10 个导航；到达词库首尾时停止，不循环。打印默写入口位于 Day 选择器旁。背词、选义和拼写卡片与顶层区域保持同宽。历史模式继续保留在单词区模式栏中。
+
+页面固定预留纵向滚动条空间，避免在内容长度不同的顶层区域之间切换时整体横向跳动。“连对”只显示在选义和拼写卡片右上角，不占用全局标题区域。
 
 ### 单词发音
 

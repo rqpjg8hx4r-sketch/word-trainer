@@ -1,0 +1,719 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word006.mp3",
+  "sourceHash": "8194d8be0b0b514dc1507b675699a6ea41f5ec347b1a92e1a724f0cd842b0a10",
+  "audioHash": "be60315106d7f06cef03a6fd2744b3495f0ee3bda322c7a3beaf7fc718c3bb8b",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "accident",
+      "spokenText": "accident",
+      "start": 0,
+      "end": 0.9
+    },
+    {
+      "index": 1,
+      "sourceText": "doctor",
+      "spokenText": "doctor",
+      "start": 1.65,
+      "end": 2.8
+    },
+    {
+      "index": 2,
+      "sourceText": "lie down",
+      "spokenText": "lie down",
+      "start": 3.55,
+      "end": 4.7
+    },
+    {
+      "index": 3,
+      "sourceText": "ambulance",
+      "spokenText": "ambulance",
+      "start": 5.45,
+      "end": 6.6
+    },
+    {
+      "index": 4,
+      "sourceText": "Dr",
+      "spokenText": "Dr",
+      "start": 7.35,
+      "end": 8.25
+    },
+    {
+      "index": 5,
+      "sourceText": "medicine",
+      "spokenText": "medicine",
+      "start": 9,
+      "end": 10.65
+    },
+    {
+      "index": 6,
+      "sourceText": "appointment",
+      "spokenText": "appointment",
+      "start": 11.4,
+      "end": 12.55
+    },
+    {
+      "index": 7,
+      "sourceText": "ear",
+      "spokenText": "ear",
+      "start": 13.3,
+      "end": 14
+    },
+    {
+      "index": 8,
+      "sourceText": "neck",
+      "spokenText": "neck",
+      "start": 14.75,
+      "end": 15.9
+    },
+    {
+      "index": 9,
+      "sourceText": "arm",
+      "spokenText": "arm",
+      "start": 16.65,
+      "end": 17.6
+    },
+    {
+      "index": 10,
+      "sourceText": "exercise",
+      "spokenText": "exercise",
+      "start": 18.35,
+      "end": 19.5
+    },
+    {
+      "index": 11,
+      "sourceText": "nose",
+      "spokenText": "nose",
+      "start": 20.25,
+      "end": 21.2
+    },
+    {
+      "index": 12,
+      "sourceText": "baby",
+      "spokenText": "baby",
+      "start": 21.95,
+      "end": 23.75
+    },
+    {
+      "index": 13,
+      "sourceText": "eye",
+      "spokenText": "eye",
+      "start": 24.5,
+      "end": 25.45
+    },
+    {
+      "index": 14,
+      "sourceText": "nurse",
+      "spokenText": "nurse",
+      "start": 26.2,
+      "end": 28.75
+    },
+    {
+      "index": 15,
+      "sourceText": "back",
+      "spokenText": "back",
+      "start": 29.5,
+      "end": 30.8
+    },
+    {
+      "index": 16,
+      "sourceText": "face",
+      "spokenText": "face",
+      "start": 31.55,
+      "end": 33.4
+    },
+    {
+      "index": 17,
+      "sourceText": "pain",
+      "spokenText": "pain",
+      "start": 34.15,
+      "end": 35.85
+    },
+    {
+      "index": 18,
+      "sourceText": "blood",
+      "spokenText": "blood",
+      "start": 36.6,
+      "end": 37.95
+    },
+    {
+      "index": 19,
+      "sourceText": "fall",
+      "spokenText": "fall",
+      "start": 38.7,
+      "end": 39.7
+    },
+    {
+      "index": 20,
+      "sourceText": "problem",
+      "spokenText": "problem",
+      "start": 40.45,
+      "end": 41.35
+    },
+    {
+      "index": 21,
+      "sourceText": "body",
+      "spokenText": "body",
+      "start": 42.1,
+      "end": 43.35
+    },
+    {
+      "index": 22,
+      "sourceText": "feel",
+      "spokenText": "feel",
+      "start": 44.1,
+      "end": 45.25
+    },
+    {
+      "index": 23,
+      "sourceText": "rest",
+      "spokenText": "rest",
+      "start": 46,
+      "end": 47.55
+    },
+    {
+      "index": 24,
+      "sourceText": "brain",
+      "spokenText": "brain",
+      "start": 48.3,
+      "end": 49.35
+    },
+    {
+      "index": 25,
+      "sourceText": "finger",
+      "spokenText": "finger",
+      "start": 50.1,
+      "end": 51.8
+    },
+    {
+      "index": 26,
+      "sourceText": "run",
+      "spokenText": "run",
+      "start": 52.55,
+      "end": 53.75
+    },
+    {
+      "index": 27,
+      "sourceText": "break",
+      "spokenText": "break",
+      "start": 54.5,
+      "end": 55.6
+    },
+    {
+      "index": 28,
+      "sourceText": "fit",
+      "spokenText": "fit",
+      "start": 56.35,
+      "end": 57.15
+    },
+    {
+      "index": 29,
+      "sourceText": "sick",
+      "spokenText": "sick",
+      "start": 57.9,
+      "end": 58.8
+    },
+    {
+      "index": 30,
+      "sourceText": "check",
+      "spokenText": "check",
+      "start": 59.55,
+      "end": 60.9
+    },
+    {
+      "index": 31,
+      "sourceText": "foot",
+      "spokenText": "foot",
+      "start": 61.65,
+      "end": 62.65
+    },
+    {
+      "index": 32,
+      "sourceText": "soap",
+      "spokenText": "soap",
+      "start": 63.4,
+      "end": 64.35
+    },
+    {
+      "index": 33,
+      "sourceText": "chemist",
+      "spokenText": "chemist",
+      "start": 65.1,
+      "end": 66.05
+    },
+    {
+      "index": 34,
+      "sourceText": "hair",
+      "spokenText": "hair",
+      "start": 66.8,
+      "end": 67.45
+    },
+    {
+      "index": 35,
+      "sourceText": "stomach",
+      "spokenText": "stomach",
+      "start": 68.2,
+      "end": 70.05
+    },
+    {
+      "index": 36,
+      "sourceText": "clean",
+      "spokenText": "clean",
+      "start": 70.8,
+      "end": 72.15
+    },
+    {
+      "index": 37,
+      "sourceText": "hand",
+      "spokenText": "hand",
+      "start": 72.9,
+      "end": 74.2
+    },
+    {
+      "index": 38,
+      "sourceText": "stomach ache",
+      "spokenText": "stomach ache",
+      "start": 74.95,
+      "end": 76.2
+    },
+    {
+      "index": 39,
+      "sourceText": "cold",
+      "spokenText": "cold",
+      "start": 76.95,
+      "end": 78.75
+    },
+    {
+      "index": 40,
+      "sourceText": "head",
+      "spokenText": "head",
+      "start": 79.5,
+      "end": 80.45
+    },
+    {
+      "index": 41,
+      "sourceText": "swim",
+      "spokenText": "swim",
+      "start": 81.2,
+      "end": 82.8
+    },
+    {
+      "index": 42,
+      "sourceText": "comb",
+      "spokenText": "comb",
+      "start": 83.55,
+      "end": 85.05
+    },
+    {
+      "index": 43,
+      "sourceText": "health",
+      "spokenText": "health",
+      "start": 85.8,
+      "end": 86.7
+    },
+    {
+      "index": 44,
+      "sourceText": "temperature",
+      "spokenText": "temperature",
+      "start": 87.45,
+      "end": 88.75
+    },
+    {
+      "index": 45,
+      "sourceText": "cut",
+      "spokenText": "cut",
+      "start": 89.5,
+      "end": 90.5
+    },
+    {
+      "index": 46,
+      "sourceText": "hear",
+      "spokenText": "hear",
+      "start": 91.25,
+      "end": 92.65
+    },
+    {
+      "index": 47,
+      "sourceText": "tired",
+      "spokenText": "tired",
+      "start": 93.4,
+      "end": 94.35
+    },
+    {
+      "index": 48,
+      "sourceText": "danger",
+      "spokenText": "danger",
+      "start": 95.1,
+      "end": 96.05
+    },
+    {
+      "index": 49,
+      "sourceText": "heart",
+      "spokenText": "heart",
+      "start": 96.8,
+      "end": 97.8
+    },
+    {
+      "index": 50,
+      "sourceText": "tooth",
+      "spokenText": "tooth",
+      "start": 98.55,
+      "end": 100.6
+    },
+    {
+      "index": 51,
+      "sourceText": "dangerous",
+      "spokenText": "dangerous",
+      "start": 101.35,
+      "end": 103.35
+    },
+    {
+      "index": 52,
+      "sourceText": "hospital",
+      "spokenText": "hospital",
+      "start": 104.1,
+      "end": 105
+    },
+    {
+      "index": 53,
+      "sourceText": "toothache",
+      "spokenText": "toothache",
+      "start": 105.75,
+      "end": 106.6
+    },
+    {
+      "index": 54,
+      "sourceText": "dead",
+      "spokenText": "dead",
+      "start": 107.35,
+      "end": 108.5
+    },
+    {
+      "index": 55,
+      "sourceText": "hurt",
+      "spokenText": "hurt",
+      "start": 109.25,
+      "end": 110.1
+    },
+    {
+      "index": 56,
+      "sourceText": "toothbrush",
+      "spokenText": "toothbrush",
+      "start": 110.85,
+      "end": 112.2
+    },
+    {
+      "index": 57,
+      "sourceText": "dentist",
+      "spokenText": "dentist",
+      "start": 112.95,
+      "end": 114.1
+    },
+    {
+      "index": 58,
+      "sourceText": "ill",
+      "spokenText": "ill",
+      "start": 114.85,
+      "end": 115.45
+    },
+    {
+      "index": 59,
+      "sourceText": "walk",
+      "spokenText": "walk",
+      "start": 116.2,
+      "end": 117
+    },
+    {
+      "index": 60,
+      "sourceText": "die",
+      "spokenText": "die",
+      "start": 117.75,
+      "end": 118.65
+    },
+    {
+      "index": 61,
+      "sourceText": "leg",
+      "spokenText": "leg",
+      "start": 119.4,
+      "end": 120.45
+    },
+    {
+      "index": 62,
+      "sourceText": "well",
+      "spokenText": "well",
+      "start": 121.2,
+      "end": 122.25
+    },
+    {
+      "index": 63,
+      "sourceText": "barbecue",
+      "spokenText": "barbecue",
+      "start": 123,
+      "end": 124.15
+    },
+    {
+      "index": 64,
+      "sourceText": "cycling",
+      "spokenText": "cycling",
+      "start": 124.9,
+      "end": 126.2
+    },
+    {
+      "index": 65,
+      "sourceText": "MP3 player",
+      "spokenText": "MP3 player",
+      "start": 126.95,
+      "end": 128.55
+    },
+    {
+      "index": 66,
+      "sourceText": "beach",
+      "spokenText": "beach",
+      "start": 129.3,
+      "end": 130.25
+    },
+    {
+      "index": 67,
+      "sourceText": "dance",
+      "spokenText": "dance",
+      "start": 131,
+      "end": 132.25
+    },
+    {
+      "index": 68,
+      "sourceText": "museum",
+      "spokenText": "museum",
+      "start": 133,
+      "end": 134.5
+    },
+    {
+      "index": 69,
+      "sourceText": "bicycle",
+      "spokenText": "bicycle",
+      "start": 135.25,
+      "end": 136.05
+    },
+    {
+      "index": 70,
+      "sourceText": "draw",
+      "spokenText": "draw",
+      "start": 136.8,
+      "end": 137.8
+    },
+    {
+      "index": 71,
+      "sourceText": "music",
+      "spokenText": "music",
+      "start": 138.55,
+      "end": 139.75
+    },
+    {
+      "index": 72,
+      "sourceText": "bike",
+      "spokenText": "bike",
+      "start": 140.5,
+      "end": 141.65
+    },
+    {
+      "index": 73,
+      "sourceText": "DVD (player)",
+      "spokenText": "DVD player",
+      "start": 142.4,
+      "end": 144.7
+    },
+    {
+      "index": 74,
+      "sourceText": "musician",
+      "spokenText": "musician",
+      "start": 145.45,
+      "end": 146.45
+    },
+    {
+      "index": 75,
+      "sourceText": "book",
+      "spokenText": "book",
+      "start": 147.2,
+      "end": 148.1
+    },
+    {
+      "index": 76,
+      "sourceText": "festival",
+      "spokenText": "festival",
+      "start": 148.85,
+      "end": 149.9
+    },
+    {
+      "index": 77,
+      "sourceText": "paint",
+      "spokenText": "paint",
+      "start": 150.65,
+      "end": 152.4
+    },
+    {
+      "index": 78,
+      "sourceText": "camera",
+      "spokenText": "camera",
+      "start": 153.15,
+      "end": 154.6
+    },
+    {
+      "index": 79,
+      "sourceText": "go out",
+      "spokenText": "go out",
+      "start": 155.35,
+      "end": 156.55
+    },
+    {
+      "index": 80,
+      "sourceText": "park",
+      "spokenText": "park",
+      "start": 157.3,
+      "end": 159.45
+    },
+    {
+      "index": 81,
+      "sourceText": "camp",
+      "spokenText": "camp",
+      "start": 160.2,
+      "end": 160.9
+    },
+    {
+      "index": 82,
+      "sourceText": "go shopping",
+      "spokenText": "go shopping",
+      "start": 161.65,
+      "end": 162.9
+    },
+    {
+      "index": 83,
+      "sourceText": "party",
+      "spokenText": "party",
+      "start": 163.65,
+      "end": 164.8
+    },
+    {
+      "index": 84,
+      "sourceText": "camping",
+      "spokenText": "camping",
+      "start": 165.55,
+      "end": 166.45
+    },
+    {
+      "index": 85,
+      "sourceText": "guitar",
+      "spokenText": "guitar",
+      "start": 167.2,
+      "end": 168.4
+    },
+    {
+      "index": 86,
+      "sourceText": "photograph",
+      "spokenText": "photograph",
+      "start": 169.15,
+      "end": 170.55
+    },
+    {
+      "index": 87,
+      "sourceText": "campsite",
+      "spokenText": "campsite",
+      "start": 171.3,
+      "end": 173.65
+    },
+    {
+      "index": 88,
+      "sourceText": "hobby",
+      "spokenText": "hobby",
+      "start": 174.4,
+      "end": 175.35
+    },
+    {
+      "index": 89,
+      "sourceText": "picnic",
+      "spokenText": "picnic",
+      "start": 176.1,
+      "end": 177.25
+    },
+    {
+      "index": 90,
+      "sourceText": "CD (player)",
+      "spokenText": "CD player",
+      "start": 178,
+      "end": 180.05
+    },
+    {
+      "index": 91,
+      "sourceText": "holidays",
+      "spokenText": "holidays",
+      "start": 180.8,
+      "end": 182.2
+    },
+    {
+      "index": 92,
+      "sourceText": "quiz",
+      "spokenText": "quiz",
+      "start": 182.95,
+      "end": 184.15
+    },
+    {
+      "index": 93,
+      "sourceText": "club",
+      "spokenText": "club",
+      "start": 184.9,
+      "end": 185.85
+    },
+    {
+      "index": 94,
+      "sourceText": "join",
+      "spokenText": "join",
+      "start": 186.6,
+      "end": 187.55
+    },
+    {
+      "index": 95,
+      "sourceText": "tent",
+      "spokenText": "tent",
+      "start": 188.3,
+      "end": 189.35
+    },
+    {
+      "index": 96,
+      "sourceText": "collect",
+      "spokenText": "collect",
+      "start": 190.1,
+      "end": 191.4
+    },
+    {
+      "index": 97,
+      "sourceText": "magazine",
+      "spokenText": "magazine",
+      "start": 192.15,
+      "end": 193.15
+    },
+    {
+      "index": 98,
+      "sourceText": "video game",
+      "spokenText": "video game",
+      "start": 193.9,
+      "end": 196.6
+    },
+    {
+      "index": 99,
+      "sourceText": "computer",
+      "spokenText": "computer",
+      "start": 197.35,
+      "end": 198.4
+    },
+    {
+      "index": 100,
+      "sourceText": "member",
+      "spokenText": "member",
+      "start": 199.15,
+      "end": 199.95
+    }
+  ]
+}

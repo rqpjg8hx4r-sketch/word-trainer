@@ -23,12 +23,13 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.26');
+  await expect(page.locator('#appVersion')).toHaveText('v2.27');
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(11);
   await page.locator('#librarySelect').selectOption('word007.txt');
   await page.getByRole('tab', { name:/背单词/ }).click();
   await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
+  await expect(page.locator('.header .streak-badge')).toHaveCount(0);
 
   const widths = await page.evaluate(() => ({
     words:document.querySelector('#wordsArea').getBoundingClientRect().width,
@@ -36,7 +37,18 @@ test('existing word and speaking workflows remain available', async ({ page }) =
     card:document.querySelector('#learnSection .study-card').getBoundingClientRect().width
   }));
   expect(Math.abs(widths.words - widths.tabs)).toBeLessThanOrEqual(1);
-  expect(widths.card).toBeLessThanOrEqual(480);
+  expect(Math.abs(widths.card - widths.words)).toBeLessThanOrEqual(1);
+  await expect(page.locator('.group-selector')).toHaveCount(0);
+  await expect(page.locator('#learnPosition')).toHaveText('1/60');
+  expect(await page.evaluate(() => activeList.length)).toBe(60);
+  await page.getByRole('button', { name:'后跳10个' }).click();
+  await expect(page.locator('#learnPosition')).toHaveText('11/60');
+  await page.getByRole('button', { name:'前跳10个' }).click();
+  await expect(page.locator('#learnPosition')).toHaveText('1/60');
+  await page.getByRole('button', { name:'← 上一个' }).click();
+  await expect(page.locator('#learnPosition')).toHaveText('1/60');
+  await page.getByRole('button', { name:'下一个 →' }).click();
+  await expect(page.locator('#learnPosition')).toHaveText('2/60');
 
   const firstWord = await page.locator('#learnWord').innerText();
   await page.getByRole('button', { name:'⏱ 自动：关' }).click();
@@ -45,12 +57,12 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await expect.poll(() => page.locator('#learnWord').innerText(), { timeout:3_500 }).not.toBe(firstWord);
   await page.getByRole('button', { name:'⏱ 自动：开' }).click();
 
-  await page.getByRole('button', { name:'📥 手动导入（备用）' }).click();
-  await expect(page.locator('#importPanel')).toBeVisible();
   await page.getByRole('button', { name:'🎯 选义测试' }).click();
   await expect(page.locator('#quizSection')).toBeVisible();
+  await expect(page.locator('#quizSection .streak-badge')).toHaveText('🔥 连对 0');
   await page.getByRole('button', { name:'🔤 键盘拼写' }).click();
   await expect(page.locator('#spellSection')).toBeVisible();
+  await expect(page.locator('#spellSection .streak-badge')).toHaveText('🔥 连对 0');
 
   await page.locator('#librarySelect').selectOption('word006.txt');
   await page.getByRole('tab', { name:/口语练习/ }).click();
@@ -65,18 +77,26 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
 });
 
-test('the compact TT entry opens a playable typing game for the selected day', async ({ page }) => {
+test('the top-level game entry opens a playable typing game for the selected day', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#librarySelect').selectOption('word010.txt');
 
-  const printButton = page.getByRole('button', { name:'🖨️ 打印默写' });
-  const typingButton = page.getByRole('button', { name:'⌨️ TT' });
-  await expect(typingButton).toBeVisible();
-  const [printBox, typingBox] = await Promise.all([printButton.boundingBox(), typingButton.boundingBox()]);
-  expect(typingBox.x).toBeLessThan(printBox.x);
-  expect(typingBox.width).toBeLessThan(printBox.width);
+  const tabs = await page.locator('.main-tab').allTextContents();
+  expect(tabs).toEqual(['📚 背单词', '🎧 口语练习', '🎵 听力练习', '🌱 日常练习', '🎮 游戏']);
+  const tabXs = [];
+  for (const name of [/背单词/, /口语练习/, /听力练习/, /日常练习/]) {
+    await page.getByRole('tab', { name }).click();
+    tabXs.push((await page.locator('.main-tabs').boundingBox()).x);
+  }
+  expect(Math.max(...tabXs)-Math.min(...tabXs)).toBeLessThanOrEqual(1);
+  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflowY)).toBe('scroll');
+  const practiceButton = page.getByRole('tab', { name:/日常练习/ });
+  const gameButton = page.getByRole('tab', { name:/游戏/ });
+  await expect(gameButton).toBeVisible();
+  const [practiceBox, gameBox] = await Promise.all([practiceButton.boundingBox(), gameButton.boundingBox()]);
+  expect(gameBox.x).toBeGreaterThan(practiceBox.x);
 
-  await typingButton.click();
+  await gameButton.click();
   await expect(page).toHaveURL(/\/type\.html\?day=010$/);
   await expect(page.locator('#dayBadge')).toHaveText('Day 10');
   await expect(page.locator('#poolStatus')).toContainText('71 个单词');
@@ -236,14 +256,15 @@ test('word dictation prints the complete day with Chinese cues only', async ({ p
   await page.locator('#librarySelect').selectOption('word002.txt');
   await page.getByRole('tab', { name:/背单词/ }).click();
 
-  const toolbarLabels = await page.locator('#wordsArea .toolbar button').allTextContents();
-  expect(toolbarLabels).toEqual(['📥 手动导入（备用）', '📊 学习历史', '⌨️ TT', '🖨️ 打印默写']);
+  await expect(page.locator('#wordsArea .toolbar')).toHaveCount(0);
+  await expect(page.getByText('手动导入词库（备用）')).toHaveCount(0);
+  await expect(page.getByRole('button', { name:'🕘 历史' })).toBeVisible();
 
   await page.evaluate(() => {
     window.__printCalled = false;
     window.print = () => { window.__printCalled = true; };
   });
-  await page.getByRole('button', { name:'🖨️ 打印默写' }).click();
+  await page.getByRole('button', { name:'打印默写' }).click();
 
   await expect(page.locator('#printSheetTitle')).toHaveText('第 2 天单词默写（94词）');
   await expect(page.locator('#printWordList .print-item')).toHaveCount(94);
@@ -383,11 +404,11 @@ test('spelling skips fixed punctuation and supports previous and next navigation
     spellPool = [words.find(item => item.w === 'classical (music)'), words.find(item => item.w === 'aunt')];
     renderSpell();
   });
-  await page.getByRole('button', { name:'下一个 →' }).click();
+  await page.locator('#qwertyKeyboard').getByRole('button', { name:'下一个 →' }).click();
   await expect(page.locator('#spellMeaning')).toHaveText('阿姨；姑妈');
-  await page.getByRole('button', { name:'← 上一个' }).click();
+  await page.locator('#qwertyKeyboard').getByRole('button', { name:'← 上一个' }).click();
   await expect(page.locator('#spellMeaning')).toHaveText('古典音乐');
-  await page.getByRole('button', { name:'下一个 →' }).click();
+  await page.locator('#qwertyKeyboard').getByRole('button', { name:'下一个 →' }).click();
   await expect(page.locator('#spellMeaning')).toHaveText('阿姨；姑妈');
 });
 

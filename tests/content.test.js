@@ -1,10 +1,11 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { execFileSync } = require('node:child_process');
-const { spokenForm, wavDuration, wavPeakDb, partFilename } = require('../scripts/generate-word-audio');
+const { parseArgs, spokenForm, wavDuration, wavPeakDb, partFilename } = require('../scripts/generate-word-audio');
 
 const root = path.resolve(__dirname, '..');
 const homeworkDir = path.join(root, 'homework');
@@ -53,6 +54,32 @@ test('word audio command defaults to all entries when limit is omitted', () => {
   assert.equal(result.items.at(-1).spokenText, 'windy');
 });
 
+test('word audio command supports generating all missing days', () => {
+  const options = parseArgs(['--all-missing']);
+  assert.equal(options.allMissing, true);
+  assert.equal(options.input, '');
+});
+
+test('word audio command skips an existing MP3 without requiring the API', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'word-audio-skip-'));
+  const input = path.join(tempDir, 'word999.txt');
+  const output = path.join(tempDir, 'word999.mp3');
+  const marker = Buffer.from('existing audio');
+  fs.writeFileSync(input, 'example | n. | 例子\n');
+  fs.writeFileSync(output, marker);
+  const env = { ...process.env };
+  delete env.OPENAI_API_KEY;
+  try {
+    const message = execFileSync(process.execPath, [
+      path.join(root, 'scripts', 'generate-word-audio.js'), input
+    ], { encoding:'utf8', env });
+    assert.match(message, /Skipped existing/);
+    assert.deepEqual(fs.readFileSync(output), marker);
+  } finally {
+    fs.rmSync(tempDir, { recursive:true, force:true });
+  }
+});
+
 test('word audio command handles streaming WAV unknown-length headers', () => {
   const wav = Buffer.alloc(44 + 48_000);
   wav.write('RIFF', 0, 'ascii');
@@ -78,6 +105,9 @@ test('word audio parts use stable numbered filenames', () => {
   assert.equal(partFilename({ index:6, spokenText:'block' }), '007-block.wav');
   assert.equal(partFilename({ index:3, spokenText:'café' }), '004-cafe.wav');
   assert.equal(spokenForm('v / versus'), 'versus');
+  assert.equal(spokenForm('enter (a competition)'), 'enter a competition');
+  assert.equal(spokenForm('sport(s)'), 'sports');
+  assert.equal(spokenForm('  children’s   race!  '), "children's race");
 });
 
 test('speaking TXT files contain displayable text', () => {

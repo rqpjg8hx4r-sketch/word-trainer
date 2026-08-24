@@ -1,0 +1,670 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word002.mp3",
+  "sourceHash": "de5b74e8c1953d0f7ca3101f8bbdae788f4d204127a935c9ebcbfe81a303bd32",
+  "audioHash": "8d32a1b7bd9f11562054a38fe53f21e6474d4a8ce8b7da779ef73a0bf3705d3f",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "address",
+      "spokenText": "address",
+      "start": 0,
+      "end": 1.25
+    },
+    {
+      "index": 1,
+      "sourceText": "DVD (player)",
+      "spokenText": "DVD player",
+      "start": 2,
+      "end": 3.95
+    },
+    {
+      "index": 2,
+      "sourceText": "photograph",
+      "spokenText": "photograph",
+      "start": 4.7,
+      "end": 5.8
+    },
+    {
+      "index": 3,
+      "sourceText": "at/@",
+      "spokenText": "at",
+      "start": 6.55,
+      "end": 7.4
+    },
+    {
+      "index": 4,
+      "sourceText": "email",
+      "spokenText": "email",
+      "start": 8.15,
+      "end": 9.15
+    },
+    {
+      "index": 5,
+      "sourceText": "photography",
+      "spokenText": "photography",
+      "start": 9.9,
+      "end": 11.15
+    },
+    {
+      "index": 6,
+      "sourceText": "by post",
+      "spokenText": "by post",
+      "start": 11.9,
+      "end": 13.2
+    },
+    {
+      "index": 7,
+      "sourceText": "envelope",
+      "spokenText": "envelope",
+      "start": 13.95,
+      "end": 15.1
+    },
+    {
+      "index": 8,
+      "sourceText": "phone",
+      "spokenText": "phone",
+      "start": 15.85,
+      "end": 17.3
+    },
+    {
+      "index": 9,
+      "sourceText": "call",
+      "spokenText": "call",
+      "start": 18.05,
+      "end": 18.85
+    },
+    {
+      "index": 10,
+      "sourceText": "file",
+      "spokenText": "file",
+      "start": 19.6,
+      "end": 20.5
+    },
+    {
+      "index": 11,
+      "sourceText": "printer",
+      "spokenText": "printer",
+      "start": 21.25,
+      "end": 22.75
+    },
+    {
+      "index": 12,
+      "sourceText": "camera",
+      "spokenText": "camera",
+      "start": 23.5,
+      "end": 26.1
+    },
+    {
+      "index": 13,
+      "sourceText": "information",
+      "spokenText": "information",
+      "start": 26.85,
+      "end": 28.25
+    },
+    {
+      "index": 14,
+      "sourceText": "screen",
+      "spokenText": "screen",
+      "start": 29,
+      "end": 30.55
+    },
+    {
+      "index": 15,
+      "sourceText": "CD (player)",
+      "spokenText": "CD player",
+      "start": 31.3,
+      "end": 34.05
+    },
+    {
+      "index": 16,
+      "sourceText": "internet",
+      "spokenText": "internet",
+      "start": 34.8,
+      "end": 36.3
+    },
+    {
+      "index": 17,
+      "sourceText": "software",
+      "spokenText": "software",
+      "start": 37.05,
+      "end": 38.25
+    },
+    {
+      "index": 18,
+      "sourceText": "cell phone",
+      "spokenText": "cell phone",
+      "start": 39,
+      "end": 40.2
+    },
+    {
+      "index": 19,
+      "sourceText": "keyboard",
+      "spokenText": "keyboard",
+      "start": 40.95,
+      "end": 41.8
+    },
+    {
+      "index": 20,
+      "sourceText": "talk",
+      "spokenText": "talk",
+      "start": 42.55,
+      "end": 43.6
+    },
+    {
+      "index": 21,
+      "sourceText": "chat",
+      "spokenText": "chat",
+      "start": 44.35,
+      "end": 45.5
+    },
+    {
+      "index": 22,
+      "sourceText": "laptop (computer)",
+      "spokenText": "laptop computer",
+      "start": 46.25,
+      "end": 48.25
+    },
+    {
+      "index": 23,
+      "sourceText": "telephone",
+      "spokenText": "telephone",
+      "start": 49,
+      "end": 50.6
+    },
+    {
+      "index": 24,
+      "sourceText": "click",
+      "spokenText": "click",
+      "start": 51.35,
+      "end": 52.15
+    },
+    {
+      "index": 25,
+      "sourceText": "mobile (phone)",
+      "spokenText": "mobile phone",
+      "start": 52.9,
+      "end": 54.15
+    },
+    {
+      "index": 26,
+      "sourceText": "text",
+      "spokenText": "text",
+      "start": 54.9,
+      "end": 57
+    },
+    {
+      "index": 27,
+      "sourceText": "computer",
+      "spokenText": "computer",
+      "start": 57.75,
+      "end": 58.9
+    },
+    {
+      "index": 28,
+      "sourceText": "mouse",
+      "spokenText": "mouse",
+      "start": 59.65,
+      "end": 60.55
+    },
+    {
+      "index": 29,
+      "sourceText": "video",
+      "spokenText": "video",
+      "start": 61.3,
+      "end": 62.75
+    },
+    {
+      "index": 30,
+      "sourceText": "conversation",
+      "spokenText": "conversation",
+      "start": 63.5,
+      "end": 65
+    },
+    {
+      "index": 31,
+      "sourceText": "MP3 player",
+      "spokenText": "MP3 player",
+      "start": 65.75,
+      "end": 67.55
+    },
+    {
+      "index": 32,
+      "sourceText": "web",
+      "spokenText": "web",
+      "start": 68.3,
+      "end": 69.15
+    },
+    {
+      "index": 33,
+      "sourceText": "digital",
+      "spokenText": "digital",
+      "start": 69.9,
+      "end": 71.25
+    },
+    {
+      "index": 34,
+      "sourceText": "net",
+      "spokenText": "net",
+      "start": 72,
+      "end": 72.85
+    },
+    {
+      "index": 35,
+      "sourceText": "web page",
+      "spokenText": "web page",
+      "start": 73.6,
+      "end": 74.95
+    },
+    {
+      "index": 36,
+      "sourceText": "digital camera",
+      "spokenText": "digital camera",
+      "start": 75.7,
+      "end": 76.9
+    },
+    {
+      "index": 37,
+      "sourceText": "online",
+      "spokenText": "online",
+      "start": 77.65,
+      "end": 78.8
+    },
+    {
+      "index": 38,
+      "sourceText": "website",
+      "spokenText": "website",
+      "start": 79.55,
+      "end": 80.7
+    },
+    {
+      "index": 39,
+      "sourceText": "dot",
+      "spokenText": "dot",
+      "start": 81.45,
+      "end": 82.65
+    },
+    {
+      "index": 40,
+      "sourceText": "password",
+      "spokenText": "password",
+      "start": 83.4,
+      "end": 84.45
+    },
+    {
+      "index": 41,
+      "sourceText": "download",
+      "spokenText": "download",
+      "start": 85.2,
+      "end": 86.4
+    },
+    {
+      "index": 42,
+      "sourceText": "PC",
+      "spokenText": "PC",
+      "start": 87.15,
+      "end": 88.5
+    },
+    {
+      "index": 43,
+      "sourceText": "bag",
+      "spokenText": "bag",
+      "start": 89.25,
+      "end": 89.9
+    },
+    {
+      "index": 44,
+      "sourceText": "handbag",
+      "spokenText": "handbag",
+      "start": 90.65,
+      "end": 91.75
+    },
+    {
+      "index": 45,
+      "sourceText": "sock",
+      "spokenText": "sock",
+      "start": 92.5,
+      "end": 93.45
+    },
+    {
+      "index": 46,
+      "sourceText": "bathing suit",
+      "spokenText": "bathing suit",
+      "start": 94.2,
+      "end": 95.8
+    },
+    {
+      "index": 47,
+      "sourceText": "hat",
+      "spokenText": "hat",
+      "start": 96.55,
+      "end": 97.15
+    },
+    {
+      "index": 48,
+      "sourceText": "suit",
+      "spokenText": "suit",
+      "start": 97.9,
+      "end": 98.9
+    },
+    {
+      "index": 49,
+      "sourceText": "belt",
+      "spokenText": "belt",
+      "start": 99.65,
+      "end": 100.45
+    },
+    {
+      "index": 50,
+      "sourceText": "jacket",
+      "spokenText": "jacket",
+      "start": 101.2,
+      "end": 102.3
+    },
+    {
+      "index": 51,
+      "sourceText": "sunglasses",
+      "spokenText": "sunglasses",
+      "start": 103.05,
+      "end": 104.4
+    },
+    {
+      "index": 52,
+      "sourceText": "blouse",
+      "spokenText": "blouse",
+      "start": 105.15,
+      "end": 106.5
+    },
+    {
+      "index": 53,
+      "sourceText": "jeans",
+      "spokenText": "jeans",
+      "start": 107.25,
+      "end": 108.3
+    },
+    {
+      "index": 54,
+      "sourceText": "sweater",
+      "spokenText": "sweater",
+      "start": 109.05,
+      "end": 110.05
+    },
+    {
+      "index": 55,
+      "sourceText": "boot",
+      "spokenText": "boot",
+      "start": 110.8,
+      "end": 111.8
+    },
+    {
+      "index": 56,
+      "sourceText": "jewellery/jewelry",
+      "spokenText": "jewellery",
+      "start": 112.55,
+      "end": 113.9
+    },
+    {
+      "index": 57,
+      "sourceText": "swimming costume",
+      "spokenText": "swimming costume",
+      "start": 114.65,
+      "end": 116.85
+    },
+    {
+      "index": 58,
+      "sourceText": "bracelet",
+      "spokenText": "bracelet",
+      "start": 117.6,
+      "end": 118.7
+    },
+    {
+      "index": 59,
+      "sourceText": "jumper",
+      "spokenText": "jumper",
+      "start": 119.45,
+      "end": 120.25
+    },
+    {
+      "index": 60,
+      "sourceText": "swimsuit",
+      "spokenText": "swimsuit",
+      "start": 121,
+      "end": 122.2
+    },
+    {
+      "index": 61,
+      "sourceText": "cap",
+      "spokenText": "cap",
+      "start": 122.95,
+      "end": 123.95
+    },
+    {
+      "index": 62,
+      "sourceText": "kit",
+      "spokenText": "kit",
+      "start": 124.7,
+      "end": 125.3
+    },
+    {
+      "index": 63,
+      "sourceText": "tie",
+      "spokenText": "tie",
+      "start": 126.05,
+      "end": 127.2
+    },
+    {
+      "index": 64,
+      "sourceText": "chain",
+      "spokenText": "chain",
+      "start": 127.95,
+      "end": 129.45
+    },
+    {
+      "index": 65,
+      "sourceText": "necklace",
+      "spokenText": "necklace",
+      "start": 130.2,
+      "end": 131.45
+    },
+    {
+      "index": 66,
+      "sourceText": "tights",
+      "spokenText": "tights",
+      "start": 132.2,
+      "end": 133.3
+    },
+    {
+      "index": 67,
+      "sourceText": "clothes",
+      "spokenText": "clothes",
+      "start": 134.05,
+      "end": 135.45
+    },
+    {
+      "index": 68,
+      "sourceText": "pocket",
+      "spokenText": "pocket",
+      "start": 136.2,
+      "end": 137.6
+    },
+    {
+      "index": 69,
+      "sourceText": "trainers",
+      "spokenText": "trainers",
+      "start": 138.35,
+      "end": 139.35
+    },
+    {
+      "index": 70,
+      "sourceText": "coat",
+      "spokenText": "coat",
+      "start": 140.1,
+      "end": 141.35
+    },
+    {
+      "index": 71,
+      "sourceText": "purse",
+      "spokenText": "purse",
+      "start": 142.1,
+      "end": 143.3
+    },
+    {
+      "index": 72,
+      "sourceText": "trousers",
+      "spokenText": "trousers",
+      "start": 144.05,
+      "end": 145.8
+    },
+    {
+      "index": 73,
+      "sourceText": "costume",
+      "spokenText": "costume",
+      "start": 146.55,
+      "end": 148.3
+    },
+    {
+      "index": 74,
+      "sourceText": "raincoat",
+      "spokenText": "raincoat",
+      "start": 149.05,
+      "end": 149.95
+    },
+    {
+      "index": 75,
+      "sourceText": "try on",
+      "spokenText": "try on",
+      "start": 150.7,
+      "end": 152.4
+    },
+    {
+      "index": 76,
+      "sourceText": "dress",
+      "spokenText": "dress",
+      "start": 153.15,
+      "end": 154.4
+    },
+    {
+      "index": 77,
+      "sourceText": "ring",
+      "spokenText": "ring",
+      "start": 155.15,
+      "end": 157.5
+    },
+    {
+      "index": 78,
+      "sourceText": "T-shirt",
+      "spokenText": "T-shirt",
+      "start": 158.25,
+      "end": 161
+    },
+    {
+      "index": 79,
+      "sourceText": "earring",
+      "spokenText": "earring",
+      "start": 161.75,
+      "end": 162.35
+    },
+    {
+      "index": 80,
+      "sourceText": "scarf",
+      "spokenText": "scarf",
+      "start": 163.1,
+      "end": 164.3
+    },
+    {
+      "index": 81,
+      "sourceText": "umbrella",
+      "spokenText": "umbrella",
+      "start": 165.05,
+      "end": 166.15
+    },
+    {
+      "index": 82,
+      "sourceText": "fashion",
+      "spokenText": "fashion",
+      "start": 166.9,
+      "end": 168.1
+    },
+    {
+      "index": 83,
+      "sourceText": "shirt",
+      "spokenText": "shirt",
+      "start": 168.85,
+      "end": 169.75
+    },
+    {
+      "index": 84,
+      "sourceText": "uniform",
+      "spokenText": "uniform",
+      "start": 170.5,
+      "end": 171.65
+    },
+    {
+      "index": 85,
+      "sourceText": "get dressed",
+      "spokenText": "get dressed",
+      "start": 172.4,
+      "end": 173.75
+    },
+    {
+      "index": 86,
+      "sourceText": "shoes",
+      "spokenText": "shoes",
+      "start": 174.5,
+      "end": 175.55
+    },
+    {
+      "index": 87,
+      "sourceText": "wallet",
+      "spokenText": "wallet",
+      "start": 176.3,
+      "end": 177.35
+    },
+    {
+      "index": 88,
+      "sourceText": "glasses",
+      "spokenText": "glasses",
+      "start": 178.1,
+      "end": 179.15
+    },
+    {
+      "index": 89,
+      "sourceText": "shorts",
+      "spokenText": "shorts",
+      "start": 179.9,
+      "end": 181.1
+    },
+    {
+      "index": 90,
+      "sourceText": "watch",
+      "spokenText": "watch",
+      "start": 181.85,
+      "end": 182.85
+    },
+    {
+      "index": 91,
+      "sourceText": "glove",
+      "spokenText": "glove",
+      "start": 183.6,
+      "end": 184.8
+    },
+    {
+      "index": 92,
+      "sourceText": "skirt",
+      "spokenText": "skirt",
+      "start": 185.55,
+      "end": 186.75
+    },
+    {
+      "index": 93,
+      "sourceText": "wear",
+      "spokenText": "wear",
+      "start": 187.5,
+      "end": 188.3
+    }
+  ]
+}

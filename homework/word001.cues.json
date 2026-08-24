@@ -1,0 +1,306 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word001.mp3",
+  "sourceHash": "214c7c1ce2a6c281ded114304e70317d0299ba61725ac9d2ebfa45e4a68b0257",
+  "audioHash": "ef36799ffcdfb6ab84345a7a7f409888bbd2a4afe22d95763572b00e3e5fe084",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "camera",
+      "spokenText": "camera",
+      "start": 0,
+      "end": 0.65
+    },
+    {
+      "index": 1,
+      "sourceText": "electricity",
+      "spokenText": "electricity",
+      "start": 1.4,
+      "end": 2.95
+    },
+    {
+      "index": 2,
+      "sourceText": "oven",
+      "spokenText": "oven",
+      "start": 3.7,
+      "end": 4.9
+    },
+    {
+      "index": 3,
+      "sourceText": "CD (player)",
+      "spokenText": "CD player",
+      "start": 5.65,
+      "end": 7.35
+    },
+    {
+      "index": 4,
+      "sourceText": "fridge",
+      "spokenText": "fridge",
+      "start": 8.1,
+      "end": 9.2
+    },
+    {
+      "index": 5,
+      "sourceText": "PC",
+      "spokenText": "PC",
+      "start": 9.95,
+      "end": 11.25
+    },
+    {
+      "index": 6,
+      "sourceText": "cell phone",
+      "spokenText": "cell phone",
+      "start": 12,
+      "end": 13.05
+    },
+    {
+      "index": 7,
+      "sourceText": "gas",
+      "spokenText": "gas",
+      "start": 13.8,
+      "end": 14.8
+    },
+    {
+      "index": 8,
+      "sourceText": "phone",
+      "spokenText": "phone",
+      "start": 15.55,
+      "end": 16.85
+    },
+    {
+      "index": 9,
+      "sourceText": "clock",
+      "spokenText": "clock",
+      "start": 17.6,
+      "end": 18.45
+    },
+    {
+      "index": 10,
+      "sourceText": "heating",
+      "spokenText": "heating",
+      "start": 19.2,
+      "end": 20.1
+    },
+    {
+      "index": 11,
+      "sourceText": "radio",
+      "spokenText": "radio",
+      "start": 20.85,
+      "end": 21.6
+    },
+    {
+      "index": 12,
+      "sourceText": "computer",
+      "spokenText": "computer",
+      "start": 22.35,
+      "end": 23.7
+    },
+    {
+      "index": 13,
+      "sourceText": "lamp",
+      "spokenText": "lamp",
+      "start": 24.45,
+      "end": 25.4
+    },
+    {
+      "index": 14,
+      "sourceText": "telephone",
+      "spokenText": "telephone",
+      "start": 26.15,
+      "end": 27.35
+    },
+    {
+      "index": 15,
+      "sourceText": "cooker",
+      "spokenText": "cooker",
+      "start": 28.1,
+      "end": 30.25
+    },
+    {
+      "index": 16,
+      "sourceText": "laptop",
+      "spokenText": "laptop",
+      "start": 31,
+      "end": 32.15
+    },
+    {
+      "index": 17,
+      "sourceText": "television/TV",
+      "spokenText": "television",
+      "start": 32.9,
+      "end": 34.25
+    },
+    {
+      "index": 18,
+      "sourceText": "digital camera",
+      "spokenText": "digital camera",
+      "start": 35,
+      "end": 36.55
+    },
+    {
+      "index": 19,
+      "sourceText": "lights",
+      "spokenText": "lights",
+      "start": 37.3,
+      "end": 39.3
+    },
+    {
+      "index": 20,
+      "sourceText": "video",
+      "spokenText": "video",
+      "start": 40.05,
+      "end": 40.85
+    },
+    {
+      "index": 21,
+      "sourceText": "DVD (player)",
+      "spokenText": "DVD player",
+      "start": 41.6,
+      "end": 43.15
+    },
+    {
+      "index": 22,
+      "sourceText": "mobile (phone)",
+      "spokenText": "mobile phone",
+      "start": 43.9,
+      "end": 45.25
+    },
+    {
+      "index": 23,
+      "sourceText": "washing machine",
+      "spokenText": "washing machine",
+      "start": 46,
+      "end": 47.15
+    },
+    {
+      "index": 24,
+      "sourceText": "electric",
+      "spokenText": "electric",
+      "start": 47.9,
+      "end": 49.35
+    },
+    {
+      "index": 25,
+      "sourceText": "MP3 player",
+      "spokenText": "MP3 player",
+      "start": 50.1,
+      "end": 51.65
+    },
+    {
+      "index": 26,
+      "sourceText": "black",
+      "spokenText": "black",
+      "start": 52.4,
+      "end": 53.45
+    },
+    {
+      "index": 27,
+      "sourceText": "grey/gray",
+      "spokenText": "grey",
+      "start": 54.2,
+      "end": 55.3
+    },
+    {
+      "index": 28,
+      "sourceText": "red",
+      "spokenText": "red",
+      "start": 56.05,
+      "end": 57.15
+    },
+    {
+      "index": 29,
+      "sourceText": "blue",
+      "spokenText": "blue",
+      "start": 57.9,
+      "end": 58.95
+    },
+    {
+      "index": 30,
+      "sourceText": "light",
+      "spokenText": "light",
+      "start": 59.7,
+      "end": 60.85
+    },
+    {
+      "index": 31,
+      "sourceText": "silver",
+      "spokenText": "silver",
+      "start": 61.6,
+      "end": 62.5
+    },
+    {
+      "index": 32,
+      "sourceText": "brown",
+      "spokenText": "brown",
+      "start": 63.25,
+      "end": 64.25
+    },
+    {
+      "index": 33,
+      "sourceText": "orange",
+      "spokenText": "orange",
+      "start": 65,
+      "end": 66.65
+    },
+    {
+      "index": 34,
+      "sourceText": "white",
+      "spokenText": "white",
+      "start": 67.4,
+      "end": 68.5
+    },
+    {
+      "index": 35,
+      "sourceText": "dark",
+      "spokenText": "dark",
+      "start": 69.25,
+      "end": 70.15
+    },
+    {
+      "index": 36,
+      "sourceText": "pale",
+      "spokenText": "pale",
+      "start": 70.9,
+      "end": 72.05
+    },
+    {
+      "index": 37,
+      "sourceText": "yellow",
+      "spokenText": "yellow",
+      "start": 72.8,
+      "end": 74.05
+    },
+    {
+      "index": 38,
+      "sourceText": "golden",
+      "spokenText": "golden",
+      "start": 74.8,
+      "end": 76.1
+    },
+    {
+      "index": 39,
+      "sourceText": "pink",
+      "spokenText": "pink",
+      "start": 76.85,
+      "end": 77.8
+    },
+    {
+      "index": 40,
+      "sourceText": "green",
+      "spokenText": "green",
+      "start": 78.55,
+      "end": 79.25
+    },
+    {
+      "index": 41,
+      "sourceText": "purple",
+      "spokenText": "purple",
+      "start": 80,
+      "end": 80.95
+    }
+  ]
+}
