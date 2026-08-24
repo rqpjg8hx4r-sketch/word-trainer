@@ -1,0 +1,84 @@
+Q1: How do you do?
+A1: How do you do?
+
+Q2: How are you today?
+A2: Great, thanks. And what about you?
+
+Q3: It is a fine day today, isn't it?
+A3: Yes, it is.
+
+Q4: How is the weather today?
+A4: It is a sunny day today. It is a cloudy day today. It is a snowy day today. It is a windy day today.
+
+Q5: What day is it today?
+A5: Today is Monday. Today is Tuesday. Today is Wednesday. Today is Thursday. Today is Friday. Today is Saturday. Today is Sunday.
+
+Q6: What is the date today?
+A6: Today is the first of January. Today is the second of February. Today is the third of March. Today is the fourth of April.
+
+Q7: How did you get here this morning?
+A7: I got here by bus.
+
+Q8: What is your name?
+A8: My name is Sophie Lee. Lee is my family name, and Sophie is my given name.
+
+Q9: May I know your name?
+A9: Sure. My name is Sophie Lee.
+
+Q10: Can you spell your name, please?
+A10: S-O-P-H-I-E, Sophie. L-E-E, Lee.
+
+Q11: What is your full name?
+A11: My full name is Sophie Lee.
+
+Q12: What is your surname?
+A12: My surname is Lee. L-E-E, Lee.
+
+Q13: What is your family name?
+A13: My family name is Lee. L-E-E, Lee.
+
+Q14: Do you have an English name?
+A14: Yes. My English name is Sophie.
+
+Q15: What is your English name?
+A15: My English name is Sophie.
+
+Q16: When is your birthday?
+A16: My birthday is on the tenth of May.
+
+Q17: How old are you?
+A17: I am eleven years old.
+
+Q18: When were you born?
+A18: I was born on the tenth of May, 2015.
+
+Q19: Where were you born?
+A19: I was born in New York City.
+
+Q20: Were you born in London?
+A20: No, I was born in New York City.
+
+Q21: Were you born in this city?
+A21: Yes, I was born in this city.
+
+Q22: Are you a local resident?
+A22: Yes, I have lived here for eleven years.
+
+Q23: Are you a native of this city?
+A23: Yes, I was born here and have always lived here.
+
+Q24: Where are you from?
+A24: I am from New York City. It is a big city.
+
+Q25: Where do you come from?
+A25: I come from New York City. It is a big city.
+
+Q26: Where is your birthplace?
+A26: My birthplace is New York City.
+
+Q27: Where do you live?
+A27: I live at Number 10 New York Drive, New York City.
+
+Q28: Do you live in this city?
+A28: Yes, I live in this city.
+

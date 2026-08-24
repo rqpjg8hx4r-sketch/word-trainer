@@ -1,0 +1,74 @@
+Q29: Which school do you go to?
+A29: I go to Sunshine Primary School.
+
+Q30: Which grade are you in?
+A30: I am in Grade 4.
+
+Q31: Is your home far from your school?
+A31: No. It is only two stops by bus, or a five-minute drive.
+
+Q32: How far is your home from your school?
+A32: It is about two kilometres away.
+
+Q33: How long does it take you to get to school?
+A33: It takes me fifteen minutes by bus.
+
+Q34: When do you go to school every day?
+A34: I usually go to school at half past seven.
+
+Q35: How do you get to school every day?
+A35: I usually go to school by bus. Sometimes I go in my parents' car.
+
+Q36: Which class are you in?
+A36: I am in Class 2, Grade 4.
+
+Q37: How many students are there in your class?
+A37: There are thirty students in my class: sixteen boys and fourteen girls.
+
+Q38: How many boys and girls are there in your class?
+A38: There are sixteen boys and fourteen girls in my class.
+
+Q39: Do you like your school?
+A39: Yes, I do. My school has nice teachers and friendly students.
+
+Q40: Do you like your class?
+A40: Yes, I do. My teacher is nice, and my classmates are friendly.
+
+Q41: What do you think of your school?
+A41: I think my school is great. It has a beautiful campus and nice teachers.
+
+Q42: What do you think of your class?
+A42: I think my class is great. My teacher is nice, and my classmates are friendly.
+
+Q43: What is your school like?
+A43: My school is great. It has a beautiful campus and nice teachers.
+
+Q44: What is your class like?
+A44: My class is friendly and full of energy.
+
+Q45: What does your school look like?
+A45: My school looks beautiful. It has a large playground and many trees.
+
+Q46: What does your classroom look like?
+A46: My classroom looks bright and welcoming.
+
+Q47: Is there a library at your school?
+A47: Yes, there is. I sometimes borrow books from the school library.
+
+Q48: Does your school have a Reading Club?
+A48: Yes, it does. I am a member of the Reading Club, and I can read many books there.
+
+Q49: Does your school have an English Corner?
+A49: Yes, it does. I sometimes go there to practise speaking English with other students.
+
+Q50: What do you usually do at the English Corner?
+A50: I usually talk with other students and practise speaking English.
+
+Q51: When does the first lesson start?
+A51: The first lesson starts at eight o'clock.
+
+Q52: When do you go home from school every day?
+A52: I go home from school at four o'clock every day.
+
+Q53: What do you usually do between classes?
+A53: I usually play games with my friends between classes.

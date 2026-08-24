@@ -18,12 +18,24 @@ function homeworkIndex() {
   return { files };
 }
 
+function practiceIndex() {
+  const directory = path.join(root, 'practice');
+  const files = fs.existsSync(directory)
+    ? fs.readdirSync(directory).filter(file => file !== 'index.json').sort((a, b) => b.localeCompare(a))
+    : [];
+  return { files };
+}
+
 function createTestServer() {
   return http.createServer((request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
   if (url.pathname === '/__homework-index.json') {
     response.writeHead(200, { 'Content-Type':mime['.json'] });
     return response.end(JSON.stringify(homeworkIndex()));
+  }
+  if (url.pathname === '/__practice-index.json') {
+    response.writeHead(200, { 'Content-Type':mime['.json'] });
+    return response.end(JSON.stringify(practiceIndex()));
   }
 
   const relative = decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname);

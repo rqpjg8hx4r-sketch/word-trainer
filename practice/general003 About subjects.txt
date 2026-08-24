@@ -1,0 +1,54 @@
+
+Q54: How many subjects do you have? What are they?
+A54: I have three main subjects: Chinese, Maths and English. I also have Music, Art and PE, which means Physical Education.
+
+Q55: What subjects do you have?
+A55: I have Chinese, Maths, English, Music, Art and PE.
+
+Q56: What is your favourite subject? Why do you like it best?
+A56: My favourite subject is English because it helps me understand the world better.
+
+Q57: What do you think of English? Is it easy or difficult?
+A57: English is interesting, and regular practice makes it easier.
+
+Q58: Is English hard or easy for you?
+A58: English is easy for me because I practise it often.
+
+Q59: Do you like learning English?
+A59: Yes, I do. I like learning English because it helps me understand the world better.
+
+Q60: What is your English teacher's name?
+A60: My English teacher's name is Ms Green. She is a nice teacher.
+
+Q61: Why do you like English?
+A61: I like English because it helps me understand the wider world better.
+
+Q62: Why do you like Maths?
+A62: I like Maths because I enjoy solving problems.
+
+Q63: Why do you like Chinese?
+A63: I like Chinese because there are many interesting stories in Chinese.
+
+Q64: Are you good at English?
+A64: Yes, I am. I usually get an A in English tests.
+
+Q65: Do you do well in PE?
+A65: Yes, I do. I am good at basketball.
+
+Q66: Which subject are you good at?
+A66: I am good at English because I practise it every day.
+
+Q67: Are you tired after lessons?
+A67: Yes, I am. I usually rest for about thirty minutes after I get home.
+
+Q68: What do you do after school?
+A68: I usually go straight home and do my homework.
+
+Q69: Do you read English every day?
+A69: No, I read English every other day.
+
+Q70: Do you like sports?
+A70: Yes, I do. I especially like basketball.
+
+Q71: What sport do you like best? Why do you like it, and how often do you play it?
+A71: I like basketball best because it is exciting. I play it every Tuesday and Saturday.

@@ -143,3 +143,10 @@ test('app shell and offline worker versions stay aligned', () => {
   const packageVersion = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version.replace(/\.0$/, '');
   assert.equal(packageVersion, htmlVersion);
 });
+
+test('build creates a deployment index for the optional practice directory', () => {
+  execFileSync(process.execPath, [path.join(root, 'scripts', 'build-site.js')]);
+  const index = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'practice', 'index.json'), 'utf8'));
+  assert.ok(Array.isArray(index.files));
+  assert.ok(index.files.every(file => file !== 'index.json'));
+});

@@ -257,7 +257,7 @@
     .offline-status { display:inline-flex; align-items:center; gap:4px; margin-top:7px; padding:4px 8px; border-radius:999px; background:#F1F5F9; color:var(--subtext); font-size:11px; font-weight:800; }
     .offline-status.ready { background:#ECFDF5; color:#047857; }
     .offline-status.offline { background:#FEF3C7; color:#B45309; }
-    .main-tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:12px 0; padding:4px; background:#E2E8F0; border-radius:14px; }
+    .main-tabs { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:12px 0; padding:4px; background:#E2E8F0; border-radius:14px; }
     .main-tab { border:none; border-radius:10px; padding:13px 10px; background:transparent; color:var(--subtext); font-size:15px; font-weight:900; cursor:pointer; }
     .main-tab.active { background:white; color:var(--primary); box-shadow:0 2px 6px rgba(15,23,42,.10); }
     .main-tab:disabled { opacity:.38; cursor:not-allowed; }
@@ -287,13 +287,16 @@
     .listening-card { text-align:left; padding:18px 16px; }
     .listening-audio { display:none; width:100%; margin-top:14px; }
     .listening-note { margin-top:10px; color:var(--subtext); font-size:12px; line-height:1.5; }
+    .practice-toolbar { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
+    .practice-toolbar .library-select { min-height:40px; }
+    .practice-audio { display:none; width:100%; margin:12px 0; }
     @media (min-width:700px) {
       .speaking-card { padding:22px 24px; }
       .speaking-line { font-size:16px; }
       .speaking-action { padding:9px 14px; font-size:13px; }
       .listening-card { padding:22px 24px; }
     }
-    @media (max-width:430px) { .main-tab { padding:12px 5px; font-size:13px; } }
+    @media (max-width:430px) { .main-tab { padding:11px 3px; font-size:12px; } }
     .print-sheet { display:none; }
     @page { size:A4 portrait; margin:8mm; }
     @media print {
@@ -318,7 +321,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.23</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.25</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -337,6 +340,7 @@
     <button id="mainTabWords" class="main-tab active" role="tab" aria-selected="true" onclick="switchMainArea('words')">📚 背单词</button>
     <button id="mainTabSpeaking" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('speaking')">🎧 口语练习</button>
     <button id="mainTabListening" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('listening')">🎵 听力练习</button>
+    <button id="mainTabPractice" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('practice')">🌱 日常练习</button>
   </div>
 
   <div id="speakingArea" role="tabpanel" style="display:none;">
@@ -371,8 +375,53 @@
         <h4 style="margin:0;">🎵 今日听力练习</h4>
         <span id="listeningBadge" class="speaking-badge">正在读取…</span>
       </div>
-      <audio id="listeningAudio" class="listening-audio" controls preload="metadata"></audio>
+      <audio id="listeningAudio" class="speaking-audio" preload="metadata"></audio>
+      <div id="listeningPlayer" class="speaking-player">
+        <div class="speaking-player-label">播放速度</div>
+        <div class="speed-group">
+          <button class="speed-btn" data-speed="0.75" onclick="setLibraryPlayerSpeed('listening',0.75)">0.75×</button>
+          <button class="speed-btn active" data-speed="0.85" onclick="setLibraryPlayerSpeed('listening',0.85)">0.85×</button>
+          <button class="speed-btn" data-speed="1" onclick="setLibraryPlayerSpeed('listening',1)">1.0×</button>
+          <button class="speed-btn" data-speed="1.25" onclick="setLibraryPlayerSpeed('listening',1.25)">1.25×</button>
+        </div>
+        <button class="player-btn" onclick="playLibraryPlayerFull('listening')">▶ 整段</button>
+        <button id="listeningPauseBtn" class="player-btn" onclick="toggleLibraryPlayerPause('listening')">⏸ 暂停</button>
+        <button class="player-btn" onclick="replayLibraryPlayerMoment('listening')">↩ 重听刚才</button>
+        <button id="listeningRepeatBtn" class="player-btn" onclick="toggleLibraryPlayerRepeat('listening')">🔁 循环关闭</button>
+      </div>
       <div id="listeningStatus" class="listening-note">准备读取听力练习…</div>
+    </div>
+  </div>
+
+  <div id="practiceArea" role="tabpanel" style="display:none;">
+    <div class="card speaking-card">
+      <div class="speaking-title">
+        <h4 id="practiceTitle">🌱 日常练习</h4>
+        <span id="practiceBadge" class="speaking-badge">正在读取…</span>
+      </div>
+      <div class="practice-toolbar">
+        <select id="practiceSelect" class="library-select" onchange="selectPracticeItem(this.value)">
+          <option value="">正在读取练习资料…</option>
+        </select>
+        <button class="btn btn-secondary" style="width:auto;padding:9px 12px;" onclick="refreshPracticeLibrary()">刷新</button>
+      </div>
+      <img id="practiceImage" class="speaking-homework-image" alt="日常练习配图">
+      <div id="practiceItems"></div>
+      <audio id="practiceAudio" class="speaking-audio" preload="metadata"></audio>
+      <div id="practicePlayer" class="speaking-player">
+        <div class="speaking-player-label">播放速度</div>
+        <div class="speed-group">
+          <button class="speed-btn" data-speed="0.75" onclick="setLibraryPlayerSpeed('practice',0.75)">0.75×</button>
+          <button class="speed-btn active" data-speed="0.85" onclick="setLibraryPlayerSpeed('practice',0.85)">0.85×</button>
+          <button class="speed-btn" data-speed="1" onclick="setLibraryPlayerSpeed('practice',1)">1.0×</button>
+          <button class="speed-btn" data-speed="1.25" onclick="setLibraryPlayerSpeed('practice',1.25)">1.25×</button>
+        </div>
+        <button class="player-btn" onclick="playLibraryPlayerFull('practice')">▶ 整段</button>
+        <button id="practicePauseBtn" class="player-btn" onclick="toggleLibraryPlayerPause('practice')">⏸ 暂停</button>
+        <button class="player-btn" onclick="replayLibraryPlayerMoment('practice')">↩ 重听刚才</button>
+        <button id="practiceRepeatBtn" class="player-btn" onclick="toggleLibraryPlayerRepeat('practice')">🔁 循环关闭</button>
+      </div>
+      <div id="practiceStatus" class="listening-note">准备读取日常练习…</div>
     </div>
   </div>
 
@@ -1387,26 +1436,32 @@ function switchGroup(type, btn) {
 function switchMainArea(area, remember=true) {
   const showSpeaking = area === 'speaking';
   const showListening = area === 'listening';
-  const showWords = !showSpeaking && !showListening;
+  const showPractice = area === 'practice';
+  const showWords = !showSpeaking && !showListening && !showPractice;
   const wordsTab = document.getElementById('mainTabWords');
   if (showWords && wordsTab.disabled) area = 'listening';
 
   const finalSpeaking = area === 'speaking';
   const finalListening = area === 'listening';
-  const finalWords = !finalSpeaking && !finalListening;
+  const finalPractice = area === 'practice';
+  const finalWords = !finalSpeaking && !finalListening && !finalPractice;
   document.getElementById('wordsArea').style.display = finalWords ? 'block' : 'none';
   document.getElementById('speakingArea').style.display = finalSpeaking ? 'block' : 'none';
   document.getElementById('listeningArea').style.display = finalListening ? 'block' : 'none';
+  document.getElementById('practiceArea').style.display = finalPractice ? 'block' : 'none';
   document.getElementById('streakBadge').style.display = finalWords ? 'inline-block' : 'none';
 
   const speakingTab = document.getElementById('mainTabSpeaking');
   const listeningTab = document.getElementById('mainTabListening');
+  const practiceTab = document.getElementById('mainTabPractice');
   wordsTab.classList.toggle('active', finalWords);
   speakingTab.classList.toggle('active', finalSpeaking);
   listeningTab.classList.toggle('active', finalListening);
+  practiceTab.classList.toggle('active', finalPractice);
   wordsTab.setAttribute('aria-selected', String(finalWords));
   speakingTab.setAttribute('aria-selected', String(finalSpeaking));
   listeningTab.setAttribute('aria-selected', String(finalListening));
+  practiceTab.setAttribute('aria-selected', String(finalPractice));
 
   if (!finalWords) {
     stopAutoLearn();
@@ -1417,7 +1472,14 @@ function switchMainArea(area, remember=true) {
     if (audio) audio.pause();
     speakingSegmentEnd = null;
   }
-  if (!finalListening) document.getElementById('listeningAudio')?.pause();
+  if (!finalListening) {
+    document.getElementById('listeningAudio')?.pause();
+    libraryPlayerStates.listening.segmentEnd = null;
+  }
+  if (!finalPractice) {
+    document.getElementById('practiceAudio')?.pause();
+    libraryPlayerStates.practice.segmentEnd = null;
+  }
 
   if (remember) {
     try { localStorage.setItem('wordTrainerMainArea', area); } catch (e) {}
@@ -1757,6 +1819,12 @@ let speakingLoadRequestId = 0;
 let currentSpeakingDay = 0;
 let listeningLoadRequestId = 0;
 let currentListeningDay = 0;
+let practiceLibrary = [];
+let practiceLoadRequestId = 0;
+const libraryPlayerStates = {
+  listening:{ speed:0.85, repeat:false, segmentStart:0, segmentEnd:null, label:'整段录音' },
+  practice:{ speed:0.85, repeat:false, segmentStart:0, segmentEnd:null, label:'整段录音' }
+};
 
 async function sha256Hex(data) {
   const bytes = data instanceof ArrayBuffer ? data : new TextEncoder().encode(String(data));
@@ -1956,9 +2024,135 @@ async function findListeningAudio(baseName) {
   return '';
 }
 
+function libraryPlayerElements(kind) {
+  return {
+    audio:document.getElementById(`${kind}Audio`),
+    player:document.getElementById(`${kind}Player`),
+    pause:document.getElementById(`${kind}PauseBtn`),
+    repeat:document.getElementById(`${kind}RepeatBtn`),
+    status:document.getElementById(`${kind}Status`)
+  };
+}
+
+function resetLibraryPlayerSegment(kind) {
+  const state = libraryPlayerStates[kind];
+  if (!state) return;
+  state.segmentStart = 0;
+  state.segmentEnd = null;
+  state.label = '整段录音';
+}
+
+function setLibraryPlayerSpeed(kind, rate) {
+  const state = libraryPlayerStates[kind];
+  const { audio, player, status } = libraryPlayerElements(kind);
+  if (!state || !audio || !player) return;
+  state.speed = rate;
+  audio.playbackRate = rate;
+  player.querySelectorAll('.speed-btn').forEach(button => {
+    button.classList.toggle('active', Number(button.dataset.speed) === rate);
+  });
+  status.innerText = `播放速度 ${rate}×。`;
+}
+
+function playLibraryPlayerFull(kind) {
+  const state = libraryPlayerStates[kind];
+  const { audio, status } = libraryPlayerElements(kind);
+  if (!state || !audio?.src) return;
+  resetLibraryPlayerSegment(kind);
+  audio.currentTime = 0;
+  audio.playbackRate = state.speed;
+  audio.play().catch(() => {
+    status.innerText = '浏览器阻止了播放，请再点击一次。';
+  });
+}
+
+function toggleLibraryPlayerPause(kind) {
+  const state = libraryPlayerStates[kind];
+  const { audio } = libraryPlayerElements(kind);
+  if (!state || !audio?.src) return;
+  if (audio.paused) {
+    audio.playbackRate = state.speed;
+    audio.play().catch(() => {});
+  } else {
+    audio.pause();
+  }
+}
+
+function replayLibraryPlayerMoment(kind) {
+  const state = libraryPlayerStates[kind];
+  const { audio, status } = libraryPlayerElements(kind);
+  if (!state || !audio?.src) return;
+  audio.currentTime = Math.max(state.segmentStart, audio.currentTime - 2);
+  audio.playbackRate = state.speed;
+  audio.play().catch(() => {});
+  status.innerText = '重听刚才约 2 秒。';
+}
+
+function toggleLibraryPlayerRepeat(kind) {
+  const state = libraryPlayerStates[kind];
+  const { repeat, status } = libraryPlayerElements(kind);
+  if (!state || !repeat) return;
+  state.repeat = !state.repeat;
+  repeat.classList.toggle('active', state.repeat);
+  repeat.innerText = state.repeat ? '🔁 循环开启' : '🔁 循环关闭';
+  status.innerText = state.repeat ? '将反复播放当前片段。' : '已关闭循环播放。';
+}
+
+function playLibraryPlayerRange(kind, start, end, label) {
+  const state = libraryPlayerStates[kind];
+  const { audio, status } = libraryPlayerElements(kind);
+  if (!state || !audio?.src || !validPracticeCue({ start, end })) return;
+  state.segmentStart = Number(start);
+  state.segmentEnd = Number(end);
+  state.label = label;
+  audio.currentTime = state.segmentStart;
+  audio.playbackRate = state.speed;
+  audio.play().catch(() => {
+    status.innerText = '浏览器阻止了播放，请再点击一次。';
+  });
+}
+
+function attachLibraryPlayer(kind) {
+  const state = libraryPlayerStates[kind];
+  const { audio, pause, status } = libraryPlayerElements(kind);
+  if (!state || !audio) return;
+  audio.addEventListener('timeupdate', () => {
+    if (state.segmentEnd === null || audio.currentTime < state.segmentEnd) return;
+    if (state.repeat) {
+      audio.currentTime = state.segmentStart;
+      audio.play().catch(() => {});
+    } else {
+      state.segmentEnd = null;
+      audio.pause();
+      status.innerText = `${state.label} 播放完成。`;
+    }
+  });
+  audio.addEventListener('play', () => {
+    pause.innerText = '⏸ 暂停';
+    status.innerText = `正在播放 ${state.label}。`;
+  });
+  audio.addEventListener('pause', () => {
+    pause.innerText = '▶ 继续';
+  });
+  audio.addEventListener('ended', () => {
+    if (state.repeat) {
+      audio.currentTime = state.segmentStart;
+      audio.play().catch(() => {});
+    } else {
+      state.segmentEnd = null;
+      status.innerText = '播放完成。';
+    }
+  });
+  audio.addEventListener('error', () => {
+    document.getElementById(`${kind}Badge`).innerText = '播放失败';
+    status.innerText = '音频无法播放，请检查文件格式和文件名。';
+  });
+}
+
 async function loadListeningHomework(requestedDay='') {
   const requestId = ++listeningLoadRequestId;
   const audio = document.getElementById('listeningAudio');
+  const player = document.getElementById('listeningPlayer');
   const badge = document.getElementById('listeningBadge');
   const status = document.getElementById('listeningStatus');
   const match = String(requestedDay || '').match(/(\d{1,3})/);
@@ -1968,7 +2162,8 @@ async function loadListeningHomework(requestedDay='') {
   currentListeningDay = day;
   audio.pause();
   audio.removeAttribute('src');
-  audio.style.display = 'none';
+  player.style.display = 'none';
+  resetLibraryPlayerSegment('listening');
   badge.innerText = `Day ${day}`;
 
   if (!navigator.onLine) {
@@ -1986,10 +2181,210 @@ async function loadListeningHomework(requestedDay='') {
   }
 
   audio.src = `homework/${audioName}`;
-  audio.style.display = 'block';
+  audio.playbackRate = libraryPlayerStates.listening.speed;
+  player.style.display = 'flex';
   audio.load();
   badge.innerText = `Day ${day} · 听力`;
   status.innerText = '在线播放，不加入离线缓存。';
+}
+
+function practiceFileTitle(id) {
+  const match = String(id).match(/^([a-z][a-z-]*?)[-_ ]*0*(\d+)$/i);
+  if (!match) return id;
+  const labels = { general:'通用口语', speaking:'口语练习', listening:'磨耳朵', practice:'日常练习' };
+  const key = match[1].toLowerCase();
+  return `${labels[key] || match[1]} ${Number(match[2])}`;
+}
+
+function clearPracticeDisplay() {
+  const audio = document.getElementById('practiceAudio');
+  const player = document.getElementById('practicePlayer');
+  const image = document.getElementById('practiceImage');
+  audio.pause();
+  audio.removeAttribute('src');
+  player.style.display = 'none';
+  image.removeAttribute('src');
+  image.style.display = 'none';
+  document.getElementById('practiceItems').innerHTML = '';
+  resetLibraryPlayerSegment('practice');
+}
+
+async function readPracticeFileList() {
+  const info = githubRepoInfo();
+  if (location.hostname.endsWith('.github.io')) {
+    const api = `https://api.github.com/repos/${encodeURIComponent(info.owner)}/${encodeURIComponent(info.repo)}/contents/practice`;
+    const response = await fetchWithTimeout(api, {
+      headers:{ 'Accept':'application/vnd.github+json' },
+      cache:'no-store'
+    });
+    if (!response.ok) throw new Error(response.status === 404 ? 'practice 文件夹尚未建立' : `GitHub API ${response.status}`);
+    return (await response.json()).filter(item => item.type === 'file');
+  }
+  if (!info) {
+    const response = await fetchWithTimeout('/__practice-index.json', { cache:'no-store' });
+    if (!response.ok) throw new Error('本地练习目录读取失败');
+    return (await response.json()).files.map(name => ({ name, download_url:`practice/${name}` }));
+  }
+  const response = await fetchWithTimeout('practice/index.json', { cache:'no-store' });
+  if (!response.ok) throw new Error('网站练习目录尚未建立');
+  return (await response.json()).files.map(name => ({ name, download_url:`practice/${name}` }));
+}
+
+async function refreshPracticeLibrary() {
+  const select = document.getElementById('practiceSelect');
+  const badge = document.getElementById('practiceBadge');
+  const status = document.getElementById('practiceStatus');
+  select.innerHTML = '<option value="">正在读取练习资料…</option>';
+  badge.innerText = '正在读取…';
+  status.innerText = '正在读取 practice 文件夹…';
+  clearPracticeDisplay();
+
+  try {
+    const files = await readPracticeFileList();
+    const byName = new Map(files.map(file => [String(file.name).toLowerCase(), file]));
+    const audioFiles = files
+      .filter(file => /^[^/\\]+\.(mp3|m4a|ogg)$/i.test(file.name))
+      .sort((a,b) => a.name.localeCompare(b.name, 'en'));
+    const seen = new Set();
+    practiceLibrary = audioFiles.flatMap(audioFile => {
+      const id = audioFile.name.replace(/\.(mp3|m4a|ogg)$/i, '');
+      const key = id.toLowerCase();
+      if (seen.has(key)) return [];
+      seen.add(key);
+      const companion = extension => byName.get(`${key}.${extension}`);
+      const image = ['jpg', 'jpeg', 'png', 'webp'].map(companion).find(Boolean) || null;
+      return [{
+        id,
+        title:practiceFileTitle(id),
+        audio:audioFile,
+        text:companion('txt') || null,
+        cues:companion('cues.json') || null,
+        image
+      }];
+    });
+    if (!practiceLibrary.length) throw new Error('practice 中还没有音频素材');
+
+    select.innerHTML = practiceLibrary.map(item =>
+      `<option value="${escapeHtml(item.id)}">${escapeHtml(item.title)}</option>`
+    ).join('');
+    let selectedId = '';
+    try { selectedId = localStorage.getItem('wordTrainerPracticeItem') || ''; } catch (error) {}
+    if (!practiceLibrary.some(item => item.id === selectedId)) selectedId = practiceLibrary[0].id;
+    select.value = selectedId;
+    await selectPracticeItem(selectedId, false);
+    return true;
+  } catch (error) {
+    practiceLibrary = [];
+    select.innerHTML = '<option value="">暂无日常练习</option>';
+    badge.innerText = '暂无素材';
+    status.innerText = `${error.message}。把音频放入 practice 文件夹后刷新即可。`;
+    return false;
+  }
+}
+
+function validPracticeCue(cue) {
+  return cue && Number.isFinite(Number(cue.start)) && Number.isFinite(Number(cue.end))
+    && Number(cue.start) >= 0 && Number(cue.end) > Number(cue.start);
+}
+
+function renderPracticeText(homework, cues) {
+  const itemsContainer = document.getElementById('practiceItems');
+  itemsContainer.innerHTML = homework.items.map(item => {
+    const number = item.number;
+    const qCue = validPracticeCue(cues?.segments?.[`q${number}`]) ? cues.segments[`q${number}`] : null;
+    const aCue = validPracticeCue(cues?.segments?.[`a${number}`]) ? cues.segments[`a${number}`] : null;
+    const plain = item.plainText
+      ? `<p class="speaking-line">${escapeHtml(item.plainText).replace(/\n/g, '<br>')}</p>`
+      : '';
+    const question = !plain && item.question ? `<p class="speaking-line"><strong>Q${number}:</strong> ${escapeHtml(item.question)}</p>` : '';
+    const answer = !plain && item.answer ? `<p class="speaking-line"><strong>A${number}:</strong> ${escapeHtml(item.answer)}</p>` : '';
+    const actions = [
+      qCue ? `<button class="speaking-action" onclick="playPracticeRange(${Number(qCue.start)},${Number(qCue.end)},'Q${number}')">▶ 听问题</button>` : '',
+      aCue ? `<button class="speaking-action" onclick="playPracticeRange(${Number(aCue.start)},${Number(aCue.end)},'A${number}')">▶ 听答案</button>` : '',
+      qCue && aCue ? `<button class="speaking-action" onclick="playPracticeRange(${Number(qCue.start)},${Number(aCue.end)},'Q${number} + A${number}')">▶ 连续播放</button>` : ''
+    ].join('');
+    return `<div class="speaking-item">
+      ${plain}${question}${answer}
+      ${actions ? `<div class="speaking-actions">${actions}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function selectPracticeItem(id, remember=true) {
+  const requestId = ++practiceLoadRequestId;
+  const item = practiceLibrary.find(entry => entry.id === id);
+  if (!item) return;
+  clearPracticeDisplay();
+  const audio = document.getElementById('practiceAudio');
+  const status = document.getElementById('practiceStatus');
+  const badge = document.getElementById('practiceBadge');
+  const fileUrl = file => `practice/${file?.name || ''}`;
+  document.getElementById('practiceTitle').innerText = `🌱 ${item.title}`;
+  badge.innerText = '正在读取…';
+  status.innerText = `正在读取 ${item.title}…`;
+  if (remember) {
+    try { localStorage.setItem('wordTrainerPracticeItem', id); } catch (error) {}
+  }
+
+  try {
+    let homework = null;
+    let textHash = '';
+    if (item.text) {
+      const response = await fetchWithTimeout(fileUrl(item.text), { cache:'no-store' });
+      if (!response.ok) throw new Error(`${item.text.name} 读取失败`);
+      const bytes = await response.arrayBuffer();
+      textHash = await sha256Hex(bytes);
+      homework = parseSpeakingHomework(new TextDecoder().decode(bytes));
+      const explicitTitle = parseLibraryMeta(new TextDecoder().decode(bytes), item.text.name).title;
+      if (explicitTitle) {
+        item.title = explicitTitle;
+        const option = [...document.getElementById('practiceSelect').options].find(entry => entry.value === item.id);
+        if (option) option.textContent = explicitTitle;
+      }
+    }
+
+    let cues = null;
+    if (homework && item.cues) {
+      try {
+        const response = await fetchWithTimeout(fileUrl(item.cues), { cache:'no-store' });
+        if (response.ok) cues = await response.json();
+      } catch (error) {}
+      const sourceHash = String(cues?.sourceHash || '');
+      const audioMatches = !cues?.audio || String(cues.audio).toLowerCase() === item.audio.name.toLowerCase();
+      const textMatches = !/^[a-f0-9]{64}$/i.test(sourceHash) || sourceHash.toLowerCase() === textHash;
+      if (!audioMatches || !textMatches) cues = null;
+    }
+
+    if (requestId !== practiceLoadRequestId) return;
+    if (homework) renderPracticeText(homework, cues);
+    if (item.image) {
+      const image = document.getElementById('practiceImage');
+      image.src = fileUrl(item.image);
+      image.alt = `${item.title} 配图`;
+      image.style.display = 'block';
+    }
+    document.getElementById('practiceTitle').innerText = `🌱 ${item.title}`;
+    audio.src = fileUrl(item.audio);
+    audio.playbackRate = libraryPlayerStates.practice.speed;
+    document.getElementById('practicePlayer').style.display = 'flex';
+    audio.load();
+    const mode = cues ? '可分段' : homework ? '文字 + 音频' : '纯音频';
+    badge.innerText = mode;
+    status.innerText = cues
+      ? '同名文字、时间点和音频已加载，可分段或完整播放。'
+      : homework
+        ? '已显示同名文字；录音可完整播放。'
+        : '此素材没有同名 TXT，直接播放完整录音。';
+  } catch (error) {
+    if (requestId !== practiceLoadRequestId) return;
+    clearPracticeDisplay();
+    badge.innerText = '读取失败';
+    status.innerText = error.message;
+  }
+}
+
+function playPracticeRange(start, end, label) {
+  playLibraryPlayerRange('practice', start, end, label);
 }
 
 function clearSpeakingImage() {
@@ -2181,6 +2576,8 @@ async function loadSpeakingHomework(requestedDay='') {
       document.getElementById('speakingAudioStatus').innerText = '播放完成';
     }
   });
+  attachLibraryPlayer('listening');
+  attachLibraryPlayer('practice');
   let initialMainArea = 'words';
   try { initialMainArea = localStorage.getItem('wordTrainerMainArea') || 'words'; } catch (e) {}
   switchMainArea(initialMainArea, false);
@@ -2201,7 +2598,9 @@ async function loadSpeakingHomework(requestedDay='') {
   switchGroup(1, document.getElementById('groupBtn1'));
 
   // GitHub Pages 上自动发现 homework/word###.txt；默认打开最大的有效 Day 编号。
+  const practiceReady = refreshPracticeLibrary();
   const librariesReady = await refreshRemoteLibraries();
+  await practiceReady;
   if (!librariesReady) loadSpeakingHomework('day005');
 })();
 </script>

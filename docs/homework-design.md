@@ -1,6 +1,6 @@
 # 作业内容设计规范
 
-本文档是每日单词、口语和听力作业的唯一内容规范。`index.html`、本地生成工具、离线缓存和部署流程都必须与本文保持一致。
+本文档是每日单词、口语、听力作业和长期日常练习的唯一内容规范。`index.html`、本地生成工具、离线缓存和部署流程都必须与本文保持一致。
 
 ## 目标
 
@@ -10,6 +10,7 @@
 - 单词和口语录音每天只保留一个完整音频，通过 cues 时间点播放局部片段。
 - 配套录音属于可选增强；没有录音、cues 无效或播放失败时，单词继续使用系统 TTS。
 - API Key 不得出现在仓库、网页、生成文件或日志中。
+- 长期素材统一放在 `practice/`，网页根据同名配套文件自动决定只播放音频、显示文字或启用分段播放。
 
 ## 目录与命名
 
@@ -28,6 +29,21 @@ homework/
 ```
 
 三位数字是共享的 Day 编号。文件名中不得混用 `day-010`、`day010` 和 `010` 等其他形式。
+
+长期练习不占用 Day 编号，统一放在 `practice/`，例如：
+
+```text
+practice/
+  general001.m4a
+  general001.txt
+  general001.cues.json
+  general001.jpg
+  listening001.mp3
+```
+
+音频是每项长期练习唯一的必需文件。网页自动寻找同名 TXT、cues 和图片：只有音频时显示完整播放器；有 TXT 时同时显示文字；再有 cues 时提供 Q、A 和 Q+A 分段按钮；同名图片也会自动显示。
+
+源码目录不需要人工维护 `index.json`。本地预览服务器自动扫描目录，GitHub Pages 使用 GitHub Contents API，`npm run build` 则自动生成 `dist/practice/index.json`。
 
 ### 输入文件
 
@@ -170,7 +186,7 @@ Pronounce only the supplied English word or phrase once. Speak in a cheerful and
 
 ## 网页行为
 
-网页有三个共享 Day 选择器的顶层区域：**背单词**、**口语练习**、**听力练习**。一次只显示一个区域，并在本地记住上次选择。只有听力内容的 Day 会禁用单词页并自动打开听力页。
+网页有四个顶层区域：**背单词**、**口语练习**、**听力练习**、**日常练习**。前三个区域共享 Day 选择器；日常练习拥有独立素材选择器，不跟随 Day。一次只显示一个区域，并在本地记住上次选择。只有听力内容的 Day 会禁用单词页并自动打开听力页。
 
 ### 单词发音
 
@@ -185,7 +201,17 @@ Pronounce only the supplied English word or phrase once. Speak in a cheerful and
 
 - 口语区按时间点播放 Q、A 或 Q+A，支持 0.75×、0.85×、1.0×、1.25×，以及暂停、回退约两秒和片段循环。
 - 没有 cues 的同名口语录音仍可整段播放。
-- 听力使用浏览器原生流式播放器，不主动加入受管离线缓存。
+- 听力与口语区复用同款控制条，支持 0.75×、0.85×、1.0×、1.25×、整段播放、暂停/继续、回退约两秒和循环；不主动加入受管离线缓存。
+
+### 日常练习
+
+- 从 `practice/` 中的 MP3、M4A 和 OGG 音频发现练习项目，同一 basename 只形成一项。
+- 没有同名 TXT 时只显示完整播放器，适合磨耳朵素材。
+- 有同名 TXT 时使用与每日口语相同的 Q/A 或纯文本解析规则。
+- 有同名 cues 时使用与每日口语相同的 `segments.q1`、`segments.a1` 时间点显示分段按钮；cues 指定的音频文件名或 TXT 指纹不匹配时禁用分段，但仍保留文字和完整播放。
+- 可选同名 JPG、JPEG、PNG 或 WEBP 图片。
+- 完整播放使用与每日口语相同的速度、暂停、回退和循环控件；Q/A 分段按钮控制同一个播放器。
+- 日常练习在线播放，不加入受管离线缓存。
 
 ### 内容发现与部署
 
@@ -196,6 +222,7 @@ Pronounce only the supplied English word or phrase once. Speak in a cheerful and
 5. 本地一键预览通过只读 `/__homework-index.json` 发现文件。
 6. GitHub Pages 使用 GitHub Contents API。
 7. Cloudflare Workers Static Assets 使用构建到干净 `dist/` 目录中的同源 `homework/index.json`；构建命令为 `npm run build`，部署命令为 `npx wrangler deploy`。
+8. `practice/` 使用同样的三路发现机制，本地和 GitHub Pages 无需清单，构建时自动生成 `dist/practice/index.json`。
 
 同名文件是基础绑定规则。带有完整指纹的 cues 必须同时匹配 TXT 和音频；任何一项变化都会禁用旧录音片段，防止文本与读音错位。
 
