@@ -1,0 +1,222 @@
+# Day: 11
+# Title: Speaking Practice — Sophie's Example
+# Privacy: All names, dates, addresses, schools and class details below are fictional examples.
+
+# Greeting and introduction
+
+Q1: How do you do?
+A1: How do you do?
+
+Q2: How are you today?
+A2: Great, thanks. And what about you?
+
+Q3: It is a fine day today, isn't it?
+A3: Yes, it is.
+
+Q4: How is the weather today?
+A4: It is a sunny day today. It is a cloudy day today. It is a snowy day today. It is a windy day today.
+
+Q5: What day is it today?
+A5: Today is Monday. Today is Tuesday. Today is Wednesday. Today is Thursday. Today is Friday. Today is Saturday. Today is Sunday.
+
+Q6: What is the date today?
+A6: Today is the first of January. Today is the second of February. Today is the third of March. Today is the fourth of April.
+
+Q7: How did you get here this morning?
+A7: I got here by bus.
+
+Q8: What is your name?
+A8: My name is Sophie Lee. Lee is my family name, and Sophie is my given name.
+
+Q9: May I know your name?
+A9: Sure. My name is Sophie Lee.
+
+Q10: Can you spell your name, please?
+A10: S-O-P-H-I-E, Sophie. L-E-E, Lee.
+
+Q11: What is your full name?
+A11: My full name is Sophie Lee.
+
+Q12: What is your surname?
+A12: My surname is Lee. L-E-E, Lee.
+
+Q13: What is your family name?
+A13: My family name is Lee. L-E-E, Lee.
+
+Q14: Do you have an English name?
+A14: Yes. My English name is Sophie.
+
+Q15: What is your English name?
+A15: My English name is Sophie.
+
+Q16: When is your birthday?
+A16: My birthday is on the tenth of May.
+
+Q17: How old are you?
+A17: I am eleven years old.
+
+Q18: When were you born?
+A18: I was born on the tenth of May, 2015.
+
+Q19: Where were you born?
+A19: I was born in New York City.
+
+Q20: Were you born in London?
+A20: No, I was born in New York City.
+
+Q21: Were you born in this city?
+A21: Yes, I was born in this city.
+
+Q22: Are you a local resident?
+A22: Yes, I have lived here for eleven years.
+
+Q23: Are you a native of this city?
+A23: Yes, I was born here and have always lived here.
+
+Q24: Where are you from?
+A24: I am from New York City. It is a big city.
+
+Q25: Where do you come from?
+A25: I come from New York City. It is a big city.
+
+Q26: Where is your birthplace?
+A26: My birthplace is New York City.
+
+Q27: Where do you live?
+A27: I live at Number 10 New York Drive, New York City.
+
+Q28: Do you live in this city?
+A28: Yes, I live in this city.
+
+# About school
+
+Q29: Which school do you go to?
+A29: I go to Sunshine Primary School.
+
+Q30: Which grade are you in?
+A30: I am in Grade 4.
+
+Q31: Is your home far from your school?
+A31: No. It is only two stops by bus, or a five-minute drive.
+
+Q32: How far is your home from your school?
+A32: It is about two kilometres away.
+
+Q33: How long does it take you to get to school?
+A33: It takes me fifteen minutes by bus.
+
+Q34: When do you go to school every day?
+A34: I usually go to school at half past seven.
+
+Q35: How do you get to school every day?
+A35: I usually go to school by bus. Sometimes I go in my parents' car.
+
+Q36: Which class are you in?
+A36: I am in Class 2, Grade 4.
+
+Q37: How many students are there in your class?
+A37: There are thirty students in my class: sixteen boys and fourteen girls.
+
+Q38: How many boys and girls are there in your class?
+A38: There are sixteen boys and fourteen girls in my class.
+
+Q39: Do you like your school?
+A39: Yes, I do. My school has nice teachers and friendly students.
+
+Q40: Do you like your class?
+A40: Yes, I do. My teacher is nice, and my classmates are friendly.
+
+Q41: What do you think of your school?
+A41: I think my school is great. It has a beautiful campus and nice teachers.
+
+Q42: What do you think of your class?
+A42: I think my class is great. My teacher is nice, and my classmates are friendly.
+
+Q43: What is your school like?
+A43: My school is great. It has a beautiful campus and nice teachers.
+
+Q44: What is your class like?
+A44: My class is friendly and full of energy.
+
+Q45: What does your school look like?
+A45: My school looks beautiful. It has a large playground and many trees.
+
+Q46: What does your classroom look like?
+A46: My classroom looks bright and welcoming.
+
+Q47: Is there a library at your school?
+A47: Yes, there is. I sometimes borrow books from the school library.
+
+Q48: Does your school have a Reading Club?
+A48: Yes, it does. I am a member of the Reading Club, and I can read many books there.
+
+Q49: Does your school have an English Corner?
+A49: Yes, it does. I sometimes go there to practise speaking English with other students.
+
+Q50: What do you usually do at the English Corner?
+A50: I usually talk with other students and practise speaking English.
+
+Q51: When does the first lesson start?
+A51: The first lesson starts at eight o'clock.
+
+Q52: When do you go home from school every day?
+A52: I go home from school at four o'clock every day.
+
+Q53: What do you usually do between classes?
+A53: I usually play games with my friends between classes.
+
+# About subjects
+
+Q54: How many subjects do you have? What are they?
+A54: I have three main subjects: Chinese, Maths and English. I also have Music, Art and PE, which means Physical Education.
+
+Q55: What subjects do you have?
+A55: I have Chinese, Maths, English, Music, Art and PE.
+
+Q56: What is your favourite subject? Why do you like it best?
+A56: My favourite subject is English because it helps me understand the world better.
+
+Q57: What do you think of English? Is it easy or difficult?
+A57: English is interesting, and regular practice makes it easier.
+
+Q58: Is English hard or easy for you?
+A58: English is easy for me because I practise it often.
+
+Q59: Do you like learning English?
+A59: Yes, I do. I like learning English because it helps me understand the world better.
+
+Q60: What is your English teacher's name?
+A60: My English teacher's name is Ms Green. She is a nice teacher.
+
+Q61: Why do you like English?
+A61: I like English because it helps me understand the wider world better.
+
+Q62: Why do you like Maths?
+A62: I like Maths because I enjoy solving problems.
+
+Q63: Why do you like Chinese?
+A63: I like Chinese because there are many interesting stories in Chinese.
+
+Q64: Are you good at English?
+A64: Yes, I am. I usually get an A in English tests.
+
+Q65: Do you do well in PE?
+A65: Yes, I do. I am good at basketball.
+
+Q66: Which subject are you good at?
+A66: I am good at English because I practise it every day.
+
+Q67: Are you tired after lessons?
+A67: Yes, I am. I usually rest for about thirty minutes after I get home.
+
+Q68: What do you do after school?
+A68: I usually go straight home and do my homework.
+
+Q69: Do you read English every day?
+A69: No, I read English every other day.
+
+Q70: Do you like sports?
+A70: Yes, I do. I especially like basketball.
+
+Q71: What sport do you like best? Why do you like it, and how often do you play it?
+A71: I like basketball best because it is exciting. I play it every Tuesday and Saturday.

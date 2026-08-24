@@ -1,0 +1,79 @@
+# Day: 11
+# Topics: Sport
+
+ball | n. | 球
+badminton | n. | 羽毛球
+baseball | n. | 棒球
+basketball | n. | 篮球
+bat | n. | 球拍
+bathing suit | n. | 泳衣
+beach | n. | 沙滩
+bicycle | n. | 自行车
+bike | n. | 自行车
+boat | n. | 船
+catch | v. | 接住
+climb | v. | 爬
+club | n. | 俱乐部
+coach | n. | 教练
+competition | n. | 比赛
+cricket | n. | 板球
+cycling | n. | 自行车运动
+enter (a competition) | v. | 报名参加（比赛）
+fishing | n. & v. | 钓鱼
+football | n. | 足球
+football player | n. | 足球运动员
+game | n. | 游戏
+goal | n. | 目标；球门
+golf | n. | 高尔夫
+hockey | n. | 曲棍球
+kit | n. | 全套装备
+luck | n. | 运气
+member | n. | 成员
+play | v. | 踢（球）
+player | n. | 运动员
+pool | n. | 池子
+practice | n. | 练习
+practise | v. | 练习
+prize | n. | 奖品
+race | n. & v. | 速度竞赛
+racket | n. | 球拍
+rest | n. & v. | 休息
+ride | n. & v. | 骑；乘坐
+riding | n. & v. | 骑行
+rugby | n. | 橄榄球
+run | v. | 跑步
+sailing | n. | 帆船运动
+sea | n. | 海
+skate | v. | 滑冰
+skateboard | n. | 滑板
+ski | v. | 滑雪
+skiing | n. | 滑雪运动
+snowboard | n. | 滑雪板
+snowboarding | n. | 滑板滑雪运动
+soccer | n. | 足球
+sport(s) | n. | 运动
+sports centre | n. | 运动中心
+stadium | n. | 体育场
+surf | v. | 冲浪
+surfboard | n. | 冲浪板
+surfboarding | n. | 冲浪运动
+swim | n. & v. | 游泳
+swimming | n. & v. | 游泳
+swimming costume | n. | 泳衣
+swimming pool | n. | 泳池
+swimsuit | n. | 泳衣
+table tennis | n. | 乒乓球
+team | n. | 队
+tennis | n. | 网球
+tennis player | n. | 网球运动员
+throw | v. | 投
+ticket | n. | 票
+tired | adj. | 感到累的
+trainers | n. | 运动鞋
+v / versus | prep. | 对抗；与……相对
+volleyball | n. | 排球
+walk | v. | 走
+watch | v. | 观看
+win | v. | 赢
+windsurfing | n. | 帆板运动
+winner | n. | 冠军

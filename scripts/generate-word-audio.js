@@ -62,7 +62,8 @@ function parseArgs(argv) {
 function spokenForm(sourceText) {
   const variants = sourceText.replaceAll('(h)', 'h').split('/').map(value => value.trim()).filter(Boolean);
   const accented = variants.find(value => /[^\x00-\x7f]/.test(value));
-  return accented || variants[0] || sourceText.trim();
+  const expandedAbbreviation = variants.length > 1 && /^[a-z]$/i.test(variants[0]) ? variants[1] : '';
+  return accented || expandedAbbreviation || variants[0] || sourceText.trim();
 }
 
 function parseWords(text, limit=Infinity) {

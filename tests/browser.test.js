@@ -24,7 +24,7 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await page.goto('/index.html');
   await expect(page.locator('#appVersion')).toHaveText('v2.23');
   await expect(page).toHaveTitle('每日英语');
-  await expect(page.locator('#librarySelect option')).toHaveCount(10);
+  await expect(page.locator('#librarySelect option')).toHaveCount(11);
   await page.locator('#librarySelect').selectOption('word007.txt');
   await page.getByRole('tab', { name:/背单词/ }).click();
   await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);

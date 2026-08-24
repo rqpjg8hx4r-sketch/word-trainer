@@ -1,0 +1,544 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word011.mp3",
+  "sourceHash": "daf115ec254c584f1c09e5732c53eb86cacbddf8ef42775c44f7b3b413feee21",
+  "audioHash": "97a89340ac5fe6cb8eab653a1170526fd57077530d0c226ca6f175b24acb4b76",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "ball",
+      "spokenText": "ball",
+      "start": 0,
+      "end": 0.65
+    },
+    {
+      "index": 1,
+      "sourceText": "badminton",
+      "spokenText": "badminton",
+      "start": 1.4,
+      "end": 2.45
+    },
+    {
+      "index": 2,
+      "sourceText": "baseball",
+      "spokenText": "baseball",
+      "start": 3.2,
+      "end": 4.35
+    },
+    {
+      "index": 3,
+      "sourceText": "basketball",
+      "spokenText": "basketball",
+      "start": 5.1,
+      "end": 6.55
+    },
+    {
+      "index": 4,
+      "sourceText": "bat",
+      "spokenText": "bat",
+      "start": 7.3,
+      "end": 8
+    },
+    {
+      "index": 5,
+      "sourceText": "bathing suit",
+      "spokenText": "bathing suit",
+      "start": 8.75,
+      "end": 10.05
+    },
+    {
+      "index": 6,
+      "sourceText": "beach",
+      "spokenText": "beach",
+      "start": 10.8,
+      "end": 12
+    },
+    {
+      "index": 7,
+      "sourceText": "bicycle",
+      "spokenText": "bicycle",
+      "start": 12.75,
+      "end": 13.8
+    },
+    {
+      "index": 8,
+      "sourceText": "bike",
+      "spokenText": "bike",
+      "start": 14.55,
+      "end": 15.35
+    },
+    {
+      "index": 9,
+      "sourceText": "boat",
+      "spokenText": "boat",
+      "start": 16.1,
+      "end": 16.95
+    },
+    {
+      "index": 10,
+      "sourceText": "catch",
+      "spokenText": "catch",
+      "start": 17.7,
+      "end": 18.75
+    },
+    {
+      "index": 11,
+      "sourceText": "climb",
+      "spokenText": "climb",
+      "start": 19.5,
+      "end": 20.65
+    },
+    {
+      "index": 12,
+      "sourceText": "club",
+      "spokenText": "club",
+      "start": 21.4,
+      "end": 22.05
+    },
+    {
+      "index": 13,
+      "sourceText": "coach",
+      "spokenText": "coach",
+      "start": 22.8,
+      "end": 24.1
+    },
+    {
+      "index": 14,
+      "sourceText": "competition",
+      "spokenText": "competition",
+      "start": 24.85,
+      "end": 26.25
+    },
+    {
+      "index": 15,
+      "sourceText": "cricket",
+      "spokenText": "cricket",
+      "start": 27,
+      "end": 28.65
+    },
+    {
+      "index": 16,
+      "sourceText": "cycling",
+      "spokenText": "cycling",
+      "start": 29.4,
+      "end": 30.45
+    },
+    {
+      "index": 17,
+      "sourceText": "enter (a competition)",
+      "spokenText": "enter (a competition)",
+      "start": 31.2,
+      "end": 34
+    },
+    {
+      "index": 18,
+      "sourceText": "fishing",
+      "spokenText": "fishing",
+      "start": 34.75,
+      "end": 35.9
+    },
+    {
+      "index": 19,
+      "sourceText": "football",
+      "spokenText": "football",
+      "start": 36.65,
+      "end": 37.55
+    },
+    {
+      "index": 20,
+      "sourceText": "football player",
+      "spokenText": "football player",
+      "start": 38.3,
+      "end": 39.8
+    },
+    {
+      "index": 21,
+      "sourceText": "game",
+      "spokenText": "game",
+      "start": 40.55,
+      "end": 41.95
+    },
+    {
+      "index": 22,
+      "sourceText": "goal",
+      "spokenText": "goal",
+      "start": 42.7,
+      "end": 43.55
+    },
+    {
+      "index": 23,
+      "sourceText": "golf",
+      "spokenText": "golf",
+      "start": 44.3,
+      "end": 45.55
+    },
+    {
+      "index": 24,
+      "sourceText": "hockey",
+      "spokenText": "hockey",
+      "start": 46.3,
+      "end": 47.35
+    },
+    {
+      "index": 25,
+      "sourceText": "kit",
+      "spokenText": "kit",
+      "start": 48.1,
+      "end": 48.8
+    },
+    {
+      "index": 26,
+      "sourceText": "luck",
+      "spokenText": "luck",
+      "start": 49.55,
+      "end": 50.65
+    },
+    {
+      "index": 27,
+      "sourceText": "member",
+      "spokenText": "member",
+      "start": 51.4,
+      "end": 52.5
+    },
+    {
+      "index": 28,
+      "sourceText": "play",
+      "spokenText": "play",
+      "start": 53.25,
+      "end": 54.15
+    },
+    {
+      "index": 29,
+      "sourceText": "player",
+      "spokenText": "player",
+      "start": 54.9,
+      "end": 55.55
+    },
+    {
+      "index": 30,
+      "sourceText": "pool",
+      "spokenText": "pool",
+      "start": 56.3,
+      "end": 57.25
+    },
+    {
+      "index": 31,
+      "sourceText": "practice",
+      "spokenText": "practice",
+      "start": 58,
+      "end": 59.8
+    },
+    {
+      "index": 32,
+      "sourceText": "practise",
+      "spokenText": "practise",
+      "start": 60.55,
+      "end": 62.5
+    },
+    {
+      "index": 33,
+      "sourceText": "prize",
+      "spokenText": "prize",
+      "start": 63.25,
+      "end": 64.15
+    },
+    {
+      "index": 34,
+      "sourceText": "race",
+      "spokenText": "race",
+      "start": 64.9,
+      "end": 65.75
+    },
+    {
+      "index": 35,
+      "sourceText": "racket",
+      "spokenText": "racket",
+      "start": 66.5,
+      "end": 67.45
+    },
+    {
+      "index": 36,
+      "sourceText": "rest",
+      "spokenText": "rest",
+      "start": 68.2,
+      "end": 69.3
+    },
+    {
+      "index": 37,
+      "sourceText": "ride",
+      "spokenText": "ride",
+      "start": 70.05,
+      "end": 71.45
+    },
+    {
+      "index": 38,
+      "sourceText": "riding",
+      "spokenText": "riding",
+      "start": 72.2,
+      "end": 73.3
+    },
+    {
+      "index": 39,
+      "sourceText": "rugby",
+      "spokenText": "rugby",
+      "start": 74.05,
+      "end": 75.05
+    },
+    {
+      "index": 40,
+      "sourceText": "run",
+      "spokenText": "run",
+      "start": 75.8,
+      "end": 76.8
+    },
+    {
+      "index": 41,
+      "sourceText": "sailing",
+      "spokenText": "sailing",
+      "start": 77.55,
+      "end": 78.6
+    },
+    {
+      "index": 42,
+      "sourceText": "sea",
+      "spokenText": "sea",
+      "start": 79.35,
+      "end": 80.35
+    },
+    {
+      "index": 43,
+      "sourceText": "skate",
+      "spokenText": "skate",
+      "start": 81.1,
+      "end": 81.95
+    },
+    {
+      "index": 44,
+      "sourceText": "skateboard",
+      "spokenText": "skateboard",
+      "start": 82.7,
+      "end": 85.4
+    },
+    {
+      "index": 45,
+      "sourceText": "ski",
+      "spokenText": "ski",
+      "start": 86.15,
+      "end": 87.65
+    },
+    {
+      "index": 46,
+      "sourceText": "skiing",
+      "spokenText": "skiing",
+      "start": 88.4,
+      "end": 89.6
+    },
+    {
+      "index": 47,
+      "sourceText": "snowboard",
+      "spokenText": "snowboard",
+      "start": 90.35,
+      "end": 92.55
+    },
+    {
+      "index": 48,
+      "sourceText": "snowboarding",
+      "spokenText": "snowboarding",
+      "start": 93.3,
+      "end": 94.35
+    },
+    {
+      "index": 49,
+      "sourceText": "soccer",
+      "spokenText": "soccer",
+      "start": 95.1,
+      "end": 97.1
+    },
+    {
+      "index": 50,
+      "sourceText": "sport(s)",
+      "spokenText": "sport(s)",
+      "start": 97.85,
+      "end": 99.7
+    },
+    {
+      "index": 51,
+      "sourceText": "sports centre",
+      "spokenText": "sports centre",
+      "start": 100.45,
+      "end": 101.7
+    },
+    {
+      "index": 52,
+      "sourceText": "stadium",
+      "spokenText": "stadium",
+      "start": 102.45,
+      "end": 103.5
+    },
+    {
+      "index": 53,
+      "sourceText": "surf",
+      "spokenText": "surf",
+      "start": 104.25,
+      "end": 105.45
+    },
+    {
+      "index": 54,
+      "sourceText": "surfboard",
+      "spokenText": "surfboard",
+      "start": 106.2,
+      "end": 107.85
+    },
+    {
+      "index": 55,
+      "sourceText": "surfboarding",
+      "spokenText": "surfboarding",
+      "start": 108.6,
+      "end": 109.55
+    },
+    {
+      "index": 56,
+      "sourceText": "swim",
+      "spokenText": "swim",
+      "start": 110.3,
+      "end": 111.55
+    },
+    {
+      "index": 57,
+      "sourceText": "swimming",
+      "spokenText": "swimming",
+      "start": 112.3,
+      "end": 113.8
+    },
+    {
+      "index": 58,
+      "sourceText": "swimming costume",
+      "spokenText": "swimming costume",
+      "start": 114.55,
+      "end": 116.15
+    },
+    {
+      "index": 59,
+      "sourceText": "swimming pool",
+      "spokenText": "swimming pool",
+      "start": 116.9,
+      "end": 118.25
+    },
+    {
+      "index": 60,
+      "sourceText": "swimsuit",
+      "spokenText": "swimsuit",
+      "start": 119,
+      "end": 120.55
+    },
+    {
+      "index": 61,
+      "sourceText": "table tennis",
+      "spokenText": "table tennis",
+      "start": 121.3,
+      "end": 123.45
+    },
+    {
+      "index": 62,
+      "sourceText": "team",
+      "spokenText": "team",
+      "start": 124.2,
+      "end": 125.15
+    },
+    {
+      "index": 63,
+      "sourceText": "tennis",
+      "spokenText": "tennis",
+      "start": 125.9,
+      "end": 127.25
+    },
+    {
+      "index": 64,
+      "sourceText": "tennis player",
+      "spokenText": "tennis player",
+      "start": 128,
+      "end": 129.3
+    },
+    {
+      "index": 65,
+      "sourceText": "throw",
+      "spokenText": "throw",
+      "start": 130.05,
+      "end": 131.5
+    },
+    {
+      "index": 66,
+      "sourceText": "ticket",
+      "spokenText": "ticket",
+      "start": 132.25,
+      "end": 133
+    },
+    {
+      "index": 67,
+      "sourceText": "tired",
+      "spokenText": "tired",
+      "start": 133.75,
+      "end": 135.65
+    },
+    {
+      "index": 68,
+      "sourceText": "trainers",
+      "spokenText": "trainers",
+      "start": 136.4,
+      "end": 138.6
+    },
+    {
+      "index": 69,
+      "sourceText": "v / versus",
+      "spokenText": "versus",
+      "start": 139.35,
+      "end": 141.95
+    },
+    {
+      "index": 70,
+      "sourceText": "volleyball",
+      "spokenText": "volleyball",
+      "start": 142.7,
+      "end": 143.8
+    },
+    {
+      "index": 71,
+      "sourceText": "walk",
+      "spokenText": "walk",
+      "start": 144.55,
+      "end": 146.45
+    },
+    {
+      "index": 72,
+      "sourceText": "watch",
+      "spokenText": "watch",
+      "start": 147.2,
+      "end": 148.25
+    },
+    {
+      "index": 73,
+      "sourceText": "win",
+      "spokenText": "win",
+      "start": 149,
+      "end": 149.85
+    },
+    {
+      "index": 74,
+      "sourceText": "windsurfing",
+      "spokenText": "windsurfing",
+      "start": 150.6,
+      "end": 151.55
+    },
+    {
+      "index": 75,
+      "sourceText": "winner",
+      "spokenText": "winner",
+      "start": 152.3,
+      "end": 153.3
+    }
+  ]
+}

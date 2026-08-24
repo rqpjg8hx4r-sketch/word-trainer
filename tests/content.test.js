@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { execFileSync } = require('node:child_process');
-const { wavDuration, wavPeakDb, partFilename } = require('../scripts/generate-word-audio');
+const { spokenForm, wavDuration, wavPeakDb, partFilename } = require('../scripts/generate-word-audio');
 
 const root = path.resolve(__dirname, '..');
 const homeworkDir = path.join(root, 'homework');
@@ -77,6 +77,7 @@ test('word audio command handles streaming WAV unknown-length headers', () => {
 test('word audio parts use stable numbered filenames', () => {
   assert.equal(partFilename({ index:6, spokenText:'block' }), '007-block.wav');
   assert.equal(partFilename({ index:3, spokenText:'café' }), '004-cafe.wav');
+  assert.equal(spokenForm('v / versus'), 'versus');
 });
 
 test('speaking TXT files contain displayable text', () => {
