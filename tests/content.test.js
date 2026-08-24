@@ -135,6 +135,7 @@ test('word cue files match their text and audio and contain valid items', () => 
 
 test('app shell and offline worker versions stay aligned', () => {
   const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+  const typingHtml = fs.readFileSync(path.join(root, 'type.html'), 'utf8');
   const worker = fs.readFileSync(path.join(root, 'service-worker.js'), 'utf8');
   const htmlVersion = html.match(/id="appVersion"[^>]*>v([\d.]+)</)?.[1];
   const workerVersion = worker.match(/word-trainer-v([\d.]+)/)?.[1];
@@ -142,10 +143,15 @@ test('app shell and offline worker versions stay aligned', () => {
   assert.equal(workerVersion, htmlVersion);
   const packageVersion = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8')).version.replace(/\.0$/, '');
   assert.equal(packageVersion, htmlVersion);
+  assert.match(html, /type\.html\?day=/);
+  assert.match(typingHtml, /TT 单词入侵/);
+  assert.doesNotMatch(typingHtml, /重新开始会继续使用 Day|已掌握/);
+  assert.match(worker, /'\.\/type\.html'/);
 });
 
 test('build creates a deployment index for the optional practice directory', () => {
   execFileSync(process.execPath, [path.join(root, 'scripts', 'build-site.js')]);
+  assert.ok(fs.existsSync(path.join(root, 'dist', 'type.html')));
   const index = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'practice', 'index.json'), 'utf8'));
   assert.ok(Array.isArray(index.files));
   assert.ok(index.files.every(file => file !== 'index.json'));

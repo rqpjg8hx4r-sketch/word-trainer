@@ -1,6 +1,6 @@
-const CACHE_VERSION = 'word-trainer-v2.25';
+const CACHE_VERSION = 'word-trainer-v2.26';
 const CONTENT_CACHE = 'word-trainer-homework-v1';
-const APP_SHELL = ['./', './index.html', './manifest.webmanifest'];
+const APP_SHELL = ['./', './index.html', './type.html', './manifest.webmanifest'];
 
 async function sha256Hex(data) {
   const digest = await crypto.subtle.digest('SHA-256', data);
@@ -58,13 +58,14 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
 
   if (request.mode === 'navigate') {
+    const shellPage = url.pathname.endsWith('/type.html') ? './type.html' : './index.html';
     event.respondWith(
       fetch(request)
         .then(response => {
-          if (response.ok) caches.open(CACHE_VERSION).then(cache => cache.put('./index.html', response.clone()));
+          if (response.ok) caches.open(CACHE_VERSION).then(cache => cache.put(shellPage, response.clone()));
           return response;
         })
-        .catch(() => caches.match('./index.html'))
+        .catch(() => caches.match(shellPage))
     );
     return;
   }

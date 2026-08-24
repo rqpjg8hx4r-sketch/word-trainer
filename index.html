@@ -235,6 +235,7 @@
 
     .toolbar { display:flex; gap:8px; margin-bottom:10px; }
     .toolbar .btn { padding:10px 12px; font-size:13px; }
+    .toolbar .typing-entry { flex:0 0 auto; width:auto; min-width:52px; padding:8px 9px; font-size:12px; }
     .panel { background:var(--card); border:1px solid #E2E8F0; border-radius:14px; padding:14px; margin-bottom:12px; }
     .panel-title { font-size:16px; font-weight:800; margin-bottom:8px; }
     .import-area { width:100%; min-height:150px; border:1px solid #CBD5E1; border-radius:10px; padding:10px; font-size:14px; resize:vertical; }
@@ -321,7 +322,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.25</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.26</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
     <span id="streakBadge" style="font-size:12px; background:#FEF3C7; color:#B45309; padding:4px 8px; border-radius:10px; font-weight:bold;">🔥 连对: 0</span>
   </div>
 
@@ -429,6 +430,7 @@
   <div class="toolbar">
     <button class="btn btn-secondary" onclick="toggleImportPanel()">📥 手动导入（备用）</button>
     <button class="btn btn-secondary" onclick="switchMode('history')">📊 学习历史</button>
+    <button class="btn btn-secondary typing-entry" onclick="openTypingTrainer()" title="打开 TT 打字训练">⌨️ TT</button>
     <button class="btn btn-secondary" onclick="printCurrentDay()">🖨️ 打印默写</button>
   </div>
 
@@ -829,6 +831,14 @@ function printCurrentDay() {
     </div>
   `).join('');
   requestAnimationFrame(() => window.print());
+}
+
+function openTypingTrainer() {
+  const selected = remoteLibraryCache[document.getElementById('librarySelect')?.value];
+  const match = String(currentDayKey || '').match(/day-?0*(\d+)/i);
+  const day = Number(selected?.dayNum || match?.[1] || 0);
+  const url = day ? `type.html?day=${String(day).padStart(3, '0')}` : 'type.html';
+  location.href = url;
 }
 
 function toggleImportPanel() {

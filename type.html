@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>TT 单词入侵 · 每日英语</title>
+  <style>
+    :root {
+      --ink:#E5E7EB;
+      --muted:#94A3B8;
+      --panel:#172033;
+      --line:#334155;
+      --accent:#818CF8;
+      --accent-strong:#6366F1;
+      --success:#34D399;
+      --danger:#FB7185;
+      --yellow:#FBBF24;
+    }
+    * { box-sizing:border-box; }
+    html, body { min-height:100%; }
+    body {
+      margin:0;
+      padding:calc(14px + env(safe-area-inset-top)) 14px calc(18px + env(safe-area-inset-bottom));
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(99,102,241,.20), transparent 34%),
+        radial-gradient(circle at 90% 15%, rgba(14,165,233,.13), transparent 30%),
+        #0B1020;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, select { font:inherit; }
+    .shell { width:min(1080px, 100%); margin:0 auto; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .brand { display:flex; align-items:center; gap:10px; min-width:0; }
+    .back {
+      width:38px; height:38px; border:1px solid var(--line); border-radius:11px;
+      display:grid; place-items:center; color:var(--ink); text-decoration:none; background:rgba(30,41,59,.72);
+    }
+    h1 { margin:0; font-size:20px; line-height:1.15; }
+    .subtitle { margin-top:3px; color:var(--muted); font-size:12px; }
+    .day-badge { flex:none; padding:7px 11px; border-radius:999px; color:#C7D2FE; background:#252B55; font-size:12px; font-weight:800; }
+    .stats { display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:8px; margin-bottom:10px; }
+    .stat { padding:9px 10px; border:1px solid var(--line); border-radius:12px; background:rgba(23,32,51,.84); text-align:center; }
+    .stat-value { color:white; font-size:19px; font-weight:900; font-variant-numeric:tabular-nums; }
+    .stat-label { margin-top:2px; color:var(--muted); font-size:10px; }
+    .game-card { border:1px solid #35415A; border-radius:18px; overflow:hidden; background:#10182A; box-shadow:0 24px 70px rgba(0,0,0,.32); }
+    .game-toolbar { display:flex; align-items:center; gap:8px; padding:10px; border-bottom:1px solid var(--line); background:rgba(23,32,51,.96); }
+    .game-title { margin-right:auto; min-width:0; }
+    .game-title strong { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .game-title span { color:var(--muted); font-size:11px; }
+    .control {
+      border:1px solid #46536C; border-radius:9px; padding:8px 11px; color:var(--ink); background:#263248;
+      font-size:12px; font-weight:800; cursor:pointer;
+    }
+    .control.primary { border-color:var(--accent-strong); background:var(--accent-strong); color:white; }
+    .speed { width:auto; padding-right:28px; }
+    .arena {
+      position:relative; height:min(57vh, 540px); min-height:390px; overflow:hidden; cursor:text;
+      background:
+        linear-gradient(rgba(129,140,248,.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(129,140,248,.045) 1px, transparent 1px),
+        linear-gradient(180deg, #10182A 0%, #121C31 72%, #19233A 100%);
+      background-size:32px 32px, 32px 32px, auto;
+    }
+    .arena::after {
+      content:""; position:absolute; left:0; right:0; bottom:0; height:54px; pointer-events:none;
+      background:
+        linear-gradient(90deg, transparent 0 3%, #28344C 3% 10%, transparent 10% 13%, #303D56 13% 23%, transparent 23% 27%, #26334A 27% 36%, transparent 36% 41%, #31405A 41% 55%, transparent 55% 59%, #27354D 59% 69%, transparent 69% 74%, #303E58 74% 88%, transparent 88% 92%, #27344C 92% 98%, transparent 98%),
+        linear-gradient(180deg, transparent 0 42%, #202A3E 42% 100%);
+      opacity:.88;
+    }
+    .falling-word {
+      position:absolute; z-index:2; min-width:105px; max-width:240px; padding:8px 11px 7px;
+      border:1px solid #49566E; border-radius:11px; background:rgba(30,41,59,.96); box-shadow:0 8px 20px rgba(0,0,0,.24);
+      transform:translate3d(0,0,0); will-change:transform; color:#F8FAFC;
+    }
+    .falling-word.active { border-color:var(--accent); box-shadow:0 0 0 2px rgba(129,140,248,.20), 0 10px 24px rgba(0,0,0,.3); }
+    .falling-word.wrong { animation:wrong .16s linear 2; border-color:var(--danger); }
+    .falling-word.missed { border-color:var(--danger); background:#4A1F32; animation:missed .32s ease-in-out both; }
+    .falling-word.hit { animation:hit .18s ease-out forwards; border-color:var(--success); }
+    .word-main { font-size:18px; font-weight:900; letter-spacing:.25px; white-space:nowrap; }
+    .word-done { color:var(--success); }
+    .word-rest { color:#F8FAFC; }
+    .word-meaning { margin-top:2px; color:#94A3B8; font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    @keyframes wrong { 0%,100%{ transform:translateX(0) } 50%{ transform:translateX(5px) } }
+    @keyframes missed { 0%,100%{ margin-left:0; } 20%,60%{ margin-left:-7px; } 40%,80%{ margin-left:7px; } }
+    @keyframes hit { to { opacity:0; transform:scale(1.18); } }
+    .overlay {
+      position:absolute; z-index:5; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:24px; text-align:center; background:rgba(9,14,28,.74); backdrop-filter:blur(3px);
+    }
+    .overlay.hidden { display:none; }
+    .overlay-icon { font-size:42px; }
+    .overlay h2 { margin:8px 0 5px; font-size:25px; }
+    .overlay p { max-width:520px; margin:0 0 16px; color:#B6C1D2; font-size:13px; line-height:1.6; }
+    .result-stars { display:flex; gap:7px; margin:3px 0 10px; font-size:32px; }
+    .result-stars.hidden { display:none; }
+    .result-stars span { color:#475569; filter:grayscale(1); }
+    .result-stars span.earned { color:var(--yellow); filter:none; text-shadow:0 0 16px rgba(251,191,36,.48); animation:star-in .38s ease-out both; }
+    .combo-burst { position:absolute; z-index:4; left:50%; top:42%; opacity:0; pointer-events:none; color:#FDE68A; font-size:28px; font-weight:950; text-shadow:0 4px 18px rgba(0,0,0,.7); transform:translate(-50%,-50%) scale(.7); }
+    .combo-burst.show { animation:combo-pop .8s ease-out both; }
+    .start-btn { border:0; border-radius:12px; padding:12px 22px; color:white; background:var(--accent-strong); font-weight:900; cursor:pointer; box-shadow:0 8px 24px rgba(99,102,241,.34); }
+    .feedback { min-height:47px; padding:10px 14px; display:flex; align-items:center; gap:10px; border-top:1px solid var(--line); background:#172033; }
+    .feedback-word { color:var(--success); font-size:18px; font-weight:900; }
+    .feedback-meaning { color:#CBD5E1; font-size:13px; }
+    .feedback-tip { margin-left:auto; color:var(--muted); font-size:11px; text-align:right; }
+    #typingInput { position:fixed; left:50%; bottom:0; width:1px; height:1px; opacity:.01; border:0; padding:0; }
+    .loading { color:var(--muted); }
+    @keyframes star-in { from { opacity:0; transform:scale(.45) rotate(-18deg); } to { opacity:1; transform:scale(1) rotate(0); } }
+    @keyframes combo-pop { 0%{opacity:0;transform:translate(-50%,-50%) scale(.65)} 20%{opacity:1;transform:translate(-50%,-50%) scale(1.15)} 72%{opacity:1} 100%{opacity:0;transform:translate(-50%,-90%) scale(1)} }
+    @media (max-width:700px) {
+      body { padding-left:8px; padding-right:8px; }
+      .stats { grid-template-columns:repeat(5,1fr); gap:4px; }
+      .stat { padding:7px 2px; }
+      .stat-value { font-size:16px; }
+      .game-toolbar { flex-wrap:wrap; }
+      .game-title { width:100%; }
+      .game-toolbar .control { flex:1; }
+      .arena { height:54vh; min-height:350px; }
+      .feedback-tip { display:none; }
+      .falling-word { min-width:90px; padding:7px 9px 6px; }
+      .word-main { font-size:16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <a id="backLink" class="back" href="index.html" aria-label="返回每日英语">←</a>
+        <div>
+          <h1>⌨️ TT 单词入侵</h1>
+          <div class="subtitle">守住底线，挑战更高分</div>
+        </div>
+      </div>
+      <div id="dayBadge" class="day-badge">Day --</div>
+    </header>
+
+    <section class="stats" aria-label="游戏统计">
+      <div class="stat"><div id="scoreValue" class="stat-value">0/10</div><div class="stat-label">本关</div></div>
+      <div class="stat"><div id="lifeValue" class="stat-value">♥♥♥♥♥</div><div class="stat-label">生命</div></div>
+      <div class="stat"><div id="wpmValue" class="stat-value">0</div><div class="stat-label">WPM</div></div>
+      <div class="stat"><div id="accuracyValue" class="stat-value">100%</div><div class="stat-label">准确率</div></div>
+      <div class="stat"><div id="comboValue" class="stat-value">×0</div><div class="stat-label">连击</div></div>
+    </section>
+
+    <section class="game-card">
+      <div class="game-toolbar">
+        <div class="game-title">
+          <strong id="topicTitle">正在读取单词…</strong>
+          <span id="poolStatus" class="loading">请稍候</span>
+        </div>
+        <select id="speedSelect" class="control speed" aria-label="下落速度">
+          <option value="0.5">慢速</option>
+          <option value="1" selected>标准</option>
+          <option value="1.35">快速</option>
+        </select>
+        <button id="pauseButton" class="control" type="button">⏸ 暂停</button>
+        <button id="restartButton" class="control primary" type="button">↻ 重新开始</button>
+      </div>
+
+      <div id="arena" class="arena" tabindex="0" aria-label="单词掉落游戏区域">
+        <div id="overlay" class="overlay">
+          <div class="overlay-icon">⌨️</div>
+          <h2 id="overlayTitle">准备开始</h2>
+          <div id="resultStars" class="result-stars hidden" aria-label="本局星级"></div>
+          <p id="overlayText">看到英文单词后直接输入。输入正确的前缀会变绿，完整命中后播放发音并显示中文。</p>
+          <button id="startButton" class="start-btn" type="button" disabled>正在加载…</button>
+        </div>
+        <div id="comboBurst" class="combo-burst" aria-live="polite"></div>
+      </div>
+
+      <div class="feedback">
+        <span id="feedbackWord" class="feedback-word">准备中</span>
+        <span id="feedbackMeaning" class="feedback-meaning">正在读取当前 Day 的单词</span>
+        <span class="feedback-tip">点击游戏区域可唤起键盘 · Esc 暂停</span>
+      </div>
+    </section>
+    <input id="typingInput" type="text" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="游戏输入">
+    <audio id="wordAudio" preload="metadata"></audio>
+  </main>
+
+  <script>
+    const query = new URLSearchParams(location.search);
+    const requestedDay = String(query.get('day') || localStorage.getItem('alexTypingLastDay') || '011').match(/\d{1,3}/)?.[0] || '011';
+    const dayNumber = requestedDay.padStart(3, '0');
+    localStorage.setItem('alexTypingLastDay', dayNumber);
+    document.getElementById('dayBadge').textContent = `Day ${Number(dayNumber)}`;
+    document.getElementById('backLink').href = `index.html`;
+
+    const arena = document.getElementById('arena');
+    const input = document.getElementById('typingInput');
+    const overlay = document.getElementById('overlay');
+    const wordAudio = document.getElementById('wordAudio');
+    const ROUND_TARGET = 10;
+    const audioCues = new Map();
+    let audioSegmentEnd = null;
+    let words = [];
+    let falling = [];
+    let active = null;
+    let running = false;
+    let score = 0;
+    let lives = 5;
+    let correctKeys = 0;
+    let wrongKeys = 0;
+    let currentCombo = 0;
+    let bestCombo = 0;
+    let roundFinished = false;
+    let startedAt = 0;
+    let lastFrame = performance.now();
+    let nextId = 1;
+    let missAudioQueue = null;
+    let missAudioBusy = false;
+    let missAudioContext = null;
+    let missAudioGeneration = 0;
+
+    function parseWords(text) {
+      const meta = {};
+      const parsed = [];
+      text.replace(/^\uFEFF/, '').split(/\r?\n/).forEach(raw => {
+        const line = raw.trim();
+        const metadata = line.match(/^#\s*([^:：]+)\s*[:：]\s*(.*)$/);
+        if (metadata) {
+          meta[metadata[1].trim().toLowerCase()] = metadata[2].trim();
+          return;
+        }
+        if (!line || line.startsWith('#')) return;
+        const parts = line.split(/\s*\|\s*/);
+        if (parts.length < 2) return;
+        const source = parts[0].trim();
+        const target = typingForm(source);
+        if (target) parsed.push({ source, target, meaning:parts.slice(2).join('，').trim() || parts[1].trim() });
+      });
+      return { meta, words:parsed };
+    }
+
+    function typingForm(source) {
+      const variants = String(source).split('/').map(value => value.trim()).filter(Boolean);
+      let value = variants[0] || '';
+      if (value.length === 1 && variants[1]?.length > 1) value = variants[1];
+      return value
+        .replace(/[()]/g, '')
+        .replace(/[^a-zA-Z' -]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .toLowerCase();
+    }
+
+    function audioKey(value) {
+      return String(value || '').replace('(h)', 'h').split('/')[0].trim().toLowerCase();
+    }
+
+    async function loadAudio() {
+      try {
+        const response = await fetch(`homework/word${dayNumber}.cues.json`, { cache:'no-store' });
+        if (!response.ok) return;
+        const cues = await response.json();
+        if (!Array.isArray(cues.items) || !cues.audio) return;
+        cues.items.forEach(cue => {
+          if (Number.isFinite(cue.start) && Number.isFinite(cue.end) && cue.end > cue.start) {
+            audioCues.set(audioKey(cue.sourceText), cue);
+          }
+        });
+        wordAudio.src = `homework/${cues.audio}`;
+        wordAudio.load();
+      } catch (error) {}
+    }
+
+    function systemSpeak(text) {
+      if (!('speechSynthesis' in window)) return;
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      const voices = speechSynthesis.getVoices();
+      utterance.voice = voices.find(voice => voice.lang === 'en-US') || voices.find(voice => voice.lang.startsWith('en')) || null;
+      speechSynthesis.speak(utterance);
+    }
+
+    function pronounce(item) {
+      const cue = audioCues.get(audioKey(item.source));
+      if (!cue || !wordAudio.src) {
+        systemSpeak(item.target);
+        return;
+      }
+      wordAudio.pause();
+      audioSegmentEnd = cue.end;
+      wordAudio.currentTime = Math.max(0, cue.start - 0.25);
+      wordAudio.play().catch(() => systemSpeak(item.target));
+    }
+
+    function playMissTone() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+      try {
+        missAudioContext ||= new AudioContextClass();
+        if (missAudioContext.state === 'suspended') missAudioContext.resume();
+        const now = missAudioContext.currentTime;
+        const oscillator = missAudioContext.createOscillator();
+        const gain = missAudioContext.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(300, now);
+        oscillator.frequency.exponentialRampToValueAtTime(210, now + .18);
+        gain.gain.setValueAtTime(.0001, now);
+        gain.gain.exponentialRampToValueAtTime(.035, now + .025);
+        gain.gain.exponentialRampToValueAtTime(.0001, now + .2);
+        oscillator.connect(gain).connect(missAudioContext.destination);
+        oscillator.start(now);
+        oscillator.stop(now + .21);
+      } catch (error) {}
+    }
+
+    function playNextMissAudio(generation=missAudioGeneration) {
+      if (generation !== missAudioGeneration) return;
+      if (!missAudioQueue) {
+        missAudioBusy = false;
+        return;
+      }
+      const word = missAudioQueue;
+      missAudioQueue = null;
+      missAudioBusy = true;
+      playMissTone();
+      setTimeout(() => {
+        if (generation === missAudioGeneration) pronounce(word);
+      }, 150);
+      setTimeout(() => playNextMissAudio(generation), 1900);
+    }
+
+    function queueMissAudio(word) {
+      missAudioQueue = word;
+      if (!missAudioBusy) playNextMissAudio(missAudioGeneration);
+    }
+
+    wordAudio.addEventListener('timeupdate', () => {
+      if (audioSegmentEnd !== null && wordAudio.currentTime >= audioSegmentEnd) {
+        wordAudio.pause();
+        audioSegmentEnd = null;
+      }
+    });
+
+    async function loadDay() {
+      try {
+        const response = await fetch(`homework/word${dayNumber}.txt`, { cache:'no-store' });
+        if (!response.ok) throw new Error(`Day ${Number(dayNumber)} 单词尚未上传`);
+        const parsed = parseWords(await response.text());
+        if (!parsed.words.length) throw new Error('没有识别到可练习的单词');
+        words = parsed.words;
+        document.getElementById('topicTitle').textContent = parsed.meta.topics || parsed.meta.title || `Day ${Number(dayNumber)} 单词`;
+        document.getElementById('poolStatus').textContent = `${words.length} 个单词 · 守住底线`;
+        document.getElementById('poolStatus').classList.remove('loading');
+        document.getElementById('startButton').disabled = false;
+        document.getElementById('startButton').textContent = '开始游戏';
+        document.getElementById('feedbackWord').textContent = '准备好了';
+        document.getElementById('feedbackMeaning').textContent = '点击开始，然后直接输入掉落的单词';
+        await loadAudio();
+      } catch (error) {
+        document.getElementById('overlayTitle').textContent = '无法开始';
+        document.getElementById('overlayText').textContent = error.message;
+        document.getElementById('startButton').textContent = '返回主页';
+        document.getElementById('startButton').disabled = false;
+        document.getElementById('startButton').onclick = () => location.href = 'index.html';
+      }
+    }
+
+    function randomWord() {
+      const occupied = new Set(falling.map(item => item.word.target));
+      const choices = words.filter(item => !occupied.has(item.target));
+      return (choices.length ? choices : words)[Math.floor(Math.random() * (choices.length || words.length))];
+    }
+
+    function spawnWord(offset=0) {
+      if (!words.length) return;
+      const word = randomWord();
+      const element = document.createElement('div');
+      element.className = 'falling-word';
+      const main = document.createElement('div');
+      main.className = 'word-main';
+      const done = document.createElement('span');
+      done.className = 'word-done';
+      const rest = document.createElement('span');
+      rest.className = 'word-rest';
+      rest.textContent = word.target;
+      main.append(done, rest);
+      const meaning = document.createElement('div');
+      meaning.className = 'word-meaning';
+      meaning.textContent = word.meaning;
+      element.append(main, meaning);
+      arena.appendChild(element);
+      const width = Math.max(140, arena.clientWidth - 250);
+      const item = {
+        id:nextId++, word, element, done, rest, typed:'',
+        x:20 + Math.random() * width,
+        y:offset ? -70-offset : 16,
+        speed:(22 + Math.random() * 10) * Number(document.getElementById('speedSelect').value)
+      };
+      falling.push(item);
+      updateWordElement(item);
+    }
+
+    function updateWordElement(item) {
+      item.done.textContent = item.targetPrefix || item.typed;
+      item.rest.textContent = item.word.target.slice(item.typed.length);
+      item.element.style.transform = `translate3d(${item.x}px, ${item.y}px, 0)`;
+      item.element.classList.toggle('active', active === item);
+    }
+
+    function removeWord(item) {
+      falling = falling.filter(candidate => candidate !== item);
+      if (active === item) active = null;
+      item.element.remove();
+    }
+
+    function missWord(item) {
+      falling = falling.filter(candidate => candidate !== item);
+      if (active === item) active = null;
+      item.element.classList.remove('active', 'wrong');
+      item.element.classList.add('missed');
+      lives = Math.max(0, lives - 1);
+      currentCombo = 0;
+      document.getElementById('feedbackWord').textContent = item.word.target;
+      document.getElementById('feedbackMeaning').textContent = `漏掉了：${item.word.meaning}`;
+      queueMissAudio(item.word);
+      updateStats();
+      const roundStartedAt = startedAt;
+      const gameOver = lives === 0;
+      if (gameOver) running = false;
+      setTimeout(() => {
+        item.element.remove();
+        if (roundStartedAt !== startedAt) return;
+        if (gameOver) finishGame(false);
+        else if (running) spawnWord(90 + Math.random() * 120);
+      }, 360);
+    }
+
+    function hitWord(item) {
+      score++;
+      currentCombo++;
+      bestCombo = Math.max(bestCombo, currentCombo);
+      showComboBurst();
+      item.element.classList.add('hit');
+      pronounce(item.word);
+      document.getElementById('feedbackWord').textContent = item.word.target;
+      document.getElementById('feedbackMeaning').textContent = currentCombo >= 3 ? `${item.word.meaning} · Combo ×${currentCombo}!` : item.word.meaning;
+      active = null;
+      const completed = score >= ROUND_TARGET;
+      if (completed) running = false;
+      setTimeout(() => {
+        removeWord(item);
+        if (completed) finishGame(true);
+        else if (running) spawnWord(80 + Math.random() * 130);
+      }, 170);
+      updateStats();
+    }
+
+    function showComboBurst() {
+      if (![3, 5, 10].includes(currentCombo)) return;
+      const burst = document.getElementById('comboBurst');
+      burst.textContent = `🔥 ${currentCombo} 连击！`;
+      burst.classList.remove('show');
+      void burst.offsetWidth;
+      burst.classList.add('show');
+      setTimeout(() => burst.classList.remove('show'), 850);
+    }
+
+    function chooseTarget(char) {
+      return falling
+        .filter(item => item.word.target.startsWith(char))
+        .sort((a,b) => b.y-a.y)[0] || null;
+    }
+
+    function handleCharacter(char) {
+      if (!running || !/^[a-z '’-]$/i.test(char)) return;
+      char = char.toLowerCase().replace('’', "'");
+      if (!active) active = chooseTarget(char);
+      if (!active) {
+        wrongKeys++;
+        currentCombo = 0;
+        updateStats();
+        return;
+      }
+      const expected = active.word.target[active.typed.length];
+      if (char === expected) {
+        active.typed += char;
+        correctKeys++;
+        updateWordElement(active);
+        if (active.typed === active.word.target) hitWord(active);
+      } else {
+        wrongKeys++;
+        currentCombo = 0;
+        active.element.classList.remove('wrong');
+        void active.element.offsetWidth;
+        active.element.classList.add('wrong');
+        updateStats();
+      }
+    }
+
+    function updateStats() {
+      const elapsedMinutes = startedAt ? Math.max((performance.now()-startedAt)/60000, 1/60) : 0;
+      const accuracy = correctKeys + wrongKeys ? Math.round(correctKeys/(correctKeys+wrongKeys)*100) : 100;
+      const wpm = elapsedMinutes ? Math.round(correctKeys/5/elapsedMinutes) : 0;
+      document.getElementById('scoreValue').textContent = `${score}/${ROUND_TARGET}`;
+      document.getElementById('lifeValue').textContent = '♥'.repeat(lives) || '—';
+      document.getElementById('wpmValue').textContent = wpm;
+      document.getElementById('accuracyValue').textContent = `${accuracy}%`;
+      document.getElementById('comboValue').textContent = `×${currentCombo}`;
+    }
+
+    function clearFalling() {
+      falling.forEach(item => item.element.remove());
+      falling = [];
+      active = null;
+    }
+
+    function startGame() {
+      if (!words.length) return;
+      clearFalling();
+      score = 0; lives = 5; correctKeys = 0; wrongKeys = 0; currentCombo = 0; bestCombo = 0;
+      roundFinished = false;
+      missAudioQueue = null;
+      missAudioBusy = false;
+      missAudioGeneration++;
+      wordAudio.pause();
+      audioSegmentEnd = null;
+      if ('speechSynthesis' in window) speechSynthesis.cancel();
+      startedAt = performance.now();
+      running = true;
+      overlay.classList.add('hidden');
+      document.getElementById('resultStars').classList.add('hidden');
+      document.getElementById('pauseButton').textContent = '⏸ 暂停';
+      [0, 130, 270, 410].forEach(spawnWord);
+      updateStats();
+      input.focus();
+    }
+
+    function togglePause() {
+      if (!startedAt || lives === 0) return;
+      running = !running;
+      document.getElementById('pauseButton').textContent = running ? '⏸ 暂停' : '▶ 继续';
+      if (running) {
+        overlay.classList.add('hidden');
+        lastFrame = performance.now();
+        input.focus();
+      } else {
+        document.getElementById('resultStars').classList.add('hidden');
+        document.getElementById('overlayTitle').textContent = '已暂停';
+        document.getElementById('overlayText').textContent = '休息一下，准备好后继续。';
+        document.getElementById('startButton').textContent = '继续游戏';
+        overlay.classList.remove('hidden');
+      }
+    }
+
+    function finishGame(completed) {
+      running = false;
+      roundFinished = true;
+      const accuracy = correctKeys + wrongKeys ? Math.round(correctKeys/(correctKeys+wrongKeys)*100) : 100;
+      const earnedStars = completed ? 1 + Number(accuracy >= 90) + Number(bestCombo >= 5) : 0;
+      const stars = document.getElementById('resultStars');
+      stars.innerHTML = [0,1,2].map(index => `<span class="${index < earnedStars ? 'earned' : ''}">★</span>`).join('');
+      stars.classList.remove('hidden');
+      stars.setAttribute('aria-label', `获得 ${earnedStars} 颗星`);
+      document.getElementById('overlayTitle').textContent = completed ? '闯关成功！' : '本局结束';
+      let nextGoal = `还差 ${Math.max(0, ROUND_TARGET-score)} 个，重新挑战吧！`;
+      if (completed && accuracy < 90) nextGoal = '准确率达到 90%，就能再得一颗星。';
+      else if (completed && bestCombo < 5) nextGoal = '达到 5 连击，就能获得第三颗星。';
+      else if (completed) nextGoal = '三星达成！再来一局，挑战更高 WPM。';
+      document.getElementById('overlayText').textContent = `命中 ${score}/${ROUND_TARGET} · 准确率 ${accuracy}% · 最高连击 ${bestCombo}。${nextGoal}`;
+      document.getElementById('startButton').textContent = '再来一局';
+      overlay.classList.remove('hidden');
+    }
+
+    function frame(now) {
+      const delta = Math.min((now-lastFrame)/1000, .05);
+      lastFrame = now;
+      if (running) {
+        const levelFactor = 1 + score*.008;
+        [...falling].forEach(item => {
+          item.y += item.speed * levelFactor * delta;
+          updateWordElement(item);
+          if (item.y > arena.clientHeight-78) missWord(item);
+        });
+        updateStats();
+      }
+      requestAnimationFrame(frame);
+    }
+
+    input.addEventListener('beforeinput', event => {
+      if (event.inputType === 'insertText' && event.data) {
+        event.preventDefault();
+        [...event.data].forEach(handleCharacter);
+      }
+    });
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Escape') { event.preventDefault(); togglePause(); }
+      if (event.key === 'Backspace' && active?.typed) {
+        event.preventDefault();
+        active.typed = active.typed.slice(0,-1);
+        updateWordElement(active);
+      }
+    });
+    document.addEventListener('keydown', event => {
+      if (document.activeElement === input) return;
+      if (event.key === 'Escape') togglePause();
+      else if (event.key.length === 1) handleCharacter(event.key);
+    });
+    arena.addEventListener('click', () => input.focus());
+    document.getElementById('startButton').addEventListener('click', () => {
+      if (running) return;
+      if (!startedAt || roundFinished) startGame();
+      else togglePause();
+    });
+    document.getElementById('restartButton').addEventListener('click', startGame);
+    document.getElementById('pauseButton').addEventListener('click', togglePause);
+    document.getElementById('speedSelect').addEventListener('change', () => {
+      const multiplier = Number(document.getElementById('speedSelect').value);
+      falling.forEach(item => item.speed = (22 + Math.random()*10)*multiplier);
+      input.focus();
+    });
+
+    loadDay();
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>

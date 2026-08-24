@@ -1,6 +1,6 @@
 {
   "name": "word-trainer",
-  "version": "2.25.0",
+  "version": "2.26.0",
   "private": true,
   "scripts": {
     "build": "node scripts/build-site.js",

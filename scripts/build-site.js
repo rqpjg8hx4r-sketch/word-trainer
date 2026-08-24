@@ -10,7 +10,7 @@ fs.rmSync(outputDir, { recursive:true, force:true });
 fs.mkdirSync(outputHomework, { recursive:true });
 fs.mkdirSync(outputPractice, { recursive:true });
 
-for (const filename of ['index.html', 'manifest.webmanifest', 'service-worker.js']) {
+for (const filename of ['index.html', 'type.html', 'manifest.webmanifest', 'service-worker.js']) {
   fs.copyFileSync(path.join(projectRoot, filename), path.join(outputDir, filename));
 }
 

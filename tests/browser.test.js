@@ -23,7 +23,7 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.25');
+  await expect(page.locator('#appVersion')).toHaveText('v2.26');
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(11);
   await page.locator('#librarySelect').selectOption('word007.txt');
@@ -63,6 +63,72 @@ test('existing word and speaking workflows remain available', async ({ page }) =
 
   await page.locator('#librarySelect').selectOption('word004.txt');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
+});
+
+test('the compact TT entry opens a playable typing game for the selected day', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word010.txt');
+
+  const printButton = page.getByRole('button', { name:'🖨️ 打印默写' });
+  const typingButton = page.getByRole('button', { name:'⌨️ TT' });
+  await expect(typingButton).toBeVisible();
+  const [printBox, typingBox] = await Promise.all([printButton.boundingBox(), typingButton.boundingBox()]);
+  expect(typingBox.x).toBeLessThan(printBox.x);
+  expect(typingBox.width).toBeLessThan(printBox.width);
+
+  await typingButton.click();
+  await expect(page).toHaveURL(/\/type\.html\?day=010$/);
+  await expect(page.locator('#dayBadge')).toHaveText('Day 10');
+  await expect(page.locator('#poolStatus')).toContainText('71 个单词');
+  await expect(page.locator('#startButton')).toBeEnabled();
+
+  await page.locator('#startButton').click();
+  await expect(page.locator('.falling-word')).toHaveCount(4);
+  const target = await page.evaluate(() => [...falling].sort((a,b) => b.y-a.y)[0].word.target);
+  await page.locator('#typingInput').pressSequentially(target[0]);
+  const lockedTarget = await page.evaluate(() => active.word.target);
+  const wrongCharacter = target[1] === 'z' ? 'x' : 'z';
+  await page.locator('#typingInput').pressSequentially(wrongCharacter);
+  expect(await page.evaluate(() => active.word.target)).toBe(lockedTarget);
+  await page.locator('#typingInput').pressSequentially(target.slice(1));
+  await expect(page.locator('#scoreValue')).toHaveText('1/10');
+  await expect(page.locator('#feedbackWord')).toHaveText(target);
+
+  await page.locator('#restartButton').click();
+  const missedTarget = await page.evaluate(() => {
+    const item = [...falling].sort((a,b) => b.y-a.y)[0];
+    active = item;
+    item.element.classList.add('active');
+    missWord(item);
+    return item.word.target;
+  });
+  await expect(page.locator('#lifeValue')).toHaveText('♥♥♥♥');
+  await expect(page.locator('#feedbackWord')).toHaveText(missedTarget);
+  await expect(page.locator('#feedbackMeaning')).toContainText('漏掉了：');
+  await expect(page.locator('.falling-word.missed')).toHaveCount(1);
+  expect(await page.evaluate(() => active)).toBeNull();
+  await expect(page.locator('.falling-word.missed')).toHaveCount(0, { timeout:1_000 });
+
+  await page.evaluate(() => {
+    score = 9;
+    currentCombo = 4;
+    bestCombo = 4;
+    correctKeys = 90;
+    wrongKeys = 0;
+    hitWord(falling[0]);
+  });
+  await expect(page.locator('#overlay')).toBeVisible();
+  await expect(page.locator('#overlayTitle')).toHaveText('闯关成功！');
+  await expect(page.locator('#scoreValue')).toHaveText('10/10');
+  await expect(page.locator('#comboValue')).toHaveText('×5');
+  await expect(page.locator('#resultStars .earned')).toHaveCount(3);
+  await expect(page.locator('#resultStars')).toHaveAttribute('aria-label', '获得 3 颗星');
+  await expect(page.locator('#overlayText')).toContainText('最高连击 5');
+
+  await page.locator('#startButton').click();
+  await expect(page.locator('#overlay')).toBeHidden();
+  await expect(page.locator('#scoreValue')).toHaveText('0/10');
+  await expect(page.locator('#lifeValue')).toHaveText('♥♥♥♥♥');
 });
 
 test('word cues play recorded ranges and missing ranges fall back to system TTS', async ({ browser }) => {
@@ -171,7 +237,7 @@ test('word dictation prints the complete day with Chinese cues only', async ({ p
   await page.getByRole('tab', { name:/背单词/ }).click();
 
   const toolbarLabels = await page.locator('#wordsArea .toolbar button').allTextContents();
-  expect(toolbarLabels).toEqual(['📥 手动导入（备用）', '📊 学习历史', '🖨️ 打印默写']);
+  expect(toolbarLabels).toEqual(['📥 手动导入（备用）', '📊 学习历史', '⌨️ TT', '🖨️ 打印默写']);
 
   await page.evaluate(() => {
     window.__printCalled = false;
