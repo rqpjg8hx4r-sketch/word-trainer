@@ -1,0 +1,607 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word012.mp3",
+  "sourceHash": "5901ad47ad2f089f6411397f47a41fd960430151cc0e98786ee53d6cdd9d57f7",
+  "audioHash": "8677f5aedc5661f381f3d2770621fed8487c97f1651647a8c8435c309268689f",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "air",
+      "spokenText": "air",
+      "start": 0,
+      "end": 0.8
+    },
+    {
+      "index": 1,
+      "sourceText": "grow",
+      "spokenText": "grow",
+      "start": 1.55,
+      "end": 2.5
+    },
+    {
+      "index": 2,
+      "sourceText": "south",
+      "spokenText": "south",
+      "start": 3.25,
+      "end": 4.4
+    },
+    {
+      "index": 3,
+      "sourceText": "autumn",
+      "spokenText": "autumn",
+      "start": 5.15,
+      "end": 6.05
+    },
+    {
+      "index": 4,
+      "sourceText": "hill",
+      "spokenText": "hill",
+      "start": 6.8,
+      "end": 9
+    },
+    {
+      "index": 5,
+      "sourceText": "space",
+      "spokenText": "space",
+      "start": 9.75,
+      "end": 11.95
+    },
+    {
+      "index": 6,
+      "sourceText": "beach",
+      "spokenText": "beach",
+      "start": 12.7,
+      "end": 13.85
+    },
+    {
+      "index": 7,
+      "sourceText": "hot",
+      "spokenText": "hot",
+      "start": 14.6,
+      "end": 15.85
+    },
+    {
+      "index": 8,
+      "sourceText": "spring",
+      "spokenText": "spring",
+      "start": 16.6,
+      "end": 17.75
+    },
+    {
+      "index": 9,
+      "sourceText": "bee",
+      "spokenText": "bee",
+      "start": 18.5,
+      "end": 19.6
+    },
+    {
+      "index": 10,
+      "sourceText": "ice",
+      "spokenText": "ice",
+      "start": 20.35,
+      "end": 21.65
+    },
+    {
+      "index": 11,
+      "sourceText": "star",
+      "spokenText": "star",
+      "start": 22.4,
+      "end": 23.55
+    },
+    {
+      "index": 12,
+      "sourceText": "country",
+      "spokenText": "country",
+      "start": 24.3,
+      "end": 25.25
+    },
+    {
+      "index": 13,
+      "sourceText": "island",
+      "spokenText": "island",
+      "start": 26,
+      "end": 27
+    },
+    {
+      "index": 14,
+      "sourceText": "summer",
+      "spokenText": "summer",
+      "start": 27.75,
+      "end": 29
+    },
+    {
+      "index": 15,
+      "sourceText": "countryside",
+      "spokenText": "countryside",
+      "start": 29.75,
+      "end": 30.8
+    },
+    {
+      "index": 16,
+      "sourceText": "lake",
+      "spokenText": "lake",
+      "start": 31.55,
+      "end": 32.35
+    },
+    {
+      "index": 17,
+      "sourceText": "tree",
+      "spokenText": "tree",
+      "start": 33.1,
+      "end": 34.35
+    },
+    {
+      "index": 18,
+      "sourceText": "desert",
+      "spokenText": "desert",
+      "start": 35.1,
+      "end": 36.35
+    },
+    {
+      "index": 19,
+      "sourceText": "moon",
+      "spokenText": "moon",
+      "start": 37.1,
+      "end": 38.15
+    },
+    {
+      "index": 20,
+      "sourceText": "water",
+      "spokenText": "water",
+      "start": 38.9,
+      "end": 39.7
+    },
+    {
+      "index": 21,
+      "sourceText": "east",
+      "spokenText": "east",
+      "start": 40.45,
+      "end": 41.7
+    },
+    {
+      "index": 22,
+      "sourceText": "mountain",
+      "spokenText": "mountain",
+      "start": 42.45,
+      "end": 43.45
+    },
+    {
+      "index": 23,
+      "sourceText": "west",
+      "spokenText": "west",
+      "start": 44.2,
+      "end": 45.05
+    },
+    {
+      "index": 24,
+      "sourceText": "explorer",
+      "spokenText": "explorer",
+      "start": 45.8,
+      "end": 47.45
+    },
+    {
+      "index": 25,
+      "sourceText": "north",
+      "spokenText": "north",
+      "start": 48.2,
+      "end": 49.35
+    },
+    {
+      "index": 26,
+      "sourceText": "winter",
+      "spokenText": "winter",
+      "start": 50.1,
+      "end": 52
+    },
+    {
+      "index": 27,
+      "sourceText": "field",
+      "spokenText": "field",
+      "start": 52.75,
+      "end": 54.35
+    },
+    {
+      "index": 28,
+      "sourceText": "plant",
+      "spokenText": "plant",
+      "start": 55.1,
+      "end": 56.3
+    },
+    {
+      "index": 29,
+      "sourceText": "wood",
+      "spokenText": "wood",
+      "start": 57.05,
+      "end": 57.75
+    },
+    {
+      "index": 30,
+      "sourceText": "fire",
+      "spokenText": "fire",
+      "start": 58.5,
+      "end": 59.55
+    },
+    {
+      "index": 31,
+      "sourceText": "rabbit",
+      "spokenText": "rabbit",
+      "start": 60.3,
+      "end": 61.3
+    },
+    {
+      "index": 32,
+      "sourceText": "wool",
+      "spokenText": "wool",
+      "start": 62.05,
+      "end": 62.95
+    },
+    {
+      "index": 33,
+      "sourceText": "flower",
+      "spokenText": "flower",
+      "start": 63.7,
+      "end": 64.55
+    },
+    {
+      "index": 34,
+      "sourceText": "river",
+      "spokenText": "river",
+      "start": 65.3,
+      "end": 66.25
+    },
+    {
+      "index": 35,
+      "sourceText": "world",
+      "spokenText": "world",
+      "start": 67,
+      "end": 67.85
+    },
+    {
+      "index": 36,
+      "sourceText": "forest",
+      "spokenText": "forest",
+      "start": 68.6,
+      "end": 69.7
+    },
+    {
+      "index": 37,
+      "sourceText": "sea",
+      "spokenText": "sea",
+      "start": 70.45,
+      "end": 71.25
+    },
+    {
+      "index": 38,
+      "sourceText": "grass",
+      "spokenText": "grass",
+      "start": 72,
+      "end": 73.15
+    },
+    {
+      "index": 39,
+      "sourceText": "sky",
+      "spokenText": "sky",
+      "start": 73.9,
+      "end": 76.1
+    },
+    {
+      "index": 40,
+      "sourceText": "afternoon",
+      "spokenText": "afternoon",
+      "start": 76.85,
+      "end": 77.9
+    },
+    {
+      "index": 41,
+      "sourceText": "hour",
+      "spokenText": "hour",
+      "start": 78.65,
+      "end": 79.5
+    },
+    {
+      "index": 42,
+      "sourceText": "second",
+      "spokenText": "second",
+      "start": 80.25,
+      "end": 81.25
+    },
+    {
+      "index": 43,
+      "sourceText": "a.m./p.m.",
+      "spokenText": "a.m",
+      "start": 82,
+      "end": 83.15
+    },
+    {
+      "index": 44,
+      "sourceText": "January - December",
+      "spokenText": "January - December",
+      "start": 83.9,
+      "end": 85.85
+    },
+    {
+      "index": 45,
+      "sourceText": "spring",
+      "spokenText": "spring",
+      "start": 86.6,
+      "end": 88.2
+    },
+    {
+      "index": 46,
+      "sourceText": "appointment",
+      "spokenText": "appointment",
+      "start": 88.95,
+      "end": 90.1
+    },
+    {
+      "index": 47,
+      "sourceText": "meeting",
+      "spokenText": "meeting",
+      "start": 90.85,
+      "end": 91.9
+    },
+    {
+      "index": 48,
+      "sourceText": "summer",
+      "spokenText": "summer",
+      "start": 92.65,
+      "end": 93.85
+    },
+    {
+      "index": 49,
+      "sourceText": "autumn",
+      "spokenText": "autumn",
+      "start": 94.6,
+      "end": 95.6
+    },
+    {
+      "index": 50,
+      "sourceText": "midnight",
+      "spokenText": "midnight",
+      "start": 96.35,
+      "end": 97.85
+    },
+    {
+      "index": 51,
+      "sourceText": "time",
+      "spokenText": "time",
+      "start": 98.6,
+      "end": 100.85
+    },
+    {
+      "index": 52,
+      "sourceText": "birthday",
+      "spokenText": "birthday",
+      "start": 101.6,
+      "end": 103
+    },
+    {
+      "index": 53,
+      "sourceText": "minute",
+      "spokenText": "minute",
+      "start": 103.75,
+      "end": 104.6
+    },
+    {
+      "index": 54,
+      "sourceText": "today",
+      "spokenText": "today",
+      "start": 105.35,
+      "end": 106.15
+    },
+    {
+      "index": 55,
+      "sourceText": "calendar",
+      "spokenText": "calendar",
+      "start": 106.9,
+      "end": 107.9
+    },
+    {
+      "index": 56,
+      "sourceText": "moment",
+      "spokenText": "moment",
+      "start": 108.65,
+      "end": 110.2
+    },
+    {
+      "index": 57,
+      "sourceText": "tomorrow",
+      "spokenText": "tomorrow",
+      "start": 110.95,
+      "end": 112
+    },
+    {
+      "index": 58,
+      "sourceText": "century",
+      "spokenText": "century",
+      "start": 112.75,
+      "end": 114.45
+    },
+    {
+      "index": 59,
+      "sourceText": "Monday - Sunday",
+      "spokenText": "Monday - Sunday",
+      "start": 115.2,
+      "end": 116.9
+    },
+    {
+      "index": 60,
+      "sourceText": "tonight",
+      "spokenText": "tonight",
+      "start": 117.65,
+      "end": 118.6
+    },
+    {
+      "index": 61,
+      "sourceText": "clock",
+      "spokenText": "clock",
+      "start": 119.35,
+      "end": 120.15
+    },
+    {
+      "index": 62,
+      "sourceText": "month",
+      "spokenText": "month",
+      "start": 120.9,
+      "end": 121.75
+    },
+    {
+      "index": 63,
+      "sourceText": "week",
+      "spokenText": "week",
+      "start": 122.5,
+      "end": 123.55
+    },
+    {
+      "index": 64,
+      "sourceText": "daily",
+      "spokenText": "daily",
+      "start": 124.3,
+      "end": 125.65
+    },
+    {
+      "index": 65,
+      "sourceText": "monthly",
+      "spokenText": "monthly",
+      "start": 126.4,
+      "end": 128.05
+    },
+    {
+      "index": 66,
+      "sourceText": "weekday",
+      "spokenText": "weekday",
+      "start": 128.8,
+      "end": 129.8
+    },
+    {
+      "index": 67,
+      "sourceText": "date",
+      "spokenText": "date",
+      "start": 130.55,
+      "end": 131.15
+    },
+    {
+      "index": 68,
+      "sourceText": "morning",
+      "spokenText": "morning",
+      "start": 131.9,
+      "end": 133.1
+    },
+    {
+      "index": 69,
+      "sourceText": "weekend",
+      "spokenText": "weekend",
+      "start": 133.85,
+      "end": 134.9
+    },
+    {
+      "index": 70,
+      "sourceText": "day",
+      "spokenText": "day",
+      "start": 135.65,
+      "end": 136.85
+    },
+    {
+      "index": 71,
+      "sourceText": "night",
+      "spokenText": "night",
+      "start": 137.6,
+      "end": 138.5
+    },
+    {
+      "index": 72,
+      "sourceText": "weekly",
+      "spokenText": "weekly",
+      "start": 139.25,
+      "end": 140.05
+    },
+    {
+      "index": 73,
+      "sourceText": "diary",
+      "spokenText": "diary",
+      "start": 140.8,
+      "end": 141.6
+    },
+    {
+      "index": 74,
+      "sourceText": "noon",
+      "spokenText": "noon",
+      "start": 142.35,
+      "end": 143.4
+    },
+    {
+      "index": 75,
+      "sourceText": "winter",
+      "spokenText": "winter",
+      "start": 144.15,
+      "end": 145.3
+    },
+    {
+      "index": 76,
+      "sourceText": "evening",
+      "spokenText": "evening",
+      "start": 146.05,
+      "end": 147.25
+    },
+    {
+      "index": 77,
+      "sourceText": "o'clock",
+      "spokenText": "o'clock",
+      "start": 148,
+      "end": 150.8
+    },
+    {
+      "index": 78,
+      "sourceText": "working hours",
+      "spokenText": "working hours",
+      "start": 151.55,
+      "end": 152.8
+    },
+    {
+      "index": 79,
+      "sourceText": "half (past)",
+      "spokenText": "half past",
+      "start": 153.55,
+      "end": 155.05
+    },
+    {
+      "index": 80,
+      "sourceText": "past",
+      "spokenText": "past",
+      "start": 155.8,
+      "end": 158
+    },
+    {
+      "index": 81,
+      "sourceText": "year",
+      "spokenText": "year",
+      "start": 158.75,
+      "end": 159.8
+    },
+    {
+      "index": 82,
+      "sourceText": "holidays",
+      "spokenText": "holidays",
+      "start": 160.55,
+      "end": 161.65
+    },
+    {
+      "index": 83,
+      "sourceText": "quarter (past/to)",
+      "spokenText": "quarter past",
+      "start": 162.4,
+      "end": 164.5
+    },
+    {
+      "index": 84,
+      "sourceText": "yesterday",
+      "spokenText": "yesterday",
+      "start": 165.25,
+      "end": 166.4
+    }
+  ]
+}
