@@ -1,0 +1,88 @@
+﻿# Day: 12
+# Topics: The Natural World | Time
+
+air | n. | 空气
+grow | v. | 生长
+south | n. & adj. | 南方；南方的
+autumn | n. | 秋天
+hill | n. | 小山
+space | n. | 空间；太空
+beach | n. | 海滩
+hot | n. | 热的
+spring | n. | 春天
+bee | n. | 蜜蜂
+ice | n. | 冰
+star | n. | 星星
+country | n. | 乡村
+island | n. | 岛屿
+summer | n. | 夏天
+countryside | n. | 乡村
+lake | n. | 湖
+tree | n. | 树木
+desert | n. | 沙漠
+moon | n. | 月亮
+water | n. | 水
+east | n. & adj. | 东方；东方的
+mountain | n. | 山
+west | n. & adj. | 西方；西方的
+explorer | n. | 探险家
+north | n. & adj. | 北方；北方的
+winter | n. | 冬天
+field | n. | 旷野
+plant | n. | 植物
+wood | n. | 木头；树林
+fire | n. | 火
+rabbit | n. | 兔子
+wool | n. | 羊毛
+flower | n. | 花
+river | n. | 河
+world | n. | 世界
+forest | n. | 森林
+sea | n. | 海
+grass | n. | 草；草地
+sky | n. | 天空
+afternoon | n. | 下午
+hour | n. | 小时
+second | n. | 秒
+a.m./p.m. | n. | 上午／下午
+January - December | n. | 一月至十二月
+spring | n. | 春天
+appointment | n. | 预约
+meeting | n. | 会议
+summer | n. | 夏天
+autumn | n. | 秋天
+midnight | n. | 午夜
+time | n. | 时间
+birthday | n. | 生日
+minute | n. | 分钟
+today | n. | 今天
+calendar | n. | 日历
+moment | n. | 片刻
+tomorrow | n. | 明天
+century | n. | 世纪
+Monday - Sunday | n. | 周一至周日
+tonight | n. | 今晚
+clock | n. | 时钟
+month | n. | 月份
+week | n. | 周；星期
+daily | n. | 日常
+monthly | adj. & adv. | 每月的；每个月
+weekday | n. | 工作日
+date | n. | 日期
+morning | n. | 上午
+weekend | n. | 周末
+day | n. | 天
+night | n. | 夜晚
+weekly | adj. & adv. | 每周的；每周
+diary | n. | 日记
+noon | n. | 中午
+winter | n. | 冬天
+evening | n. | 傍晚
+o'clock | n. | 整点；钟
+working hours | n. | 工作时间
+half (past) | n. | 一半；半点
+past | n. & adv. | 过去；过后
+year | n. | 年
+holidays | n. | 假期
+quarter (past/to) | n. | 一刻钟
+yesterday | n. | 昨天
