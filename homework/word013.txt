@@ -1,0 +1,149 @@
+﻿# Day: 13
+# Topics: Travel and Transport | Work and Jobs
+
+(aero)/(air) plane | n. | 飞机
+leave | v. | 离开
+sailing | n. | 旅行
+airport | n. | 机场
+left | adj. | 左侧的
+seat | n. | 座位
+ambulance | n. | 救护车
+light | adj. | 灯
+ship | n. | 轮船
+backpack | n. | 背包
+luggage | n. | 行李
+station | n. | 车站
+boat | n. | 船
+machine | n. | 机器
+stop | v. | 停止
+bridge | n. | 桥
+map | n. | 地图
+straight on |  | 直行
+bus | n. | 公交车
+mechanic | n. | 机械师
+street | n. | 街道
+bus station | n. | 公交车总站
+mirror | n. | 镜子
+suitcase | n. | 行李箱
+bus stop | n. | 公交车经停站
+miss | v. | 错过
+taxi | n. | 出租车
+car | n. | 汽车
+motorbike | n. | 摩托车
+ticket | n. | 票
+case | n. | 箱子
+motorway | n. | 高速公路
+tour | n. | 旅游
+coach | n. | 教练
+move | v. | 移动
+tour guide | n. | 导游
+country | n. | 国家；乡村
+oil | n. | 油
+tourist | n. | 游客
+delay | n. & v. | 推迟
+park | v. | 停车
+tourist information centre | n. | 旅游信息中心
+delayed | adj. | 延迟的
+passenger | n. | 乘客
+traffic | n. | 交通
+drive | v. | 驾驶
+passport | n. | 护照
+traffic light | n. | 交通灯
+driver | n. | 驾驶员
+petrol | n. | 汽油
+train | n. | 火车
+driving/driver's licence | n. | 驾照
+petrol station | n. | 加油站
+tram | n. | 有轨电车
+engine | n. | 引擎
+pilot | n. | 飞行员
+travel | n. | 旅行
+engineer | n. | 工程师
+platform | n. | 平台
+trip | n. | 旅行
+explorer | n. | 探险家
+railway | n. | 铁路
+tyre | n. | 轮胎
+far | adj. | 远的
+repair | v. | 修理
+underground | n. | 地铁
+flight | n. | 航班
+return | n. & v. | 返回
+visit | n. | 参观；拜访
+fly | v. | 飞行
+ride | n. | 乘坐
+visitor | n. | 参观者
+garage | n. | 车库
+right | adj. | 右侧的
+way | n. | 路
+helicopter | n. | 直升飞机
+road | n. | 道路
+wheel | n. | 轮子
+journey | n. | 旅程
+roundabout | n. | 环岛
+window | n. | 窗户
+actor | n. | 男演员
+email | n. & v. | 电子邮件；发电子邮件
+office | n. | 办公室
+artist | n. | 艺术家
+engineer | n. | 工程师
+painter | n. | 画家；油漆匠
+boss | n. | 老板
+explorer | n. | 探险家
+photographer | n. | 摄影师
+break | n. | 休息
+factory | n. | 工厂
+pilot | n. | 飞行员
+business | n. | 商业
+farm | n. | 农场
+police officer | n. | 警官
+businessman | n. | 商人
+farmer | n. | 农民
+queen | n. | 王后
+businesswoman | n. | 女商人
+footballer | n. | 足球运动员
+receptionist | n. | 接待员
+chemist | n. | 药剂师
+football player | n. | 足球运动员
+secretary | n. | 秘书
+cleaner | n. | 清洁工
+guest | n. | 客人
+shop assistant | n. | 店员
+coach | n. | 教练
+guide | n. | 向导
+shopper | n. | 顾客
+company | n. | 公司
+instructions | n. | 指令
+singer | n. | 歌手
+computer | n. | 电脑
+job | n. | 工作
+staff | n. | 员工
+cook | n. & v. | 厨师；烹饪
+journalist | n. | 记者
+student | n. | 学生
+customer | n. | 顾客
+king | n. | 国王
+teacher | n. | 老师
+dentist | n. | 牙医
+letter | n. | 信
+tennis player | n. | 网球运动员
+desk | n. | 书桌
+manager | n. | 经理
+tour guide | n. | 导游
+diary | n. | 日记
+mechanic | n. | 机械工
+uniform | n. | 制服
+diploma | n. | 毕业文凭
+meeting | n. | 会议
+waiter / waitress | n. | 男服务员／女服务员
+doctor | n. | 医生
+message | n. | 消息
+work | n. | 工作
+Dr |  | 医生；博士
+musician | n. | 音乐家
+worker | n. | 工人
+driver | n. | 驾驶员
+nurse | n. | 护士
+writer | n. | 作家
+earn | n. | 赚；挣
+occupation | n. | 职业
