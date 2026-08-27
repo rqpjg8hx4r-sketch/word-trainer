@@ -266,6 +266,17 @@
     .practice-toolbar { display:flex; gap:8px; align-items:center; margin-bottom:14px; }
     .practice-toolbar .library-select { min-height:40px; }
     .practice-audio { display:none; width:100%; margin:12px 0; }
+    .paraphrase-card { text-align:left; padding:22px 20px; }
+    .paraphrase-topline { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:16px; }
+    .paraphrase-side { color:var(--subtext); font-size:12px; font-weight:800; }
+    .paraphrase-english { color:var(--primary); font-size:26px; font-weight:900; line-height:1.3; overflow-wrap:anywhere; }
+    .paraphrase-chinese { color:#475569; font-size:16px; font-weight:700; line-height:1.5; margin-top:7px; }
+    .paraphrase-row { display:flex; align-items:flex-start; gap:10px; }
+    .paraphrase-row > div { flex:1; min-width:0; }
+    .paraphrase-row .btn-audio { flex:none; margin:0; width:42px; height:42px; font-size:18px; }
+    .paraphrase-answer { margin-top:18px; padding-top:18px; border-top:1px solid #E2E8F0; }
+    .paraphrase-actions { display:grid; grid-template-columns:1fr 1.3fr; gap:8px; margin-top:18px; }
+    .paraphrase-nav { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
     @media (min-width:700px) {
       .speaking-card { padding:22px 24px; }
       .speaking-line { font-size:16px; }
@@ -302,7 +313,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.27</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.28</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
   </div>
 
   <div class="library-panel">
@@ -311,14 +322,14 @@
         <option value="">正在读取网站词库…</option>
       </select>
       <button class="btn btn-secondary" style="width:auto;padding:9px 12px;" onclick="refreshRemoteLibraries()">刷新</button>
-      <button class="btn btn-secondary" style="width:auto;padding:9px 11px;" onclick="printCurrentDay()" aria-label="打印默写" title="打印默写">🖨️</button>
+      <button id="printDayButton" class="btn btn-secondary" style="width:auto;padding:9px 11px;" onclick="printCurrentDay()" aria-label="打印默写" title="打印默写">🖨️</button>
     </div>
     <div id="libraryStatus" class="library-status">网站词库：按 Day 自动加载 · 支持离线</div>
     <div id="offlineStatus" class="offline-status">○ 正在准备离线功能</div>
   </div>
 
   <div class="main-tabs" role="tablist" aria-label="学习区域">
-    <button id="mainTabWords" class="main-tab active" role="tab" aria-selected="true" onclick="switchMainArea('words')">📚 背单词</button>
+    <button id="mainTabWords" class="main-tab active" role="tab" aria-selected="true" onclick="switchMainArea('words')">📚 词句练习</button>
     <button id="mainTabSpeaking" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('speaking')">🎧 口语练习</button>
     <button id="mainTabListening" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('listening')">🎵 听力练习</button>
     <button id="mainTabPractice" class="main-tab" role="tab" aria-selected="false" onclick="switchMainArea('practice')">🌱 日常练习</button>
@@ -409,10 +420,11 @@
 
   <div id="wordsArea" class="content-narrow" role="tabpanel">
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchMode('learn')">📖 学习模式</button>
-    <button class="tab-btn" onclick="switchMode('quiz')">🎯 选义测试</button>
-    <button class="tab-btn" onclick="switchMode('spell')">🔤 键盘拼写</button>
-    <button class="tab-btn" onclick="switchMode('history')">🕘 历史</button>
+    <button id="learnModeButton" class="tab-btn active" data-mode="learn" onclick="switchMode('learn')">📖 学习模式</button>
+    <button id="quizModeButton" class="tab-btn" data-mode="quiz" onclick="switchMode('quiz')">🎯 选义测试</button>
+    <button id="spellModeButton" class="tab-btn" data-mode="spell" onclick="switchMode('spell')">🔤 键盘拼写</button>
+    <button id="paraphraseModeButton" class="tab-btn" data-mode="paraphrase" onclick="switchMode('paraphrase')" style="display:none;">🔁 同义转换</button>
+    <button id="historyModeButton" class="tab-btn" data-mode="history" onclick="switchMode('history')">🕘 历史</button>
   </div>
 
   <div id="voiceStatus" class="voice-status">🔊 正在检测系统英文语音…</div>
@@ -511,7 +523,43 @@
     </div>
   </div>
 
-  <!-- 4. 历史记录 -->
+  <!-- 4. 同义转换 -->
+  <div id="paraphraseSection" style="display:none;">
+    <div class="card study-card paraphrase-card">
+      <div class="paraphrase-topline">
+        <span id="paraphrasePosition" class="learn-position" style="position:static;">1/1</span>
+        <span id="paraphraseDirectionLabel" class="paraphrase-side">A → B</span>
+      </div>
+      <div class="paraphrase-row">
+        <div>
+          <div class="paraphrase-side">题目</div>
+          <div id="paraphrasePromptEnglish" class="paraphrase-english">famous</div>
+          <div id="paraphrasePromptChinese" class="paraphrase-chinese">有名的</div>
+        </div>
+        <button class="btn-audio" onclick="speakParaphraseSide('prompt')" aria-label="播放题目">🔊</button>
+      </div>
+      <div id="paraphraseAnswer" class="paraphrase-answer" style="display:none;">
+        <div class="paraphrase-row">
+          <div>
+            <div class="paraphrase-side">答案</div>
+            <div id="paraphraseAnswerEnglish" class="paraphrase-english">well-known</div>
+            <div id="paraphraseAnswerChinese" class="paraphrase-chinese">众所周知的</div>
+          </div>
+          <button class="btn-audio" onclick="speakParaphraseSide('answer')" aria-label="播放答案">🔊</button>
+        </div>
+      </div>
+      <div class="paraphrase-actions">
+        <button id="paraphraseDirectionButton" class="btn btn-secondary" onclick="toggleParaphraseDirection()">⇄ A → B</button>
+        <button id="paraphraseRevealButton" class="btn" onclick="toggleParaphraseAnswer()">显示答案</button>
+      </div>
+      <div class="paraphrase-nav">
+        <button class="btn btn-secondary" onclick="previousParaphrase()">← 上一个</button>
+        <button class="btn" onclick="nextParaphrase()">下一个 →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 历史记录 -->
   <div id="historySection" style="display:none;">
     <div class="card" style="text-align:left;">
       <div class="panel-title">学习历史</div>
@@ -650,7 +698,7 @@ const group2 = [
 
 
 const STORAGE_KEY = 'wordTrainerV1';
-const LIBRARY_CACHE_KEY = 'wordTrainerRemoteLibrariesV2';
+const LIBRARY_CACHE_KEY = 'wordTrainerRemoteLibrariesV3';
 const defaultWords = [...group1, ...group2];
 let currentDayWords = [...defaultWords];
 let currentDayKey = '';
@@ -826,6 +874,19 @@ function parseImportedWords(raw) {
     .filter(x=>x.w&&x.m);
 }
 
+function parseParaphrases(raw) {
+  return String(raw || '')
+    .split(/\r?\n/)
+    .map(line => line.replace(/^\uFEFF/, '').trim())
+    .filter(line => line && !line.startsWith('#'))
+    .map(line => {
+      const parts = line.split('|').map(part => part.trim());
+      if (parts.length !== 4 || parts.some(part => !part)) return null;
+      return { aEn:parts[0], aZh:parts[1], bEn:parts[2], bZh:parts[3] };
+    })
+    .filter(Boolean);
+}
+
 function importTodayWords() {
   try {
     const words = parseImportedWords(document.getElementById('importText').value);
@@ -925,11 +986,14 @@ function applyRemoteLibraries(libraries, sourceLabel='网站') {
     words: (lib.words || []).filter(item => {
       const w = String(item?.w || '').trim().replace(/^\uFEFF/, '');
       return w && !w.startsWith('#');
-    })
+    }),
+    paraphrases: (lib.paraphrases || []).filter(item =>
+      item && item.aEn && item.aZh && item.bEn && item.bZh
+    )
   }));
 
   remoteLibraries = libraries
-    .filter(x => Array.isArray(x.words) && (x.words.length || x.hasSpeaking || x.hasListening))
+    .filter(x => x.words.length || x.paraphrases.length || x.hasSpeaking || x.hasListening)
     .sort((a,b) => (b.dayNum || 0) - (a.dayNum || 0) || (b.name || '').localeCompare(a.name || ''));
   remoteLibraryCache = Object.fromEntries(remoteLibraries.map(x => [x.name, x]));
 
@@ -940,6 +1004,7 @@ function applyRemoteLibraries(libraries, sourceLabel='网站') {
     const topic = lib.title ? ` · ${escapeHtml(lib.title)}` : '';
     const contents = [
       lib.words.length ? `${lib.words.length}词` : '',
+      lib.paraphrases.length ? `${lib.paraphrases.length}组转换` : '',
       lib.hasListening ? '听力' : ''
     ].filter(Boolean).join(' · ');
     return `<option value="${escapeHtml(lib.name)}">${escapeHtml(lib.dayLabel)}${topic}${contents ? ` (${contents})` : ''}</option>`;
@@ -950,9 +1015,10 @@ function applyRemoteLibraries(libraries, sourceLabel='网站') {
 }
 
 // ===== GitHub Pages 在线 TXT 词库 =====
-// 最终约定：homework/word###.txt，与 homework/speaking###.txt 通过编号关联。
+// 最终约定：homework/word###.txt、paraphrase###.txt 与 speaking###.txt 通过编号关联。
 // 可选元数据：# Day: 3  /  # Date: 2026-08-15  /  # Topics: Family and Friends | Entertainment and Media
 // 单词行格式：word | 词性 | 中文释义
+// 同义转换格式：英文 A | 中文 A | 英文 B | 中文 B
 let remoteLibraries = [];
 let remoteLibraryCache = {};
 const wordSyncedDays = new Set();
@@ -1014,7 +1080,7 @@ function parseLibraryMeta(text, filename) {
     const m = line.match(/^\s*#\s*([^:：]+)\s*[:：]\s*(.*?)\s*$/);
     if (m) meta[m[1].trim().toLowerCase()] = m[2].trim();
   });
-  const fm = filename.match(/(?:word|day)[-_ ]*0*(\d+)/i);
+  const fm = filename.match(/(?:word|paraphrase|day)[-_ ]*0*(\d+)/i);
   const dayNum = Number(meta.day || (fm ? fm[1] : 0)) || 0;
   return {
     dayNum,
@@ -1081,17 +1147,40 @@ async function refreshRemoteLibraries() {
     if (!files.length) throw new Error('homework 中没有找到作业文件');
 
     const wordFiles = files.filter(file => /^word\d{3}\.txt$/i.test(file.name));
-    const loaded = await Promise.all(wordFiles.map(async f => {
+    const loadedWords = await Promise.all(wordFiles.map(async f => {
       const r = await fetchWithTimeout(f.download_url, { cache:'no-store' });
       if (!r.ok) throw new Error(`无法读取 ${f.name}`);
       const text = await r.text();
       const words = parseImportedWords(text);
-      return { name:f.name, ...parseLibraryMeta(text, f.name), words, hasWord:true, hasSpeaking:false, hasListening:false };
+      return { name:f.name, ...parseLibraryMeta(text, f.name), words, paraphrases:[], hasWord:true, hasParaphrase:false, hasSpeaking:false, hasListening:false };
     }));
 
-    const byDay = new Map(loaded.filter(x => x.words.length).map(library => [library.dayNum, library]));
+    const paraphraseFiles = files.filter(file => /^paraphrase\d{3}\.txt$/i.test(file.name));
+    const loadedParaphrases = await Promise.all(paraphraseFiles.map(async f => {
+      const r = await fetchWithTimeout(f.download_url, { cache:'no-store' });
+      if (!r.ok) throw new Error(`无法读取 ${f.name}`);
+      const text = await r.text();
+      return { file:f.name, meta:parseLibraryMeta(text, f.name), items:parseParaphrases(text) };
+    }));
+
+    const byDay = new Map(loadedWords.filter(x => x.words.length).map(library => [library.dayNum, library]));
+    loadedParaphrases.filter(x => x.items.length).forEach(({ file, meta, items }) => {
+      let library = byDay.get(meta.dayNum);
+      if (!library) {
+        library = {
+          name:`day${String(meta.dayNum).padStart(3,'0')}`,
+          ...meta,
+          words:[], paraphrases:[], hasWord:false, hasParaphrase:false, hasSpeaking:false, hasListening:false
+        };
+        byDay.set(meta.dayNum, library);
+      }
+      library.paraphrases = items;
+      library.hasParaphrase = true;
+      library.paraphraseFile = file;
+      if (!library.title && meta.title) library.title = meta.title;
+    });
     files.forEach(file => {
-      const match = file.name.match(/^(word|speaking|listening)(\d{3})\.(txt|mp3|m4a|ogg)$/i);
+      const match = file.name.match(/^(word|speaking|listening|paraphrase)(\d{3})\.(txt|mp3|m4a|ogg)$/i);
       if (!match) return;
       const dayNum = Number(match[2]);
       let library = byDay.get(dayNum);
@@ -1100,7 +1189,7 @@ async function refreshRemoteLibraries() {
           name:`day${match[2]}`,
           dayNum,
           dayLabel:`Day ${dayNum}`,
-          date:'', title:'', words:[], hasWord:false, hasSpeaking:false, hasListening:false
+          date:'', title:'', words:[], paraphrases:[], hasWord:false, hasParaphrase:false, hasSpeaking:false, hasListening:false
         };
         byDay.set(dayNum, library);
       }
@@ -1108,7 +1197,7 @@ async function refreshRemoteLibraries() {
       if (match[1].toLowerCase() === 'listening' && /^(mp3|m4a|ogg)$/i.test(match[3])) library.hasListening = true;
     });
 
-    const usable = [...byDay.values()].filter(x => x.words.length || x.hasSpeaking || x.hasListening);
+    const usable = [...byDay.values()].filter(x => x.words.length || x.paraphrases.length || x.hasSpeaking || x.hasListening);
     if (!usable.length) throw new Error('homework 中没有识别到有效作业');
 
     saveRemoteLibraryCache(usable);
@@ -1139,7 +1228,21 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
   const key = lib.dayNum ? `day-${String(lib.dayNum).padStart(3,'0')}` : filename.replace(/\.txt$/i,'');
   if (lib.dayNum) showDaySyncStatus(lib.dayNum);
   const hasWords = Array.isArray(lib.words) && lib.words.length > 0;
-  document.getElementById('mainTabWords').disabled = !hasWords;
+  const hasParaphrases = Array.isArray(lib.paraphrases) && lib.paraphrases.length > 0;
+  document.getElementById('mainTabWords').disabled = !hasWords && !hasParaphrases;
+  document.getElementById('mainTabGame').disabled = !hasWords;
+  document.getElementById('printDayButton').disabled = !hasWords;
+  ['learnModeButton', 'quizModeButton', 'spellModeButton'].forEach(id => {
+    document.getElementById(id).disabled = !hasWords;
+  });
+  const paraphraseButton = document.getElementById('paraphraseModeButton');
+  paraphraseButton.style.display = hasParaphrases ? '' : 'none';
+  paraphraseButton.disabled = !hasParaphrases;
+
+  paraphraseItems = hasParaphrases ? [...lib.paraphrases] : [];
+  paraphraseIdx = 0;
+  paraphraseReverse = false;
+  paraphraseRevealed = false;
   if (hasWords) {
     const store = loadStore();
     const old = store.days[key];
@@ -1153,24 +1256,36 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
     migrateStatsToIds(key, store.days[key]);
     saveStore(store);
     loadDay(key);
+  } else {
+    currentDayKey = key;
+    currentDayWords = [];
+    resetActiveList([]);
+    clearWordAudio();
   }
   if (lib.dayNum) {
     const dayName = `day${String(lib.dayNum).padStart(3,'0')}`;
-    loadWordPronunciation(lib.dayNum);
+    if (hasWords) loadWordPronunciation(lib.dayNum);
     loadSpeakingHomework(dayName);
     loadListeningHomework(dayName);
   }
   const select = document.getElementById('librarySelect');
   if (select && select.value !== filename) select.value = filename;
-  if (!hasWords) {
+  if (hasParaphrases && !hasWords) {
+    setOfflineStatus(`✓ Day ${lib.dayNum} 同义转换已离线保存`);
+    switchMainArea('words');
+    switchMode('paraphrase');
+  } else if (!hasWords) {
     setOfflineStatus('听力练习在线播放 · 不加入离线缓存');
-    switchMainArea('listening');
+    switchMainArea(lib.hasSpeaking ? 'speaking' : 'listening');
+  } else if (currentMode === 'paraphrase' && !hasParaphrases) {
+    switchMode('learn');
   }
   const status = document.getElementById('libraryStatus');
   if (status) {
     const total = remoteLibraries.reduce((n,x)=>n+x.words.length,0);
     const currentContents = [
       hasWords ? `${lib.words.length}词` : '暂无单词',
+      hasParaphrases ? `${lib.paraphrases.length}组转换` : '',
       lib.hasSpeaking ? '口语' : '',
       lib.hasListening ? '听力' : ''
     ].filter(Boolean).join(' · ');
@@ -1196,6 +1311,10 @@ let wordAudioCues = new Map();
 let wordAudioSegmentEnd = null;
 let wordAudioFallbackText = '';
 let wordAudioLoadRequestId = 0;
+let paraphraseItems = [];
+let paraphraseIdx = 0;
+let paraphraseReverse = false;
+let paraphraseRevealed = false;
 const WORD_AUDIO_PREROLL_SECONDS = 0.25;
 
 function sanitizeWord(w) {
@@ -1254,6 +1373,19 @@ function speakWithSystemTts(text) {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(sanitizeWord(text));
+  if (!targetVoice) loadVoices();
+  if (targetVoice) u.voice = targetVoice;
+  u.lang = 'en-US';
+  u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function speakEnglishPhrase(text) {
+  if (!('speechSynthesis' in window)) return;
+  const phrase = String(text || '').trim();
+  if (!phrase) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(phrase);
   if (!targetVoice) loadVoices();
   if (targetVoice) u.voice = targetVoice;
   u.lang = 'en-US';
@@ -1430,13 +1562,14 @@ function switchMainArea(area, remember=true) {
 }
 
 function switchMode(mode) {
+  const modeButton = document.querySelector(`.tab-btn[data-mode="${mode}"]`);
+  if (!modeButton || modeButton.disabled || modeButton.style.display === 'none') return;
   if (mode !== 'learn') stopAutoLearn();
   currentMode = mode;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  ['learnSection', 'quizSection', 'spellSection', 'historySection'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.querySelectorAll('.tab-btn[data-mode]').forEach(b => b.classList.remove('active'));
+  ['learnSection', 'quizSection', 'spellSection', 'paraphraseSection', 'historySection'].forEach(id => document.getElementById(id).style.display = 'none');
 
-  const idx = {learn:0, quiz:1, spell:2, history:3}[mode];
-  if (idx !== undefined) document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  modeButton.classList.add('active');
 
   if (mode === 'learn') {
     document.getElementById('learnSection').style.display = 'block'; renderLearn();
@@ -1444,9 +1577,63 @@ function switchMode(mode) {
     document.getElementById('quizSection').style.display = 'block'; quizPool = [...activeList].sort(() => 0.5 - Math.random()); renderQuiz();
   } else if (mode === 'spell') {
     document.getElementById('spellSection').style.display = 'block'; spellPool = [...activeList].sort(() => 0.5 - Math.random()); renderSpell();
+  } else if (mode === 'paraphrase') {
+    document.getElementById('paraphraseSection').style.display = 'block'; renderParaphrase();
   } else {
     document.getElementById('historySection').style.display = 'block'; renderHistory();
   }
+}
+
+function renderParaphrase() {
+  const item = paraphraseItems[paraphraseIdx];
+  if (!item) return;
+  const prompt = paraphraseReverse
+    ? { en:item.bEn, zh:item.bZh }
+    : { en:item.aEn, zh:item.aZh };
+  const answer = paraphraseReverse
+    ? { en:item.aEn, zh:item.aZh }
+    : { en:item.bEn, zh:item.bZh };
+  document.getElementById('paraphrasePosition').innerText = `${paraphraseIdx + 1}/${paraphraseItems.length}`;
+  document.getElementById('paraphraseDirectionLabel').innerText = paraphraseReverse ? 'B → A' : 'A → B';
+  document.getElementById('paraphraseDirectionButton').innerText = paraphraseReverse ? '⇄ B → A' : '⇄ A → B';
+  document.getElementById('paraphrasePromptEnglish').innerText = prompt.en;
+  document.getElementById('paraphrasePromptChinese').innerText = prompt.zh;
+  document.getElementById('paraphraseAnswerEnglish').innerText = answer.en;
+  document.getElementById('paraphraseAnswerChinese').innerText = answer.zh;
+  document.getElementById('paraphraseAnswer').style.display = paraphraseRevealed ? 'block' : 'none';
+  document.getElementById('paraphraseRevealButton').innerText = paraphraseRevealed ? '隐藏答案' : '显示答案';
+  document.getElementById('progressBar').style.width = `${Math.round(((paraphraseIdx + 1) / paraphraseItems.length) * 100)}%`;
+}
+
+function toggleParaphraseAnswer() {
+  paraphraseRevealed = !paraphraseRevealed;
+  renderParaphrase();
+}
+
+function toggleParaphraseDirection() {
+  paraphraseReverse = !paraphraseReverse;
+  paraphraseRevealed = false;
+  renderParaphrase();
+}
+
+function previousParaphrase() {
+  paraphraseIdx = Math.max(0, paraphraseIdx - 1);
+  paraphraseRevealed = false;
+  renderParaphrase();
+}
+
+function nextParaphrase() {
+  paraphraseIdx = Math.min(paraphraseItems.length - 1, paraphraseIdx + 1);
+  paraphraseRevealed = false;
+  renderParaphrase();
+}
+
+function speakParaphraseSide(side) {
+  const item = paraphraseItems[paraphraseIdx];
+  if (!item) return;
+  const promptEnglish = paraphraseReverse ? item.bEn : item.aEn;
+  const answerEnglish = paraphraseReverse ? item.aEn : item.bEn;
+  speakEnglishPhrase(side === 'answer' ? answerEnglish : promptEnglish);
 }
 function updateStreak() {
   document.querySelectorAll('.streak-badge').forEach(badge => {

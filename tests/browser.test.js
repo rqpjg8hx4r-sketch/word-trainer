@@ -1,8 +1,15 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('node:fs');
 const path = require('node:path');
 const { createTestServer } = require('./test-server');
 
 let testServer;
+const homeworkDir = path.resolve(__dirname, '..', 'homework');
+const expectedHomeworkDays = new Set(
+  fs.readdirSync(homeworkDir)
+    .map(file => file.match(/^(?:word|speaking|listening|paraphrase)(\d{3})\./i)?.[1])
+    .filter(Boolean)
+).size;
 
 test.beforeAll(async () => {
   testServer = createTestServer();
@@ -23,11 +30,11 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.27');
+  await expect(page.locator('#appVersion')).toHaveText('v2.28');
   await expect(page).toHaveTitle('每日英语');
-  await expect(page.locator('#librarySelect option')).toHaveCount(11);
+  await expect(page.locator('#librarySelect option')).toHaveCount(expectedHomeworkDays);
   await page.locator('#librarySelect').selectOption('word007.txt');
-  await page.getByRole('tab', { name:/背单词/ }).click();
+  await page.getByRole('tab', { name:/词句练习/ }).click();
   await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
   await expect(page.locator('.header .streak-badge')).toHaveCount(0);
 
@@ -77,14 +84,57 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
 });
 
+test('paraphrase-only homework opens as a reversible phrase exercise', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('day014');
+
+  await expect(page.getByRole('tab', { name:/词句练习/ })).toBeEnabled();
+  await expect(page.getByRole('button', { name:'🔁 同义转换' })).toBeVisible();
+  await expect(page.getByRole('button', { name:'🔁 同义转换' })).toHaveClass(/active/);
+  await expect(page.getByRole('button', { name:'📖 学习模式' })).toBeDisabled();
+  await expect(page.getByRole('button', { name:'🎯 选义测试' })).toBeDisabled();
+  await expect(page.getByRole('button', { name:'🔤 键盘拼写' })).toBeDisabled();
+  await expect(page.getByRole('button', { name:'打印默写' })).toBeDisabled();
+  await expect(page.getByRole('tab', { name:/游戏/ })).toBeDisabled();
+
+  await expect(page.locator('#paraphrasePosition')).toHaveText('1/42');
+  await expect(page.locator('#paraphrasePromptEnglish')).toHaveText('famous');
+  await expect(page.locator('#paraphrasePromptChinese')).toHaveText('有名的');
+  await expect(page.locator('#paraphraseAnswer')).toBeHidden();
+  await page.getByRole('button', { name:'显示答案' }).click();
+  await expect(page.locator('#paraphraseAnswerEnglish')).toHaveText('well-known');
+  await page.getByRole('button', { name:'⇄ A → B' }).click();
+  await expect(page.locator('#paraphrasePromptEnglish')).toHaveText('well-known');
+  await expect(page.locator('#paraphraseAnswer')).toBeHidden();
+  await page.getByRole('button', { name:'下一个 →' }).click();
+  await expect(page.locator('#paraphrasePosition')).toHaveText('2/42');
+
+  const spoken = await page.evaluate(() => {
+    window.__ttsSpoken = [];
+    window.speechSynthesis.cancel = () => {};
+    window.speechSynthesis.speak = utterance => window.__ttsSpoken.push(utterance.text);
+    paraphraseIdx = paraphraseItems.findIndex(item => item.aEn === 'get / have a cold');
+    paraphraseReverse = false;
+    renderParaphrase();
+    speakParaphraseSide('prompt');
+    return window.__ttsSpoken;
+  });
+  expect(spoken).toEqual(['get / have a cold']);
+
+  await page.locator('#librarySelect').selectOption('word013.txt');
+  await expect(page.getByRole('button', { name:'🔁 同义转换' })).toBeHidden();
+  await expect(page.getByRole('button', { name:'📖 学习模式' })).toBeEnabled();
+  await expect(page.getByRole('tab', { name:/游戏/ })).toBeEnabled();
+});
+
 test('the top-level game entry opens a playable typing game for the selected day', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#librarySelect').selectOption('word010.txt');
 
   const tabs = await page.locator('.main-tab').allTextContents();
-  expect(tabs).toEqual(['📚 背单词', '🎧 口语练习', '🎵 听力练习', '🌱 日常练习', '🎮 游戏']);
+  expect(tabs).toEqual(['📚 词句练习', '🎧 口语练习', '🎵 听力练习', '🌱 日常练习', '🎮 游戏']);
   const tabXs = [];
-  for (const name of [/背单词/, /口语练习/, /听力练习/, /日常练习/]) {
+  for (const name of [/词句练习/, /口语练习/, /听力练习/, /日常练习/]) {
     await page.getByRole('tab', { name }).click();
     tabXs.push((await page.locator('.main-tabs').boundingBox()).x);
   }
@@ -237,6 +287,7 @@ test('visited word recordings remain available offline', async ({ browser }) => 
 
   await context.setOffline(true);
   await page.reload();
+  await page.locator('#librarySelect').selectOption('word011.txt');
   await expect.poll(() => page.evaluate(() => wordAudioCues.size)).toBe(onlineCueCount);
   const playback = await page.evaluate(() => {
     window.__ttsSpoken = [];
@@ -254,7 +305,7 @@ test('visited word recordings remain available offline', async ({ browser }) => 
 test('word dictation prints the complete day with Chinese cues only', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#librarySelect').selectOption('word002.txt');
-  await page.getByRole('tab', { name:/背单词/ }).click();
+  await page.getByRole('tab', { name:/词句练习/ }).click();
 
   await expect(page.locator('#wordsArea .toolbar')).toHaveCount(0);
   await expect(page.getByText('手动导入词库（备用）')).toHaveCount(0);
@@ -320,6 +371,7 @@ test('visited days reopen and seek while offline', async ({ browser }) => {
 
   await context.setOffline(true);
   await page.reload();
+  await page.locator('#librarySelect').selectOption('word011.txt');
   await expect(page.locator('#learnWord')).toContainText('ball');
   await page.locator('#librarySelect').selectOption('word007.txt');
   await page.getByRole('tab', { name:/口语练习/ }).click();
@@ -379,9 +431,9 @@ test('a missing latest speaking day cannot overwrite an older selection', async 
 
 test('spelling skips fixed punctuation and supports previous and next navigation', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(11);
+  await expect(page.locator('#librarySelect option')).toHaveCount(expectedHomeworkDays);
   await page.locator('#librarySelect').selectOption('word004.txt');
-  await page.getByRole('tab', { name:/背单词/ }).click();
+  await page.getByRole('tab', { name:/词句练习/ }).click();
   await page.evaluate(() => {
     const words = remoteLibraryCache['word004.txt'].words;
     const punctuated = words.find(item => item.w === 'classical (music)');
@@ -462,7 +514,7 @@ test('a day loads its matching listening audio', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(11);
+  await expect(page.locator('#librarySelect option')).toHaveCount(expectedHomeworkDays);
   await page.locator('#librarySelect').selectOption('word008.txt');
   await page.getByRole('tab', { name:/听力练习/ }).click();
   await expect(page.locator('#listeningBadge')).toContainText('Day 8 · 听力');

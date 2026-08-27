@@ -18,13 +18,28 @@ function fileHash(file) {
   return crypto.createHash('sha256').update(fs.readFileSync(path.join(homeworkDir, file))).digest('hex');
 }
 
-test('word and speaking TXT files use flat three-digit day names', () => {
+test('homework TXT files use supported flat three-digit day names', () => {
   const files = fs.readdirSync(homeworkDir);
   const textFiles = files.filter(file => file.endsWith('.txt'));
   assert.ok(textFiles.length > 0);
   for (const file of textFiles) {
-    assert.match(file, /^(word|speaking)\d{3}\.txt$/);
+    assert.match(file, /^(word|speaking|paraphrase)\d{3}\.txt$/);
     assert.ok(read(file).trim().length > 0, `${file} must not be empty`);
+  }
+});
+
+test('paraphrase TXT files contain complete four-column pairs', () => {
+  const files = fs.readdirSync(homeworkDir).filter(file => /^paraphrase\d{3}\.txt$/.test(file));
+  for (const file of files) {
+    const lines = read(file).replace(/^\uFEFF/, '').split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(line => line && !line.startsWith('#'));
+    assert.ok(lines.length > 0, `${file} must contain at least one pair`);
+    for (const [index, line] of lines.entries()) {
+      const fields = line.split('|').map(value => value.trim());
+      assert.equal(fields.length, 4, `${file}:${index + 1} must contain four fields`);
+      assert.ok(fields.every(Boolean), `${file}:${index + 1} contains an empty field`);
+    }
   }
 });
 
