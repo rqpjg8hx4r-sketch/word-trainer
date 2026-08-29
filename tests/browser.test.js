@@ -1,6 +1,7 @@
 const { test, expect } = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
+const crypto = require('node:crypto');
 const { createTestServer } = require('./test-server');
 
 let testServer;
@@ -30,7 +31,7 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.28');
+  await expect(page.locator('#appVersion')).toHaveText('v2.29');
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(expectedHomeworkDays);
   await page.locator('#librarySelect').selectOption('word007.txt');
@@ -100,14 +101,16 @@ test('paraphrase-only homework opens as a reversible phrase exercise', async ({ 
   await expect(page.locator('#paraphrasePosition')).toHaveText('1/42');
   await expect(page.locator('#paraphrasePromptEnglish')).toHaveText('famous');
   await expect(page.locator('#paraphrasePromptChinese')).toHaveText('有名的');
-  await expect(page.locator('#paraphraseAnswer')).toBeHidden();
-  await page.getByRole('button', { name:'显示答案' }).click();
+  await expect(page.locator('#paraphraseAnswer')).toBeVisible();
   await expect(page.locator('#paraphraseAnswerEnglish')).toHaveText('well-known');
+  await page.getByRole('button', { name:'隐藏答案' }).click();
+  await expect(page.locator('#paraphraseAnswer')).toBeHidden();
   await page.getByRole('button', { name:'⇄ A → B' }).click();
   await expect(page.locator('#paraphrasePromptEnglish')).toHaveText('well-known');
-  await expect(page.locator('#paraphraseAnswer')).toBeHidden();
+  await expect(page.locator('#paraphraseAnswer')).toBeVisible();
   await page.getByRole('button', { name:'下一个 →' }).click();
   await expect(page.locator('#paraphrasePosition')).toHaveText('2/42');
+  await expect(page.locator('#paraphraseAnswer')).toBeVisible();
 
   const spoken = await page.evaluate(() => {
     window.__ttsSpoken = [];
@@ -125,6 +128,54 @@ test('paraphrase-only homework opens as a reversible phrase exercise', async ({ 
   await expect(page.getByRole('button', { name:'🔁 同义转换' })).toBeHidden();
   await expect(page.getByRole('button', { name:'📖 学习模式' })).toBeEnabled();
   await expect(page.getByRole('tab', { name:/游戏/ })).toBeEnabled();
+});
+
+test('paraphrase buttons prefer recorded A/B ranges and fall back when a range is missing', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  const textBytes = fs.readFileSync(path.join(homeworkDir, 'paraphrase014.txt'));
+  const audioBytes = fs.readFileSync(path.join(homeworkDir, 'word010.mp3'));
+  const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+  await page.route('**/homework/paraphrase014.cues.json', route => route.fulfill({
+    status:200,
+    contentType:'application/json',
+    body:JSON.stringify({
+      audio:'paraphrase014.mp3',
+      sourceHash:hash(textBytes),
+      audioHash:hash(audioBytes),
+      segments:{ a1:{ start:1, end:2 }, b1:{ start:2.75, end:3.5 } }
+    })
+  }));
+  await page.route('**/homework/paraphrase014.mp3', route => route.fulfill({
+    status:200,
+    contentType:'audio/mpeg',
+    body:audioBytes
+  }));
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('day014');
+  await expect.poll(() => page.evaluate(() => paraphraseAudioCues.size)).toBe(2);
+
+  const result = await page.evaluate(async () => {
+    window.__ttsSpoken = [];
+    window.__recordedStarts = [];
+    window.speechSynthesis.cancel = () => {};
+    window.speechSynthesis.speak = utterance => window.__ttsSpoken.push(utterance.text);
+    paraphraseAudio.play = () => {
+      window.__recordedStarts.push(paraphraseAudio.currentTime);
+      return Promise.resolve();
+    };
+    paraphraseIdx = 0;
+    paraphraseReverse = false;
+    speakParaphraseSide('prompt');
+    speakParaphraseSide('answer');
+    paraphraseIdx = 1;
+    speakParaphraseSide('prompt');
+    return { starts:window.__recordedStarts, tts:window.__ttsSpoken };
+  });
+  expect(result.starts[0]).toBeCloseTo(0.75, 3);
+  expect(result.starts[1]).toBeCloseTo(2.5, 3);
+  expect(result.tts).toEqual(['receive']);
+  await context.close();
 });
 
 test('the top-level game entry opens a playable typing game for the selected day', async ({ page }) => {

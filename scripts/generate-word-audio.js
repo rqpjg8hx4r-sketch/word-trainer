@@ -348,4 +348,7 @@ async function main() {
 
 if (require.main === module) main();
 
-module.exports = { parseArgs, parseWords, spokenForm, wavDuration, wavPeakDb, partFilename, generateAllMissing };
+module.exports = {
+  parseArgs, parseWords, spokenForm, wavDuration, wavPeakDb, partFilename, generateAllMissing,
+  defaultFfmpeg, defaultInstructions, sha256, requestSpeech, runFfmpeg, concatPath
+};

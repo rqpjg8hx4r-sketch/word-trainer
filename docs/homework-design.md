@@ -189,6 +189,50 @@ Pronounce only the supplied English word or phrase once. Speak in a cheerful and
 
 调试阶段保留中间文件，目录位于仓库上一级的 `temp/day###/`，例如 `alex-english/temp/day009/007-block.wav`。目录中同时保留 `gap.wav`、`concat.txt`、临时合并的 `output.mp3` 和记录生成参数、时长、峰值的 `generation.json`。近静音响应另存为 `007-block.silent-attempt1.wav` 等文件，方便排查。重新生成同一个 Day 会覆盖同名文件，但不会自动删除该目录。
 
+## 本地口语录音生成命令
+
+在 `alex-english` 目录运行：
+
+```bat
+speaking2mp3 014
+```
+
+命令读取 `word-trainer/homework/speaking014.txt`，生成同目录的 `speaking014.mp3` 和 `speaking014.cues.json`。TXT 中的 `Q1/A1`、`Q/A` 及跨行答案使用与网页一致的解析规则；问题和完整答案分别生成 WAV，再直接拼接为一个 MP3，并写入 `q1`、`a1` 等精确时间范围。
+
+不带 Day 时，`speaking2mp3` 会扫描全部 `speaking###.txt`，生成缺少录音或 cues 中 `sourceHash` 已与 TXT 不一致的日期。已有录音且 TXT、cues、音频指纹全部匹配时直接跳过，避免重复调用 API；TXT 修改后则自动重新生成，不必额外传 `--force`。批量模式会保护没有可验证 cues 的旧手工录音，因为程序无法判断 TXT 是否变化；明确运行 `speaking2mp3 001` 时则会为这个 Day 生成新版 MP3 和 cues。Day 参数必须是三位数字。
+
+也可以在 `word-trainer` 目录直接运行：
+
+```powershell
+npm run audio:speaking -- homework/speaking014.txt
+npm run audio:speaking -- homework/speaking014.txt --dry-run
+npm run audio:speaking -- homework/speaking014.txt --force
+npm run audio:speaking-missing
+```
+
+口语生成器固定使用 `gpt-4o-mini-tts`、`marin`、24 kHz 单声道 96 kbps MP3，并在问题和答案片段之间插入 0.75 秒静音。`--force` 可以生成 MP3 替换版本，但不会删除已有 M4A 或 OGG；新 cues 会明确指向生成的 MP3。中间 WAV、拼接清单和生成记录保留在 `alex-english/temp/speaking-day###/`，便于定位问题。
+
+## 本地同义转换录音生成命令
+
+在 `alex-english` 目录运行：
+
+```bat
+paraphrase2mp3 014
+```
+
+命令读取 `word-trainer/homework/paraphrase014.txt` 的英文 A、英文 B 两列，生成 `paraphrase014.mp3` 和 `paraphrase014.cues.json`。时间点使用 `a1`、`b1`、`a2`、`b2` 等键。相同英文在同一个 Day 内只生成一次，所有对应键共用同一段录音；`get / have a cold` 等斜杠短语会转换为 `get or have a cold` 后朗读。
+
+不带 Day 时，`paraphrase2mp3` 会生成所有缺失或 TXT/MP3 指纹已变化的同义转换录音。指纹全部一致时自动跳过。也可以在 `word-trainer` 目录运行：
+
+```powershell
+npm run audio:paraphrase -- homework/paraphrase014.txt
+npm run audio:paraphrase -- homework/paraphrase014.txt --dry-run
+npm run audio:paraphrase -- homework/paraphrase014.txt --force
+npm run audio:paraphrase-missing
+```
+
+生成器复用单词录音的模型、固定提示词、WAV 峰值检查、静音重试和 ffmpeg 拼接逻辑。默认使用 `gpt-4o-mini-tts`、`marin`，相邻的唯一短语间插入 0.75 秒静音。中间文件保留在 `alex-english/temp/paraphrase-day###/`。
+
 ## 网页行为
 
 网页的顶层区域为：**词句练习**、**口语练习**、**听力练习**、**日常练习**和独立的**游戏**入口。前三个区域共享 Day 选择器；日常练习拥有独立素材选择器，不跟随 Day。一次只显示一个区域，并在本地记住上次选择。只有听力内容的 Day 会禁用词句页并自动打开听力页。
@@ -202,8 +246,8 @@ Pronounce only the supplied English word or phrase once. Speak in a cheerful and
 - 同义转换素材使用 `homework/paraphrase###.txt`，每个非注释行固定为 `英文 A | 中文 A | 英文 B | 中文 B`。
 - `paraphrase###.txt` 与其他作业按三位 Day 编号合并发现；即使没有同日 `word###.txt`，该 Day 也会出现在选择器中。
 - 当天有同义转换素材时，词句练习的模式栏动态显示“🔁 同义转换”；旧 Day 没有素材时不显示，不改变原单词流程。
-- 卡片一次显示一组，默认先显示 A，点击后揭示 B；支持 A→B、B→A 切换、上一组、下一组，并可分别朗读题目或答案的完整英文。
-- 同义转换只使用系统英文 TTS，不读取单词 MP3；含 `/` 的短语按原文整句朗读。
+- 卡片一次显示一组，默认同时显示题目和答案，也可手动隐藏答案；支持 A→B、B→A 切换、上一组、下一组，并可分别朗读题目或答案的完整英文。
+- 网页优先读取同名 `paraphrase###.mp3` 和 cues，两个喇叭分别定位 A/B 片段；TXT、MP3 与 cues 指纹必须全部一致。文件缺失、当前侧没有时间点或播放失败时自动回退系统英文 TTS。
 - 只有同义转换而没有单词的 Day 会默认进入同义转换，同时禁用学习、选义、拼写、打印和游戏。首版不提供测验、拼写或独立统计。
 
 页面固定预留纵向滚动条空间，避免在内容长度不同的顶层区域之间切换时整体横向跳动。“连对”只显示在选义和拼写卡片右上角，不占用全局标题区域。

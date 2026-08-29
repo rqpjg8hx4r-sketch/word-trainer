@@ -1,0 +1,1034 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "word013.mp3",
+  "sourceHash": "47989f26c4154cb46edede204a2b44eb64eb67272bc013d8b9c6e3dc1627fde5",
+  "audioHash": "2079250b0891a0297dddcdb10fed1775f43bc47a169a939f951504f30f9ebc4c",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "(aero)/(air) plane",
+      "spokenText": "aero",
+      "start": 0,
+      "end": 1.2
+    },
+    {
+      "index": 1,
+      "sourceText": "leave",
+      "spokenText": "leave",
+      "start": 1.95,
+      "end": 3
+    },
+    {
+      "index": 2,
+      "sourceText": "sailing",
+      "spokenText": "sailing",
+      "start": 3.75,
+      "end": 5.45
+    },
+    {
+      "index": 3,
+      "sourceText": "airport",
+      "spokenText": "airport",
+      "start": 6.2,
+      "end": 7.1
+    },
+    {
+      "index": 4,
+      "sourceText": "left",
+      "spokenText": "left",
+      "start": 7.85,
+      "end": 9
+    },
+    {
+      "index": 5,
+      "sourceText": "seat",
+      "spokenText": "seat",
+      "start": 9.75,
+      "end": 10.65
+    },
+    {
+      "index": 6,
+      "sourceText": "ambulance",
+      "spokenText": "ambulance",
+      "start": 11.4,
+      "end": 12.45
+    },
+    {
+      "index": 7,
+      "sourceText": "light",
+      "spokenText": "light",
+      "start": 13.2,
+      "end": 14.7
+    },
+    {
+      "index": 8,
+      "sourceText": "ship",
+      "spokenText": "ship",
+      "start": 15.45,
+      "end": 16.55
+    },
+    {
+      "index": 9,
+      "sourceText": "backpack",
+      "spokenText": "backpack",
+      "start": 17.3,
+      "end": 18.35
+    },
+    {
+      "index": 10,
+      "sourceText": "luggage",
+      "spokenText": "luggage",
+      "start": 19.1,
+      "end": 20.35
+    },
+    {
+      "index": 11,
+      "sourceText": "station",
+      "spokenText": "station",
+      "start": 21.1,
+      "end": 22.65
+    },
+    {
+      "index": 12,
+      "sourceText": "boat",
+      "spokenText": "boat",
+      "start": 23.4,
+      "end": 24.35
+    },
+    {
+      "index": 13,
+      "sourceText": "machine",
+      "spokenText": "machine",
+      "start": 25.1,
+      "end": 26.3
+    },
+    {
+      "index": 14,
+      "sourceText": "stop",
+      "spokenText": "stop",
+      "start": 27.05,
+      "end": 28.5
+    },
+    {
+      "index": 15,
+      "sourceText": "bridge",
+      "spokenText": "bridge",
+      "start": 29.25,
+      "end": 30.15
+    },
+    {
+      "index": 16,
+      "sourceText": "map",
+      "spokenText": "map",
+      "start": 30.9,
+      "end": 31.85
+    },
+    {
+      "index": 17,
+      "sourceText": "straight on",
+      "spokenText": "straight on",
+      "start": 32.6,
+      "end": 33.95
+    },
+    {
+      "index": 18,
+      "sourceText": "bus",
+      "spokenText": "bus",
+      "start": 34.7,
+      "end": 35.45
+    },
+    {
+      "index": 19,
+      "sourceText": "mechanic",
+      "spokenText": "mechanic",
+      "start": 36.2,
+      "end": 37
+    },
+    {
+      "index": 20,
+      "sourceText": "street",
+      "spokenText": "street",
+      "start": 37.75,
+      "end": 38.8
+    },
+    {
+      "index": 21,
+      "sourceText": "bus station",
+      "spokenText": "bus station",
+      "start": 39.55,
+      "end": 40.75
+    },
+    {
+      "index": 22,
+      "sourceText": "mirror",
+      "spokenText": "mirror",
+      "start": 41.5,
+      "end": 42.2
+    },
+    {
+      "index": 23,
+      "sourceText": "suitcase",
+      "spokenText": "suitcase",
+      "start": 42.95,
+      "end": 44.3
+    },
+    {
+      "index": 24,
+      "sourceText": "bus stop",
+      "spokenText": "bus stop",
+      "start": 45.05,
+      "end": 46.55
+    },
+    {
+      "index": 25,
+      "sourceText": "miss",
+      "spokenText": "miss",
+      "start": 47.3,
+      "end": 48.25
+    },
+    {
+      "index": 26,
+      "sourceText": "taxi",
+      "spokenText": "taxi",
+      "start": 49,
+      "end": 49.95
+    },
+    {
+      "index": 27,
+      "sourceText": "car",
+      "spokenText": "car",
+      "start": 50.7,
+      "end": 51.5
+    },
+    {
+      "index": 28,
+      "sourceText": "motorbike",
+      "spokenText": "motorbike",
+      "start": 52.25,
+      "end": 54.65
+    },
+    {
+      "index": 29,
+      "sourceText": "ticket",
+      "spokenText": "ticket",
+      "start": 55.4,
+      "end": 56.35
+    },
+    {
+      "index": 30,
+      "sourceText": "case",
+      "spokenText": "case",
+      "start": 57.1,
+      "end": 57.95
+    },
+    {
+      "index": 31,
+      "sourceText": "motorway",
+      "spokenText": "motorway",
+      "start": 58.7,
+      "end": 59.5
+    },
+    {
+      "index": 32,
+      "sourceText": "tour",
+      "spokenText": "tour",
+      "start": 60.25,
+      "end": 61.2
+    },
+    {
+      "index": 33,
+      "sourceText": "coach",
+      "spokenText": "coach",
+      "start": 61.95,
+      "end": 63.65
+    },
+    {
+      "index": 34,
+      "sourceText": "move",
+      "spokenText": "move",
+      "start": 64.4,
+      "end": 65.55
+    },
+    {
+      "index": 35,
+      "sourceText": "tour guide",
+      "spokenText": "tour guide",
+      "start": 66.3,
+      "end": 67.25
+    },
+    {
+      "index": 36,
+      "sourceText": "country",
+      "spokenText": "country",
+      "start": 68,
+      "end": 69.15
+    },
+    {
+      "index": 37,
+      "sourceText": "oil",
+      "spokenText": "oil",
+      "start": 69.9,
+      "end": 70.75
+    },
+    {
+      "index": 38,
+      "sourceText": "tourist",
+      "spokenText": "tourist",
+      "start": 71.5,
+      "end": 72.95
+    },
+    {
+      "index": 39,
+      "sourceText": "delay",
+      "spokenText": "delay",
+      "start": 73.7,
+      "end": 74.75
+    },
+    {
+      "index": 40,
+      "sourceText": "park",
+      "spokenText": "park",
+      "start": 75.5,
+      "end": 76.45
+    },
+    {
+      "index": 41,
+      "sourceText": "tourist information centre",
+      "spokenText": "tourist information centre",
+      "start": 77.2,
+      "end": 79.65
+    },
+    {
+      "index": 42,
+      "sourceText": "delayed",
+      "spokenText": "delayed",
+      "start": 80.4,
+      "end": 81.45
+    },
+    {
+      "index": 43,
+      "sourceText": "passenger",
+      "spokenText": "passenger",
+      "start": 82.2,
+      "end": 83.25
+    },
+    {
+      "index": 44,
+      "sourceText": "traffic",
+      "spokenText": "traffic",
+      "start": 84,
+      "end": 85.1
+    },
+    {
+      "index": 45,
+      "sourceText": "drive",
+      "spokenText": "drive",
+      "start": 85.85,
+      "end": 86.55
+    },
+    {
+      "index": 46,
+      "sourceText": "passport",
+      "spokenText": "passport",
+      "start": 87.3,
+      "end": 88.3
+    },
+    {
+      "index": 47,
+      "sourceText": "traffic light",
+      "spokenText": "traffic light",
+      "start": 89.05,
+      "end": 90.75
+    },
+    {
+      "index": 48,
+      "sourceText": "driver",
+      "spokenText": "driver",
+      "start": 91.5,
+      "end": 92.95
+    },
+    {
+      "index": 49,
+      "sourceText": "petrol",
+      "spokenText": "petrol",
+      "start": 93.7,
+      "end": 94.5
+    },
+    {
+      "index": 50,
+      "sourceText": "train",
+      "spokenText": "train",
+      "start": 95.25,
+      "end": 96.65
+    },
+    {
+      "index": 51,
+      "sourceText": "driving/driver's licence",
+      "spokenText": "driving",
+      "start": 97.4,
+      "end": 99.8
+    },
+    {
+      "index": 52,
+      "sourceText": "petrol station",
+      "spokenText": "petrol station",
+      "start": 100.55,
+      "end": 102.35
+    },
+    {
+      "index": 53,
+      "sourceText": "tram",
+      "spokenText": "tram",
+      "start": 103.1,
+      "end": 104.45
+    },
+    {
+      "index": 54,
+      "sourceText": "engine",
+      "spokenText": "engine",
+      "start": 105.2,
+      "end": 106.45
+    },
+    {
+      "index": 55,
+      "sourceText": "pilot",
+      "spokenText": "pilot",
+      "start": 107.2,
+      "end": 108.1
+    },
+    {
+      "index": 56,
+      "sourceText": "travel",
+      "spokenText": "travel",
+      "start": 108.85,
+      "end": 109.65
+    },
+    {
+      "index": 57,
+      "sourceText": "engineer",
+      "spokenText": "engineer",
+      "start": 110.4,
+      "end": 111.75
+    },
+    {
+      "index": 58,
+      "sourceText": "platform",
+      "spokenText": "platform",
+      "start": 112.5,
+      "end": 113.45
+    },
+    {
+      "index": 59,
+      "sourceText": "trip",
+      "spokenText": "trip",
+      "start": 114.2,
+      "end": 115
+    },
+    {
+      "index": 60,
+      "sourceText": "explorer",
+      "spokenText": "explorer",
+      "start": 115.75,
+      "end": 117.3
+    },
+    {
+      "index": 61,
+      "sourceText": "railway",
+      "spokenText": "railway",
+      "start": 118.05,
+      "end": 119.7
+    },
+    {
+      "index": 62,
+      "sourceText": "tyre",
+      "spokenText": "tyre",
+      "start": 120.45,
+      "end": 121.45
+    },
+    {
+      "index": 63,
+      "sourceText": "far",
+      "spokenText": "far",
+      "start": 122.2,
+      "end": 123.1
+    },
+    {
+      "index": 64,
+      "sourceText": "repair",
+      "spokenText": "repair",
+      "start": 123.85,
+      "end": 124.8
+    },
+    {
+      "index": 65,
+      "sourceText": "underground",
+      "spokenText": "underground",
+      "start": 125.55,
+      "end": 127.15
+    },
+    {
+      "index": 66,
+      "sourceText": "flight",
+      "spokenText": "flight",
+      "start": 127.9,
+      "end": 128.8
+    },
+    {
+      "index": 67,
+      "sourceText": "return",
+      "spokenText": "return",
+      "start": 129.55,
+      "end": 131.1
+    },
+    {
+      "index": 68,
+      "sourceText": "visit",
+      "spokenText": "visit",
+      "start": 131.85,
+      "end": 133.15
+    },
+    {
+      "index": 69,
+      "sourceText": "fly",
+      "spokenText": "fly",
+      "start": 133.9,
+      "end": 134.9
+    },
+    {
+      "index": 70,
+      "sourceText": "ride",
+      "spokenText": "ride",
+      "start": 135.65,
+      "end": 136.85
+    },
+    {
+      "index": 71,
+      "sourceText": "visitor",
+      "spokenText": "visitor",
+      "start": 137.6,
+      "end": 138.6
+    },
+    {
+      "index": 72,
+      "sourceText": "garage",
+      "spokenText": "garage",
+      "start": 139.35,
+      "end": 140.6
+    },
+    {
+      "index": 73,
+      "sourceText": "right",
+      "spokenText": "right",
+      "start": 141.35,
+      "end": 142.75
+    },
+    {
+      "index": 74,
+      "sourceText": "way",
+      "spokenText": "way",
+      "start": 143.5,
+      "end": 144.5
+    },
+    {
+      "index": 75,
+      "sourceText": "helicopter",
+      "spokenText": "helicopter",
+      "start": 145.25,
+      "end": 146.4
+    },
+    {
+      "index": 76,
+      "sourceText": "road",
+      "spokenText": "road",
+      "start": 147.15,
+      "end": 148.35
+    },
+    {
+      "index": 77,
+      "sourceText": "wheel",
+      "spokenText": "wheel",
+      "start": 149.1,
+      "end": 149.9
+    },
+    {
+      "index": 78,
+      "sourceText": "journey",
+      "spokenText": "journey",
+      "start": 150.65,
+      "end": 152.7
+    },
+    {
+      "index": 79,
+      "sourceText": "roundabout",
+      "spokenText": "roundabout",
+      "start": 153.45,
+      "end": 154.75
+    },
+    {
+      "index": 80,
+      "sourceText": "window",
+      "spokenText": "window",
+      "start": 155.5,
+      "end": 156.85
+    },
+    {
+      "index": 81,
+      "sourceText": "actor",
+      "spokenText": "actor",
+      "start": 157.6,
+      "end": 158.8
+    },
+    {
+      "index": 82,
+      "sourceText": "email",
+      "spokenText": "email",
+      "start": 159.55,
+      "end": 160.7
+    },
+    {
+      "index": 83,
+      "sourceText": "office",
+      "spokenText": "office",
+      "start": 161.45,
+      "end": 162.95
+    },
+    {
+      "index": 84,
+      "sourceText": "artist",
+      "spokenText": "artist",
+      "start": 163.7,
+      "end": 166.15
+    },
+    {
+      "index": 85,
+      "sourceText": "engineer",
+      "spokenText": "engineer",
+      "start": 166.9,
+      "end": 168.3
+    },
+    {
+      "index": 86,
+      "sourceText": "painter",
+      "spokenText": "painter",
+      "start": 169.05,
+      "end": 169.85
+    },
+    {
+      "index": 87,
+      "sourceText": "boss",
+      "spokenText": "boss",
+      "start": 170.6,
+      "end": 173.1
+    },
+    {
+      "index": 88,
+      "sourceText": "explorer",
+      "spokenText": "explorer",
+      "start": 173.85,
+      "end": 174.8
+    },
+    {
+      "index": 89,
+      "sourceText": "photographer",
+      "spokenText": "photographer",
+      "start": 175.55,
+      "end": 178.35
+    },
+    {
+      "index": 90,
+      "sourceText": "break",
+      "spokenText": "break",
+      "start": 179.1,
+      "end": 180.05
+    },
+    {
+      "index": 91,
+      "sourceText": "factory",
+      "spokenText": "factory",
+      "start": 180.8,
+      "end": 181.75
+    },
+    {
+      "index": 92,
+      "sourceText": "pilot",
+      "spokenText": "pilot",
+      "start": 182.5,
+      "end": 183.6
+    },
+    {
+      "index": 93,
+      "sourceText": "business",
+      "spokenText": "business",
+      "start": 184.35,
+      "end": 186
+    },
+    {
+      "index": 94,
+      "sourceText": "farm",
+      "spokenText": "farm",
+      "start": 186.75,
+      "end": 187.6
+    },
+    {
+      "index": 95,
+      "sourceText": "police officer",
+      "spokenText": "police officer",
+      "start": 188.35,
+      "end": 189.85
+    },
+    {
+      "index": 96,
+      "sourceText": "businessman",
+      "spokenText": "businessman",
+      "start": 190.6,
+      "end": 192
+    },
+    {
+      "index": 97,
+      "sourceText": "farmer",
+      "spokenText": "farmer",
+      "start": 192.75,
+      "end": 193.95
+    },
+    {
+      "index": 98,
+      "sourceText": "queen",
+      "spokenText": "queen",
+      "start": 194.7,
+      "end": 196
+    },
+    {
+      "index": 99,
+      "sourceText": "businesswoman",
+      "spokenText": "businesswoman",
+      "start": 196.75,
+      "end": 197.95
+    },
+    {
+      "index": 100,
+      "sourceText": "footballer",
+      "spokenText": "footballer",
+      "start": 198.7,
+      "end": 199.55
+    },
+    {
+      "index": 101,
+      "sourceText": "receptionist",
+      "spokenText": "receptionist",
+      "start": 200.3,
+      "end": 201.65
+    },
+    {
+      "index": 102,
+      "sourceText": "chemist",
+      "spokenText": "chemist",
+      "start": 202.4,
+      "end": 204.25
+    },
+    {
+      "index": 103,
+      "sourceText": "football player",
+      "spokenText": "football player",
+      "start": 205,
+      "end": 206.15
+    },
+    {
+      "index": 104,
+      "sourceText": "secretary",
+      "spokenText": "secretary",
+      "start": 206.9,
+      "end": 207.9
+    },
+    {
+      "index": 105,
+      "sourceText": "cleaner",
+      "spokenText": "cleaner",
+      "start": 208.65,
+      "end": 210.65
+    },
+    {
+      "index": 106,
+      "sourceText": "guest",
+      "spokenText": "guest",
+      "start": 211.4,
+      "end": 212.65
+    },
+    {
+      "index": 107,
+      "sourceText": "shop assistant",
+      "spokenText": "shop assistant",
+      "start": 213.4,
+      "end": 214.95
+    },
+    {
+      "index": 108,
+      "sourceText": "coach",
+      "spokenText": "coach",
+      "start": 215.7,
+      "end": 216.65
+    },
+    {
+      "index": 109,
+      "sourceText": "guide",
+      "spokenText": "guide",
+      "start": 217.4,
+      "end": 219.1
+    },
+    {
+      "index": 110,
+      "sourceText": "shopper",
+      "spokenText": "shopper",
+      "start": 219.85,
+      "end": 220.85
+    },
+    {
+      "index": 111,
+      "sourceText": "company",
+      "spokenText": "company",
+      "start": 221.6,
+      "end": 223.35
+    },
+    {
+      "index": 112,
+      "sourceText": "instructions",
+      "spokenText": "instructions",
+      "start": 224.1,
+      "end": 226.55
+    },
+    {
+      "index": 113,
+      "sourceText": "singer",
+      "spokenText": "singer",
+      "start": 227.3,
+      "end": 228.55
+    },
+    {
+      "index": 114,
+      "sourceText": "computer",
+      "spokenText": "computer",
+      "start": 229.3,
+      "end": 230.25
+    },
+    {
+      "index": 115,
+      "sourceText": "job",
+      "spokenText": "job",
+      "start": 231,
+      "end": 232.15
+    },
+    {
+      "index": 116,
+      "sourceText": "staff",
+      "spokenText": "staff",
+      "start": 232.9,
+      "end": 234.15
+    },
+    {
+      "index": 117,
+      "sourceText": "cook",
+      "spokenText": "cook",
+      "start": 234.9,
+      "end": 236.15
+    },
+    {
+      "index": 118,
+      "sourceText": "journalist",
+      "spokenText": "journalist",
+      "start": 236.9,
+      "end": 238.4
+    },
+    {
+      "index": 119,
+      "sourceText": "student",
+      "spokenText": "student",
+      "start": 239.15,
+      "end": 240.8
+    },
+    {
+      "index": 120,
+      "sourceText": "customer",
+      "spokenText": "customer",
+      "start": 241.55,
+      "end": 242.45
+    },
+    {
+      "index": 121,
+      "sourceText": "king",
+      "spokenText": "king",
+      "start": 243.2,
+      "end": 244.75
+    },
+    {
+      "index": 122,
+      "sourceText": "teacher",
+      "spokenText": "teacher",
+      "start": 245.5,
+      "end": 246.3
+    },
+    {
+      "index": 123,
+      "sourceText": "dentist",
+      "spokenText": "dentist",
+      "start": 247.05,
+      "end": 248.35
+    },
+    {
+      "index": 124,
+      "sourceText": "letter",
+      "spokenText": "letter",
+      "start": 249.1,
+      "end": 250
+    },
+    {
+      "index": 125,
+      "sourceText": "tennis player",
+      "spokenText": "tennis player",
+      "start": 250.75,
+      "end": 252.05
+    },
+    {
+      "index": 126,
+      "sourceText": "desk",
+      "spokenText": "desk",
+      "start": 252.8,
+      "end": 255.65
+    },
+    {
+      "index": 127,
+      "sourceText": "manager",
+      "spokenText": "manager",
+      "start": 256.4,
+      "end": 257.45
+    },
+    {
+      "index": 128,
+      "sourceText": "tour guide",
+      "spokenText": "tour guide",
+      "start": 258.2,
+      "end": 259.5
+    },
+    {
+      "index": 129,
+      "sourceText": "diary",
+      "spokenText": "diary",
+      "start": 260.25,
+      "end": 261.8
+    },
+    {
+      "index": 130,
+      "sourceText": "mechanic",
+      "spokenText": "mechanic",
+      "start": 262.55,
+      "end": 263.55
+    },
+    {
+      "index": 131,
+      "sourceText": "uniform",
+      "spokenText": "uniform",
+      "start": 264.3,
+      "end": 265.7
+    },
+    {
+      "index": 132,
+      "sourceText": "diploma",
+      "spokenText": "diploma",
+      "start": 266.45,
+      "end": 267.35
+    },
+    {
+      "index": 133,
+      "sourceText": "meeting",
+      "spokenText": "meeting",
+      "start": 268.1,
+      "end": 268.95
+    },
+    {
+      "index": 134,
+      "sourceText": "waiter / waitress",
+      "spokenText": "waiter",
+      "start": 269.7,
+      "end": 270.5
+    },
+    {
+      "index": 135,
+      "sourceText": "doctor",
+      "spokenText": "doctor",
+      "start": 271.25,
+      "end": 273.2
+    },
+    {
+      "index": 136,
+      "sourceText": "message",
+      "spokenText": "message",
+      "start": 273.95,
+      "end": 275.75
+    },
+    {
+      "index": 137,
+      "sourceText": "work",
+      "spokenText": "work",
+      "start": 276.5,
+      "end": 277.2
+    },
+    {
+      "index": 138,
+      "sourceText": "Dr",
+      "spokenText": "Dr",
+      "start": 277.95,
+      "end": 278.8
+    },
+    {
+      "index": 139,
+      "sourceText": "musician",
+      "spokenText": "musician",
+      "start": 279.55,
+      "end": 280.65
+    },
+    {
+      "index": 140,
+      "sourceText": "worker",
+      "spokenText": "worker",
+      "start": 281.4,
+      "end": 282.95
+    },
+    {
+      "index": 141,
+      "sourceText": "driver",
+      "spokenText": "driver",
+      "start": 283.7,
+      "end": 284.45
+    },
+    {
+      "index": 142,
+      "sourceText": "nurse",
+      "spokenText": "nurse",
+      "start": 285.2,
+      "end": 286.15
+    },
+    {
+      "index": 143,
+      "sourceText": "writer",
+      "spokenText": "writer",
+      "start": 286.9,
+      "end": 287.85
+    },
+    {
+      "index": 144,
+      "sourceText": "earn",
+      "spokenText": "earn",
+      "start": 288.6,
+      "end": 289.8
+    },
+    {
+      "index": 145,
+      "sourceText": "occupation",
+      "spokenText": "occupation",
+      "start": 290.55,
+      "end": 291.55
+    }
+  ]
+}

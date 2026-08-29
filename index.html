@@ -313,7 +313,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.28</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.29</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
   </div>
 
   <div class="library-panel">
@@ -538,7 +538,7 @@
         </div>
         <button class="btn-audio" onclick="speakParaphraseSide('prompt')" aria-label="播放题目">🔊</button>
       </div>
-      <div id="paraphraseAnswer" class="paraphrase-answer" style="display:none;">
+      <div id="paraphraseAnswer" class="paraphrase-answer">
         <div class="paraphrase-row">
           <div>
             <div class="paraphrase-side">答案</div>
@@ -550,7 +550,7 @@
       </div>
       <div class="paraphrase-actions">
         <button id="paraphraseDirectionButton" class="btn btn-secondary" onclick="toggleParaphraseDirection()">⇄ A → B</button>
-        <button id="paraphraseRevealButton" class="btn" onclick="toggleParaphraseAnswer()">显示答案</button>
+        <button id="paraphraseRevealButton" class="btn" onclick="toggleParaphraseAnswer()">隐藏答案</button>
       </div>
       <div class="paraphrase-nav">
         <button class="btn btn-secondary" onclick="previousParaphrase()">← 上一个</button>
@@ -1242,7 +1242,7 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
   paraphraseItems = hasParaphrases ? [...lib.paraphrases] : [];
   paraphraseIdx = 0;
   paraphraseReverse = false;
-  paraphraseRevealed = false;
+  paraphraseRevealed = true;
   if (hasWords) {
     const store = loadStore();
     const old = store.days[key];
@@ -1265,6 +1265,11 @@ function selectRemoteLibrary(filename, sourceLabel='网站') {
   if (lib.dayNum) {
     const dayName = `day${String(lib.dayNum).padStart(3,'0')}`;
     if (hasWords) loadWordPronunciation(lib.dayNum);
+    if (hasParaphrases) loadParaphrasePronunciation(lib.dayNum);
+    else {
+      paraphraseAudioLoadRequestId++;
+      clearParaphraseAudio();
+    }
     loadSpeakingHomework(dayName);
     loadListeningHomework(dayName);
   }
@@ -1314,7 +1319,13 @@ let wordAudioLoadRequestId = 0;
 let paraphraseItems = [];
 let paraphraseIdx = 0;
 let paraphraseReverse = false;
-let paraphraseRevealed = false;
+let paraphraseRevealed = true;
+let paraphraseAudio = null;
+let paraphraseAudioObjectUrl = '';
+let paraphraseAudioCues = new Map();
+let paraphraseAudioSegmentEnd = null;
+let paraphraseAudioFallbackText = '';
+let paraphraseAudioLoadRequestId = 0;
 const WORD_AUDIO_PREROLL_SECONDS = 0.25;
 
 function sanitizeWord(w) {
@@ -1391,6 +1402,109 @@ function speakEnglishPhrase(text) {
   u.lang = 'en-US';
   u.rate = 0.88;
   window.speechSynthesis.speak(u);
+}
+
+function clearParaphraseAudio() {
+  if (paraphraseAudio) {
+    paraphraseAudio.pause();
+    paraphraseAudio.removeAttribute('src');
+  }
+  if (paraphraseAudioObjectUrl) URL.revokeObjectURL(paraphraseAudioObjectUrl);
+  paraphraseAudioObjectUrl = '';
+  paraphraseAudioCues = new Map();
+  paraphraseAudioSegmentEnd = null;
+  paraphraseAudioFallbackText = '';
+}
+
+function ensureParaphraseAudio() {
+  if (paraphraseAudio) return paraphraseAudio;
+  paraphraseAudio = new Audio();
+  paraphraseAudio.preload = 'auto';
+  paraphraseAudio.addEventListener('timeupdate', () => {
+    if (Number.isFinite(paraphraseAudioSegmentEnd) && paraphraseAudio.currentTime >= paraphraseAudioSegmentEnd) {
+      paraphraseAudio.pause();
+      paraphraseAudioSegmentEnd = null;
+      paraphraseAudioFallbackText = '';
+    }
+  });
+  paraphraseAudio.addEventListener('error', () => {
+    const fallbackText = paraphraseAudioFallbackText;
+    paraphraseAudioSegmentEnd = null;
+    paraphraseAudioFallbackText = '';
+    if (fallbackText) speakEnglishPhrase(fallbackText);
+  });
+  return paraphraseAudio;
+}
+
+async function loadParaphrasePronunciation(dayNumber) {
+  const requestId = ++paraphraseAudioLoadRequestId;
+  clearParaphraseAudio();
+  const day = String(Number(dayNumber)).padStart(3, '0');
+  const baseName = `paraphrase${day}`;
+  const textUrl = `homework/${baseName}.txt`;
+  const cueUrl = `homework/${baseName}.cues.json`;
+  try {
+    const [textResponse, cuesResponse] = await Promise.all([
+      fetchWithTimeout(textUrl, { cache:'no-store' }),
+      fetchWithTimeout(cueUrl, { cache:'no-store' })
+    ]);
+    if (!textResponse.ok || !cuesResponse.ok) return;
+    const [textBytes, cuesBytes] = await Promise.all([
+      textResponse.arrayBuffer(), cuesResponse.arrayBuffer()
+    ]);
+    const textHash = await sha256Hex(textBytes);
+    const cuesHash = await sha256Hex(cuesBytes);
+    const cues = JSON.parse(new TextDecoder().decode(cuesBytes));
+    if (!new RegExp(`^${baseName}\\.mp3$`, 'i').test(cues.audio || '')) return;
+    if (!/^[a-f0-9]{64}$/i.test(cues.sourceHash || '') || cues.sourceHash.toLowerCase() !== textHash) return;
+
+    const audioResponse = await fetchWithTimeout(`homework/${cues.audio}`, { cache:'no-store' });
+    if (!audioResponse.ok) return;
+    const audioBytes = await audioResponse.arrayBuffer();
+    const audioHash = await sha256Hex(audioBytes);
+    if (!/^[a-f0-9]{64}$/i.test(cues.audioHash || '') || cues.audioHash.toLowerCase() !== audioHash) return;
+    if (requestId !== paraphraseAudioLoadRequestId) return;
+
+    const validSegments = Object.entries(cues.segments || {}).filter(([key, range]) =>
+      /^[ab]\d+$/i.test(key)
+      && Number.isFinite(Number(range?.start)) && Number.isFinite(Number(range?.end))
+      && Number(range.start) >= 0 && Number(range.end) > Number(range.start)
+    );
+    if (!validSegments.length) return;
+    paraphraseAudioCues = new Map(validSegments.map(([key, range]) => [key.toLowerCase(), {
+      start:Number(range.start), end:Number(range.end)
+    }]));
+    paraphraseAudioObjectUrl = URL.createObjectURL(new Blob([audioBytes], { type:'audio/mpeg' }));
+    const audio = ensureParaphraseAudio();
+    audio.src = paraphraseAudioObjectUrl;
+    audio.load();
+    cacheDayForOffline(dayNumber, [
+      { url:textUrl, sha256:textHash },
+      { url:cueUrl, sha256:cuesHash },
+      { url:`homework/${cues.audio}`, sha256:audioHash }
+    ]);
+  } catch (error) {
+    // 录音是可选增强；任一文件缺失或校验失败时由按钮回退系统 TTS。
+  }
+}
+
+function playParaphraseSegment(key, fallbackText) {
+  const cue = paraphraseAudioCues.get(String(key).toLowerCase());
+  if (!cue || !paraphraseAudio?.src) {
+    speakEnglishPhrase(fallbackText);
+    return;
+  }
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  paraphraseAudio.pause();
+  paraphraseAudioFallbackText = fallbackText;
+  paraphraseAudioSegmentEnd = cue.end;
+  paraphraseAudio.currentTime = Math.max(0, cue.start - WORD_AUDIO_PREROLL_SECONDS);
+  paraphraseAudio.play().catch(() => {
+    const text = paraphraseAudioFallbackText;
+    paraphraseAudioFallbackText = '';
+    paraphraseAudioSegmentEnd = null;
+    if (text) speakEnglishPhrase(text);
+  });
 }
 
 function clearWordAudio() {
@@ -1612,19 +1726,19 @@ function toggleParaphraseAnswer() {
 
 function toggleParaphraseDirection() {
   paraphraseReverse = !paraphraseReverse;
-  paraphraseRevealed = false;
+  paraphraseRevealed = true;
   renderParaphrase();
 }
 
 function previousParaphrase() {
   paraphraseIdx = Math.max(0, paraphraseIdx - 1);
-  paraphraseRevealed = false;
+  paraphraseRevealed = true;
   renderParaphrase();
 }
 
 function nextParaphrase() {
   paraphraseIdx = Math.min(paraphraseItems.length - 1, paraphraseIdx + 1);
-  paraphraseRevealed = false;
+  paraphraseRevealed = true;
   renderParaphrase();
 }
 
@@ -1633,7 +1747,9 @@ function speakParaphraseSide(side) {
   if (!item) return;
   const promptEnglish = paraphraseReverse ? item.bEn : item.aEn;
   const answerEnglish = paraphraseReverse ? item.aEn : item.bEn;
-  speakEnglishPhrase(side === 'answer' ? answerEnglish : promptEnglish);
+  const promptKey = `${paraphraseReverse ? 'b' : 'a'}${paraphraseIdx + 1}`;
+  const answerKey = `${paraphraseReverse ? 'a' : 'b'}${paraphraseIdx + 1}`;
+  playParaphraseSegment(side === 'answer' ? answerKey : promptKey, side === 'answer' ? answerEnglish : promptEnglish);
 }
 function updateStreak() {
   document.querySelectorAll('.streak-badge').forEach(badge => {

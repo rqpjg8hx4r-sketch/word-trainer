@@ -1,0 +1,516 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "paraphrase014.mp3",
+  "sourceHash": "7737e478ab1b0b1584424e4236aae315a914087dbcf982c8ebbe03286c786a5f",
+  "audioHash": "77909ceeb12dccf52c00482b031f16591b6cc19d07cac7ec69f1583b65dadf78",
+  "gapSeconds": 0.75,
+  "segments": {
+    "a1": {
+      "sourceText": "famous",
+      "spokenText": "famous",
+      "start": 0,
+      "end": 0.85
+    },
+    "b1": {
+      "sourceText": "well-known",
+      "spokenText": "well-known",
+      "start": 1.6,
+      "end": 3.05
+    },
+    "a2": {
+      "sourceText": "receive",
+      "spokenText": "receive",
+      "start": 3.8,
+      "end": 5.65
+    },
+    "b2": {
+      "sourceText": "get",
+      "spokenText": "get",
+      "start": 6.4,
+      "end": 7.3
+    },
+    "a3": {
+      "sourceText": "You get a packet of sweets",
+      "spokenText": "You get a packet of sweets",
+      "start": 8.05,
+      "end": 10.2
+    },
+    "b3": {
+      "sourceText": "she gives you a present",
+      "spokenText": "she gives you a present",
+      "start": 10.95,
+      "end": 13
+    },
+    "a4": {
+      "sourceText": "enjoy",
+      "spokenText": "enjoy",
+      "start": 13.75,
+      "end": 14.7
+    },
+    "b4": {
+      "sourceText": "have fun with",
+      "spokenText": "have fun with",
+      "start": 15.45,
+      "end": 17.35
+    },
+    "a5": {
+      "sourceText": "classmates",
+      "spokenText": "classmates",
+      "start": 18.1,
+      "end": 19.3
+    },
+    "b5": {
+      "sourceText": "friends",
+      "spokenText": "friends",
+      "start": 20.05,
+      "end": 21.1
+    },
+    "a6": {
+      "sourceText": "£45 is too much",
+      "spokenText": "£45 is too much",
+      "start": 21.85,
+      "end": 23.9
+    },
+    "b6": {
+      "sourceText": "too expensive",
+      "spokenText": "too expensive",
+      "start": 24.65,
+      "end": 26.1
+    },
+    "a7": {
+      "sourceText": "can win",
+      "spokenText": "can win",
+      "start": 26.85,
+      "end": 28.25
+    },
+    "b7": {
+      "sourceText": "enter a competition",
+      "spokenText": "enter a competition",
+      "start": 29,
+      "end": 30.7
+    },
+    "a8": {
+      "sourceText": "something to carry all the stuff to eat",
+      "spokenText": "something to carry all the stuff to eat",
+      "start": 31.45,
+      "end": 34.3
+    },
+    "b8": {
+      "sourceText": "picnic bag",
+      "spokenText": "picnic bag",
+      "start": 35.05,
+      "end": 36.15
+    },
+    "a9": {
+      "sourceText": "bats and balls",
+      "spokenText": "bats and balls",
+      "start": 36.9,
+      "end": 38.95
+    },
+    "b9": {
+      "sourceText": "sports equipment",
+      "spokenText": "sports equipment",
+      "start": 39.7,
+      "end": 42.1
+    },
+    "a10": {
+      "sourceText": "art equipment",
+      "spokenText": "art equipment",
+      "start": 42.85,
+      "end": 44.4
+    },
+    "b10": {
+      "sourceText": "pencils and paints",
+      "spokenText": "pencils and paints",
+      "start": 45.15,
+      "end": 46.85
+    },
+    "a11": {
+      "sourceText": "everyone takes part, answering questions in teams",
+      "spokenText": "everyone takes part, answering questions in teams",
+      "start": 47.6,
+      "end": 51.2
+    },
+    "b11": {
+      "sourceText": "quiz",
+      "spokenText": "quiz",
+      "start": 51.95,
+      "end": 53.4
+    },
+    "a12": {
+      "sourceText": "the book ends",
+      "spokenText": "the book ends",
+      "start": 54.15,
+      "end": 55.65
+    },
+    "b12": {
+      "sourceText": "the last few pages",
+      "spokenText": "the last few pages",
+      "start": 56.4,
+      "end": 58.3
+    },
+    "a13": {
+      "sourceText": "enjoy the pictures",
+      "spokenText": "enjoy the pictures",
+      "start": 59.05,
+      "end": 61
+    },
+    "b13": {
+      "sourceText": "love looking at the drawings",
+      "spokenText": "love looking at the drawings",
+      "start": 61.75,
+      "end": 63.95
+    },
+    "a14": {
+      "sourceText": "different from my own",
+      "spokenText": "different from my own",
+      "start": 64.7,
+      "end": 67.1
+    },
+    "b14": {
+      "sourceText": "I know nothing about",
+      "spokenText": "I know nothing about",
+      "start": 67.85,
+      "end": 69.55
+    },
+    "a15": {
+      "sourceText": "not very well-known",
+      "spokenText": "not very well-known",
+      "start": 70.3,
+      "end": 71.95
+    },
+    "b15": {
+      "sourceText": "not many people have heard it",
+      "spokenText": "not many people have heard it",
+      "start": 72.7,
+      "end": 74.5
+    },
+    "a16": {
+      "sourceText": "sad",
+      "spokenText": "sad",
+      "start": 75.25,
+      "end": 76.7
+    },
+    "b16": {
+      "sourceText": "quite upset",
+      "spokenText": "quite upset",
+      "start": 77.45,
+      "end": 78.95
+    },
+    "a17": {
+      "sourceText": "father and mother",
+      "spokenText": "father and mother",
+      "start": 79.7,
+      "end": 81.3
+    },
+    "b17": {
+      "sourceText": "parents",
+      "spokenText": "parents",
+      "start": 82.05,
+      "end": 83.05
+    },
+    "a18": {
+      "sourceText": "do well in studies",
+      "spokenText": "do well in studies",
+      "start": 83.8,
+      "end": 85.65
+    },
+    "b18": {
+      "sourceText": "be successful at school",
+      "spokenText": "be successful at school",
+      "start": 86.4,
+      "end": 88.75
+    },
+    "a19": {
+      "sourceText": "matters more",
+      "spokenText": "matters more",
+      "start": 89.5,
+      "end": 90.75
+    },
+    "b19": {
+      "sourceText": "the most important thing",
+      "spokenText": "the most important thing",
+      "start": 91.5,
+      "end": 93.45
+    },
+    "a20": {
+      "sourceText": "at least 11, less fun for people over 13",
+      "spokenText": "at least 11, less fun for people over 13",
+      "start": 94.2,
+      "end": 98
+    },
+    "b20": {
+      "sourceText": "best for ages 11 to 13",
+      "spokenText": "best for ages 11 to 13",
+      "start": 98.75,
+      "end": 101.55
+    },
+    "a21": {
+      "sourceText": "hard",
+      "spokenText": "hard",
+      "start": 102.3,
+      "end": 103.55
+    },
+    "b21": {
+      "sourceText": "difficult",
+      "spokenText": "difficult",
+      "start": 104.3,
+      "end": 105.55
+    },
+    "a22": {
+      "sourceText": "sailing",
+      "spokenText": "sailing",
+      "start": 106.3,
+      "end": 107.75
+    },
+    "b22": {
+      "sourceText": "go out on a boat",
+      "spokenText": "go out on a boat",
+      "start": 108.5,
+      "end": 110
+    },
+    "a23": {
+      "sourceText": "towel",
+      "spokenText": "towel",
+      "start": 110.75,
+      "end": 111.5
+    },
+    "b23": {
+      "sourceText": "something to dry yourself with",
+      "spokenText": "something to dry yourself with",
+      "start": 112.25,
+      "end": 114.1
+    },
+    "a24": {
+      "sourceText": "across the road",
+      "spokenText": "across the road",
+      "start": 114.85,
+      "end": 116.55
+    },
+    "b24": {
+      "sourceText": "opposite",
+      "spokenText": "opposite",
+      "start": 117.3,
+      "end": 118.65
+    },
+    "a25": {
+      "sourceText": "get / have a cold",
+      "spokenText": "get or have a cold",
+      "start": 119.4,
+      "end": 121.55
+    },
+    "b25": {
+      "sourceText": "ill",
+      "spokenText": "ill",
+      "start": 122.3,
+      "end": 123.35
+    },
+    "a26": {
+      "sourceText": "farm",
+      "spokenText": "farm",
+      "start": 124.1,
+      "end": 126.15
+    },
+    "b26": {
+      "sourceText": "see animals outside",
+      "spokenText": "see animals outside",
+      "start": 126.9,
+      "end": 128.8
+    },
+    "a27": {
+      "sourceText": "I'd like to get some sleep",
+      "spokenText": "I'd like to get some sleep",
+      "start": 129.55,
+      "end": 131.45
+    },
+    "b27": {
+      "sourceText": "tired",
+      "spokenText": "tired",
+      "start": 132.2,
+      "end": 134
+    },
+    "a28": {
+      "sourceText": "big / small",
+      "spokenText": "big or small",
+      "start": 134.75,
+      "end": 136.75
+    },
+    "b28": {
+      "sourceText": "size",
+      "spokenText": "size",
+      "start": 137.5,
+      "end": 138.7
+    },
+    "a29": {
+      "sourceText": "couldn't afford it",
+      "spokenText": "couldn't afford it",
+      "start": 139.45,
+      "end": 141
+    },
+    "b29": {
+      "sourceText": "too expensive",
+      "spokenText": "too expensive",
+      "start": 24.65,
+      "end": 26.1
+    },
+    "a30": {
+      "sourceText": "big shop",
+      "spokenText": "big shop",
+      "start": 141.75,
+      "end": 143.15
+    },
+    "b30": {
+      "sourceText": "large store",
+      "spokenText": "large store",
+      "start": 143.9,
+      "end": 145.7
+    },
+    "a31": {
+      "sourceText": "borrow books",
+      "spokenText": "borrow books",
+      "start": 146.45,
+      "end": 147.8
+    },
+    "b31": {
+      "sourceText": "library",
+      "spokenText": "library",
+      "start": 148.55,
+      "end": 149.7
+    },
+    "a32": {
+      "sourceText": "flat",
+      "spokenText": "flat",
+      "start": 150.45,
+      "end": 151.55
+    },
+    "b32": {
+      "sourceText": "apartment",
+      "spokenText": "apartment",
+      "start": 152.3,
+      "end": 153.5
+    },
+    "a33": {
+      "sourceText": "travel to different countries",
+      "spokenText": "travel to different countries",
+      "start": 154.25,
+      "end": 156.45
+    },
+    "b33": {
+      "sourceText": "go around the world",
+      "spokenText": "go around the world",
+      "start": 157.2,
+      "end": 159.15
+    },
+    "a34": {
+      "sourceText": "a family of musicians",
+      "spokenText": "a family of musicians",
+      "start": 159.9,
+      "end": 162.35
+    },
+    "b34": {
+      "sourceText": "parents are in a rock group",
+      "spokenText": "parents are in a rock group",
+      "start": 163.1,
+      "end": 165.45
+    },
+    "a35": {
+      "sourceText": "was paid",
+      "spokenText": "was paid",
+      "start": 166.2,
+      "end": 168.25
+    },
+    "b35": {
+      "sourceText": "make extra money",
+      "spokenText": "make extra money",
+      "start": 169,
+      "end": 171
+    },
+    "a36": {
+      "sourceText": "15",
+      "spokenText": "15",
+      "start": 171.75,
+      "end": 173.1
+    },
+    "b36": {
+      "sourceText": "teenager",
+      "spokenText": "teenager",
+      "start": 173.85,
+      "end": 175.2
+    },
+    "a37": {
+      "sourceText": "has his own show on the radio",
+      "spokenText": "has his own show on the radio",
+      "start": 175.95,
+      "end": 178.3
+    },
+    "b37": {
+      "sourceText": "works for a radio station",
+      "spokenText": "works for a radio station",
+      "start": 179.05,
+      "end": 181.4
+    },
+    "a38": {
+      "sourceText": "musicians",
+      "spokenText": "musicians",
+      "start": 182.15,
+      "end": 183.6
+    },
+    "b38": {
+      "sourceText": "pop bands",
+      "spokenText": "pop bands",
+      "start": 184.35,
+      "end": 185.9
+    },
+    "a39": {
+      "sourceText": "band",
+      "spokenText": "band",
+      "start": 186.65,
+      "end": 187.45
+    },
+    "b39": {
+      "sourceText": "rock group",
+      "spokenText": "rock group",
+      "start": 188.2,
+      "end": 189.75
+    },
+    "a40": {
+      "sourceText": "highway",
+      "spokenText": "highway",
+      "start": 190.5,
+      "end": 191.45
+    },
+    "b40": {
+      "sourceText": "road",
+      "spokenText": "road",
+      "start": 192.2,
+      "end": 193.05
+    },
+    "a41": {
+      "sourceText": "near",
+      "spokenText": "near",
+      "start": 193.8,
+      "end": 194.9
+    },
+    "b41": {
+      "sourceText": "close to",
+      "spokenText": "close to",
+      "start": 195.65,
+      "end": 197.3
+    },
+    "a42": {
+      "sourceText": "from other countries",
+      "spokenText": "from other countries",
+      "start": 198.05,
+      "end": 199.8
+    },
+    "b42": {
+      "sourceText": "from around the world",
+      "spokenText": "from around the world",
+      "start": 200.55,
+      "end": 203.05
+    }
+  }
+}

@@ -1,0 +1,492 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "paraphrase015.mp3",
+  "sourceHash": "9e1fbb9743e16405d05b257e7e57fbb2c9f606b8cd127c9875ee59b8fc81d82a",
+  "audioHash": "e60735a00932ae93d94ffd58d647ab733fde3c7a0b8855995d685c2fb4df912a",
+  "gapSeconds": 0.75,
+  "segments": {
+    "a1": {
+      "sourceText": "prize",
+      "spokenText": "prize",
+      "start": 0,
+      "end": 0.95
+    },
+    "b1": {
+      "sourceText": "something the winner gets",
+      "spokenText": "something the winner gets",
+      "start": 1.7,
+      "end": 3.65
+    },
+    "a2": {
+      "sourceText": "arrive",
+      "spokenText": "arrive",
+      "start": 4.4,
+      "end": 5.65
+    },
+    "b2": {
+      "sourceText": "get to",
+      "spokenText": "get to",
+      "start": 6.4,
+      "end": 7.25
+    },
+    "a3": {
+      "sourceText": "a person she knows",
+      "spokenText": "a person she knows",
+      "start": 8,
+      "end": 9.65
+    },
+    "b3": {
+      "sourceText": "grandma",
+      "spokenText": "grandma",
+      "start": 10.4,
+      "end": 11.4
+    },
+    "a4": {
+      "sourceText": "from 500 to 1000",
+      "spokenText": "from 500 to 1000",
+      "start": 12.15,
+      "end": 14.65
+    },
+    "b4": {
+      "sourceText": "between 500 and 1000",
+      "spokenText": "between 500 and 1000",
+      "start": 15.4,
+      "end": 19.1
+    },
+    "a5": {
+      "sourceText": "500 or less",
+      "spokenText": "500 or less",
+      "start": 19.85,
+      "end": 22
+    },
+    "b5": {
+      "sourceText": "at most 500",
+      "spokenText": "at most 500",
+      "start": 22.75,
+      "end": 24.4
+    },
+    "a6": {
+      "sourceText": "uncle's son",
+      "spokenText": "uncle's son",
+      "start": 25.15,
+      "end": 27.05
+    },
+    "b6": {
+      "sourceText": "cousin",
+      "spokenText": "cousin",
+      "start": 27.8,
+      "end": 28.75
+    },
+    "a7": {
+      "sourceText": "amazing",
+      "spokenText": "amazing",
+      "start": 29.5,
+      "end": 31
+    },
+    "b7": {
+      "sourceText": "surprised",
+      "spokenText": "surprised",
+      "start": 31.75,
+      "end": 33.25
+    },
+    "a8": {
+      "sourceText": "need to be quieter",
+      "spokenText": "need to be quieter",
+      "start": 34,
+      "end": 35.85
+    },
+    "b8": {
+      "sourceText": "too loud",
+      "spokenText": "too loud",
+      "start": 36.6,
+      "end": 38.6
+    },
+    "a9": {
+      "sourceText": "play an instrument",
+      "spokenText": "play an instrument",
+      "start": 39.35,
+      "end": 41.05
+    },
+    "b9": {
+      "sourceText": "be good at music",
+      "spokenText": "be good at music",
+      "start": 41.8,
+      "end": 43.7
+    },
+    "a10": {
+      "sourceText": "an excellent swimmer",
+      "spokenText": "an excellent swimmer",
+      "start": 44.45,
+      "end": 46.85
+    },
+    "b10": {
+      "sourceText": "be able to swim",
+      "spokenText": "be able to swim",
+      "start": 47.6,
+      "end": 49.65
+    },
+    "a11": {
+      "sourceText": "join",
+      "spokenText": "join",
+      "start": 50.4,
+      "end": 53.3
+    },
+    "b11": {
+      "sourceText": "become a member",
+      "spokenText": "become a member",
+      "start": 54.05,
+      "end": 55.4
+    },
+    "a12": {
+      "sourceText": "love",
+      "spokenText": "love",
+      "start": 56.15,
+      "end": 57.3
+    },
+    "b12": {
+      "sourceText": "be interested in",
+      "spokenText": "be interested in",
+      "start": 58.05,
+      "end": 59.95
+    },
+    "a13": {
+      "sourceText": "what she teaches",
+      "spokenText": "what she teaches",
+      "start": 60.7,
+      "end": 62.1
+    },
+    "b13": {
+      "sourceText": "subject",
+      "spokenText": "subject",
+      "start": 62.85,
+      "end": 65.55
+    },
+    "a14": {
+      "sourceText": "can be successful",
+      "spokenText": "can be successful",
+      "start": 66.3,
+      "end": 68.7
+    },
+    "b14": {
+      "sourceText": "can do it",
+      "spokenText": "can do it",
+      "start": 69.45,
+      "end": 71.05
+    },
+    "a15": {
+      "sourceText": "want to be a science teacher",
+      "spokenText": "want to be a science teacher",
+      "start": 71.8,
+      "end": 74.7
+    },
+    "b15": {
+      "sourceText": "choose his future career",
+      "spokenText": "choose his future career",
+      "start": 75.45,
+      "end": 78.35
+    },
+    "a16": {
+      "sourceText": "improve quickly",
+      "spokenText": "improve quickly",
+      "start": 79.1,
+      "end": 80.95
+    },
+    "b16": {
+      "sourceText": "soon understand them better",
+      "spokenText": "soon understand them better",
+      "start": 81.7,
+      "end": 84.15
+    },
+    "a17": {
+      "sourceText": "be good at drawing",
+      "spokenText": "be good at drawing",
+      "start": 84.9,
+      "end": 86.6
+    },
+    "b17": {
+      "sourceText": "be able to draw wonderful pictures",
+      "spokenText": "be able to draw wonderful pictures",
+      "start": 87.35,
+      "end": 90.95
+    },
+    "a18": {
+      "sourceText": "came first",
+      "spokenText": "came first",
+      "start": 91.7,
+      "end": 93.3
+    },
+    "b18": {
+      "sourceText": "win a competition",
+      "spokenText": "win a competition",
+      "start": 94.05,
+      "end": 95.95
+    },
+    "a19": {
+      "sourceText": "sit quietly by myself",
+      "spokenText": "sit quietly by myself",
+      "start": 96.7,
+      "end": 99.8
+    },
+    "b19": {
+      "sourceText": "be alone",
+      "spokenText": "be alone",
+      "start": 100.55,
+      "end": 102
+    },
+    "a20": {
+      "sourceText": "worry",
+      "spokenText": "worry",
+      "start": 102.75,
+      "end": 103.5
+    },
+    "b20": {
+      "sourceText": "be a bit scared",
+      "spokenText": "be a bit scared",
+      "start": 104.25,
+      "end": 106.5
+    },
+    "a21": {
+      "sourceText": "won't remember",
+      "spokenText": "won't remember",
+      "start": 107.25,
+      "end": 108.6
+    },
+    "b21": {
+      "sourceText": "forget",
+      "spokenText": "forget",
+      "start": 109.35,
+      "end": 110.85
+    },
+    "a22": {
+      "sourceText": "words",
+      "spokenText": "words",
+      "start": 111.6,
+      "end": 112.75
+    },
+    "b22": {
+      "sourceText": "what she has to say",
+      "spokenText": "what she has to say",
+      "start": 113.5,
+      "end": 115.75
+    },
+    "a23": {
+      "sourceText": "excited",
+      "spokenText": "excited",
+      "start": 116.5,
+      "end": 117.55
+    },
+    "b23": {
+      "sourceText": "happy",
+      "spokenText": "happy",
+      "start": 118.3,
+      "end": 119.35
+    },
+    "a24": {
+      "sourceText": "family",
+      "spokenText": "family",
+      "start": 120.1,
+      "end": 121.35
+    },
+    "b24": {
+      "sourceText": "aunt and uncle",
+      "spokenText": "aunt and uncle",
+      "start": 122.1,
+      "end": 124
+    },
+    "a25": {
+      "sourceText": "cycle",
+      "spokenText": "cycle",
+      "start": 124.75,
+      "end": 125.8
+    },
+    "b25": {
+      "sourceText": "by bike",
+      "spokenText": "by bike",
+      "start": 126.55,
+      "end": 127.95
+    },
+    "a26": {
+      "sourceText": "watch a video",
+      "spokenText": "watch a video",
+      "start": 128.7,
+      "end": 130.5
+    },
+    "b26": {
+      "sourceText": "saw a film",
+      "spokenText": "saw a film",
+      "start": 131.25,
+      "end": 133.15
+    },
+    "a27": {
+      "sourceText": "a drink",
+      "spokenText": "a drink",
+      "start": 133.9,
+      "end": 135.1
+    },
+    "b27": {
+      "sourceText": "a glass of juice",
+      "spokenText": "a glass of juice",
+      "start": 135.85,
+      "end": 137.65
+    },
+    "a28": {
+      "sourceText": "big enough for two people to sleep in",
+      "spokenText": "big enough for two people to sleep in",
+      "start": 138.4,
+      "end": 141.6
+    },
+    "b28": {
+      "sourceText": "tent",
+      "spokenText": "tent",
+      "start": 142.35,
+      "end": 143.2
+    },
+    "a29": {
+      "sourceText": "something to put on the wall",
+      "spokenText": "something to put on the wall",
+      "start": 143.95,
+      "end": 145.95
+    },
+    "b29": {
+      "sourceText": "poster",
+      "spokenText": "poster",
+      "start": 146.7,
+      "end": 147.6
+    },
+    "a30": {
+      "sourceText": "can put my school books in it",
+      "spokenText": "can put my school books in it",
+      "start": 148.35,
+      "end": 150.75
+    },
+    "b30": {
+      "sourceText": "backpack",
+      "spokenText": "backpack",
+      "start": 151.5,
+      "end": 152.6
+    },
+    "a31": {
+      "sourceText": "keep me warm in winter",
+      "spokenText": "keep me warm in winter",
+      "start": 153.35,
+      "end": 155.4
+    },
+    "b31": {
+      "sourceText": "scarf",
+      "spokenText": "scarf",
+      "start": 156.15,
+      "end": 157.35
+    },
+    "a32": {
+      "sourceText": "it's the right size for my arm",
+      "spokenText": "it's the right size for my arm",
+      "start": 158.1,
+      "end": 160.7
+    },
+    "b32": {
+      "sourceText": "bracelet",
+      "spokenText": "bracelet",
+      "start": 161.45,
+      "end": 163.1
+    },
+    "a33": {
+      "sourceText": "drive us",
+      "spokenText": "drive us",
+      "start": 163.85,
+      "end": 165.25
+    },
+    "b33": {
+      "sourceText": "give us a lift",
+      "spokenText": "give us a lift",
+      "start": 166,
+      "end": 167.25
+    },
+    "a34": {
+      "sourceText": "copy down",
+      "spokenText": "copy down",
+      "start": 168,
+      "end": 169.5
+    },
+    "b34": {
+      "sourceText": "make a note",
+      "spokenText": "make a note",
+      "start": 170.25,
+      "end": 171.5
+    },
+    "a35": {
+      "sourceText": "welcome parents and friends",
+      "spokenText": "welcome parents and friends",
+      "start": 172.25,
+      "end": 174.65
+    },
+    "b35": {
+      "sourceText": "students can invite visitors",
+      "spokenText": "students can invite visitors",
+      "start": 175.4,
+      "end": 177.45
+    },
+    "a36": {
+      "sourceText": "excited",
+      "spokenText": "excited",
+      "start": 116.5,
+      "end": 117.55
+    },
+    "b36": {
+      "sourceText": "couldn't wait to",
+      "spokenText": "couldn't wait to",
+      "start": 178.2,
+      "end": 180
+    },
+    "a37": {
+      "sourceText": "a lot of traffic",
+      "spokenText": "a lot of traffic",
+      "start": 180.75,
+      "end": 182.5
+    },
+    "b37": {
+      "sourceText": "cars and buses make walking difficult",
+      "spokenText": "cars and buses make walking difficult",
+      "start": 183.25,
+      "end": 186.15
+    },
+    "a38": {
+      "sourceText": "prepare carefully",
+      "spokenText": "prepare carefully",
+      "start": 186.9,
+      "end": 188.4
+    },
+    "b38": {
+      "sourceText": "find out all I can about it",
+      "spokenText": "find out all I can about it",
+      "start": 189.15,
+      "end": 191.8
+    },
+    "a39": {
+      "sourceText": "favourite",
+      "spokenText": "favourite",
+      "start": 192.55,
+      "end": 193.7
+    },
+    "b39": {
+      "sourceText": "like most",
+      "spokenText": "like most",
+      "start": 194.45,
+      "end": 196.55
+    },
+    "a40": {
+      "sourceText": "outside Rome",
+      "spokenText": "outside Rome",
+      "start": 197.3,
+      "end": 198.7
+    },
+    "b40": {
+      "sourceText": "countryside",
+      "spokenText": "countryside",
+      "start": 199.45,
+      "end": 200.7
+    }
+  }
+}

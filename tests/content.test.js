@@ -6,6 +6,20 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { execFileSync } = require('node:child_process');
 const { parseArgs, spokenForm, wavDuration, wavPeakDb, partFilename } = require('../scripts/generate-word-audio');
+const {
+  parseArgs:parseSpeakingArgs,
+  parseSpeaking,
+  normalizeSpeechText,
+  partFilename:speakingPartFilename,
+  inspectAudioState
+} = require('../scripts/generate-speaking-audio');
+const {
+  parseArgs:parseParaphraseAudioArgs,
+  spokenPhrase,
+  parseParaphrases:parseParaphraseAudio,
+  uniquePhrases:uniqueParaphrasePhrases,
+  partFilename:paraphrasePartFilename
+} = require('../scripts/generate-paraphrase-audio');
 
 const root = path.resolve(__dirname, '..');
 const homeworkDir = path.join(root, 'homework');
@@ -41,6 +55,36 @@ test('paraphrase TXT files contain complete four-column pairs', () => {
       assert.ok(fields.every(Boolean), `${file}:${index + 1} contains an empty field`);
     }
   }
+});
+
+test('paraphrase audio command creates A/B keys and deduplicates repeated phrases', () => {
+  const segments = parseParaphraseAudio([
+    '# English A | 中文 A | English B | 中文 B',
+    'get / have a cold | 感冒 | ill | 生病',
+    'ill | 生病 | unwell | 不舒服'
+  ].join('\n'));
+  const phrases = uniqueParaphrasePhrases(segments);
+  assert.deepEqual(segments.map(segment => segment.key), ['a1', 'b1', 'a2', 'b2']);
+  assert.equal(segments[0].spokenText, 'get or have a cold');
+  assert.equal(phrases.length, 3);
+  assert.deepEqual(phrases.find(phrase => phrase.spokenText === 'ill').keys, ['b1', 'a2']);
+  assert.equal(paraphrasePartFilename(phrases[0]), '001-a1-get-or-have-a-cold.wav');
+  assert.equal(parseParaphraseAudioArgs(['--all-missing']).allMissing, true);
+  assert.equal(spokenPhrase('big / small'), 'big or small');
+});
+
+test('paraphrase audio command dry-run reads both sides of a real lesson', () => {
+  const output = execFileSync(process.execPath, [
+    path.join(root, 'scripts', 'generate-paraphrase-audio.js'),
+    path.join(homeworkDir, 'paraphrase014.txt'),
+    '--dry-run'
+  ], { encoding:'utf8', maxBuffer:1024 * 1024 });
+  const result = JSON.parse(output);
+  assert.equal(result.pairs, 42);
+  assert.equal(result.segments.length, 84);
+  assert.equal(result.segments[0].key, 'a1');
+  assert.equal(result.segments[1].key, 'b1');
+  assert.ok(result.uniquePhrases.length < result.segments.length);
 });
 
 test('word audio command parses a requested entry limit without calling the API', () => {
@@ -125,6 +169,67 @@ test('word audio parts use stable numbered filenames', () => {
   assert.equal(spokenForm('  children’s   race!  '), "children's race");
 });
 
+test('speaking audio command parses numbered, unnumbered, and multiline Q/A text', () => {
+  const segments = parseSpeaking([
+    '# Day: 14',
+    'Q: Do you like it?',
+    'A: Yes, I do.',
+    'This continuation belongs to the answer.',
+    '',
+    'Q2: Why?',
+    'A2: Because it is fun.'
+  ].join('\n'));
+  assert.deepEqual(segments.map(segment => segment.key), ['q1', 'a1', 'q2', 'a2']);
+  assert.equal(segments[1].text, 'Yes, I do. This continuation belongs to the answer.');
+  assert.equal(normalizeSpeechText('I don’t use mechanical TTS — ever.'), "I don't use mechanical TTS - ever.");
+  assert.match(speakingPartFilename(segments[0]), /^001-q1-do-you-like-it\.wav$/);
+});
+
+test('speaking audio command supports all-missing and dry-run modes', () => {
+  assert.equal(parseSpeakingArgs(['--all-missing']).allMissing, true);
+  assert.equal(parseSpeakingArgs(['homework/speaking014.txt', '--dry-run']).dryRun, true);
+  const output = execFileSync(process.execPath, [
+    path.join(root, 'scripts', 'generate-speaking-audio.js'),
+    path.join(homeworkDir, 'speaking014.txt'),
+    '--dry-run'
+  ], { encoding:'utf8' });
+  const result = JSON.parse(output);
+  assert.equal(result.count, 2);
+  assert.deepEqual(result.segments.map(segment => segment.key), ['q1', 'a1']);
+  assert.match(result.segments[1].text, /I like running outdoors/);
+});
+
+test('speaking audio command skips an existing M4A without requiring the API', () => {
+  const env = { ...process.env };
+  delete env.OPENAI_API_KEY;
+  const output = execFileSync(process.execPath, [
+    path.join(root, 'scripts', 'generate-speaking-audio.js'),
+    path.join(homeworkDir, 'speaking006.txt')
+  ], { encoding:'utf8', env });
+  assert.match(output, /Skipped existing .*speaking006\.m4a/i);
+});
+
+test('speaking audio state detects a changed TXT from its cues fingerprint', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'speaking-audio-state-'));
+  const base = path.join(tempDir, 'speaking999');
+  const oldText = Buffer.from('Q: Old question.\nA: Old answer.\n');
+  const newText = Buffer.from('Q: New question.\nA: New answer.\n');
+  const audio = Buffer.from('existing audio');
+  fs.writeFileSync(`${base}.m4a`, audio);
+  fs.writeFileSync(`${base}.cues.json`, JSON.stringify({
+    audio:'speaking999.m4a',
+    sourceHash:crypto.createHash('sha256').update(oldText).digest('hex'),
+    audioHash:crypto.createHash('sha256').update(audio).digest('hex'),
+    segments:{ q1:{ start:0, end:1 }, a1:{ start:1.75, end:3 } }
+  }));
+  try {
+    assert.equal(inspectAudioState(base, oldText).status, 'up-to-date');
+    assert.equal(inspectAudioState(base, newText).status, 'stale');
+  } finally {
+    fs.rmSync(tempDir, { recursive:true, force:true });
+  }
+});
+
 test('speaking TXT files contain displayable text', () => {
   const files = fs.readdirSync(homeworkDir).filter(file => /^speaking\d{3}\.txt$/.test(file));
   for (const file of files) {
@@ -174,6 +279,25 @@ test('word cue files match their text and audio and contain valid items', () => 
       assert.ok(item.sourceText.trim(), `${file}: sourceText is empty`);
       assert.ok(Number.isFinite(item.start) && Number.isFinite(item.end));
       assert.ok(item.start >= 0 && item.end > item.start, `${file}: invalid item range`);
+    }
+  }
+});
+
+test('paraphrase cue files match their text and audio and contain valid A/B ranges', () => {
+  const files = fs.readdirSync(homeworkDir).filter(file => /^paraphrase\d{3}\.cues\.json$/.test(file));
+  for (const file of files) {
+    const day = file.match(/\d{3}/)[0];
+    const cues = JSON.parse(read(file));
+    assert.equal(cues.audio, `paraphrase${day}.mp3`);
+    assert.ok(fs.existsSync(path.join(homeworkDir, cues.audio)), `${cues.audio} is missing`);
+    assert.equal(cues.sourceHash, fileHash(`paraphrase${day}.txt`), `${file}: sourceHash is stale`);
+    assert.equal(cues.audioHash, fileHash(cues.audio), `${file}: audioHash is stale`);
+    for (const [key, range] of Object.entries(cues.segments || {})) {
+      assert.match(key, /^[ab]\d+$/);
+      assert.equal(typeof range.sourceText, 'string');
+      assert.equal(typeof range.spokenText, 'string');
+      assert.ok(Number.isFinite(range.start) && Number.isFinite(range.end));
+      assert.ok(range.start >= 0 && range.end > range.start, `${file}: invalid ${key} range`);
     }
   }
 });
