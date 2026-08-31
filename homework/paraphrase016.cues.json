@@ -1,0 +1,372 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "paraphrase016.mp3",
+  "sourceHash": "db0eea7229e9ead967f45940935c5c2c56eb112f6fbe3d3db2ee2acd55fc027b",
+  "audioHash": "a47946bbf34749cfa76fe4bf81409a7a32947058f0e8f83f33c7f77cd19f47e3",
+  "gapSeconds": 0.75,
+  "segments": {
+    "a1": {
+      "sourceText": "it doesn't matter",
+      "spokenText": "it doesn't matter",
+      "start": 0,
+      "end": 2.25
+    },
+    "b1": {
+      "sourceText": "it's not a problem",
+      "spokenText": "it's not a problem",
+      "start": 3,
+      "end": 4.6
+    },
+    "a2": {
+      "sourceText": "first time",
+      "spokenText": "first time",
+      "start": 5.35,
+      "end": 6.65
+    },
+    "b2": {
+      "sourceText": "never done before",
+      "spokenText": "never done before",
+      "start": 7.4,
+      "end": 8.85
+    },
+    "a3": {
+      "sourceText": "become a member",
+      "spokenText": "become a member",
+      "start": 9.6,
+      "end": 11.35
+    },
+    "b3": {
+      "sourceText": "join",
+      "spokenText": "join",
+      "start": 12.1,
+      "end": 13.25
+    },
+    "a4": {
+      "sourceText": "complete a form",
+      "spokenText": "complete a form",
+      "start": 14,
+      "end": 16.05
+    },
+    "b4": {
+      "sourceText": "fill in a form",
+      "spokenText": "fill in a form",
+      "start": 16.8,
+      "end": 18.85
+    },
+    "a5": {
+      "sourceText": "need articles",
+      "spokenText": "need articles",
+      "start": 19.6,
+      "end": 21
+    },
+    "b5": {
+      "sourceText": "look for writers",
+      "spokenText": "look for writers",
+      "start": 21.75,
+      "end": 23.9
+    },
+    "a6": {
+      "sourceText": "beautiful mountains and fields of flowers",
+      "spokenText": "beautiful mountains and fields of flowers",
+      "start": 24.65,
+      "end": 27.65
+    },
+    "b6": {
+      "sourceText": "view",
+      "spokenText": "view",
+      "start": 28.4,
+      "end": 29.2
+    },
+    "a7": {
+      "sourceText": "the coach was crowded",
+      "spokenText": "the coach was crowded",
+      "start": 29.95,
+      "end": 32
+    },
+    "b7": {
+      "sourceText": "didn't enjoy the journey",
+      "spokenText": "didn't enjoy the journey",
+      "start": 32.75,
+      "end": 34.8
+    },
+    "a8": {
+      "sourceText": "found things to take back home for friends",
+      "spokenText": "found things to take back home for friends",
+      "start": 35.55,
+      "end": 38.9
+    },
+    "b8": {
+      "sourceText": "bought some gifts",
+      "spokenText": "bought some gifts",
+      "start": 39.65,
+      "end": 41.1
+    },
+    "a9": {
+      "sourceText": "bad weather",
+      "spokenText": "bad weather",
+      "start": 41.85,
+      "end": 43.35
+    },
+    "b9": {
+      "sourceText": "raining",
+      "spokenText": "raining",
+      "start": 44.1,
+      "end": 46.4
+    },
+    "a10": {
+      "sourceText": "excited",
+      "spokenText": "excited",
+      "start": 47.15,
+      "end": 48.3
+    },
+    "b10": {
+      "sourceText": "fantastic",
+      "spokenText": "fantastic",
+      "start": 49.05,
+      "end": 50.9
+    },
+    "a11": {
+      "sourceText": "first time",
+      "spokenText": "first time",
+      "start": 5.35,
+      "end": 6.65
+    },
+    "b11": {
+      "sourceText": "new",
+      "spokenText": "new",
+      "start": 51.65,
+      "end": 52.5
+    },
+    "a12": {
+      "sourceText": "I can see the sea from my apartment",
+      "spokenText": "I can see the sea from my apartment",
+      "start": 53.25,
+      "end": 56.5
+    },
+    "b12": {
+      "sourceText": "live by the water",
+      "spokenText": "live by the water",
+      "start": 57.25,
+      "end": 59.45
+    },
+    "a13": {
+      "sourceText": "on buses and planes",
+      "spokenText": "on buses and planes",
+      "start": 60.2,
+      "end": 62.65
+    },
+    "b13": {
+      "sourceText": "travel",
+      "spokenText": "travel",
+      "start": 63.4,
+      "end": 64.3
+    },
+    "a14": {
+      "sourceText": "less noise",
+      "spokenText": "less noise",
+      "start": 65.05,
+      "end": 66.6
+    },
+    "b14": {
+      "sourceText": "quiet",
+      "spokenText": "quiet",
+      "start": 67.35,
+      "end": 68.15
+    },
+    "a15": {
+      "sourceText": "other players",
+      "spokenText": "other players",
+      "start": 68.9,
+      "end": 70.2
+    },
+    "b15": {
+      "sourceText": "club members",
+      "spokenText": "club members",
+      "start": 70.95,
+      "end": 72.35
+    },
+    "a16": {
+      "sourceText": "the best thing",
+      "spokenText": "the best thing",
+      "start": 73.1,
+      "end": 74.45
+    },
+    "b16": {
+      "sourceText": "like most",
+      "spokenText": "like most",
+      "start": 75.2,
+      "end": 76.55
+    },
+    "a17": {
+      "sourceText": "visit someone",
+      "spokenText": "visit someone",
+      "start": 77.3,
+      "end": 78.65
+    },
+    "b17": {
+      "sourceText": "see grandma",
+      "spokenText": "see grandma",
+      "start": 79.4,
+      "end": 80.9
+    },
+    "a18": {
+      "sourceText": "unfortunately",
+      "spokenText": "unfortunately",
+      "start": 81.65,
+      "end": 83.2
+    },
+    "b18": {
+      "sourceText": "sorry",
+      "spokenText": "sorry",
+      "start": 83.95,
+      "end": 84.8
+    },
+    "a19": {
+      "sourceText": "sandwich",
+      "spokenText": "sandwich",
+      "start": 85.55,
+      "end": 86.95
+    },
+    "b19": {
+      "sourceText": "snack",
+      "spokenText": "snack",
+      "start": 87.7,
+      "end": 88.65
+    },
+    "a20": {
+      "sourceText": "school history project",
+      "spokenText": "school history project",
+      "start": 89.4,
+      "end": 91.4
+    },
+    "b20": {
+      "sourceText": "schoolwork",
+      "spokenText": "schoolwork",
+      "start": 92.15,
+      "end": 93.35
+    },
+    "a21": {
+      "sourceText": "in a band",
+      "spokenText": "in a band",
+      "start": 94.1,
+      "end": 95.35
+    },
+    "b21": {
+      "sourceText": "play music",
+      "spokenText": "play music",
+      "start": 96.1,
+      "end": 97.45
+    },
+    "a22": {
+      "sourceText": "granny and grandad",
+      "spokenText": "granny and grandad",
+      "start": 98.2,
+      "end": 100.05
+    },
+    "b22": {
+      "sourceText": "grandparents",
+      "spokenText": "grandparents",
+      "start": 100.8,
+      "end": 102.5
+    },
+    "a23": {
+      "sourceText": "go to a department store",
+      "spokenText": "go to a department store",
+      "start": 103.25,
+      "end": 105.2
+    },
+    "b23": {
+      "sourceText": "go shopping",
+      "spokenText": "go shopping",
+      "start": 105.95,
+      "end": 107.15
+    },
+    "a24": {
+      "sourceText": "castle",
+      "spokenText": "castle",
+      "start": 107.9,
+      "end": 108.8
+    },
+    "b24": {
+      "sourceText": "old building",
+      "spokenText": "old building",
+      "start": 109.55,
+      "end": 111.6
+    },
+    "a25": {
+      "sourceText": "a time of year",
+      "spokenText": "a time of year",
+      "start": 112.35,
+      "end": 114.25
+    },
+    "b25": {
+      "sourceText": "autumn",
+      "spokenText": "autumn",
+      "start": 115,
+      "end": 116.2
+    },
+    "a26": {
+      "sourceText": "well-known",
+      "spokenText": "well-known",
+      "start": 116.95,
+      "end": 118.55
+    },
+    "b26": {
+      "sourceText": "famous",
+      "spokenText": "famous",
+      "start": 119.3,
+      "end": 120.15
+    },
+    "a27": {
+      "sourceText": "wet weather",
+      "spokenText": "wet weather",
+      "start": 120.9,
+      "end": 122.3
+    },
+    "b27": {
+      "sourceText": "rain",
+      "spokenText": "rain",
+      "start": 123.05,
+      "end": 123.75
+    },
+    "a28": {
+      "sourceText": "without paying a lot",
+      "spokenText": "without paying a lot",
+      "start": 124.5,
+      "end": 126.65
+    },
+    "b28": {
+      "sourceText": "doesn't cost much",
+      "spokenText": "doesn't cost much",
+      "start": 127.4,
+      "end": 129
+    },
+    "a29": {
+      "sourceText": "haven't heard of it",
+      "spokenText": "haven't heard of it",
+      "start": 129.75,
+      "end": 131.8
+    },
+    "b29": {
+      "sourceText": "not well-known",
+      "spokenText": "not well-known",
+      "start": 132.55,
+      "end": 134.2
+    },
+    "a30": {
+      "sourceText": "on foot",
+      "spokenText": "on foot",
+      "start": 134.95,
+      "end": 136.65
+    },
+    "b30": {
+      "sourceText": "walk",
+      "spokenText": "walk",
+      "start": 137.4,
+      "end": 138.3
+    }
+  }
+}

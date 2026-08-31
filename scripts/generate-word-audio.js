@@ -17,10 +17,17 @@ const defaultInstructions = [
   'Speak in a cheerful and positive tone.',
   'Use clear, natural American English and do not add any other words.'
 ].join(' ');
+const irregularInstructions = [
+  'Pronounce only the supplied three English verb forms, in order, with a short natural pause between them.',
+  'Speak in a cheerful and positive tone using clear, natural American English.',
+  'Do not add labels, explanations, or other words.',
+  'For the sequence read, read, read, pronounce the first form as reed and the second and third forms as red.'
+].join(' ');
 
 function usage() {
   return [
     'Usage: npm run audio:words -- <word###.txt> [--limit N]',
+    '       npm run audio:words -- practice/irregular-verbs.txt',
     '       npm run audio:words -- --all-missing',
     '',
     'Options:',
@@ -82,14 +89,22 @@ function spokenForm(sourceText) {
     .trim();
 }
 
-function parseWords(text, limit=Infinity) {
+function spokenIrregularColumn(sourceText) {
+  return String(sourceText).split('/').map(value => spokenForm(value)).filter(Boolean).join(' or ');
+}
+
+function parseWords(text, limit=Infinity, includeAllColumns=false) {
   const items = [];
   for (const rawLine of text.replace(/^\uFEFF/, '').split(/\r?\n/)) {
     const line = rawLine.trim();
     if (!line || line.startsWith('#')) continue;
-    const sourceText = line.split('|')[0].trim();
+    const columns = line.split('|').map(value => value.trim()).filter(Boolean);
+    const sourceText = includeAllColumns ? columns.join(' | ') : columns[0];
     if (!sourceText) continue;
-    items.push({ index:items.length, sourceText, spokenText:spokenForm(sourceText) });
+    const spokenText = includeAllColumns
+      ? columns.map(spokenIrregularColumn).join(', ')
+      : spokenForm(sourceText);
+    items.push({ index:items.length, sourceText, spokenText });
     if (items.length >= limit) break;
   }
   return items;
@@ -197,11 +212,16 @@ function partFilename(item) {
 
 async function generate(options) {
   const inputPath = path.resolve(options.input);
-  if (!/^word\d{3}\.txt$/i.test(path.basename(inputPath))) {
-    throw new Error('Input filename must match word###.txt.');
+  const inputName = path.basename(inputPath);
+  const isIrregularVerbs = /^irregular-verbs\.txt$/i.test(inputName);
+  if (!/^word\d{3}\.txt$/i.test(inputName) && !isIrregularVerbs) {
+    throw new Error('Input filename must match word###.txt or irregular-verbs.txt.');
   }
   const sourceBytes = fs.readFileSync(inputPath);
-  const items = parseWords(sourceBytes.toString('utf8'), options.limit);
+  if (isIrregularVerbs && options.instructions === defaultInstructions) {
+    options.instructions = irregularInstructions;
+  }
+  const items = parseWords(sourceBytes.toString('utf8'), options.limit, isIrregularVerbs);
   if (!items.length) throw new Error('No word entries were found.');
   if (options.dryRun) {
     process.stdout.write(`${JSON.stringify({ input:inputPath, count:items.length, items }, null, 2)}\n`);
@@ -221,8 +241,9 @@ async function generate(options) {
   if (!apiKey) throw new Error('OPENAI_API_KEY is not set.');
   if (!fs.existsSync(options.ffmpeg)) throw new Error(`ffmpeg was not found: ${options.ffmpeg}`);
 
-  const day = path.basename(inputPath).match(/word(\d{3})\.txt/i)[1];
-  const tempDir = path.resolve(projectRoot, '..', 'temp', `day${day}`);
+  const dayMatch = inputName.match(/word(\d{3})\.txt/i);
+  const day = dayMatch ? dayMatch[1] : '';
+  const tempDir = path.resolve(projectRoot, '..', 'temp', day ? `day${day}` : 'irregular-verbs');
   fs.mkdirSync(tempDir, { recursive:true });
   process.stdout.write(`Keeping intermediate files in ${tempDir}\n`);
 
@@ -295,7 +316,7 @@ async function generate(options) {
   }, null, 2)}\n`, 'utf8');
   fs.writeFileSync(path.join(tempDir, 'generation.json'), `${JSON.stringify({
     version:1,
-    day:Number(day),
+    day:day ? Number(day) : null,
     source:inputPath,
     sourceHash:sha256(sourceBytes),
     model:'gpt-4o-mini-tts',

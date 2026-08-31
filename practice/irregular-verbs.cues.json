@@ -1,0 +1,411 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied three English verb forms, in order, with a short natural pause between them. Speak in a cheerful and positive tone using clear, natural American English. Do not add labels, explanations, or other words. For the sequence read, read, read, pronounce the first form as reed and the second and third forms as red.",
+  "audio": "irregular-verbs.mp3",
+  "sourceHash": "d28a203474f47b6b21f929527a190bddb619d0d3e36a7d89d96869fd3b63f889",
+  "audioHash": "b2c24eb8f865cf2695fe4ea285959daa32f9d3d30e64e470bd922783ebea1a71",
+  "gapSeconds": 0.75,
+  "items": [
+    {
+      "index": 0,
+      "sourceText": "am / is | was | been",
+      "spokenText": "am or is, was, been",
+      "start": 0,
+      "end": 3.2
+    },
+    {
+      "index": 1,
+      "sourceText": "are | were | been",
+      "spokenText": "are, were, been",
+      "start": 3.95,
+      "end": 6.5
+    },
+    {
+      "index": 2,
+      "sourceText": "become | became | become",
+      "spokenText": "become, became, become",
+      "start": 7.25,
+      "end": 10.15
+    },
+    {
+      "index": 3,
+      "sourceText": "begin | began | begun",
+      "spokenText": "begin, began, begun",
+      "start": 10.9,
+      "end": 14.4
+    },
+    {
+      "index": 4,
+      "sourceText": "bite | bit | bitten",
+      "spokenText": "bite, bit, bitten",
+      "start": 15.15,
+      "end": 17.6
+    },
+    {
+      "index": 5,
+      "sourceText": "blow | blew | blown",
+      "spokenText": "blow, blew, blown",
+      "start": 18.35,
+      "end": 20.6
+    },
+    {
+      "index": 6,
+      "sourceText": "break | broke | broken",
+      "spokenText": "break, broke, broken",
+      "start": 21.35,
+      "end": 24.3
+    },
+    {
+      "index": 7,
+      "sourceText": "build | built | built",
+      "spokenText": "build, built, built",
+      "start": 25.05,
+      "end": 27.1
+    },
+    {
+      "index": 8,
+      "sourceText": "buy | bought | bought",
+      "spokenText": "buy, bought, bought",
+      "start": 27.85,
+      "end": 30.3
+    },
+    {
+      "index": 9,
+      "sourceText": "catch | caught | caught",
+      "spokenText": "catch, caught, caught",
+      "start": 31.05,
+      "end": 33.05
+    },
+    {
+      "index": 10,
+      "sourceText": "come | came | come",
+      "spokenText": "come, came, come",
+      "start": 33.8,
+      "end": 37.15
+    },
+    {
+      "index": 11,
+      "sourceText": "cost | cost | cost",
+      "spokenText": "cost, cost, cost",
+      "start": 37.9,
+      "end": 40.4
+    },
+    {
+      "index": 12,
+      "sourceText": "cut | cut | cut",
+      "spokenText": "cut, cut, cut",
+      "start": 41.15,
+      "end": 42.95
+    },
+    {
+      "index": 13,
+      "sourceText": "dig | dug | dug",
+      "spokenText": "dig, dug, dug",
+      "start": 43.7,
+      "end": 46.1
+    },
+    {
+      "index": 14,
+      "sourceText": "do | did | done",
+      "spokenText": "do, did, done",
+      "start": 46.85,
+      "end": 49.15
+    },
+    {
+      "index": 15,
+      "sourceText": "draw | drew | drawn",
+      "spokenText": "draw, drew, drawn",
+      "start": 49.9,
+      "end": 52.6
+    },
+    {
+      "index": 16,
+      "sourceText": "drink | drank | drunk",
+      "spokenText": "drink, drank, drunk",
+      "start": 53.35,
+      "end": 55.75
+    },
+    {
+      "index": 17,
+      "sourceText": "fall | fell | fallen",
+      "spokenText": "fall, fell, fallen",
+      "start": 56.5,
+      "end": 59.05
+    },
+    {
+      "index": 18,
+      "sourceText": "feed | fed | fed",
+      "spokenText": "feed, fed, fed",
+      "start": 59.8,
+      "end": 62.3
+    },
+    {
+      "index": 19,
+      "sourceText": "feel | felt | felt",
+      "spokenText": "feel, felt, felt",
+      "start": 63.05,
+      "end": 65.75
+    },
+    {
+      "index": 20,
+      "sourceText": "find | found | found",
+      "spokenText": "find, found, found",
+      "start": 66.5,
+      "end": 69.35
+    },
+    {
+      "index": 21,
+      "sourceText": "fly | flew | flown",
+      "spokenText": "fly, flew, flown",
+      "start": 70.1,
+      "end": 73.3
+    },
+    {
+      "index": 22,
+      "sourceText": "forget | forgot | forgotten",
+      "spokenText": "forget, forgot, forgotten",
+      "start": 74.05,
+      "end": 76.9
+    },
+    {
+      "index": 23,
+      "sourceText": "get | got | got",
+      "spokenText": "get, got, got",
+      "start": 77.65,
+      "end": 80.1
+    },
+    {
+      "index": 24,
+      "sourceText": "give | gave | given",
+      "spokenText": "give, gave, given",
+      "start": 80.85,
+      "end": 83.75
+    },
+    {
+      "index": 25,
+      "sourceText": "go | went | gone",
+      "spokenText": "go, went, gone",
+      "start": 84.5,
+      "end": 87
+    },
+    {
+      "index": 26,
+      "sourceText": "grow | grew | grown",
+      "spokenText": "grow, grew, grown",
+      "start": 87.75,
+      "end": 90.05
+    },
+    {
+      "index": 27,
+      "sourceText": "have | had | had",
+      "spokenText": "have, had, had",
+      "start": 90.8,
+      "end": 93.1
+    },
+    {
+      "index": 28,
+      "sourceText": "hold | held | held",
+      "spokenText": "hold, held, held",
+      "start": 93.85,
+      "end": 96.6
+    },
+    {
+      "index": 29,
+      "sourceText": "keep | kept | kept",
+      "spokenText": "keep, kept, kept",
+      "start": 97.35,
+      "end": 99.8
+    },
+    {
+      "index": 30,
+      "sourceText": "know | knew | known",
+      "spokenText": "know, knew, known",
+      "start": 100.55,
+      "end": 103.35
+    },
+    {
+      "index": 31,
+      "sourceText": "let | let | let",
+      "spokenText": "let, let, let",
+      "start": 104.1,
+      "end": 106.15
+    },
+    {
+      "index": 32,
+      "sourceText": "make | made | made",
+      "spokenText": "make, made, made",
+      "start": 106.9,
+      "end": 109.25
+    },
+    {
+      "index": 33,
+      "sourceText": "meet | met | met",
+      "spokenText": "meet, met, met",
+      "start": 110,
+      "end": 112.55
+    },
+    {
+      "index": 34,
+      "sourceText": "put | put | put",
+      "spokenText": "put, put, put",
+      "start": 113.3,
+      "end": 115.4
+    },
+    {
+      "index": 35,
+      "sourceText": "read | read | read",
+      "spokenText": "read, read, read",
+      "start": 116.15,
+      "end": 119.25
+    },
+    {
+      "index": 36,
+      "sourceText": "ride | rode | ridden",
+      "spokenText": "ride, rode, ridden",
+      "start": 120,
+      "end": 122.45
+    },
+    {
+      "index": 37,
+      "sourceText": "run | ran | run",
+      "spokenText": "run, ran, run",
+      "start": 123.2,
+      "end": 125.9
+    },
+    {
+      "index": 38,
+      "sourceText": "say | said | said",
+      "spokenText": "say, said, said",
+      "start": 126.65,
+      "end": 129.3
+    },
+    {
+      "index": 39,
+      "sourceText": "see | saw | seen",
+      "spokenText": "see, saw, seen",
+      "start": 130.05,
+      "end": 132.75
+    },
+    {
+      "index": 40,
+      "sourceText": "send | sent | sent",
+      "spokenText": "send, sent, sent",
+      "start": 133.5,
+      "end": 136.15
+    },
+    {
+      "index": 41,
+      "sourceText": "sing | sang | sung",
+      "spokenText": "sing, sang, sung",
+      "start": 136.9,
+      "end": 139.6
+    },
+    {
+      "index": 42,
+      "sourceText": "sit | sat | sat",
+      "spokenText": "sit, sat, sat",
+      "start": 140.35,
+      "end": 142.6
+    },
+    {
+      "index": 43,
+      "sourceText": "sleep | slept | slept",
+      "spokenText": "sleep, slept, slept",
+      "start": 143.35,
+      "end": 146.55
+    },
+    {
+      "index": 44,
+      "sourceText": "speak | spoke | spoken",
+      "spokenText": "speak, spoke, spoken",
+      "start": 147.3,
+      "end": 149.85
+    },
+    {
+      "index": 45,
+      "sourceText": "spend | spent | spent",
+      "spokenText": "spend, spent, spent",
+      "start": 150.6,
+      "end": 153.1
+    },
+    {
+      "index": 46,
+      "sourceText": "sweep | swept | swept",
+      "spokenText": "sweep, swept, swept",
+      "start": 153.85,
+      "end": 156.4
+    },
+    {
+      "index": 47,
+      "sourceText": "take | took | taken",
+      "spokenText": "take, took, taken",
+      "start": 157.15,
+      "end": 160
+    },
+    {
+      "index": 48,
+      "sourceText": "teach | taught | taught",
+      "spokenText": "teach, taught, taught",
+      "start": 160.75,
+      "end": 162.6
+    },
+    {
+      "index": 49,
+      "sourceText": "tell | told | told",
+      "spokenText": "tell, told, told",
+      "start": 163.35,
+      "end": 165.8
+    },
+    {
+      "index": 50,
+      "sourceText": "think | thought | thought",
+      "spokenText": "think, thought, thought",
+      "start": 166.55,
+      "end": 169.2
+    },
+    {
+      "index": 51,
+      "sourceText": "throw | threw | thrown",
+      "spokenText": "throw, threw, thrown",
+      "start": 169.95,
+      "end": 173.35
+    },
+    {
+      "index": 52,
+      "sourceText": "understand | understood | understood",
+      "spokenText": "understand, understood, understood",
+      "start": 174.1,
+      "end": 177.1
+    },
+    {
+      "index": 53,
+      "sourceText": "wake | woke | waken",
+      "spokenText": "wake, woke, waken",
+      "start": 177.85,
+      "end": 180.85
+    },
+    {
+      "index": 54,
+      "sourceText": "wear | wore | worn",
+      "spokenText": "wear, wore, worn",
+      "start": 181.6,
+      "end": 183.9
+    },
+    {
+      "index": 55,
+      "sourceText": "win | won | won",
+      "spokenText": "win, won, won",
+      "start": 184.65,
+      "end": 187.35
+    },
+    {
+      "index": 56,
+      "sourceText": "write | wrote | written",
+      "spokenText": "write, wrote, written",
+      "start": 188.1,
+      "end": 190
+    }
+  ]
+}

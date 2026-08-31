@@ -31,7 +31,7 @@ async function waitForDayReady(page, day) {
 
 test('existing word and speaking workflows remain available', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#appVersion')).toHaveText('v2.29');
+  await expect(page.locator('#appVersion')).toHaveText('v2.30');
   await expect(page).toHaveTitle('每日英语');
   await expect(page.locator('#librarySelect option')).toHaveCount(expectedHomeworkDays);
   await page.locator('#librarySelect').selectOption('word007.txt');
@@ -113,6 +113,8 @@ test('paraphrase-only homework opens as a reversible phrase exercise', async ({ 
   await expect(page.locator('#paraphraseAnswer')).toBeVisible();
 
   const spoken = await page.evaluate(() => {
+    paraphraseAudioLoadRequestId++;
+    clearParaphraseAudio();
     window.__ttsSpoken = [];
     window.speechSynthesis.cancel = () => {};
     window.speechSynthesis.speak = utterance => window.__ttsSpoken.push(utterance.text);
@@ -176,6 +178,34 @@ test('paraphrase buttons prefer recorded A/B ranges and fall back when a range i
   expect(result.starts[1]).toBeCloseTo(2.5, 3);
   expect(result.tts).toEqual(['receive']);
   await context.close();
+});
+
+test('paraphrase continuous playback reads both sides and advances to the next pair', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('day015');
+  await page.evaluate(() => {
+    paraphraseAudioLoadRequestId++;
+    clearParaphraseAudio();
+    window.__autoParaphraseSpoken = [];
+    window.speechSynthesis.cancel = () => {};
+    window.speechSynthesis.speak = utterance => {
+      window.__autoParaphraseSpoken.push(utterance.text);
+      setTimeout(() => utterance.onend?.(), 0);
+    };
+    paraphraseIdx = 0;
+    paraphraseReverse = false;
+    renderParaphrase();
+  });
+
+  await page.getByRole('button', { name:'▶ 连续播放' }).click();
+  await expect(page.locator('#paraphrasePosition')).toHaveText('2/40');
+  await expect(page.getByRole('button', { name:'⏹ 停止连续播放' })).toBeVisible();
+  expect(await page.evaluate(() => window.__autoParaphraseSpoken.slice(0, 2))).toEqual([
+    'prize',
+    'something the winner gets'
+  ]);
+  await page.getByRole('button', { name:'⏹ 停止连续播放' }).click();
+  await expect(page.getByRole('button', { name:'▶ 连续播放' })).toBeVisible();
 });
 
 test('the top-level game entry opens a playable typing game for the selected day', async ({ page }) => {

@@ -313,7 +313,7 @@
 
 <div class="container">
   <div class="header">
-    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.29</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
+    <div><h3 style="margin:0; font-size:17px;">📚 每日英语学习器</h3><div style="font-size:10px;color:#94A3B8;margin-top:2px;"><span id="appVersion">v2.30</span> · <span id="appSyncStatus">同步：尚未完成</span></div></div>
   </div>
 
   <div class="library-panel">
@@ -556,6 +556,7 @@
         <button class="btn btn-secondary" onclick="previousParaphrase()">← 上一个</button>
         <button class="btn" onclick="nextParaphrase()">下一个 →</button>
       </div>
+      <button id="paraphraseAutoButton" class="btn btn-secondary learn-auto-toggle" onclick="toggleAutoParaphrase()">▶ 连续播放</button>
     </div>
   </div>
 
@@ -1325,7 +1326,11 @@ let paraphraseAudioObjectUrl = '';
 let paraphraseAudioCues = new Map();
 let paraphraseAudioSegmentEnd = null;
 let paraphraseAudioFallbackText = '';
+let paraphraseAudioOnComplete = null;
 let paraphraseAudioLoadRequestId = 0;
+let paraphraseAutoPlaying = false;
+let paraphraseAutoRunId = 0;
+let paraphraseAutoTimer = null;
 const WORD_AUDIO_PREROLL_SECONDS = 0.25;
 
 function sanitizeWord(w) {
@@ -1391,8 +1396,11 @@ function speakWithSystemTts(text) {
   window.speechSynthesis.speak(u);
 }
 
-function speakEnglishPhrase(text) {
-  if (!('speechSynthesis' in window)) return;
+function speakEnglishPhrase(text, onComplete=null) {
+  if (!('speechSynthesis' in window)) {
+    if (onComplete) onComplete();
+    return;
+  }
   const phrase = String(text || '').trim();
   if (!phrase) return;
   window.speechSynthesis.cancel();
@@ -1401,10 +1409,15 @@ function speakEnglishPhrase(text) {
   if (targetVoice) u.voice = targetVoice;
   u.lang = 'en-US';
   u.rate = 0.88;
+  if (onComplete) {
+    u.onend = onComplete;
+    u.onerror = onComplete;
+  }
   window.speechSynthesis.speak(u);
 }
 
 function clearParaphraseAudio() {
+  stopAutoParaphrase(false);
   if (paraphraseAudio) {
     paraphraseAudio.pause();
     paraphraseAudio.removeAttribute('src');
@@ -1414,6 +1427,7 @@ function clearParaphraseAudio() {
   paraphraseAudioCues = new Map();
   paraphraseAudioSegmentEnd = null;
   paraphraseAudioFallbackText = '';
+  paraphraseAudioOnComplete = null;
 }
 
 function ensureParaphraseAudio() {
@@ -1422,16 +1436,22 @@ function ensureParaphraseAudio() {
   paraphraseAudio.preload = 'auto';
   paraphraseAudio.addEventListener('timeupdate', () => {
     if (Number.isFinite(paraphraseAudioSegmentEnd) && paraphraseAudio.currentTime >= paraphraseAudioSegmentEnd) {
+      const onComplete = paraphraseAudioOnComplete;
       paraphraseAudio.pause();
       paraphraseAudioSegmentEnd = null;
       paraphraseAudioFallbackText = '';
+      paraphraseAudioOnComplete = null;
+      if (onComplete) onComplete();
     }
   });
   paraphraseAudio.addEventListener('error', () => {
     const fallbackText = paraphraseAudioFallbackText;
+    const onComplete = paraphraseAudioOnComplete;
     paraphraseAudioSegmentEnd = null;
     paraphraseAudioFallbackText = '';
-    if (fallbackText) speakEnglishPhrase(fallbackText);
+    paraphraseAudioOnComplete = null;
+    if (fallbackText) speakEnglishPhrase(fallbackText, onComplete);
+    else if (onComplete) onComplete();
   });
   return paraphraseAudio;
 }
@@ -1488,22 +1508,26 @@ async function loadParaphrasePronunciation(dayNumber) {
   }
 }
 
-function playParaphraseSegment(key, fallbackText) {
+function playParaphraseSegment(key, fallbackText, onComplete=null) {
   const cue = paraphraseAudioCues.get(String(key).toLowerCase());
   if (!cue || !paraphraseAudio?.src) {
-    speakEnglishPhrase(fallbackText);
+    speakEnglishPhrase(fallbackText, onComplete);
     return;
   }
   if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   paraphraseAudio.pause();
   paraphraseAudioFallbackText = fallbackText;
+  paraphraseAudioOnComplete = onComplete;
   paraphraseAudioSegmentEnd = cue.end;
   paraphraseAudio.currentTime = Math.max(0, cue.start - WORD_AUDIO_PREROLL_SECONDS);
   paraphraseAudio.play().catch(() => {
     const text = paraphraseAudioFallbackText;
+    const complete = paraphraseAudioOnComplete;
     paraphraseAudioFallbackText = '';
     paraphraseAudioSegmentEnd = null;
-    if (text) speakEnglishPhrase(text);
+    paraphraseAudioOnComplete = null;
+    if (text) speakEnglishPhrase(text, complete);
+    else if (complete) complete();
   });
 }
 
@@ -1679,6 +1703,7 @@ function switchMode(mode) {
   const modeButton = document.querySelector(`.tab-btn[data-mode="${mode}"]`);
   if (!modeButton || modeButton.disabled || modeButton.style.display === 'none') return;
   if (mode !== 'learn') stopAutoLearn();
+  if (mode !== 'paraphrase') stopAutoParaphrase();
   currentMode = mode;
   document.querySelectorAll('.tab-btn[data-mode]').forEach(b => b.classList.remove('active'));
   ['learnSection', 'quizSection', 'spellSection', 'paraphraseSection', 'historySection'].forEach(id => document.getElementById(id).style.display = 'none');
@@ -1717,6 +1742,73 @@ function renderParaphrase() {
   document.getElementById('paraphraseAnswer').style.display = paraphraseRevealed ? 'block' : 'none';
   document.getElementById('paraphraseRevealButton').innerText = paraphraseRevealed ? '隐藏答案' : '显示答案';
   document.getElementById('progressBar').style.width = `${Math.round(((paraphraseIdx + 1) / paraphraseItems.length) * 100)}%`;
+  updateAutoParaphraseButton();
+}
+
+function updateAutoParaphraseButton() {
+  const button = document.getElementById('paraphraseAutoButton');
+  if (!button) return;
+  button.innerText = paraphraseAutoPlaying ? '⏹ 停止连续播放' : '▶ 连续播放';
+  button.classList.toggle('btn-secondary', !paraphraseAutoPlaying);
+}
+
+function stopAutoParaphrase(cancelPlayback=true) {
+  paraphraseAutoPlaying = false;
+  paraphraseAutoRunId++;
+  clearTimeout(paraphraseAutoTimer);
+  paraphraseAutoTimer = null;
+  if (cancelPlayback) {
+    if (paraphraseAudio) paraphraseAudio.pause();
+    paraphraseAudioSegmentEnd = null;
+    paraphraseAudioFallbackText = '';
+    paraphraseAudioOnComplete = null;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }
+  updateAutoParaphraseButton();
+}
+
+function scheduleAutoParaphrase(runId, delay, callback) {
+  clearTimeout(paraphraseAutoTimer);
+  paraphraseAutoTimer = setTimeout(() => {
+    if (paraphraseAutoPlaying && runId === paraphraseAutoRunId) callback();
+  }, delay);
+}
+
+function playAutoParaphraseSide(runId, side) {
+  if (!paraphraseAutoPlaying || runId !== paraphraseAutoRunId) return;
+  const item = paraphraseItems[paraphraseIdx];
+  if (!item) return stopAutoParaphrase(false);
+  const promptSide = paraphraseReverse ? 'b' : 'a';
+  const answerSide = paraphraseReverse ? 'a' : 'b';
+  const key = `${side === 'prompt' ? promptSide : answerSide}${paraphraseIdx + 1}`;
+  const text = side === 'prompt'
+    ? (paraphraseReverse ? item.bEn : item.aEn)
+    : (paraphraseReverse ? item.aEn : item.bEn);
+  playParaphraseSegment(key, text, () => {
+    if (!paraphraseAutoPlaying || runId !== paraphraseAutoRunId) return;
+    if (side === 'prompt') {
+      scheduleAutoParaphrase(runId, 450, () => playAutoParaphraseSide(runId, 'answer'));
+      return;
+    }
+    if (paraphraseIdx >= paraphraseItems.length - 1) {
+      stopAutoParaphrase(false);
+      return;
+    }
+    paraphraseIdx++;
+    paraphraseRevealed = true;
+    renderParaphrase();
+    scheduleAutoParaphrase(runId, 700, () => playAutoParaphraseSide(runId, 'prompt'));
+  });
+}
+
+function toggleAutoParaphrase() {
+  if (paraphraseAutoPlaying) return stopAutoParaphrase();
+  stopAutoParaphrase();
+  paraphraseAutoPlaying = true;
+  paraphraseRevealed = true;
+  const runId = ++paraphraseAutoRunId;
+  renderParaphrase();
+  playAutoParaphraseSide(runId, 'prompt');
 }
 
 function toggleParaphraseAnswer() {
@@ -1725,24 +1817,28 @@ function toggleParaphraseAnswer() {
 }
 
 function toggleParaphraseDirection() {
+  stopAutoParaphrase();
   paraphraseReverse = !paraphraseReverse;
   paraphraseRevealed = true;
   renderParaphrase();
 }
 
 function previousParaphrase() {
+  stopAutoParaphrase();
   paraphraseIdx = Math.max(0, paraphraseIdx - 1);
   paraphraseRevealed = true;
   renderParaphrase();
 }
 
 function nextParaphrase() {
+  stopAutoParaphrase();
   paraphraseIdx = Math.min(paraphraseItems.length - 1, paraphraseIdx + 1);
   paraphraseRevealed = true;
   renderParaphrase();
 }
 
 function speakParaphraseSide(side) {
+  stopAutoParaphrase();
   const item = paraphraseItems[paraphraseIdx];
   if (!item) return;
   const promptEnglish = paraphraseReverse ? item.bEn : item.aEn;
@@ -1826,9 +1922,13 @@ function stopAutoLearn() {
 }
 
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) stopAutoLearn();
+  if (document.hidden) {
+    stopAutoLearn();
+    stopAutoParaphrase();
+  }
 });
 window.addEventListener('pagehide', stopAutoLearn);
+window.addEventListener('pagehide', stopAutoParaphrase);
 
 // 2. 选择测试模式
 function renderQuiz() {

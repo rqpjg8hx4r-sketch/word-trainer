@@ -1,0 +1,384 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Pronounce only the supplied English word or phrase once. Speak in a cheerful and positive tone. Use clear, natural American English and do not add any other words.",
+  "audio": "paraphrase017.mp3",
+  "sourceHash": "de3ff9cccaf742ddfc4aea3353fa99fa230b63f082b6fec99c78da979165245e",
+  "audioHash": "3abf8f8dbcb0961d7c5ac99737a365143dcae11942feb70b75698a9398578520",
+  "gapSeconds": 0.75,
+  "segments": {
+    "a1": {
+      "sourceText": "want to visit for a second time",
+      "spokenText": "want to visit for a second time",
+      "start": 0,
+      "end": 2.15
+    },
+    "b1": {
+      "sourceText": "plan to go back",
+      "spokenText": "plan to go back",
+      "start": 2.9,
+      "end": 4.35
+    },
+    "a2": {
+      "sourceText": "surprised",
+      "spokenText": "surprised",
+      "start": 5.1,
+      "end": 6.65
+    },
+    "b2": {
+      "sourceText": "couldn't believe",
+      "spokenText": "couldn't believe",
+      "start": 7.4,
+      "end": 8.9
+    },
+    "a3": {
+      "sourceText": "one of the best things",
+      "spokenText": "one of the best things",
+      "start": 9.65,
+      "end": 12
+    },
+    "b3": {
+      "sourceText": "enjoy",
+      "spokenText": "enjoy",
+      "start": 12.75,
+      "end": 13.9
+    },
+    "a4": {
+      "sourceText": "jewellery",
+      "spokenText": "jewellery",
+      "start": 14.65,
+      "end": 16.05
+    },
+    "b4": {
+      "sourceText": "earrings and a bracelet",
+      "spokenText": "earrings and a bracelet",
+      "start": 16.8,
+      "end": 18.55
+    },
+    "a5": {
+      "sourceText": "decide which one to use",
+      "spokenText": "decide which one to use",
+      "start": 19.3,
+      "end": 21.45
+    },
+    "b5": {
+      "sourceText": "choose",
+      "spokenText": "choose",
+      "start": 22.2,
+      "end": 23.1
+    },
+    "a6": {
+      "sourceText": "have riding lessons",
+      "spokenText": "have riding lessons",
+      "start": 23.85,
+      "end": 26
+    },
+    "b6": {
+      "sourceText": "learn a new sport",
+      "spokenText": "learn a new sport",
+      "start": 26.75,
+      "end": 28.6
+    },
+    "a7": {
+      "sourceText": "sit on the grass and read books",
+      "spokenText": "sit on the grass and read books",
+      "start": 29.35,
+      "end": 32.2
+    },
+    "b7": {
+      "sourceText": "go to the park",
+      "spokenText": "go to the park",
+      "start": 32.95,
+      "end": 34.45
+    },
+    "a8": {
+      "sourceText": "the pizza is disgusting",
+      "spokenText": "the pizza is disgusting",
+      "start": 35.2,
+      "end": 37.8
+    },
+    "b8": {
+      "sourceText": "it's badly cooked",
+      "spokenText": "it's badly cooked",
+      "start": 38.55,
+      "end": 40.25
+    },
+    "a9": {
+      "sourceText": "the woman who lives next door",
+      "spokenText": "the woman who lives next door",
+      "start": 41,
+      "end": 43.1
+    },
+    "b9": {
+      "sourceText": "neighbour",
+      "spokenText": "neighbour",
+      "start": 43.85,
+      "end": 45.5
+    },
+    "a10": {
+      "sourceText": "a net and a ball",
+      "spokenText": "a net and a ball",
+      "start": 46.25,
+      "end": 48.75
+    },
+    "b10": {
+      "sourceText": "sports equipment",
+      "spokenText": "sports equipment",
+      "start": 49.5,
+      "end": 51.6
+    },
+    "a11": {
+      "sourceText": "my friends couldn't believe how good I was",
+      "spokenText": "my friends couldn't believe how good I was",
+      "start": 52.35,
+      "end": 55.4
+    },
+    "b11": {
+      "sourceText": "improved",
+      "spokenText": "improved",
+      "start": 56.15,
+      "end": 57.3
+    },
+    "a12": {
+      "sourceText": "outside the shopping centre",
+      "spokenText": "outside the shopping centre",
+      "start": 58.05,
+      "end": 59.9
+    },
+    "b12": {
+      "sourceText": "near some shops",
+      "spokenText": "near some shops",
+      "start": 60.65,
+      "end": 62.4
+    },
+    "a13": {
+      "sourceText": "the instructions are clear",
+      "spokenText": "the instructions are clear",
+      "start": 63.15,
+      "end": 65.8
+    },
+    "b13": {
+      "sourceText": "easy to understand",
+      "spokenText": "easy to understand",
+      "start": 66.55,
+      "end": 68.4
+    },
+    "a14": {
+      "sourceText": "something to drink",
+      "spokenText": "something to drink",
+      "start": 69.15,
+      "end": 70.45
+    },
+    "b14": {
+      "sourceText": "water",
+      "spokenText": "water",
+      "start": 71.2,
+      "end": 73.1
+    },
+    "a15": {
+      "sourceText": "a weekend course",
+      "spokenText": "a weekend course",
+      "start": 73.85,
+      "end": 75.9
+    },
+    "b15": {
+      "sourceText": "morning classes every Saturday",
+      "spokenText": "morning classes every Saturday",
+      "start": 76.65,
+      "end": 79.2
+    },
+    "a16": {
+      "sourceText": "teach students",
+      "spokenText": "teach students",
+      "start": 79.95,
+      "end": 81.65
+    },
+    "b16": {
+      "sourceText": "students learn",
+      "spokenText": "students learn",
+      "start": 82.4,
+      "end": 83.9
+    },
+    "a17": {
+      "sourceText": "the whole family",
+      "spokenText": "the whole family",
+      "start": 84.65,
+      "end": 86.65
+    },
+    "b17": {
+      "sourceText": "with parents",
+      "spokenText": "with parents",
+      "start": 87.4,
+      "end": 88.85
+    },
+    "a18": {
+      "sourceText": "on the internet",
+      "spokenText": "on the internet",
+      "start": 89.6,
+      "end": 90.95
+    },
+    "b18": {
+      "sourceText": "online",
+      "spokenText": "online",
+      "start": 91.7,
+      "end": 92.65
+    },
+    "a19": {
+      "sourceText": "take the food home",
+      "spokenText": "take the food home",
+      "start": 93.4,
+      "end": 95.1
+    },
+    "b19": {
+      "sourceText": "pack up the dishes and enjoy them with family",
+      "spokenText": "pack up the dishes and enjoy them with family",
+      "start": 95.85,
+      "end": 99.65
+    },
+    "a20": {
+      "sourceText": "shopping trip",
+      "spokenText": "shopping trip",
+      "start": 100.4,
+      "end": 101.5
+    },
+    "b20": {
+      "sourceText": "go to the local market to buy fresh food",
+      "spokenText": "go to the local market to buy fresh food",
+      "start": 102.25,
+      "end": 105.25
+    },
+    "a21": {
+      "sourceText": "teach you a lot",
+      "spokenText": "teach you a lot",
+      "start": 106,
+      "end": 108.2
+    },
+    "b21": {
+      "sourceText": "useful",
+      "spokenText": "useful",
+      "start": 108.95,
+      "end": 110.2
+    },
+    "a22": {
+      "sourceText": "went to bed early",
+      "spokenText": "went to bed early",
+      "start": 110.95,
+      "end": 113
+    },
+    "b22": {
+      "sourceText": "slept a lot",
+      "spokenText": "slept a lot",
+      "start": 113.75,
+      "end": 115.25
+    },
+    "a23": {
+      "sourceText": "frightened",
+      "spokenText": "frightened",
+      "start": 116,
+      "end": 117.05
+    },
+    "b23": {
+      "sourceText": "scary",
+      "spokenText": "scary",
+      "start": 117.8,
+      "end": 119.6
+    },
+    "a24": {
+      "sourceText": "cost so much",
+      "spokenText": "cost so much",
+      "start": 120.35,
+      "end": 122.5
+    },
+    "b24": {
+      "sourceText": "expensive",
+      "spokenText": "expensive",
+      "start": 123.25,
+      "end": 124.7
+    },
+    "a25": {
+      "sourceText": "loud",
+      "spokenText": "loud",
+      "start": 125.45,
+      "end": 127
+    },
+    "b25": {
+      "sourceText": "noisy",
+      "spokenText": "noisy",
+      "start": 127.75,
+      "end": 128.8
+    },
+    "a26": {
+      "sourceText": "amazing",
+      "spokenText": "amazing",
+      "start": 129.55,
+      "end": 130.7
+    },
+    "b26": {
+      "sourceText": "exciting",
+      "spokenText": "exciting",
+      "start": 131.45,
+      "end": 132.5
+    },
+    "a27": {
+      "sourceText": "made us laugh",
+      "spokenText": "made us laugh",
+      "start": 133.25,
+      "end": 134.85
+    },
+    "b27": {
+      "sourceText": "funny",
+      "spokenText": "funny",
+      "start": 135.6,
+      "end": 136.7
+    },
+    "a28": {
+      "sourceText": "met some nice people",
+      "spokenText": "met some nice people",
+      "start": 137.45,
+      "end": 139.3
+    },
+    "b28": {
+      "sourceText": "made some new friends",
+      "spokenText": "made some new friends",
+      "start": 140.05,
+      "end": 142.15
+    },
+    "a29": {
+      "sourceText": "crowded",
+      "spokenText": "crowded",
+      "start": 142.9,
+      "end": 143.9
+    },
+    "b29": {
+      "sourceText": "too many people",
+      "spokenText": "too many people",
+      "start": 144.65,
+      "end": 146.3
+    },
+    "a30": {
+      "sourceText": "sounds a bit scary",
+      "spokenText": "sounds a bit scary",
+      "start": 147.05,
+      "end": 148.55
+    },
+    "b30": {
+      "sourceText": "worried",
+      "spokenText": "worried",
+      "start": 149.3,
+      "end": 150.65
+    },
+    "a31": {
+      "sourceText": "improved",
+      "spokenText": "improved",
+      "start": 56.15,
+      "end": 57.3
+    },
+    "b31": {
+      "sourceText": "get better at something",
+      "spokenText": "get better at something",
+      "start": 151.4,
+      "end": 153.6
+    }
+  }
+}
