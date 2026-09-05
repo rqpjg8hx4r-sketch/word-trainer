@@ -3,34 +3,18 @@
   "model": "gpt-4o-mini-tts",
   "voice": "marin",
   "instructions": "Speak in natural American English to one school-age child, as if having a friendly face-to-face conversation. Use a warm, bright, upbeat, gently cheerful tone, as if smiling while speaking. Sound encouraging, lively, and confident, but never exaggerated. Keep the pace relaxed and unhurried, at about 85 percent of normal adult conversational speed. Use clear pronunciation without over-enunciating. Use natural conversational rhythm, sentence stress, intonation, and gentle short pauses. Pause naturally after the two-part question before giving the answer. Do not sound like a teacher giving a lesson, a textbook recording, a formal presentation, or mechanical TTS. The child will listen and imitate the pronunciation.",
-  "audio": "speaking006.mp3",
-  "sourceHash": "bbecf0b4812383ddc08e3834f9b2bce5ae7fdce51c939f682c8226ad2710f52e",
-  "audioHash": "74d2c826d47284a8a9478a6acb7603d4d2fc55d56629aefe4990f38bea5bc160",
+  "audio": "speaking010.mp3",
+  "sourceHash": "8e880f4302b9ddc3fb23f9673a427ab351dc2f1df57f478cbbc425d9dd932f09",
+  "audioHash": "abf11dbc2c1dacda2ea75d1aa0fb5452de2e795176b37d2dc6c5f34ec399b11f",
   "gapSeconds": 0.75,
   "segments": {
     "q1": {
       "start": 0,
-      "end": 3.6
+      "end": 4.3
     },
     "a1": {
-      "start": 4.35,
-      "end": 13.35
-    },
-    "q2": {
-      "start": 14.1,
-      "end": 16.6
-    },
-    "a2": {
-      "start": 17.35,
-      "end": 26.5
-    },
-    "q3": {
-      "start": 27.25,
-      "end": 29.95
-    },
-    "a3": {
-      "start": 30.7,
-      "end": 42.15
+      "start": 5.05,
+      "end": 34.6
     }
   }
 }
