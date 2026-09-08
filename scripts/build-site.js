@@ -5,13 +5,25 @@ const projectRoot = path.resolve(__dirname, '..');
 const outputDir = path.join(projectRoot, 'dist');
 const outputHomework = path.join(outputDir, 'homework');
 const outputPractice = path.join(outputDir, 'practice');
+const outputCoding = path.join(outputDir, 'coding');
 
 fs.rmSync(outputDir, { recursive:true, force:true });
 fs.mkdirSync(outputHomework, { recursive:true });
 fs.mkdirSync(outputPractice, { recursive:true });
+fs.mkdirSync(outputCoding, { recursive:true });
 
 for (const filename of ['index.html', 'type.html', 'manifest.webmanifest', 'service-worker.js']) {
   fs.copyFileSync(path.join(projectRoot, filename), path.join(outputDir, filename));
+}
+
+const codingDir = path.join(projectRoot, 'coding');
+if (fs.existsSync(codingDir)) {
+  const codingFiles = fs.readdirSync(codingDir, { withFileTypes:true })
+    .filter(entry => entry.isFile())
+    .map(entry => entry.name);
+  for (const filename of codingFiles) {
+    fs.copyFileSync(path.join(codingDir, filename), path.join(outputCoding, filename));
+  }
 }
 
 const homeworkDir = path.join(projectRoot, 'homework');

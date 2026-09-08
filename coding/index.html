@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>编程思维探索营 · Alex Coding Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --card-border: #E2E8F0;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --accent-border: #C7D2FE;
+      --cyan: #0284C7;
+      --cyan-light: #E0F2FE;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --amber: #D97706;
+      --amber-light: #FEF3C7;
+      --text: #1E293B;
+      --subtext: #64748B;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      font-size: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+    }
+    .brand-text h1 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .brand-text .sub {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 15px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #F1F5F9;
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+    .hero {
+      background: linear-gradient(135deg, #FFFFFF, #F1F5F9);
+      border: 1px solid var(--accent-border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      border: 1px solid var(--accent-border);
+    }
+    .hero h2 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0F172A;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .mission-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .mission-card.active-card {
+      border-color: var(--accent-border);
+    }
+    .mission-card.active-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.12);
+    }
+    .mission-card.locked {
+      opacity: 0.75;
+      background: #F8FAFC;
+      border-style: dashed;
+    }
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .card-icon {
+      font-size: 32px;
+    }
+    .status-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .status-tag.ready {
+      background: var(--success-light);
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+    .status-tag.locked-tag {
+      background: #F1F5F9;
+      color: var(--subtext);
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin: 0 0 6px 0;
+      color: #0F172A;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--subtext);
+      line-height: 1.5;
+      margin: 0 0 14px 0;
+      flex: 1;
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #F1F5F9;
+      color: #475569;
+    }
+    .tag.highlight {
+      background: var(--accent-light);
+      color: var(--accent);
+    }
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .action-btn.primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+    .action-btn.primary:hover {
+      background: #4338CA;
+    }
+    .action-btn.disabled {
+      background: #E2E8F0;
+      color: var(--subtext);
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon">💻</div>
+      <div class="brand-text">
+        <h1>Alex 编程思维探索营</h1>
+        <div class="sub">Python 算法工坊 · 程序全生命周期结构观</div>
+      </div>
+    </div>
+    <a href="../index.html" class="nav-btn">
+      <span>📚</span> 返回每日英语
+    </a>
+  </div>
+
+  <!-- 欢迎导语 -->
+  <div class="hero">
+    <span class="hero-badge">💡 计算思维：模式识别与抽象建模</span>
+    <h2>用计算机的眼睛看世界</h2>
+    <p>生活中的故事千变万化，有的在工厂倒油，有的在学校图书馆排座位。但在 Python 的世界里，它们都共享着同一套优雅的算法骨骼。点击下方任务关卡，开启特工透视破译！</p>
+  </div>
+
+  <!-- 关卡列表 -->
+  <div class="section-title">
+    <span>🎯</span> 探索任务档案
+  </div>
+
+  <div class="grid">
+    <!-- 关卡 1: 贪心算法 (Greedy Algorithm) -->
+    <div class="mission-card active-card">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">🛢️</div>
+          <span class="status-tag ready">🟢 已就绪 · 档案 #001</span>
+        </div>
+        <h3 class="card-title">贪心算法（Greedy Algorithm）：油罐分装与排座迷案</h3>
+        <p class="card-desc">
+          现场截获两起事件：“机油装罐”与“图书馆排座”。用贪心策略（优先挑最大容量）快速解决问题，通过五阶段工序流水线看透两者的同构本质！
+        </p>
+        <div class="tag-row">
+          <span class="tag highlight">贪心算法 (Greedy)</span>
+          <span class="tag highlight">特工连线</span>
+          <span class="tag">五阶段工序</span>
+          <span class="tag">模型同构</span>
+        </div>
+      </div>
+      <a href="greedy-twins.html" class="action-btn primary">
+        <span>🚀</span> 开启任务档案
+      </a>
+    </div>
+
+    <!-- 关卡 2: 约瑟夫环 (Josephus Problem) -->
+    <div class="mission-card active-card">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">🏴‍☠️</div>
+          <span class="status-tag ready">🟢 已就绪 · 档案 #002</span>
+        </div>
+        <h3 class="card-title">约瑟夫环（Josephus Problem）：海盗选船长与击鼓传花</h3>
+        <p class="card-desc">
+          “海盗报数淘汰选船长”与“派对传递烫手山芋”，底层完全由经典的约瑟夫环控制！一步一报数、安全去队尾、到数则淘汰，见证最后一位王者的诞生！
+        </p>
+        <div class="tag-row">
+          <span class="tag highlight">约瑟夫环 (Josephus)</span>
+          <span class="tag highlight">循环报数</span>
+          <span class="tag">五阶段工序</span>
+          <span class="tag">队列模拟</span>
+        </div>
+      </div>
+      <a href="captain-game.html" class="action-btn primary">
+        <span>🚀</span> 开启任务档案
+      </a>
+    </div>
+
+    <!-- 关卡 3: 状态空间与回溯 (预留) -->
+    <div class="mission-card locked">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">🐺</div>
+          <span class="status-tag locked-tag">🔒 研制中 · 档案 #003</span>
+        </div>
+        <h3 class="card-title">智慧农夫：狼羊菜安全过河</h3>
+        <p class="card-desc">
+          只有一条小船，农夫怎样把狼、羊、卷心菜安全运到河对岸？体验条件分支与状态树的探索魅力。
+        </p>
+        <div class="tag-row">
+          <span class="tag">条件逻辑</span>
+          <span class="tag">状态搜索</span>
+          <span class="tag">回溯启蒙</span>
+        </div>
+      </div>
+      <button class="action-btn disabled" disabled>敬请期待</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

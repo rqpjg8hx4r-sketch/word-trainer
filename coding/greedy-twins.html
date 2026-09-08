@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>特工破案：贪心同构迷案 · Alex Coding Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --card-border: #E2E8F0;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --accent-border: #C7D2FE;
+      --cyan: #0284C7;
+      --cyan-light: #E0F2FE;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --amber: #D97706;
+      --amber-light: #FEF3C7;
+      --danger: #EF4444;
+      --text: #1E293B;
+      --subtext: #64748B;
+      --code-bg: #F8FAFC;
+      --code-border: #E2E8F0;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(12px + env(safe-area-inset-top)) 12px calc(24px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container { width: 100%; max-width: 1060px; }
+    
+    /* 顶部导航 */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge-case {
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .title-group h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .title-group .sub {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-link:hover {
+      background: #F1F5F9;
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+
+    /* 模式切换总开关 */
+    .mode-switch-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 6px 10px;
+      margin-bottom: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .tab-pills {
+      display: flex;
+      gap: 6px;
+    }
+    .tab-pill {
+      padding: 8px 16px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: #F1F5F9;
+      color: var(--subtext);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .tab-pill.active {
+      background: var(--accent);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+    .theme-skin-toggle {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #F8FAFC;
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+    .theme-label {
+      font-size: 12px;
+      color: var(--subtext);
+      padding-left: 6px;
+      font-weight: 700;
+    }
+    .skin-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--subtext);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .skin-btn.active {
+      background: #FFFFFF;
+      color: var(--cyan);
+      border-color: #BAE6FD;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+
+    /* 通用卡片容器 */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    /* 模块 A：特工连线样式 */
+    #matchSection .briefing {
+      background: var(--accent-light);
+      border: 1px solid var(--accent-border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .briefing-icon { font-size: 28px; flex: none; }
+    .briefing-text h3 { margin: 0 0 4px 0; font-size: 14px; color: #3730A3; font-weight: 800; }
+    .briefing-text p { margin: 0; font-size: 12px; color: #4338CA; line-height: 1.5; }
+
+    .match-board-wrapper {
+      position: relative;
+      width: 100%;
+      min-height: 480px;
+      user-select: none;
+    }
+    .match-columns {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1.1fr;
+      gap: 16px;
+      position: relative;
+      z-index: 2;
+    }
+    .col-header {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 8px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+    .col-left .col-header { background: var(--amber-light); color: #B45309; border: 1px solid #FDE68A; }
+    .col-center .col-header { background: var(--accent-light); color: #3730A3; border: 1px solid var(--accent-border); }
+    .col-right .col-header { background: var(--cyan-light); color: #0369A1; border: 1px solid #BAE6FD; }
+
+    .node-list { display: flex; flex-direction: column; gap: 12px; }
+    .match-node {
+      background: #FFFFFF;
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      padding: 11px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: all 0.15s ease;
+    }
+    .match-node:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12);
+    }
+    .match-node.selected {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
+      background: #F0F9FF;
+    }
+    .match-node.matched {
+      border-color: var(--success);
+      background: var(--success-light);
+      color: #065F46;
+    }
+    .match-node .code-pill {
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 12px;
+      color: #4338CA;
+      background: #EEF2FF;
+      padding: 3px 7px;
+      border-radius: 6px;
+      border: 1px solid #C7D2FE;
+    }
+    .match-node .connector-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #CBD5E1;
+      border: 2px solid #94A3B8;
+      flex: none;
+      transition: all 0.2s;
+    }
+    .match-node.matched .connector-dot {
+      background: var(--success);
+      border-color: #34D399;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+    }
+
+    #matchSvgOverlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .match-success-box {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+      border: 2px solid var(--success);
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      display: none;
+      animation: popIn 0.3s ease;
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.15);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .match-success-box h3 { margin: 0 0 6px 0; color: #065F46; font-size: 18px; font-weight: 800; }
+    .match-success-box p { margin: 0 0 14px 0; font-size: 13px; color: #047857; }
+    .btn-enter-sim {
+      background: var(--success);
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 10px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      transition: transform 0.2s;
+    }
+    .btn-enter-sim:hover { transform: scale(1.04); }
+
+    /* 模块 B：五阶段工序流水线 */
+    .pipeline-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .stage-step {
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 6px;
+      text-align: center;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+    .stage-num {
+      font-size: 10px;
+      color: var(--subtext);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .stage-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+      white-space: nowrap;
+    }
+    .stage-step.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+    .stage-step.active .stage-num { color: var(--accent); }
+    .stage-step.active .stage-name { color: var(--accent); }
+    .stage-step.done {
+      border-color: #A7F3D0;
+      background: var(--success-light);
+    }
+    .stage-step.done .stage-num { color: var(--success); }
+    .stage-step.done .stage-name { color: #065F46; }
+
+    /* 参数与控制台工具条 */
+    .sim-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .input-label { font-size: 12px; font-weight: 800; color: #334155; }
+    .sim-input {
+      background: #FFFFFF;
+      border: 1.5px solid #CBD5E1;
+      color: #0F172A;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+      font-weight: bold;
+      width: 70px;
+      text-align: center;
+    }
+    .sim-input.wide { width: 140px; text-align: left; }
+    .preset-btn {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: var(--subtext);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .preset-btn:hover { color: var(--accent); border-color: var(--accent-border); }
+
+    .control-btns {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ctl-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: none;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .ctl-btn.primary { background: var(--accent); color: #FFFFFF; box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25); }
+    .ctl-btn.primary:hover { background: #4338CA; }
+    .ctl-btn.secondary { background: #E2E8F0; color: #334155; }
+    .ctl-btn.secondary:hover { background: #CBD5E1; }
+
+    /* 仿真主舞台：左右分栏 */
+    .sim-stage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 768px) {
+      .sim-stage-grid { grid-template-columns: 1fr; }
+      .match-columns { grid-template-columns: 1fr; }
+    }
+
+    /* 左侧：代码视窗与变量监控 */
+    .code-panel {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .panel-header {
+      padding: 8px 12px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+    }
+    .code-view {
+      padding: 10px 0;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 12.5px;
+      line-height: 1.65;
+      overflow-x: auto;
+      margin: 0;
+      background: #FFFFFF;
+    }
+    .code-line {
+      padding: 2px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.2s;
+    }
+    .code-line .line-num {
+      width: 18px;
+      color: #94A3B8;
+      text-align: right;
+      font-size: 11px;
+      user-select: none;
+    }
+    .code-line .line-text { color: #1E293B; white-space: pre; }
+    .code-line.active {
+      background: #EEF2FF;
+      border-left: 3px solid var(--accent);
+    }
+    .code-line.active .line-text { color: #1E1B4B; font-weight: bold; }
+    .code-line.active .line-num { color: var(--accent); font-weight: bold; }
+    .code-comment { color: #94A3B8; font-style: italic; }
+    .code-keyword { color: #7C3AED; font-weight: bold; }
+    .code-fn { color: #0284C7; font-weight: bold; }
+    .code-var { color: #B45309; }
+
+    /* 变量看板 */
+    .vars-monitor {
+      padding: 10px 12px;
+      background: #F8FAFC;
+      border-top: 1px solid var(--card-border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .var-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .var-title { font-size: 10px; color: var(--subtext); font-weight: 700; }
+    .var-val { font-size: 16px; font-weight: 900; font-family: monospace; color: var(--accent); margin-top: 2px; }
+
+    /* 右侧：物理世界动画视窗 */
+    .world-panel {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .world-canvas-container {
+      padding: 14px;
+      flex: 1;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: #FAFAFA;
+    }
+
+    /* 场景 A：油罐工厂 */
+    .oil-factory-view {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .oil-source-tank {
+      background: #F1F5F9;
+      border: 2px solid #CBD5E1;
+      border-radius: 12px;
+      height: 75px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .oil-liquid {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%;
+      background: linear-gradient(to top, #D97706, #FBBF24);
+      transition: height 0.4s ease;
+      opacity: 0.9;
+    }
+    .oil-tank-label {
+      position: relative;
+      z-index: 2;
+      font-size: 13px;
+      font-weight: 800;
+      color: #1E293B;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 3px 10px;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    
+    .conveyor-belt {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 12px 6px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1.5px dashed #CBD5E1;
+      min-height: 120px;
+    }
+    .tank-item {
+      width: 54px;
+      border: 2px solid #94A3B8;
+      border-radius: 8px 8px 4px 4px;
+      background: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 6px;
+      position: relative;
+      transition: all 0.3s ease;
+      flex: none;
+    }
+    .tank-item.active-target {
+      border-color: var(--amber);
+      transform: scale(1.08);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
+      background: #FFFBEB;
+    }
+    .tank-item.filled {
+      border-color: var(--success);
+      background: var(--success-light);
+    }
+    .tank-item .tank-cap {
+      font-size: 11px;
+      font-weight: 800;
+      color: #334155;
+    }
+    .tank-item .stamp-badge {
+      position: absolute;
+      top: -10px;
+      font-size: 10px;
+      background: var(--success);
+      color: #FFFFFF;
+      font-weight: 800;
+      padding: 2px 4px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+    }
+
+    /* 场景 B：智慧图书馆 */
+    .library-view {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .students-queue {
+      background: #F1F5F9;
+      border: 2px solid #CBD5E1;
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 75px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .queue-title {
+      font-size: 11px;
+      color: var(--subtext);
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .queue-avatars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      max-height: 55px;
+      overflow: hidden;
+    }
+    .student-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--cyan);
+      display: inline-block;
+      box-shadow: 0 1px 3px rgba(2, 132, 199, 0.3);
+    }
+    .rooms-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 10px 4px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1.5px dashed #CBD5E1;
+      min-height: 120px;
+    }
+    .room-card {
+      width: 74px;
+      border: 2px solid #CBD5E1;
+      border-radius: 10px;
+      background: #F8FAFC;
+      padding: 8px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      flex: none;
+      transition: all 0.3s ease;
+    }
+    .room-card.active-room {
+      border-color: var(--cyan);
+      transform: scale(1.08);
+      box-shadow: 0 0 14px rgba(2, 132, 199, 0.3);
+      background: #F0F9FF;
+    }
+    .room-card.occupied {
+      border-color: var(--success);
+      background: var(--success-light);
+    }
+    .room-icon { font-size: 22px; }
+    .room-seats { font-size: 11px; font-weight: 800; color: #1E293B; }
+    .room-status { font-size: 9px; padding: 2px 4px; border-radius: 4px; background: #E2E8F0; color: var(--subtext); font-weight: 700; }
+    .room-card.occupied .room-status { background: var(--success); color: #FFFFFF; }
+
+    /* 终端打印区 */
+    .terminal-box {
+      background: #0F172A;
+      border-top: 1px solid var(--card-border);
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .terminal-prompt { color: #34D399; font-weight: bold; }
+    .terminal-out { color: #FFFFFF; font-weight: 900; font-size: 15px; margin-left: 8px; }
+    .terminal-desc { color: #94A3B8; font-size: 11px; }
+
+    /* 恭喜达标弹层 */
+    .finish-stamp {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-8deg);
+      border: 3px solid var(--success);
+      background: rgba(255, 255, 255, 0.96);
+      color: #065F46;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
+      display: none;
+      z-index: 10;
+      animation: popIn 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="brand-group">
+      <span class="badge-case">档案 #001 · 贪心算法 (Greedy)</span>
+      <div class="title-group">
+        <h1>贪心算法（Greedy）：油罐分装 与 图书馆排座</h1>
+        <div class="sub">双面同构故事 · 100% 相同 Python 算法内核</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-link"><span>🎯</span> 关卡大厅</a>
+      <a href="../index.html" class="nav-link"><span>📚</span> 每日英语</a>
+    </div>
+  </div>
+
+  <!-- 模式与皮肤总切换条 -->
+  <div class="mode-switch-bar">
+    <div class="tab-pills">
+      <button id="btnTabMatch" class="tab-pill active" onclick="switchMainTab('match')">
+        <span>🧩</span> 特工连线破案 (抽象对齐)
+      </button>
+      <button id="btnTabSim" class="tab-pill" onclick="switchMainTab('sim')">
+        <span>⚙️</span> 五阶段流水线 (工序仿真)
+      </button>
+    </div>
+
+    <div class="theme-skin-toggle">
+      <span class="theme-label">场景外衣：</span>
+      <button id="skinBtnOil" class="skin-btn active" onclick="switchThemeSkin('oil')">
+        <span>🛢️</span> 机油工厂
+      </button>
+      <button id="skinBtnLib" class="skin-btn" onclick="switchThemeSkin('lib')">
+        <span>📚</span> 智慧图书馆
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 模块 1：特工连线找相同 ==================== -->
+  <div id="matchSection" class="card">
+    <div class="briefing">
+      <div class="briefing-icon">🕵️‍♂️</div>
+      <div class="briefing-text">
+        <h3>特工任务简报：破译两起迷案的共同算法骨骼</h3>
+        <p>
+          现场截获了左侧的【机油工厂案】和右侧的【图书馆案】。虽然故事角色不同，但底层完全受控于中间同一组 Python 算法节点！
+          <br><strong>操作提示</strong>：分别点击左右两边的【生活线索】，再点击中间对应的【Python 语句】，发射光束连线！
+        </p>
+      </div>
+    </div>
+
+    <div class="match-board-wrapper">
+      <svg id="matchSvgOverlay"></svg>
+
+      <div class="match-columns">
+        <!-- 左列：油罐生活概念 -->
+        <div class="col-left">
+          <div class="col-header">🛢️ 油罐案现场线索</div>
+          <div class="node-list">
+            <div class="match-node" data-side="left" data-key="total" id="node_oil_total" onclick="handleNodeClick(this)">
+              <span>💧 待装机油总量 (m 升)</span>
+              <span class="connector-dot"></span>
+            </div>
+            <div class="match-node" data-side="left" data-key="list" id="node_oil_list" onclick="handleNodeClick(this)">
+              <span>🪣 各油罐容量清单</span>
+              <span class="connector-dot"></span>
+            </div>
+            <div class="match-node" data-side="left" data-key="sort" id="node_oil_sort" onclick="handleNodeClick(this)">
+              <span>📐 贪心策略：优先挑最大罐</span>
+              <span class="connector-dot"></span>
+            </div>
+            <div class="match-node" data-side="left" data-key="break" id="node_oil_break" onclick="handleNodeClick(this)">
+              <span>🛑 油全装完了，达标停机</span>
+              <span class="connector-dot"></span>
+            </div>
+            <div class="match-node" data-side="left" data-key="cnt" id="node_oil_cnt" onclick="handleNodeClick(this)">
+              <span>🔢 记录一共用了几个罐子</span>
+              <span class="connector-dot"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 中间：Python 核心代码芯片 -->
+        <div class="col-center">
+          <div class="col-header">💻 Python 核心算法芯片</div>
+          <div class="node-list">
+            <div class="match-node" data-side="center" data-key="total" id="node_code_total" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span class="code-pill">x = m (待扣减总量)</span>
+              <span class="connector-dot"></span>
+            </div>
+            <div class="match-node" data-side="center" data-key="list" id="node_code_list" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span class="code-pill">ls = [] (容器规格清单)</span>
+              <span class="connector-dot"></span>
+            </div>
+            <div class="match-node" data-side="center" data-key="sort" id="node_code_sort" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span class="code-pill">ls.sort(reverse=True)</span>
+              <span class="connector-dot"></span>
+            </div>
+            <div class="match-node" data-side="center" data-key="break" id="node_code_break" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span class="code-pill">if x <= 0: break</span>
+              <span class="connector-dot"></span>
+            </div>
+            <div class="match-node" data-side="center" data-key="cnt" id="node_code_cnt" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span class="code-pill">cnt += 1 (计数累加)</span>
+              <span class="connector-dot"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右列：图书馆生活概念 -->
+        <div class="col-right">
+          <div class="col-header">📚 图书馆案现场线索</div>
+          <div class="node-list">
+            <div class="match-node" data-side="right" data-key="total" id="node_lib_total" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span>🎒 待排座学生总数 (m 人)</span>
+            </div>
+            <div class="match-node" data-side="right" data-key="list" id="node_lib_list" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span>🚪 各自习室座位数清单</span>
+            </div>
+            <div class="match-node" data-side="right" data-key="sort" id="node_lib_sort" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span>📐 贪心策略：优先开最大教室</span>
+            </div>
+            <div class="match-node" data-side="right" data-key="break" id="node_lib_break" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span>🛑 学生全坐下了，达标停机</span>
+            </div>
+            <div class="match-node" data-side="right" data-key="cnt" id="node_lib_cnt" onclick="handleNodeClick(this)">
+              <span class="connector-dot"></span>
+              <span>🔑 记录一共开放了几间教室</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 破译成功提示框 -->
+    <div id="matchSuccessBox" class="match-success-box">
+      <h3>🎉 破案成功！特工透视破译完毕！</h3>
+      <p>太厉害了！生活的故事千变万化，但背后的算法骨骼是 100% 相同通用的！快去启动流水线仿真器，亲眼看看它怎样运转吧！</p>
+      <button class="btn-enter-sim" onclick="switchMainTab('sim')">
+        <span>🚀</span> 前往五阶段流水线仿真器
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== 模块 2：五阶段流水线仿真器 ==================== -->
+  <div id="simSection" class="card" style="display:none;">
+    <!-- 顶部五阶段工序进度条 -->
+    <div class="pipeline-bar">
+      <div id="pStage1" class="stage-step active">
+        <span class="stage-num">阶段 ①</span>
+        <span class="stage-name">原料进厂清洗</span>
+      </div>
+      <div id="pStage2" class="stage-step">
+        <span class="stage-num">阶段 ②</span>
+        <span class="stage-name">开工排兵布阵</span>
+      </div>
+      <div id="pStage3" class="stage-step">
+        <span class="stage-num">阶段 ③</span>
+        <span class="stage-name">核心扣减作业</span>
+      </div>
+      <div id="pStage4" class="stage-step">
+        <span class="stage-num">阶段 ④</span>
+        <span class="stage-name">达标紧急刹车</span>
+      </div>
+      <div id="pStage5" class="stage-step">
+        <span class="stage-num">阶段 ⑤</span>
+        <span class="stage-name">交付盖章答卷</span>
+      </div>
+    </div>
+
+    <!-- 参数配置与调试控制条 -->
+    <div class="sim-toolbar">
+      <div class="input-group">
+        <span id="labelTotalM" class="input-label">待装总量 m:</span>
+        <input id="inputM" class="sim-input" type="number" value="100">
+        <span id="labelListLs" class="input-label">容量列表:</span>
+        <input id="inputLs" class="sim-input wide" type="text" value="20 50 10 30 5">
+        <button class="preset-btn" onclick="applyPreset(100, '20 50 10 30 5')">预设1 (100)</button>
+        <button class="preset-btn" onclick="applyPreset(65, '10 30 40 20')">预设2 (65)</button>
+        <button class="preset-btn" onclick="applyPreset(45, '5 10 15 20')">预设3 (45)</button>
+      </div>
+
+      <div class="control-btns">
+        <button id="btnStep" class="ctl-btn primary" onclick="stepSimulator()">
+          <span>⏭</span> 单步步进 (Step)
+        </button>
+        <button id="btnPlay" class="ctl-btn secondary" onclick="togglePlaySimulator()">
+          <span id="playIcon">▶</span> 连续播放
+        </button>
+        <button id="btnReset" class="ctl-btn secondary" onclick="resetSimulator()">
+          <span>🔄</span> 重置
+        </button>
+      </div>
+    </div>
+
+    <!-- 主舞台双分栏 -->
+    <div class="sim-stage-grid">
+      <!-- 左：代码高亮视窗与变量看板 -->
+      <div class="code-panel">
+        <div class="panel-header">
+          <span>🐍 Python 算法引擎</span>
+          <span id="codeStepTip" style="color:var(--accent);">准备就绪 · 点击单步执行</span>
+        </div>
+        <div class="code-view">
+          <div class="code-line" id="line1"><span class="line-num">1</span><span class="line-text"><span class="code-comment"># 1. 原料进厂清洗</span></span></div>
+          <div class="code-line" id="line2"><span class="line-num">2</span><span class="line-text">n = <span class="code-fn">input</span>().<span class="code-fn">split</span>(<span class="code-keyword">" "</span>)</span></div>
+          <div class="code-line" id="line3"><span class="line-num">3</span><span class="line-text">m = <span class="code-fn">int</span>(<span class="code-fn">input</span>())</span></div>
+          <div class="code-line" id="line4"><span class="line-num">4</span><span class="line-text">ls = []</span></div>
+          <div class="code-line" id="line5"><span class="line-num">5</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> n:</span></div>
+          <div class="code-line" id="line6"><span class="line-num">6</span><span class="line-text">    ls.<span class="code-fn">append</span>(<span class="code-fn">int</span>(i))</span></div>
+          <div class="code-line" id="line7"><span class="line-num">7</span><span class="line-text"><span class="code-comment"># 2. 开工排兵布阵 (贪心排序与初始化)</span></span></div>
+          <div class="code-line" id="line8"><span class="line-num">8</span><span class="line-text">ls.<span class="code-fn">sort</span>(reverse=<span class="code-keyword">True</span>)</span></div>
+          <div class="code-line" id="line9"><span class="line-num">9</span><span class="line-text"><span class="code-var">cnt</span> = <span class="code-keyword">0</span></span></div>
+          <div class="code-line" id="line10"><span class="line-num">10</span><span class="line-text"><span class="code-var">x</span> = m</span></div>
+          <div class="code-line" id="line11"><span class="line-num">11</span><span class="line-text"><span class="code-comment"># 3. 核心流水线作业</span></span></div>
+          <div class="code-line" id="line12"><span class="line-num">12</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> ls:</span></div>
+          <div class="code-line" id="line13"><span class="line-num">13</span><span class="line-text">    <span class="code-var">x</span> = <span class="code-var">x</span> - i</span></div>
+          <div class="code-line" id="line14"><span class="line-num">14</span><span class="line-text">    <span class="code-var">cnt</span> += <span class="code-keyword">1</span></span></div>
+          <div class="code-line" id="line15"><span class="line-num">15</span><span class="line-text">    <span class="code-keyword">if</span> <span class="code-var">x</span> <= <span class="code-keyword">0</span>:  <span class="code-comment"># 4. 达标刹车</span></span></div>
+          <div class="code-line" id="line16"><span class="line-num">16</span><span class="line-text">        <span class="code-keyword">break</span></span></div>
+          <div class="code-line" id="line17"><span class="line-num">17</span><span class="line-text"><span class="code-comment"># 5. 交付答卷</span></span></div>
+          <div class="code-line" id="line18"><span class="line-num">18</span><span class="line-text"><span class="code-fn">print</span>(<span class="code-var">cnt</span>)</span></div>
+        </div>
+
+        <!-- 变量监控看板 -->
+        <div class="vars-monitor">
+          <div class="var-card">
+            <div class="var-title">剩余待消减 x</div>
+            <div id="valX" class="var-val">-</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">已用计数 cnt</div>
+            <div id="valCnt" class="var-val">0</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">当前选用 i</div>
+            <div id="valI" class="var-val">-</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">排序后清单 ls</div>
+            <div id="valLs" class="var-val" style="font-size:11px; white-space:nowrap; overflow:hidden;">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右：物理动画舞台 -->
+      <div class="world-panel">
+        <div class="panel-header">
+          <span id="worldHeaderTitle">🛢️ 机油工厂现场物理模拟</span>
+          <span id="worldStatusBadge" style="color:var(--amber);">待开工</span>
+        </div>
+
+        <div class="world-canvas-container">
+          <!-- 场景 A：机油工厂 -->
+          <div id="oilFactoryView" class="oil-factory-view">
+            <div class="oil-source-tank">
+              <div id="oilLiquidBar" class="oil-liquid" style="height: 100%;"></div>
+              <div id="oilSourceText" class="oil-tank-label">原油总池：100 L</div>
+            </div>
+
+            <div style="font-size:11px; color:var(--subtext); font-weight:800;">
+              🚚 传送带上的油罐队伍（按大到小排列）：
+            </div>
+
+            <div id="oilConveyor" class="conveyor-belt">
+              <!-- 动态注入油罐 -->
+            </div>
+          </div>
+
+          <!-- 场景 B：智慧图书馆 -->
+          <div id="libraryView" class="library-view">
+            <div class="students-queue">
+              <div id="queueTitleText" class="queue-title">校门口排队学生：100 人</div>
+              <div id="studentsAvatarBox" class="queue-avatars">
+                <!-- 动态注入学生小圆点 -->
+              </div>
+            </div>
+
+            <div style="font-size:11px; color:var(--subtext); font-weight:800;">
+              🏫 自习室分布区（优先启用大教室）：
+            </div>
+
+            <div id="roomsConveyor" class="rooms-row">
+              <!-- 动态注入自习室 -->
+            </div>
+          </div>
+
+          <!-- 达标紧急刹车盖章 -->
+          <div id="finishStamp" class="finish-stamp">
+            🏁 任务达标！紧急刹车！
+          </div>
+        </div>
+
+        <!-- 终端打印区 -->
+        <div class="terminal-box">
+          <div>
+            <span class="terminal-prompt">&gt;&gt;&gt;</span>
+            <span id="termOutput" class="terminal-out">等待输出…</span>
+          </div>
+          <div id="termDesc" class="terminal-desc">程序全生命周期完成</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==================== 1. 音效生成器 (Web Audio API) ==================== */
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function playSound(type) {
+  try {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+
+    if (type === 'connect') {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.12);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+      osc.start(now);
+      osc.stop(now + 0.16);
+    } else if (type === 'wrong') {
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.setValueAtTime(140, now + 0.08);
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } else if (type === 'step') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.setValueAtTime(660, now + 0.06);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    } else if (type === 'victory') {
+      const notes = [523.25, 659.25, 783.99, 1046.50];
+      notes.forEach((freq, idx) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0.18, now + idx * 0.1);
+        g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.25);
+        o.start(now + idx * 0.1);
+        o.stop(now + idx * 0.1 + 0.28);
+      });
+    }
+  } catch (e) { console.log(e); }
+}
+
+/* ==================== 2. 页面顶级 Tab 与皮肤换装 ==================== */
+let currentThemeSkin = 'oil';
+
+function switchMainTab(tab) {
+  const matchSec = document.getElementById('matchSection');
+  const simSec = document.getElementById('simSection');
+  const btnMatch = document.getElementById('btnTabMatch');
+  const btnSim = document.getElementById('btnTabSim');
+
+  if (tab === 'match') {
+    matchSec.style.display = 'block';
+    simSec.style.display = 'none';
+    btnMatch.classList.add('active');
+    btnSim.classList.remove('active');
+    renderMatchLines();
+  } else {
+    matchSec.style.display = 'none';
+    simSec.style.display = 'block';
+    btnMatch.classList.remove('active');
+    btnSim.classList.add('active');
+    resetSimulator();
+  }
+}
+
+function switchThemeSkin(skin) {
+  currentThemeSkin = skin;
+  const btnOil = document.getElementById('skinBtnOil');
+  const btnLib = document.getElementById('skinBtnLib');
+  const oilView = document.getElementById('oilFactoryView');
+  const libView = document.getElementById('libraryView');
+  const headerTitle = document.getElementById('worldHeaderTitle');
+  const labelM = document.getElementById('labelTotalM');
+  const labelLs = document.getElementById('labelListLs');
+
+  if (skin === 'oil') {
+    btnOil.classList.add('active');
+    btnLib.classList.remove('active');
+    oilView.style.display = 'flex';
+    libView.style.display = 'none';
+    headerTitle.textContent = '🛢️ 机油工厂现场物理模拟';
+    labelM.textContent = '待装机油 m (升):';
+    labelLs.textContent = '油罐容量列表:';
+  } else {
+    btnOil.classList.remove('active');
+    btnLib.classList.add('active');
+    oilView.style.display = 'none';
+    libView.style.display = 'flex';
+    headerTitle.textContent = '📚 智慧图书馆现场分配模拟';
+    labelM.textContent = '待排座学生 m (人):';
+    labelLs.textContent = '教室座位列表:';
+  }
+  resetSimulator();
+}
+
+/* ==================== 3. 特工连线破案系统 ==================== */
+let selectedNode = null;
+const matches = {
+  left: {},
+  right: {}
+};
+
+function handleNodeClick(el) {
+  const side = el.dataset.side;
+  const key = el.dataset.key;
+
+  if (el.classList.contains('matched')) return;
+
+  if (!selectedNode) {
+    selectedNode = el;
+    el.classList.add('selected');
+    return;
+  }
+
+  if (selectedNode === el) {
+    el.classList.remove('selected');
+    selectedNode = null;
+    return;
+  }
+
+  const prevSide = selectedNode.dataset.side;
+  const prevKey = selectedNode.dataset.key;
+
+  const isLeftPair = (prevSide === 'left' && side === 'center') || (prevSide === 'center' && side === 'left');
+  const isRightPair = (prevSide === 'right' && side === 'center') || (prevSide === 'center' && side === 'right');
+
+  if (isLeftPair || isRightPair) {
+    if (prevKey === key) {
+      playSound('connect');
+      selectedNode.classList.remove('selected');
+      el.classList.remove('selected');
+
+      const targetSide = isLeftPair ? 'left' : 'right';
+      matches[targetSide][key] = true;
+
+      const sideNode = document.querySelector(`.match-node[data-side="${targetSide}"][data-key="${key}"]`);
+      if (sideNode) sideNode.classList.add('matched');
+
+      if (matches.left[key] && matches.right[key]) {
+        const centerNode = document.querySelector(`.match-node[data-side="center"][data-key="${key}"]`);
+        if (centerNode) centerNode.classList.add('matched');
+      }
+
+      renderMatchLines();
+      checkAllMatched();
+    } else {
+      playSound('wrong');
+      selectedNode.classList.remove('selected');
+      el.classList.add('selected');
+      setTimeout(() => el.classList.remove('selected'), 300);
+    }
+    selectedNode = null;
+  } else {
+    selectedNode.classList.remove('selected');
+    selectedNode = el;
+    el.classList.add('selected');
+  }
+}
+
+function renderMatchLines() {
+  const svg = document.getElementById('matchSvgOverlay');
+  const wrapper = document.querySelector('.match-board-wrapper');
+  if (!svg || !wrapper) return;
+  const rect = wrapper.getBoundingClientRect();
+  svg.innerHTML = '';
+
+  const drawLine = (n1, n2, color) => {
+    if (!n1 || !n2) return;
+    const r1 = n1.getBoundingClientRect();
+    const r2 = n2.getBoundingClientRect();
+    const x1 = r1.right - rect.left - 6;
+    const y1 = r1.top + r1.height / 2 - rect.top;
+    const x2 = r2.left - rect.left + 6;
+    const y2 = r2.top + r2.height / 2 - rect.top;
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const cx1 = x1 + (x2 - x1) * 0.5;
+    const cx2 = cx1;
+    path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${y1}, ${cx2} ${y2}, ${x2} ${y2}`);
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', '3.5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke-dasharray', '6 3');
+    svg.appendChild(path);
+  };
+
+  ['total', 'list', 'sort', 'break', 'cnt'].forEach(key => {
+    const centerNode = document.getElementById(`node_code_${key}`);
+    if (matches.left[key]) {
+      const leftNode = document.getElementById(`node_oil_${key}`);
+      drawLine(leftNode, centerNode, '#D97706');
+    }
+    if (matches.right[key]) {
+      const rightNode = document.getElementById(`node_lib_${key}`);
+      drawLine(centerNode, rightNode, '#0284C7');
+    }
+  });
+}
+
+window.addEventListener('resize', renderMatchLines);
+
+function checkAllMatched() {
+  const keys = ['total', 'list', 'sort', 'break', 'cnt'];
+  const allLeft = keys.every(k => matches.left[k]);
+  const allRight = keys.every(k => matches.right[k]);
+  if (allLeft && allRight) {
+    playSound('victory');
+    document.getElementById('matchSuccessBox').style.display = 'block';
+  }
+}
+
+/* ==================== 4. 五阶段流水线模拟器 ==================== */
+let simState = {
+  stepIndex: 0,
+  m: 100,
+  rawList: [20, 50, 10, 30, 5],
+  sortedList: [],
+  x: 100,
+  cnt: 0,
+  loopIdx: -1,
+  currentI: null,
+  isFinished: false,
+  timer: null,
+  isPlaying: false
+};
+
+function applyPreset(m, lsStr) {
+  document.getElementById('inputM').value = m;
+  document.getElementById('inputLs').value = lsStr;
+  resetSimulator();
+}
+
+function resetSimulator() {
+  if (simState.timer) clearInterval(simState.timer);
+  simState.isPlaying = false;
+  document.getElementById('playIcon').textContent = '▶';
+
+  const mVal = parseInt(document.getElementById('inputM').value) || 100;
+  const rawLs = document.getElementById('inputLs').value
+    .trim().split(/\s+/)
+    .map(Number).filter(v => !isNaN(v) && v > 0);
+
+  simState = {
+    stepIndex: 0,
+    m: mVal,
+    rawList: rawLs,
+    sortedList: [...rawLs].sort((a, b) => b - a),
+    x: mVal,
+    cnt: 0,
+    loopIdx: -1,
+    currentI: null,
+    isFinished: false,
+    timer: null,
+    isPlaying: false
+  };
+
+  document.querySelectorAll('.code-line').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.stage-step').forEach((s, idx) => {
+    s.classList.remove('active', 'done');
+    if (idx === 0) s.classList.add('active');
+  });
+
+  document.getElementById('valX').textContent = mVal;
+  document.getElementById('valCnt').textContent = '0';
+  document.getElementById('valI').textContent = '-';
+  document.getElementById('valLs').textContent = '[' + rawLs.join(', ') + ']';
+
+  document.getElementById('termOutput').textContent = '等待输出…';
+  document.getElementById('finishStamp').style.display = 'none';
+  document.getElementById('codeStepTip').textContent = '准备就绪 · 点击单步执行';
+  document.getElementById('worldStatusBadge').textContent = '待开工';
+  document.getElementById('worldStatusBadge').style.color = 'var(--amber)';
+
+  renderWorldTanks(rawLs, false);
+  updateWorldLiquid(mVal, mVal);
+}
+
+function renderWorldTanks(list, isSorted) {
+  const conveyor = document.getElementById('oilConveyor');
+  conveyor.innerHTML = '';
+  list.forEach((cap, idx) => {
+    const item = document.createElement('div');
+    item.className = 'tank-item';
+    item.id = `tank_item_${idx}`;
+    item.style.height = `${Math.min(95, 40 + cap * 0.9)}px`;
+    item.innerHTML = `<span class="tank-cap">${cap}L</span>`;
+    conveyor.appendChild(item);
+  });
+
+  const roomsConveyor = document.getElementById('roomsConveyor');
+  roomsConveyor.innerHTML = '';
+  list.forEach((cap, idx) => {
+    const room = document.createElement('div');
+    room.className = 'room-card';
+    room.id = `room_card_${idx}`;
+    room.innerHTML = `
+      <div class="room-icon">🚪</div>
+      <div class="room-seats">${cap}座</div>
+      <div class="room-status">空闲</div>
+    `;
+    roomsConveyor.appendChild(room);
+  });
+
+  const avatarBox = document.getElementById('studentsAvatarBox');
+  avatarBox.innerHTML = '';
+  const count = Math.min(simState.m, 40);
+  for (let i = 0; i < count; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'student-dot';
+    avatarBox.appendChild(dot);
+  }
+  document.getElementById('queueTitleText').textContent = `校门口排队学生：${simState.m} 人`;
+}
+
+function updateWorldLiquid(currentX, totalM) {
+  const percent = Math.max(0, Math.min(100, (currentX / totalM) * 100));
+  const liquidBar = document.getElementById('oilLiquidBar');
+  liquidBar.style.height = `${percent}%`;
+  document.getElementById('oilSourceText').textContent = `原油总池：${Math.max(0, currentX)} L`;
+
+  document.getElementById('queueTitleText').textContent = `校门口排队学生：${Math.max(0, currentX)} 人`;
+  const dots = document.querySelectorAll('.student-dot');
+  const activeCount = Math.ceil((Math.max(0, currentX) / totalM) * dots.length);
+  dots.forEach((d, idx) => {
+    d.style.opacity = idx < activeCount ? '1' : '0.15';
+  });
+}
+
+function setStageStep(stageIdx) {
+  document.querySelectorAll('.stage-step').forEach((s, idx) => {
+    s.classList.remove('active');
+    if (idx < stageIdx) s.classList.add('done');
+    if (idx === stageIdx) s.classList.add('active');
+  });
+}
+
+function highlightLines(lineIds) {
+  document.querySelectorAll('.code-line').forEach(l => l.classList.remove('active'));
+  lineIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  });
+}
+
+/* 核心调试单步状态机 */
+function stepSimulator() {
+  if (simState.isFinished) return;
+  playSound('step');
+
+  const step = simState.stepIndex;
+
+  if (step === 0) {
+    // 阶段 1：数据进厂清洗 (读取 input，准备空列表 ls=[])
+    setStageStep(0);
+    highlightLines(['line2', 'line3', 'line4']);
+    document.getElementById('codeStepTip').textContent = '【阶段1 数据进厂】读取文本，创建空列表 ls = []';
+    simState.stepIndex = 1;
+  } else if (step === 1) {
+    // 阶段 1：循环转数字并加入列表
+    highlightLines(['line5', 'line6']);
+    document.getElementById('codeStepTip').textContent = '【阶段1 逐个清洗】for i in n: ls.append(int(i)) 将文字变数字入库';
+    document.getElementById('valLs').textContent = '[' + simState.rawList.join(', ') + ']';
+    simState.stepIndex = 2;
+  } else if (step === 2) {
+    // 阶段 2：策略排序 (开工排兵布阵)
+    setStageStep(1);
+    highlightLines(['line8']);
+    document.getElementById('codeStepTip').textContent = '【阶段2 策略排序】ls.sort(reverse=True) 大者优先，排在最前！';
+    document.getElementById('valLs').textContent = '[' + simState.sortedList.join(', ') + ']';
+    renderWorldTanks(simState.sortedList, true);
+    simState.stepIndex = 3;
+  } else if (step === 3) {
+    // 阶段 2：变量初始化 cnt=0, x=m
+    highlightLines(['line9', 'line10']);
+    document.getElementById('codeStepTip').textContent = '【阶段2 准备就绪】计数器 cnt=0，待处理量 x=m';
+    document.getElementById('valX').textContent = simState.x;
+    document.getElementById('valCnt').textContent = '0';
+    document.getElementById('worldStatusBadge').textContent = '生产线运转中';
+    document.getElementById('worldStatusBadge').style.color = 'var(--cyan)';
+    simState.stepIndex = 4;
+  } else if (step === 4) {
+    // 阶段 3 循环开始
+    simState.loopIdx++;
+    if (simState.loopIdx >= simState.sortedList.length) {
+      simState.stepIndex = 99;
+      stepSimulator();
+      return;
+    }
+
+    const cur = simState.sortedList[simState.loopIdx];
+    simState.currentI = cur;
+
+    setStageStep(2);
+    highlightLines(['line12']);
+    document.getElementById('codeStepTip').textContent = `【阶段3 核心作业】挑选当前最大容量 i = ${cur}`;
+    document.getElementById('valI').textContent = cur;
+
+    document.querySelectorAll('.tank-item').forEach(t => t.classList.remove('active-target'));
+    document.querySelectorAll('.room-card').forEach(r => r.classList.remove('active-room'));
+    const curTank = document.getElementById(`tank_item_${simState.loopIdx}`);
+    const curRoom = document.getElementById(`room_card_${simState.loopIdx}`);
+    if (curTank) curTank.classList.add('active-target');
+    if (curRoom) curRoom.classList.add('active-room');
+
+    simState.stepIndex = 5;
+  } else if (step === 5) {
+    // 扣减与累加
+    simState.x -= simState.currentI;
+    simState.cnt += 1;
+
+    highlightLines(['line13', 'line14']);
+    document.getElementById('codeStepTip').textContent = `【阶段3 扣减作业】x = x - ${simState.currentI} (还剩 ${simState.x}), cnt+1 (用了 ${simState.cnt} 个)`;
+    document.getElementById('valX').textContent = simState.x;
+    document.getElementById('valCnt').textContent = simState.cnt;
+
+    updateWorldLiquid(simState.x, simState.m);
+    const curTank = document.getElementById(`tank_item_${simState.loopIdx}`);
+    if (curTank) {
+      curTank.classList.remove('active-target');
+      curTank.classList.add('filled');
+      curTank.innerHTML += '<span class="stamp-badge">已灌满</span>';
+    }
+    const curRoom = document.getElementById(`room_card_${simState.loopIdx}`);
+    if (curRoom) {
+      curRoom.classList.remove('active-room');
+      curRoom.classList.add('occupied');
+      curRoom.querySelector('.room-status').textContent = '已满员';
+    }
+
+    simState.stepIndex = 6;
+  } else if (step === 6) {
+    // 阶段 4：达标刹车检测 if x <= 0: break
+    setStageStep(3);
+    highlightLines(['line15']);
+
+    if (simState.x <= 0) {
+      document.getElementById('codeStepTip').textContent = `【阶段4 达标刹车】条件满足！x (${simState.x}) <= 0，立刻 break 退出循环！`;
+      document.getElementById('finishStamp').style.display = 'block';
+      playSound('victory');
+      simState.stepIndex = 7;
+    } else {
+      document.getElementById('codeStepTip').textContent = `【阶段4 质检】x (${simState.x}) > 0 还没装完，继续循环！`;
+      simState.stepIndex = 4;
+    }
+  } else if (step === 7) {
+    // 阶段 5：交付答卷 print(cnt)
+    setStageStep(4);
+    highlightLines(['line18']);
+    document.getElementById('codeStepTip').textContent = `【阶段5 交付答卷】print(cnt) 输出最优解结果！`;
+    document.getElementById('termOutput').textContent = `${simState.cnt}`;
+    document.getElementById('termDesc').textContent = currentThemeSkin === 'oil' 
+      ? `最优装载：最少只需 ${simState.cnt} 个油罐！` 
+      : `最优排座：最少只需开放 ${simState.cnt} 间自习室！`;
+    document.getElementById('worldStatusBadge').textContent = '🎉 任务圆满完成';
+    document.getElementById('worldStatusBadge').style.color = 'var(--success)';
+    simState.isFinished = true;
+
+    if (simState.timer) clearInterval(simState.timer);
+    simState.isPlaying = false;
+    document.getElementById('playIcon').textContent = '▶';
+  } else if (step === 99) {
+    document.getElementById('codeStepTip').textContent = '所有容器已用尽！';
+    simState.isFinished = true;
+  }
+}
+
+function togglePlaySimulator() {
+  if (simState.isFinished) resetSimulator();
+  if (simState.isPlaying) {
+    clearInterval(simState.timer);
+    simState.isPlaying = false;
+    document.getElementById('playIcon').textContent = '▶';
+  } else {
+    simState.isPlaying = true;
+    document.getElementById('playIcon').textContent = '⏸';
+    simState.timer = setInterval(() => {
+      if (!simState.isFinished) {
+        stepSimulator();
+      } else {
+        clearInterval(simState.timer);
+        simState.isPlaying = false;
+        document.getElementById('playIcon').textContent = '▶';
+      }
+    }, 1200);
+  }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  resetSimulator();
+});
+</script>
+
+</body>
+</html>

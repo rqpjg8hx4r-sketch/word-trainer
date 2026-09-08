@@ -58,6 +58,10 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
 
   if (request.mode === 'navigate') {
+    if (url.pathname.includes('/coding/')) {
+      event.respondWith(fetch(request));
+      return;
+    }
     const shellPage = url.pathname.endsWith('/type.html') ? './type.html' : './index.html';
     event.respondWith(
       fetch(request)
