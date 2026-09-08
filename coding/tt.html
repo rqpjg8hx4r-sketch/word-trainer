@@ -915,14 +915,30 @@ function playSound(type) {
       osc.start(now);
       osc.stop(now + 0.08);
     } else if (type === 'boom') {
-      // 触地失分：清晰但不刺耳的低音“咚”鼓声（类似轻踩底鼓）
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(160, now);
-      osc.frequency.exponentialRampToValueAtTime(55, now + 0.18);
-      gain.gain.setValueAtTime(0.25, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      // 触地失分：清晰、有辨识度且不刺耳的双频复合“咚-嘟”触地警示音
+      // 第一声：中低频沉稳撞击 (260Hz -> 130Hz)，可在平板/手机/电脑喇叭清晰发声
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(260, now);
+      osc.frequency.exponentialRampToValueAtTime(110, now + 0.15);
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
       osc.start(now);
-      osc.stop(now + 0.22);
+      osc.stop(now + 0.24);
+
+      // 附加一层柔和低频底音 (130Hz -> 65Hz)，增加空间厚重感，温和不尖锐
+      try {
+        const subOsc = audioCtx.createOscillator();
+        const subGain = audioCtx.createGain();
+        subOsc.connect(subGain);
+        subGain.connect(audioCtx.destination);
+        subOsc.type = 'sine';
+        subOsc.frequency.setValueAtTime(140, now);
+        subOsc.frequency.exponentialRampToValueAtTime(60, now + 0.2);
+        subGain.gain.setValueAtTime(0.22, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        subOsc.start(now);
+        subOsc.stop(now + 0.26);
+      } catch (err) {}
     } else if (type === 'win') {
       // 优雅通关马林巴清脆琶音 (C大调五和弦 C5-E5-G5-B5-C6)，纯净如流水
       const freqs = [523.25, 659.25, 783.99, 987.77, 1046.50];
