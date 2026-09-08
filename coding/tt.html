@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#F8FAFC">
-  <title>1997 经典 TT 打字通 · Alex Coding Lab</title>
+  <title>1997 经典 TT 打字通 (Typing Tutor) · 深度渐进版</title>
   <style>
     :root {
       --bg: #F8FAFC;
@@ -19,7 +19,7 @@
       --amber: #D97706;
       --danger: #EF4444;
 
-      /* 指法色彩 */
+      /* 指法专属色彩 */
       --c-l-pinky: #A855F7;
       --c-l-ring: #3B82F6;
       --c-l-mid: #10B981;
@@ -33,7 +33,7 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0;
-      padding: calc(10px + env(safe-area-inset-top)) 12px calc(16px + env(safe-area-inset-bottom));
+      padding: calc(10px + env(safe-area-inset-top)) 12px calc(20px + env(safe-area-inset-bottom));
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -43,7 +43,7 @@
       align-items: center;
       user-select: none;
     }
-    .container { width: 100%; max-width: 980px; }
+    .container { width: 100%; max-width: 1020px; }
 
     /* 顶部导航 */
     .topbar {
@@ -64,7 +64,7 @@
       display: flex; align-items: center; justify-content: center;
     }
     .brand-text h1 { margin: 0; font-size: 17px; font-weight: 800; color: #0F172A; }
-    .brand-text .sub { font-size: 11px; color: var(--subtext); }
+    .brand-text .sub { font-size: 11.5px; color: var(--subtext); }
     .nav-actions { display: flex; gap: 8px; }
     .nav-btn {
       display: inline-flex; align-items: center; gap: 4px;
@@ -74,6 +74,7 @@
       font-size: 12px; font-weight: 700; text-decoration: none;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
+    .nav-btn:hover { background: #F1F5F9; color: var(--primary); }
 
     /* 模式切换总开关 */
     .mode-bar {
@@ -120,88 +121,121 @@
       box-shadow: 0 4px 14px rgba(0,0,0,0.03);
     }
 
-    /* ==================== 模块 1：7 大阶段练习 ==================== */
-    .stage-selector-bar {
+    /* ==================== 模块导航与微步阶段 ==================== */
+    .module-tabs-scroll {
       display: flex;
       gap: 6px;
       overflow-x: auto;
       padding-bottom: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       scrollbar-width: thin;
     }
-    .stage-card-btn {
+    .module-tab-btn {
       flex: none;
-      padding: 8px 12px;
-      border-radius: 10px;
+      padding: 7px 12px;
+      border-radius: 9px;
       border: 1.5px solid var(--border);
       background: #F8FAFC;
       color: #334155;
-      font-size: 11px;
-      font-weight: 700;
+      font-size: 11.5px;
+      font-weight: 800;
       cursor: pointer;
-      text-align: left;
       transition: all 0.15s;
       display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 125px;
+      align-items: center;
+      gap: 5px;
     }
-    .stage-card-btn.active {
+    .module-tab-btn.active {
       border-color: var(--primary);
       background: var(--primary-light);
       color: var(--primary);
-      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
     }
-    .stage-card-btn .s-badge {
-      font-size: 9.5px;
+
+    /* 子阶段按钮组 */
+    .substep-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      margin-bottom: 12px;
+      padding-bottom: 4px;
+    }
+    .substep-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--subtext);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.15s;
+    }
+    .substep-btn.active {
+      border-color: var(--primary);
+      background: #EEF2FF;
+      color: var(--primary);
       font-weight: 800;
     }
-    .stage-card-btn.active .s-badge { color: var(--primary); }
 
-    /* 练习提示与打字区域 */
-    .type-display-card {
+    /* 字符流展示与所见即所敲 */
+    .stream-card {
       background: #F8FAFC;
       border: 1.5px solid var(--border);
       border-radius: 14px;
-      padding: 16px;
+      padding: 16px 14px;
       text-align: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       position: relative;
     }
-    .stage-focus-title {
-      font-size: 12px;
+    .stream-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 11.5px;
       font-weight: 800;
       color: var(--subtext);
-      margin-bottom: 8px;
     }
     .stream-box {
       font-family: "Fira Code", "Consolas", monospace;
       font-size: 32px;
       font-weight: 800;
-      letter-spacing: 4px;
+      letter-spacing: 3px;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 60px;
+      min-height: 64px;
       overflow-x: hidden;
-      white-space: nowrap;
+      white-space: pre;
     }
     .char-done { color: #94A3B8; }
     .char-current {
       color: var(--primary);
       background: #E0E7FF;
-      border-bottom: 3px solid var(--primary);
-      padding: 0 4px;
-      border-radius: 4px;
+      border-bottom: 3.5px solid var(--primary);
+      padding: 0 5px;
+      border-radius: 5px;
       animation: pulseChar 0.8s infinite alternate;
     }
     @keyframes pulseChar {
       from { transform: scale(1); }
-      to { transform: scale(1.1); }
+      to { transform: scale(1.08); }
     }
-    .char-upcoming { color: #334155; }
-    .char-error { background: #FEE2E2; color: #DC2626; }
+    .char-upcoming { color: #1E293B; }
+    .char-error { background: #FEE2E2 !important; color: #DC2626 !important; }
+
+    /* 专用符号提示 */
+    .special-glyph {
+      font-size: 20px;
+      font-weight: 900;
+      vertical-align: middle;
+      color: var(--primary);
+    }
 
     .anchor-guide-badge {
       display: inline-flex;
@@ -212,9 +246,9 @@
       color: #92400E;
       font-size: 11.5px;
       font-weight: 800;
-      padding: 5px 12px;
+      padding: 4px 12px;
       border-radius: 999px;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     /* 手指动态示意图 */
@@ -222,50 +256,54 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 40px;
-      margin-bottom: 14px;
-      padding: 10px 0;
+      gap: 36px;
+      margin-bottom: 12px;
+      padding: 6px 0;
     }
     .hand-box {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
-    .hand-label { font-size: 12px; font-weight: 800; color: var(--subtext); }
+    .hand-label { font-size: 11.5px; font-weight: 800; color: var(--subtext); }
     .hand-fingers {
       display: flex;
       align-items: flex-end;
-      gap: 8px;
-      height: 70px;
+      gap: 7px;
+      height: 66px;
       padding: 0 6px;
       border-bottom: 4px solid #CBD5E1;
       border-radius: 4px;
     }
     .finger {
-      width: 14px;
-      border-radius: 7px 7px 2px 2px;
+      width: 13px;
+      border-radius: 6px 6px 2px 2px;
       background: #E2E8F0;
       border: 1.5px solid #94A3B8;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       position: relative;
     }
-    .finger.thumb { height: 34px; }
-    .finger.idx { height: 50px; }
-    .finger.mid { height: 60px; }
-    .finger.ring { height: 52px; }
-    .finger.pinky { height: 40px; }
+    .finger.thumb { height: 32px; }
+    .finger.idx { height: 48px; }
+    .finger.mid { height: 58px; }
+    .finger.ring { height: 50px; }
+    .finger.pinky { height: 38px; }
 
     .finger.active {
       transform: translateY(-8px) scale(1.15);
       box-shadow: 0 0 12px currentColor;
     }
     .finger-tip-tip {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
-      color: #1E293B;
+      color: #0F172A;
       text-align: center;
-      min-height: 20px;
+      min-height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     /* 虚拟键盘区 */
@@ -276,13 +314,13 @@
       padding: 10px 8px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+      gap: 5px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);
     }
     .kb-row {
       display: flex;
       justify-content: center;
-      gap: 5px;
+      gap: 4px;
     }
     .key {
       min-width: 38px;
@@ -300,14 +338,14 @@
       position: relative;
       transition: all 0.1s ease;
     }
-    .key.wide-tab { min-width: 52px; font-size: 10px; }
-    .key.wide-caps { min-width: 60px; font-size: 10px; }
-    .key.wide-shift { min-width: 78px; font-size: 10px; }
-    .key.wide-space { min-width: 230px; font-size: 10px; }
+    .key.wide-tab { min-width: 50px; font-size: 10px; }
+    .key.wide-caps { min-width: 58px; font-size: 10px; }
+    .key.wide-shift { min-width: 76px; font-size: 10px; }
+    .key.wide-space { min-width: 240px; font-size: 11px; }
     .key.wide-bs { min-width: 60px; font-size: 10px; }
-    .key.wide-enter { min-width: 66px; font-size: 10px; }
+    .key.wide-enter { min-width: 68px; font-size: 10px; }
 
-    /* F 和 J 物理定位点 */
+    /* F 和 J 物理凸起横线 */
     .key.has-bump::after {
       content: "";
       position: absolute;
@@ -392,7 +430,6 @@
     .game-stats { display: flex; gap: 14px; font-size: 13px; font-weight: 800; }
     .game-stats span { color: #38BDF8; }
 
-    /* 隐藏的物理键盘输入辅助节点（防 iPad 聚焦丢失） */
     #hiddenInput {
       position: absolute;
       opacity: 0;
@@ -412,7 +449,7 @@
       <div class="brand-icon">⌨️</div>
       <div class="brand-text">
         <h1>1997 经典 TT 打字通 (Typing Tutor)</h1>
-        <div class="sub">基准键锚定回位 · 双手十指分工 · 经典下落保卫战</div>
+        <div class="sub">微步梯次累进 · 经典关联击键 · Python 语法词联动 · 经典童谣篇章</div>
       </div>
     </div>
     <div class="nav-actions">
@@ -421,11 +458,11 @@
     </div>
   </div>
 
-  <!-- 模式总控制栏 -->
+  <!-- 模式切换 -->
   <div class="mode-bar">
     <div class="mode-tabs">
       <button id="tabDrill" class="mode-tab active" onclick="switchAppMode('drill')">
-        <span>📖</span> 7 大阶段指法特训
+        <span>📖</span> TT 梯次指法特训
       </button>
       <button id="tabGame" class="mode-tab" onclick="switchAppMode('game')">
         <span>🚀</span> 经典字母保卫战 (DOS小游戏)
@@ -438,47 +475,28 @@
     </div>
   </div>
 
-  <!-- ==================== 页面 1：7 大阶段练习 ==================== -->
+  <!-- ==================== 模块 1：TT 梯次练习系统 ==================== -->
   <div id="drillSection" class="card">
-    <!-- 阶段卡片选择栏 -->
-    <div class="stage-selector-bar">
-      <div class="stage-card-btn active" onclick="selectStage(1)">
-        <span class="s-badge">阶段 ① · 基准键</span>
-        <span>A S D F / J K L ;</span>
-      </div>
-      <div class="stage-card-btn" onclick="selectStage(2)">
-        <span class="s-badge">阶段 ② · 食指扩展</span>
-        <span>G 与 H 左右伸展</span>
-      </div>
-      <div class="stage-card-btn" onclick="selectStage(3)">
-        <span class="s-badge">阶段 ③ · 上排按键</span>
-        <span>Q W E R T / Y U I O P</span>
-      </div>
-      <div class="stage-card-btn" onclick="selectStage(4)">
-        <span class="s-badge">阶段 ④ · 下排按键</span>
-        <span>Z X C V B / N M , . /</span>
-      </div>
-      <div class="stage-card-btn" onclick="selectStage(5)">
-        <span class="s-badge">阶段 ⑤ · 大写配合</span>
-        <span>双手 Shift 交叉协作</span>
-      </div>
-      <div class="stage-card-btn" onclick="selectStage(6)">
-        <span class="s-badge">阶段 ⑥ · 数字与符号</span>
-        <span>1~0 及 Python常用括号引号</span>
-      </div>
-      <div class="stage-card-btn" onclick="selectStage(7)">
-        <span class="s-badge">阶段 ⑦ · 综合实战</span>
-        <span>Python 核心关键字练习</span>
-      </div>
+    <!-- 10 大核心模块切换栏 -->
+    <div class="module-tabs-scroll" id="moduleTabs">
+      <!-- 动态生成 10 个模块按钮 -->
     </div>
 
-    <!-- 打字字符流展示卡 -->
-    <div class="type-display-card">
-      <div id="stageFocusTitle" class="stage-focus-title">阶段目标：找准 F 和 J 上的小凸起，建立基准键肌肉记忆</div>
-      <div class="stream-box">
+    <!-- 模块内 3~4 个子阶段切换 -->
+    <div class="substep-bar" id="substepBar">
+      <!-- 动态生成子阶段按钮 -->
+    </div>
+
+    <!-- 打字字符流展示卡（彻底解决空格问题） -->
+    <div class="stream-card">
+      <div class="stream-meta-row">
+        <span id="moduleTitleText">模块 1：基准键位锚定</span>
+        <span id="progressText">进度: 1 / 40 字符</span>
+      </div>
+      <div class="stream-box" id="streamBox">
         <span id="charDone" class="char-done"></span>
         <span id="charCurrent" class="char-current">f</span>
-        <span id="charUpcoming" class="char-upcoming"> j d k s l a ;</span>
+        <span id="charUpcoming" class="char-upcoming"></span>
       </div>
       <div>
         <span class="anchor-guide-badge">
@@ -571,12 +589,12 @@
         <div class="key" data-k="l" data-finger="r-ring">L</div>
         <div class="key" data-k=";" data-finger="r-pinky">;</div>
         <div class="key" data-k="'" data-finger="r-pinky">'</div>
-        <div class="key wide-enter" data-k="Enter" data-finger="r-pinky">回车</div>
+        <div class="key wide-enter" data-k="Enter" data-finger="r-pinky">回车 ↵</div>
       </div>
 
       <!-- ZXCV 下排 -->
       <div class="kb-row">
-        <div class="key wide-shift" data-finger="l-pinky">Shift</div>
+        <div class="key wide-shift" data-k="Shift" data-finger="l-pinky">Shift</div>
         <div class="key" data-k="z" data-finger="l-pinky">Z</div>
         <div class="key" data-k="x" data-finger="l-ring">X</div>
         <div class="key" data-k="c" data-finger="l-mid">C</div>
@@ -587,17 +605,17 @@
         <div class="key" data-k="," data-finger="r-mid">,</div>
         <div class="key" data-k="." data-finger="r-ring">.</div>
         <div class="key" data-k="/" data-finger="r-pinky">/</div>
-        <div class="key wide-shift" data-finger="r-pinky">Shift</div>
+        <div class="key wide-shift" data-k="Shift" data-finger="r-pinky">Shift</div>
       </div>
 
       <!-- 空格底排 -->
       <div class="kb-row">
-        <div class="key wide-space" data-k=" " data-finger="thumb">Space (双手大拇指)</div>
+        <div class="key wide-space" data-k=" " data-finger="thumb">Space ␣ (双手大拇指)</div>
       </div>
     </div>
   </div>
 
-  <!-- ==================== 页面 2：TT 字母下落保卫战 ==================== -->
+  <!-- ==================== 模块 2：TT 字母下落保卫战 ==================== -->
   <div id="gameSection" class="card">
     <div class="game-toolbar">
       <div class="game-stats">
@@ -620,11 +638,11 @@
 </div>
 
 <script>
-/* ==================== 1. Web Audio 原生合成音效 ==================== */
+/* ==================== 1. Web Audio 原生音效 ==================== */
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 
-function playTypingSound(type) {
+function playSound(type) {
   try {
     if (!audioCtx) audioCtx = new AudioCtx();
     if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -635,7 +653,6 @@ function playTypingSound(type) {
     gain.connect(audioCtx.destination);
 
     if (type === 'tap') {
-      // 清脆打字音
       osc.type = 'triangle';
       osc.frequency.setValueAtTime(600, now);
       osc.frequency.exponentialRampToValueAtTime(800, now + 0.04);
@@ -643,8 +660,16 @@ function playTypingSound(type) {
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
       osc.start(now);
       osc.stop(now + 0.07);
+    } else if (type === 'enter') {
+      // 回车清脆下按音
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.08);
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      osc.start(now);
+      osc.stop(now + 0.12);
     } else if (type === 'error') {
-      // 沉闷按错音
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(140, now);
       gain.gain.setValueAtTime(0.25, now);
@@ -652,7 +677,6 @@ function playTypingSound(type) {
       osc.start(now);
       osc.stop(now + 0.16);
     } else if (type === 'laser') {
-      // 激光射击消除音
       osc.type = 'sine';
       osc.frequency.setValueAtTime(900, now);
       osc.frequency.exponentialRampToValueAtTime(200, now + 0.12);
@@ -661,7 +685,6 @@ function playTypingSound(type) {
       osc.start(now);
       osc.stop(now + 0.15);
     } else if (type === 'boom') {
-      // 触地爆炸
       osc.type = 'square';
       osc.frequency.setValueAtTime(100, now);
       osc.frequency.exponentialRampToValueAtTime(40, now + 0.25);
@@ -670,7 +693,6 @@ function playTypingSound(type) {
       osc.start(now);
       osc.stop(now + 0.3);
     } else if (type === 'win') {
-      // 通关和弦
       const freqs = [523.25, 659.25, 783.99, 1046.50];
       freqs.forEach((f, idx) => {
         const o = audioCtx.createOscillator();
@@ -678,7 +700,7 @@ function playTypingSound(type) {
         o.connect(g);
         g.connect(audioCtx.destination);
         o.frequency.value = f;
-        g.gain.setValueAtTime(0.18, now + idx * 0.08);
+        g.gain.setValueAtTime(0.2, now + idx * 0.08);
         g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.25);
         o.start(now + idx * 0.08);
         o.stop(now + idx * 0.08 + 0.27);
@@ -687,63 +709,63 @@ function playTypingSound(type) {
   } catch (e) { console.log(e); }
 }
 
-/* ==================== 2. 指法映射字典 ==================== */
+/* ==================== 2. 全键位指法字典 (含回车/空格/符号) ==================== */
 const FINGER_MAP = {
-  // 左手小指
+  // 左小指
   '`': { f: 'f_l_pinky', k: 'l-pinky', name: '左手小指' },
   '1': { f: 'f_l_pinky', k: 'l-pinky', name: '左手小指' },
   'q': { f: 'f_l_pinky', k: 'l-pinky', name: '左手小指' },
   'a': { f: 'f_l_pinky', k: 'l-pinky', name: '左手小指' },
   'z': { f: 'f_l_pinky', k: 'l-pinky', name: '左手小指' },
 
-  // 左手无名指
+  // 左无名指
   '2': { f: 'f_l_ring', k: 'l-ring', name: '左手无名指' },
   'w': { f: 'f_l_ring', k: 'l-ring', name: '左手无名指' },
   's': { f: 'f_l_ring', k: 'l-ring', name: '左手无名指' },
   'x': { f: 'f_l_ring', k: 'l-ring', name: '左手无名指' },
 
-  // 左手中指
+  // 左中指
   '3': { f: 'f_l_mid', k: 'l-mid', name: '左手中指' },
   'e': { f: 'f_l_mid', k: 'l-mid', name: '左手中指' },
   'd': { f: 'f_l_mid', k: 'l-mid', name: '左手中指' },
   'c': { f: 'f_l_mid', k: 'l-mid', name: '左手中指' },
 
-  // 左手食指
+  // 左食指
   '4': { f: 'f_l_idx', k: 'l-idx', name: '左手食指' },
   '5': { f: 'f_l_idx', k: 'l-idx', name: '左手食指' },
-  'r': { f: 'f_l_idx', k: 'l-idx', name: '左手食指' },
+  'r': { f: 'f_l_idx', k: 'l-idx', name: '左手食指 (向上斜跨)' },
   't': { f: 'f_l_idx', k: 'l-idx', name: '左手食指' },
   'f': { f: 'f_l_idx', k: 'l-idx', name: '左手食指 (基准点凸起)' },
   'g': { f: 'f_l_idx', k: 'l-idx', name: '左手食指 (伸展后回F)' },
-  'v': { f: 'f_l_idx', k: 'l-idx', name: '左手食指' },
+  'v': { f: 'f_l_idx', k: 'l-idx', name: '左手食指 (向下斜跨)' },
   'b': { f: 'f_l_idx', k: 'l-idx', name: '左手食指' },
 
-  // 大拇指
-  ' ': { f: 'f_r_thumb', k: 'thumb', name: '双手大拇指' },
+  // 双手大拇指 (空格)
+  ' ': { f: 'f_r_thumb', k: 'thumb', name: '双手大拇指 (按空格 ␣)' },
 
-  // 右手食指
+  // 右食指
   '6': { f: 'f_r_idx', k: 'r-idx', name: '右手食指' },
   '7': { f: 'f_r_idx', k: 'r-idx', name: '右手食指' },
   'y': { f: 'f_r_idx', k: 'r-idx', name: '右手食指' },
-  'u': { f: 'f_r_idx', k: 'r-idx', name: '右手食指' },
+  'u': { f: 'f_r_idx', k: 'r-idx', name: '右手食指 (向上斜跨)' },
   'h': { f: 'f_r_idx', k: 'r-idx', name: '右手食指 (伸展后回J)' },
   'j': { f: 'f_r_idx', k: 'r-idx', name: '右手食指 (基准点凸起)' },
   'n': { f: 'f_r_idx', k: 'r-idx', name: '右手食指' },
-  'm': { f: 'f_r_idx', k: 'r-idx', name: '右手食指' },
+  'm': { f: 'f_r_idx', k: 'r-idx', name: '右手食指 (向下斜跨)' },
 
-  // 右手中指
+  // 右中指
   '8': { f: 'f_r_mid', k: 'r-mid', name: '右手中指' },
   'i': { f: 'f_r_mid', k: 'r-mid', name: '右手中指' },
   'k': { f: 'f_r_mid', k: 'r-mid', name: '右手中指' },
   ',': { f: 'f_r_mid', k: 'r-mid', name: '右手中指' },
 
-  // 右手无名指
+  // 右无名指
   '9': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
   'o': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
   'l': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
   '.': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
 
-  // 右手小指
+  // 右小指 (包含回车、分号、冒号)
   '0': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
   '-': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
   '=': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
@@ -751,127 +773,287 @@ const FINGER_MAP = {
   '[': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
   ']': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
   ';': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  ':': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指 (加Shift)' },
   "'": { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
-  '/': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' }
+  '"': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指 (加Shift)' },
+  '/': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  '\n': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指 (回车 ↵ 换行)' }
 };
 
-/* ==================== 3. 7 大阶段题库设计 ==================== */
-const STAGES_DATA = {
-  1: {
-    title: '阶段 ①：基准键位锚定（Home Row）',
-    rule: '双手食指始终轻放于 F 和 J 凸起，击键后自然归位',
-    text: 'f j f j d k d k s l s l a ; a ; fj dk sl a; asdf jkl; ff jj dd kk ss ll aa ;;'
+/* ==================== 3. 经典 TT 10 大梯次累进大纲 ==================== */
+const TT_CURRICULUM = [
+  {
+    id: 1,
+    title: '模块 1：基准键位与回车空格',
+    rule: '找准 F 和 J 上的物理定位突起，每次打完自然回归 ASDF 与 JKL;',
+    steps: [
+      { name: '1.1 左手基准起步', text: 'f d s a ff dd ss aa fdf dfd asdf fads sad dad fad' },
+      { name: '1.2 右手基准呼应', text: 'j k l ; jj kk ll ;; jkj kjk jkl; ask lad fall fall;' },
+      { name: '1.3 双手对碰与空格', text: 'ff jj dd kk ss ll aa ;; fj jf dk kd sl ls a; ;a' },
+      { name: '1.4 回车与断句练习', text: 'asdf\njkl;\nask lad\nall fall;\ndad sad\n' }
+    ]
   },
-  2: {
-    title: '阶段 ②：食指横向伸展（G 与 H）',
-    rule: '左食指按完 G 立刻回位到 F；右食指按完 H 立刻回位到 J',
-    text: 'g h g h fg hj gf jh asdfg ;lkjh gh gh fg hj gas had glad flash half flag'
+  {
+    id: 2,
+    title: '模块 2：食指首轮纵深（R/V 与 U/M）',
+    rule: '严格按原版 TT 节奏：反复练习主练键与关联键的节拍！',
+    steps: [
+      { name: '2.1 左食指 R-F-V 纵向战壕', text: 'ffrr frfr rfrf rrff fvfv ffvv vvff vfvf fffv vfff vvvf rfv vfr far rad' },
+      { name: '2.2 右食指 U-J-M 纵向战壕', text: 'jjuu juju ujuj uujj jmjm jjmm mmjj jjjm mjjj ujm mju jug mud jam rum' },
+      { name: '2.3 综合与 Python 联动', text: 'for\nfarm\nrun\njump\nfrom\nsum\n' }
+    ]
   },
-  3: {
-    title: '阶段 ③：上排键位飞跃（Q~P）',
-    rule: '手指向上方斜跨击键，按完迅速落回中间基准键位',
-    text: 'q w e r t y u i o p tree water power light quiet judge quick jump youth'
+  {
+    id: 3,
+    title: '模块 3：中指纵深（E/D/C 与 I/K/,）',
+    rule: '中指向上轻点 E/I，向下轻点 C/,，击完手掌悬空轻落基准键',
+    steps: [
+      { name: '3.1 左中指 E-D-C 节拍', text: 'ddee dede eded eedd ddcc dcdc cdcd ccdd edc cde red car ace ice feed' },
+      { name: '3.2 右中指 I-K-, 节拍', text: 'kkii kiki ikik iikk kk,, k,k, ,k,k ,,kk ik, kid like milk kick did' },
+      { name: '3.3 经典 Python 关键字实战', text: 'if\nelse\nfind\nitem\nlike\n' }
+    ]
   },
-  4: {
-    title: '阶段 ④：下排键位俯冲（Z~/）',
-    rule: '手指向下方斜跨击键，击完自然抬手归位到基准键',
-    text: 'z x c v b n m , . / zoom box voice back next move clean zebra zero'
+  {
+    id: 4,
+    title: '模块 4：食指横向延伸（G/H 与 T/Y）',
+    rule: '左右食指轻微向内伸展，按完立即闪电弹回 F 和 J',
+    steps: [
+      { name: '4.1 G 与 H 左右伸展', text: 'fg gf fgg gff jh hj jhh hjj gh hg flag gift hat high good' },
+      { name: '4.2 T 与 Y 上斜伸展', text: 'ft tf ftt tff jy yj jyy yjj try you that they city test' },
+      { name: '4.3 核心单词与回车', text: 'get\nthat\nthey\ntry\nright\n' }
+    ]
   },
-  5: {
-    title: '阶段 ⑤：大写与 Shift 协作',
-    rule: '右手按键用左手按 Shift；左手按键用右手按 Shift',
-    text: 'Apple Banana China Day Python Java Good Morning Hello Alex Google'
+  {
+    id: 5,
+    title: '模块 5：无名指纵深（W/S/X 与 O/L/.）',
+    rule: '无名指相对独立性弱，保持放松，手腕微配合',
+    steps: [
+      { name: '5.1 左无名 W-S-X 节拍', text: 'ssww swsw wsws wwss ssxx sxsx xsxs xxss wsx slow low cow fox six' },
+      { name: '5.2 右无名 O-L-. 节拍', text: 'lloo lolo olol ooll ll.. l.l. .l.l ..ll ol. cool look old oil pool' },
+      { name: '5.3 核心 Python 语法词', text: 'for\nwhile\nrow\nword\nlow\n' }
+    ]
   },
-  6: {
-    title: '阶段 ⑥：数字与 Python 编程符号',
-    rule: '重点建立括号、冒号、引号与等号的手指位置感',
-    text: '123 456 789 0 ( ) [ ] = : " " \' \' (1 + 2) == 3 ["oil", "lib"]'
+  {
+    id: 6,
+    title: '模块 6：小指极限与全字母联通',
+    rule: '小指轻巧外跨，攻克 Q、P、Z、/，完成 26 个英文字母大满贯',
+    steps: [
+      { name: '6.1 左右小指极限外跨', text: 'aq qa qaq qaa ;p p; p;p pp; az za zaz zp/ quick page zero prize' },
+      { name: '6.2 下排 B 与 N 终极合围', text: 'fb bf fbb jn nj jnn box ban blue name number back' },
+      { name: '6.3 经典全字母穿梭', text: 'the quick brown fox jumps over the lazy dog\n' }
+    ]
   },
-  7: {
-    title: '阶段 ⑦：Python 编程核心关键字实战',
-    rule: '将指法肌肉记忆无缝运用到真实的代码书写中',
-    text: 'for i in range(10): if x <= 0: break print(cnt) while len(ls) > 1: ls.append(i)'
+  {
+    id: 7,
+    title: '模块 7：数字排（1 2 3 4 5 6 7 8 9 0）特训',
+    rule: '手指精准伸向数字排：1左小, 2左无, 3左中, 4/5左食, 6/7右食, 8右中, 9右无, 0右小',
+    steps: [
+      { name: '7.1 左手数字 1 2 3 4 5', text: '1 2 3 4 5 11 22 33 44 55 123 345 543 21 145 234' },
+      { name: '7.2 右手数字 6 7 8 9 0', text: '6 7 8 9 0 66 77 88 99 00 678 890 098 76 680 789' },
+      { name: '7.3 全数字混编与计数', text: '10 20 50 100 256 1024 2026 31415 9876543210' },
+      { name: '7.4 数字与回车组合', text: 'day 001\nday 002\nstep 10\ncount 65\n' }
+    ]
+  },
+  {
+    id: 8,
+    title: '模块 8：Shift 大写与 Python 常用符号',
+    rule: '右手按键用左手 Shift，左手按键用右手 Shift，攻破括号冒号引号！',
+    steps: [
+      { name: '8.1 大写字母交叉协作', text: 'Apple Banana China Day Python Google Alex London' },
+      { name: '8.2 Python 核心标点符号', text: ': : = = ( ) [ ] " " \' \' (1 + 2) == 3 ["oil", "lib"]' },
+      { name: '8.3 经典 Python 语句组合', text: 'if x <= 0:\n    break\nfor i in ls:\n    cnt += 1\n' }
+    ]
+  },
+  {
+    id: 9,
+    title: '模块 9：Python 代码经典实战连击',
+    rule: '真实代码敲击：练习缩进空格、冒号、括号和回车的连贯流！',
+    steps: [
+      { name: '9.1 贪心算法核心语句', text: 'ls.sort(reverse=True)\nx = m\ncnt = 0\nfor i in ls:\n' },
+      { name: '9.2 约瑟夫环核心语句', text: 'while len(ls) > 1:\n    cnt += 1\n    if cnt == k:\n        ls.remove(ls[0])\n' },
+      { name: '9.3 输入输出与转换', text: 'n = int(input())\nm = int(input())\nprint(cnt)\n' }
+    ]
+  },
+  {
+    id: 10,
+    title: '模块 10：经典童谣与短文挑战（篇章实战）',
+    rule: '放轻松，在熟悉的朗朗上口儿歌韵律中享受盲打的快乐！',
+    steps: [
+      {
+        name: '10.1 小星星《Twinkle Little Star》',
+        text: 'Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.\n'
+      },
+      {
+        name: '10.2 小羊羔《Mary Had a Little Lamb》',
+        text: 'Mary had a little lamb,\nIts fleece was white as snow;\nAnd everywhere that Mary went,\nThe lamb was sure to go.\n'
+      },
+      {
+        name: '10.3 摇小船《Row, Row, Row Your Boat》',
+        text: 'Row, row, row your boat,\nGently down the stream.\nMerrily, merrily, merrily, merrily,\nLife is but a dream.\n'
+      },
+      {
+        name: '10.4 矮胖子《Humpty Dumpty》',
+        text: 'Humpty Dumpty sat on a wall,\nHumpty Dumpty had a great fall;\nAll the king horses and all the king men,\nCould not put Humpty together again.\n'
+      }
+    ]
   }
-};
+];
 
-/* ==================== 4. 练习主状态机 ==================== */
-let currentStage = 1;
-let fullText = '';
+/* ==================== 4. 核心训练状态机 ==================== */
+let currentModuleIdx = 0;
+let currentStepIdx = 0;
+let currentFullText = '';
 let charIndex = 0;
 let totalTyped = 0;
 let correctTyped = 0;
 let startTime = null;
 
-function selectStage(stageNum) {
-  currentStage = stageNum;
-  document.querySelectorAll('.stage-card-btn').forEach((btn, idx) => {
-    btn.classList.toggle('active', idx + 1 === stageNum);
+function initCurriculumUI() {
+  const moduleTabs = document.getElementById('moduleTabs');
+  moduleTabs.innerHTML = '';
+
+  TT_CURRICULUM.forEach((mod, idx) => {
+    const btn = document.createElement('button');
+    btn.className = `module-tab-btn ${idx === 0 ? 'active' : ''}`;
+    btn.id = `mod_btn_${idx}`;
+    btn.innerHTML = `<span>${mod.id}.</span> <span>${mod.title.split('：')[1] || mod.title}</span>`;
+    btn.onclick = () => selectModule(idx);
+    moduleTabs.appendChild(btn);
   });
-  initStageText();
+
+  renderSubsteps();
+  loadStepText();
+}
+
+function selectModule(idx) {
+  currentModuleIdx = idx;
+  currentStepIdx = 0;
+  document.querySelectorAll('.module-tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  renderSubsteps();
+  loadStepText();
   focusGameInput();
 }
 
-function initStageText() {
-  const data = STAGES_DATA[currentStage];
-  document.getElementById('stageFocusTitle').textContent = data.title;
-  document.getElementById('anchorRuleTip').textContent = data.rule;
-  fullText = data.text;
+function renderSubsteps() {
+  const bar = document.getElementById('substepBar');
+  bar.innerHTML = '';
+  const mod = TT_CURRICULUM[currentModuleIdx];
+
+  mod.steps.forEach((step, idx) => {
+    const btn = document.createElement('button');
+    btn.className = `substep-btn ${idx === currentStepIdx ? 'active' : ''}`;
+    btn.innerHTML = `<span>${step.name}</span> <span>${idx === currentStepIdx ? '🎯' : '⚪'}</span>`;
+    btn.onclick = () => {
+      currentStepIdx = idx;
+      renderSubsteps();
+      loadStepText();
+      focusGameInput();
+    };
+    bar.appendChild(btn);
+  });
+}
+
+function loadStepText() {
+  const mod = TT_CURRICULUM[currentModuleIdx];
+  const step = mod.steps[currentStepIdx];
+
+  document.getElementById('moduleTitleText').textContent = `${mod.title} · ${step.name}`;
+  document.getElementById('anchorRuleTip').textContent = mod.rule;
+
+  currentFullText = step.text;
   charIndex = 0;
   totalTyped = 0;
   correctTyped = 0;
   startTime = null;
-  updateCharStream();
+
+  renderStreamView();
 }
 
-function updateCharStream() {
-  const doneStr = fullText.slice(Math.max(0, charIndex - 12), charIndex);
-  const curChar = fullText[charIndex] || '';
-  const upcomingStr = fullText.slice(charIndex + 1, charIndex + 16);
+/* 核心所见即所敲渲染器：空格用 ␣，回车用 ↵ 清晰标出 */
+function renderStreamView() {
+  const doneSlice = currentFullText.slice(Math.max(0, charIndex - 10), charIndex);
+  const curChar = currentFullText[charIndex];
+  const upSlice = currentFullText.slice(charIndex + 1, charIndex + 18);
 
-  document.getElementById('charDone').textContent = doneStr;
-  document.getElementById('charCurrent').textContent = curChar === ' ' ? '␣' : curChar;
-  document.getElementById('charUpcoming').textContent = upcomingStr;
+  // 格式化展示文本
+  const formatStr = (str) => {
+    return str.replace(/ /g, '␣').replace(/\n/g, '↵\n');
+  };
 
-  highlightTargetKey(curChar);
+  const doneSpan = document.getElementById('charDone');
+  const curSpan = document.getElementById('charCurrent');
+  const upSpan = document.getElementById('charUpcoming');
+
+  doneSpan.textContent = formatStr(doneSlice);
+
+  if (curChar === undefined) {
+    curSpan.textContent = '🏁 完成';
+    upSpan.textContent = '';
+    return;
+  }
+
+  if (curChar === ' ') {
+    curSpan.textContent = '␣';
+  } else if (curChar === '\n') {
+    curSpan.textContent = '↵';
+  } else {
+    curSpan.textContent = curChar;
+  }
+
+  upSpan.textContent = formatStr(upSlice);
+
+  document.getElementById('progressText').textContent = `进度: ${charIndex} / ${currentFullText.length} 字符`;
+
+  highlightKeyboardAndHand(curChar);
 }
 
-function highlightTargetKey(char) {
-  // 清理上一轮高亮
+function highlightKeyboardAndHand(char) {
+  // 清理
   document.querySelectorAll('.key').forEach(k => k.classList.remove('active-target'));
   document.querySelectorAll('.finger').forEach(f => f.classList.remove('active'));
 
+  if (!char) return;
+
   const lower = char.toLowerCase();
-  const info = FINGER_MAP[lower];
+  const info = FINGER_MAP[lower] || FINGER_MAP[char];
 
+  let targetKeyStr = lower;
+  if (char === ' ') targetKeyStr = ' ';
+  if (char === '\n') targetKeyStr = 'Enter';
+
+  // 键盘按键高亮
+  const keyEl = document.querySelector(`.key[data-k="${targetKeyStr}"]`);
+  if (keyEl) keyEl.classList.add('active-target');
+
+  // 手指高亮
   if (info) {
-    // 高亮对应按键
-    const keyEl = document.querySelector(`.key[data-k="${lower}"]`) || document.querySelector(`.key[data-k="${char}"]`);
-    if (keyEl) keyEl.classList.add('active-target');
-
-    // 高亮对应手指
     const fingerEl = document.getElementById(info.f);
     if (fingerEl) fingerEl.classList.add('active');
 
-    // 文字提示
-    document.getElementById('fingerGuideText').innerHTML = `👉 请用【<strong style="color:var(--primary);">${info.name}</strong>】按下 【<strong>${char === ' ' ? 'Space 空格' : char}</strong>】`;
+    let displayChar = char;
+    if (char === ' ') displayChar = 'Space 空格 ␣';
+    if (char === '\n') displayChar = 'Enter 回车 ↵';
+
+    document.getElementById('fingerGuideText').innerHTML = `👉 请用【<strong style="color:var(--primary);">${info.name}</strong>】按下 【<strong>${displayChar}</strong>】`;
   } else {
     document.getElementById('fingerGuideText').textContent = `👉 请按下 【${char}】`;
   }
 }
 
-/* ==================== 5. 键盘与输入捕获 (iPad 蓝牙键盘友好) ==================== */
+/* ==================== 5. 键盘事件监听 (iPad 蓝牙键盘友好) ==================== */
 function focusGameInput() {
   const inp = document.getElementById('hiddenInput');
   if (inp) inp.focus();
 }
 
 window.addEventListener('keydown', (e) => {
-  // 屏蔽空格导致页面下翻，屏蔽退格导致返回
+  // 屏蔽默认系统行为
   if (e.key === ' ' || e.key === 'Backspace' || e.key === 'Tab') {
     e.preventDefault();
   }
 
-  // 模式 1：指法特训
   if (currentAppMode === 'drill') {
     handleDrillKey(e.key);
   } else {
@@ -880,43 +1062,67 @@ window.addEventListener('keydown', (e) => {
 });
 
 function handleDrillKey(key) {
-  if (charIndex >= fullText.length) return;
+  if (charIndex >= currentFullText.length) return;
   if (!startTime) startTime = Date.now();
 
-  const targetChar = fullText[charIndex];
+  const target = currentFullText[charIndex];
   totalTyped++;
 
-  if (key === targetChar || (targetChar === ' ' && key === 'Space')) {
-    // 打对啦
-    playTypingSound('tap');
+  let isMatch = false;
+  if (key === target) isMatch = true;
+  if (target === ' ' && (key === ' ' || key === 'Space')) isMatch = true;
+  if (target === '\n' && key === 'Enter') isMatch = true;
+
+  if (isMatch) {
+    if (target === '\n') playSound('enter');
+    else playSound('tap');
+
     correctTyped++;
     charIndex++;
 
-    if (charIndex >= fullText.length) {
-      playTypingSound('win');
+    if (charIndex >= currentFullText.length) {
+      playSound('win');
       setTimeout(() => {
-        alert(`🎉 太棒了！阶段 ${currentStage} 练习完毕！准备进入下一关！`);
-        if (currentStage < 7) selectStage(currentStage + 1);
-        else selectStage(1);
-      }, 100);
+        alert(`🎉 恭喜通关！本阶段练习完成！`);
+        advanceNextStep();
+      }, 120);
       return;
     }
   } else {
-    // 打错啦
-    playTypingSound('error');
+    playSound('error');
     const curSpan = document.getElementById('charCurrent');
     curSpan.classList.add('char-error');
     setTimeout(() => curSpan.classList.remove('char-error'), 180);
   }
 
-  // 统计 WPM 与准确率
+  // 计算速度与准确率
   const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
   const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
   const acc = Math.round((correctTyped / totalTyped) * 100);
   document.getElementById('statWpm').textContent = wpm;
   document.getElementById('statAcc').textContent = acc;
 
-  updateCharStream();
+  renderStreamView();
+}
+
+function advanceNextStep() {
+  const mod = TT_CURRICULUM[currentModuleIdx];
+  if (currentStepIdx < mod.steps.length - 1) {
+    currentStepIdx++;
+  } else {
+    if (currentModuleIdx < TT_CURRICULUM.length - 1) {
+      currentModuleIdx++;
+      currentStepIdx = 0;
+    } else {
+      currentModuleIdx = 0;
+      currentStepIdx = 0;
+    }
+  }
+  document.querySelectorAll('.module-tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === currentModuleIdx);
+  });
+  renderSubsteps();
+  loadStepText();
 }
 
 /* ==================== 6. 模式切换 ==================== */
@@ -944,7 +1150,7 @@ function switchAppMode(mode) {
   focusGameInput();
 }
 
-/* ==================== 7. 经典字母下落保卫战小游戏 ==================== */
+/* ==================== 7. 经典字母下落保卫战 ==================== */
 let gameRunning = false;
 let gameScore = 0;
 let gameCombo = 0;
@@ -954,11 +1160,8 @@ let gameLoopTimer = null;
 let spawnTimer = null;
 
 function toggleGameStart() {
-  if (gameRunning) {
-    stopGame();
-  } else {
-    startGame();
-  }
+  if (gameRunning) stopGame();
+  else startGame();
 }
 
 function startGame() {
@@ -975,7 +1178,7 @@ function startGame() {
   const arena = document.getElementById('gameArena');
   document.querySelectorAll('.falling-letter').forEach(e => e.remove());
 
-  spawnTimer = setInterval(spawnFallingLetter, 1400);
+  spawnTimer = setInterval(spawnFallingLetter, 1300);
   gameLoopTimer = setInterval(updateGamePhysics, 30);
   focusGameInput();
 }
@@ -988,13 +1191,13 @@ function stopGame() {
 }
 
 function updateLivesDisplay() {
-  const hearts = '❤️'.repeat(Math.max(0, gameLives));
+  const hearts = '❤️❤️❤️'.slice(0, Math.max(0, gameLives) * 2);
   document.getElementById('gameLives').textContent = hearts || '💀 失败';
 }
 
 function spawnFallingLetter() {
   if (!gameRunning) return;
-  const chars = 'asdfjkl;ghqwertyuiopzxcvbnm';
+  const chars = 'asdfjkl;ghqwertyuiopzxcvbnm1234567890';
   const char = chars[Math.floor(Math.random() * chars.length)];
   const arena = document.getElementById('gameArena');
 
@@ -1003,7 +1206,7 @@ function spawnFallingLetter() {
   el.textContent = char.toUpperCase();
   el.dataset.char = char;
 
-  const arenaWidth = arena.clientWidth - 50;
+  const arenaWidth = arena.clientWidth - 60;
   const leftPos = 30 + Math.random() * arenaWidth;
   el.style.left = `${leftPos}px`;
   el.style.top = '0px';
@@ -1022,8 +1225,7 @@ function updateGamePhysics() {
     item.el.style.top = `${item.y}px`;
 
     if (item.y >= groundY) {
-      // 触地扣生命
-      playTypingSound('boom');
+      playSound('boom');
       item.el.remove();
       fallingItems.splice(i, 1);
       gameLives--;
@@ -1044,7 +1246,6 @@ function handleGameKey(key) {
   if (!gameRunning) return;
   const lower = key.toLowerCase();
 
-  // 找离地面最近的匹配字母
   let targetIdx = -1;
   let maxY = -1;
   for (let i = 0; i < fallingItems.length; i++) {
@@ -1055,8 +1256,7 @@ function handleGameKey(key) {
   }
 
   if (targetIdx !== -1) {
-    // 击中消除
-    playTypingSound('laser');
+    playSound('laser');
     const item = fallingItems[targetIdx];
     item.el.style.transform = 'translateX(-50%) scale(1.4)';
     item.el.style.background = '#34D399';
@@ -1068,16 +1268,15 @@ function handleGameKey(key) {
     document.getElementById('gameScore').textContent = gameScore;
     document.getElementById('gameCombo').textContent = gameCombo;
   } else {
-    // 空敲
-    playTypingSound('error');
+    playSound('error');
     gameCombo = 0;
     document.getElementById('gameCombo').textContent = '0';
   }
 }
 
-// 默认初始化
+// 页面载入初始化
 window.addEventListener('DOMContentLoaded', () => {
-  initStageText();
+  initCurriculumUI();
   focusGameInput();
 });
 </script>
