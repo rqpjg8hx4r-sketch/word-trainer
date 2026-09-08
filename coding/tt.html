@@ -895,28 +895,31 @@ function playSound(type) {
       osc.start(now);
       osc.stop(now + 0.12);
     } else if (type === 'error') {
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(140, now);
-      gain.gain.setValueAtTime(0.25, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+      // 柔和低沉的“咚”声提示，使用正弦波(sine)与更低音量，温和友好不刺耳
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.exponentialRampToValueAtTime(140, now + 0.1);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
       osc.start(now);
-      osc.stop(now + 0.16);
+      osc.stop(now + 0.13);
     } else if (type === 'laser') {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(900, now);
       osc.frequency.exponentialRampToValueAtTime(200, now + 0.12);
-      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.setValueAtTime(0.15, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
       osc.start(now);
       osc.stop(now + 0.15);
     } else if (type === 'boom') {
-      osc.type = 'square';
-      osc.frequency.setValueAtTime(100, now);
-      osc.frequency.exponentialRampToValueAtTime(40, now + 0.25);
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+      // 触地低沉沉闷的“噗通”提示，使用三角波(triangle)替代刺耳方波，音量更温和
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(120, now);
+      osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
       osc.start(now);
-      osc.stop(now + 0.3);
+      osc.stop(now + 0.23);
     } else if (type === 'win') {
       const freqs = [523.25, 659.25, 783.99, 1046.50];
       freqs.forEach((f, idx) => {
