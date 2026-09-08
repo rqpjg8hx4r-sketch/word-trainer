@@ -182,6 +182,29 @@
       color: var(--primary);
       font-weight: 800;
     }
+    .endless-btn {
+      background: #F1F5F9;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #475569;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+    .endless-btn:hover {
+      background: #E2E8F0;
+    }
+    .endless-btn.active {
+      background: #EEF2FF;
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+    }
 
     /* 字符流展示与所见即所敲 */
     .stream-card {
@@ -517,7 +540,7 @@
     .modal-btn.secondary:hover { background: #E2E8F0; }
   </style>
 </head>
-<body onclick="focusGameInput()">
+<body onclick="handleBodyClick(event)">
 
 <input id="hiddenInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
@@ -570,7 +593,12 @@
     <div class="stream-card">
       <div class="stream-meta-row">
         <span id="moduleTitleText">模块 1：基准键位锚定</span>
-        <span id="progressText">进度: 1 / 40 字符</span>
+        <div style="display:inline-flex; align-items:center; gap:10px;">
+          <button id="endlessToggleBtn" class="endless-btn" onclick="toggleEndlessMode(); event.stopPropagation();" title="开启后不会在打完预设文本后停止，而是持续自动生成随机练习流">
+            <span id="endlessIcon">♾️</span> <span id="endlessLabel">无限畅打：已关闭</span>
+          </button>
+          <span id="progressText">进度: 1 / 40 字符</span>
+        </div>
       </div>
       <div class="stream-box" id="streamBox">
         <span id="charDone" class="char-done"></span>
@@ -702,13 +730,24 @@
         <div>连击: <span id="gameCombo">0</span></div>
         <div>生命值: <span id="gameLives">❤️❤️❤️</span></div>
       </div>
-      <div style="display:flex; align-items:center; gap:8px;">
-        <select id="gameDifficulty" class="difficulty-select" onchange="changeGameDifficulty(this.value)">
-          <option value="letters">🟢 初级：字母与数字</option>
-          <option value="words" selected>🟡 进阶：常见英文字 (for, cat, run...)</option>
-          <option value="code">🔴 挑战：Python 编程词 (print, while...)</option>
-        </select>
-        <button class="nav-btn" onclick="toggleGameStart()">
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div style="display:inline-flex; align-items:center; gap:4px;">
+          <span style="font-size:11px; font-weight:800; color:#94A3B8;">关卡:</span>
+          <select id="gameStage" class="difficulty-select" onchange="changeGameStage(this.value)" onclick="event.stopPropagation()">
+            <option value="letters">🟢 基础：字母与数字</option>
+            <option value="words" selected>🟡 进阶：常用英文单词</option>
+            <option value="code">🔴 挑战：Python 编程词</option>
+          </select>
+        </div>
+        <div style="display:inline-flex; align-items:center; gap:4px;">
+          <span style="font-size:11px; font-weight:800; color:#94A3B8;">速度:</span>
+          <select id="gameSpeed" class="difficulty-select" onchange="changeGameSpeed(this.value)" onclick="event.stopPropagation()">
+            <option value="slow">🐢 慢速 (0.8x)</option>
+            <option value="normal" selected>🚶 正常 (1.4x)</option>
+            <option value="fast">⚡ 极速 (2.2x)</option>
+          </select>
+        </div>
+        <button class="nav-btn" onclick="toggleGameStart(); event.stopPropagation();">
           <span id="gameStartBtnText">▶ 开始游戏</span>
         </button>
       </div>
@@ -1035,6 +1074,45 @@ let charIndex = 0;
 let totalTyped = 0;
 let correctTyped = 0;
 let startTime = null;
+let isEndlessMode = false;
+
+function toggleEndlessMode() {
+  isEndlessMode = !isEndlessMode;
+  const btn = document.getElementById('endlessToggleBtn');
+  const label = document.getElementById('endlessLabel');
+  if (isEndlessMode) {
+    btn.classList.add('active');
+    label.textContent = '无限畅打：开启中 🔥';
+    if (charIndex >= currentFullText.length - 5) {
+      appendEndlessContent();
+    }
+  } else {
+    btn.classList.remove('active');
+    label.textContent = '无限畅打：已关闭';
+  }
+  focusGameInput();
+}
+
+function generateRandomChunk() {
+  const mod = TT_CURRICULUM[currentModuleIdx];
+  const step = mod.steps[currentStepIdx];
+  const rawWords = step.text.split(/[\s\n]+/).filter(w => w.length > 0);
+  let pool = rawWords.length > 0 ? rawWords : ['asdf', 'jkl;', 'for', 'run'];
+
+  const count = 6;
+  const picks = [];
+  for (let i = 0; i < count; i++) {
+    const w = pool[Math.floor(Math.random() * pool.length)];
+    picks.push(w);
+  }
+  return ' ' + picks.join(' ');
+}
+
+function appendEndlessContent() {
+  const newChunk = generateRandomChunk();
+  currentFullText += newChunk;
+  renderStreamView();
+}
 
 function initCurriculumUI() {
   const moduleTabs = document.getElementById('moduleTabs');
@@ -1130,7 +1208,11 @@ function renderStreamView() {
   }
 
   upSpan.textContent = formatStr(upSlice);
-  document.getElementById('progressText').textContent = `进度: ${charIndex} / ${currentFullText.length} 字符`;
+  if (isEndlessMode) {
+    document.getElementById('progressText').textContent = `无限连击: ${charIndex} 字符已击破 🚀`;
+  } else {
+    document.getElementById('progressText').textContent = `进度: ${charIndex} / ${currentFullText.length} 字符`;
+  }
 
   highlightKeyboardAndHand(curChar);
 }
@@ -1168,7 +1250,16 @@ function highlightKeyboardAndHand(char) {
 }
 
 /* ==================== 5. 键盘事件监听 (iPad 蓝牙键盘友好) ==================== */
+function handleBodyClick(e) {
+  if (e && e.target && (e.target.closest('select') || e.target.closest('button') || e.target.closest('a') || e.target.closest('.modal-card') || e.target.closest('.substep-btn') || e.target.closest('.module-tab-btn'))) {
+    return;
+  }
+  focusGameInput();
+}
+
 function focusGameInput() {
+  const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+  if (activeTag === 'select') return;
   const inp = document.getElementById('hiddenInput');
   if (inp) inp.focus();
 }
@@ -1224,14 +1315,23 @@ function handleDrillKey(key) {
     correctTyped++;
     charIndex++;
 
-    if (charIndex >= currentFullText.length) {
-      playSound('win');
-      const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
-      const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
-      const acc = Math.round((correctTyped / totalTyped) * 100);
+    // 无限畅打模式：动态无缝续接随机练习流
+    if (isEndlessMode && charIndex >= currentFullText.length - 10) {
+      appendEndlessContent();
+    }
 
-      showCompletionModal(wpm, acc);
-      return;
+    if (charIndex >= currentFullText.length) {
+      if (isEndlessMode) {
+        appendEndlessContent();
+      } else {
+        playSound('win');
+        const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
+        const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
+        const acc = Math.round((correctTyped / totalTyped) * 100);
+
+        showCompletionModal(wpm, acc);
+        return;
+      }
     }
   } else {
     playSound('error');
@@ -1333,17 +1433,43 @@ let gameLives = 3;
 let fallingItems = [];
 let gameLoopTimer = null;
 let spawnTimer = null;
-let currentDifficulty = 'words'; // 'letters' | 'words' | 'code'
+let currentStage = 'words'; // 'letters' | 'words' | 'code'
+let currentSpeed = 'normal'; // 'slow' | 'normal' | 'fast'
 
-// 题库词库
-const WORD_POOLS = {
-  letters: ['a','s','d','f','j','k','l','g','h','r','u','e','i','w','o','1','2','3','4','5','6','7','8','9','0'],
-  words: ['for', 'run', 'cat', 'dog', 'sun', 'sky', 'red', 'mud', 'box', 'top', 'big', 'car', 'yes', 'get', 'try', 'see', 'far', 'day'],
-  code: ['while', 'print', 'input', 'range', 'break', 'count', 'score', 'sort', 'split', 'append', 'else', 'true', 'false']
+// 掉落速度倍率配置
+const SPEED_CONFIG = {
+  slow:   { speed: 0.85, spawnInterval: 2400 },
+  normal: { speed: 1.45, spawnInterval: 1800 },
+  fast:   { speed: 2.25, spawnInterval: 1250 }
 };
 
-function changeGameDifficulty(val) {
-  currentDifficulty = val;
+// 题库词库 (丰富扩充常见字与编程关键字)
+const WORD_POOLS = {
+  letters: [
+    'a','s','d','f','j','k','l','g','h','r','u','e','i','w','o','q','p','z','x','c','v','b','n','m',
+    '1','2','3','4','5','6','7','8','9','0'
+  ],
+  words: [
+    'for', 'run', 'cat', 'dog', 'sun', 'sky', 'red', 'mud', 'box', 'top', 'big', 'car',
+    'yes', 'get', 'try', 'see', 'far', 'day', 'boy', 'bed', 'hat', 'cup', 'fly', 'fun',
+    'hot', 'ice', 'key', 'map', 'new', 'old', 'pig', 'pen', 'row', 'sea', 'tea', 'zoo'
+  ],
+  code: [
+    'while', 'print', 'input', 'range', 'break', 'count', 'score', 'sort', 'split', 'append',
+    'else', 'true', 'false', 'list', 'index', 'def', 'return', 'class', 'import', 'math'
+  ]
+};
+
+function changeGameStage(val) {
+  currentStage = val;
+  if (gameRunning) {
+    stopGame();
+    startGame();
+  }
+}
+
+function changeGameSpeed(val) {
+  currentSpeed = val;
   if (gameRunning) {
     stopGame();
     startGame();
@@ -1369,8 +1495,8 @@ function startGame() {
   const arena = document.getElementById('gameArena');
   document.querySelectorAll('.falling-item').forEach(e => e.remove());
 
-  const spawnInterval = currentDifficulty === 'code' ? 2200 : (currentDifficulty === 'words' ? 1800 : 1300);
-  spawnTimer = setInterval(spawnFallingItem, spawnInterval);
+  const cfg = SPEED_CONFIG[currentSpeed] || SPEED_CONFIG.normal;
+  spawnTimer = setInterval(spawnFallingItem, cfg.spawnInterval);
   gameLoopTimer = setInterval(updateGamePhysics, 30);
   focusGameInput();
 }
@@ -1389,7 +1515,7 @@ function updateLivesDisplay() {
 
 function spawnFallingItem() {
   if (!gameRunning) return;
-  const pool = WORD_POOLS[currentDifficulty];
+  const pool = WORD_POOLS[currentStage] || WORD_POOLS.words;
   const targetText = pool[Math.floor(Math.random() * pool.length)];
   const arena = document.getElementById('gameArena');
 
@@ -1422,7 +1548,8 @@ function spawnFallingItem() {
 function updateGamePhysics() {
   if (!gameRunning) return;
   const groundY = 320;
-  const speed = currentDifficulty === 'code' ? 1.4 : (currentDifficulty === 'words' ? 1.5 : 1.7);
+  const cfg = SPEED_CONFIG[currentSpeed] || SPEED_CONFIG.normal;
+  const speed = cfg.speed;
 
   for (let i = fallingItems.length - 1; i >= 0; i--) {
     const item = fallingItems[i];
