@@ -99,6 +99,76 @@
       border-color: var(--accent-border);
     }
 
+    /* 模式与方法切换条 */
+    .mode-switch-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 6px 10px;
+      margin-bottom: 16px;
+      gap: 10px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .tab-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tab-pill {
+      padding: 7px 14px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: #F1F5F9;
+      color: var(--subtext);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .tab-pill.active {
+      background: var(--accent);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+    .method-tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.25);
+    }
+    .tab-pill:not(.active) .method-tag {
+      background: #E2E8F0;
+      color: #475569;
+    }
+    .theme-skin-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .theme-label { font-size: 12px; font-weight: 700; color: var(--subtext); }
+    .preset-chip {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .preset-chip:hover { border-color: var(--accent); color: var(--accent); }
+
     /* 通用卡片容器 */
     .card {
       background: var(--card-bg);
@@ -481,10 +551,26 @@
     </div>
   </div>
 
+  <!-- 方法与模式切换栏 -->
+  <div class="mode-switch-bar">
+    <div class="tab-pills">
+      <button id="tabMethod1" class="tab-pill active" onclick="switchMethod('m1')">
+        <span>🚶</span> 方法一：长廊模拟巡查法 <span class="method-tag">列表状态翻转 · not lights[i]</span>
+      </button>
+      <button id="tabMethod2" class="tab-pill" onclick="switchMethod('m2')">
+        <span>⚡</span> 方法二：整除余数判定法 <span class="method-tag">单层循环数学归纳 · i%2 与 i%3</span>
+      </button>
+    </div>
+    <div class="theme-skin-toggle">
+      <span class="theme-label">声音音效</span>
+      <button class="preset-chip" id="soundToggleBtn" onclick="toggleAudio()" style="margin:0;"><span>🔊</span> 音效已开</button>
+    </div>
+  </div>
+
   <!-- 剧情卡片 -->
-  <div class="story-hero">
+  <div class="story-hero" id="storyHero">
     <h2><span>🏮</span> 密道走廊的奇妙灯阵</h2>
-    <p>
+    <p id="storyHeroDesc">
       长廊里有 <b>n</b> 盏亮着的灯，从 1 到 n 依次按顺序编号。按一次灭，再按一次亮。<br>
       <b>第 1 个人</b> 把所有 <b>2 的倍数</b> 的灯全按了一次（偶数灯熄灭）；<br>
       <b>第 2 个人</b> 把所有 <b>3 的倍数</b> 的灯全按了一次（3、9亮变灭，6灭变亮！）。<br>
@@ -492,29 +578,29 @@
     </p>
   </div>
 
-  <!-- 五阶段流水线卡片 -->
+  <!-- 主仿真卡片 -->
   <div class="card">
     <!-- 顶部工序进度 -->
-    <div class="pipeline-bar">
+    <div class="pipeline-bar" id="pipelineBar">
       <div id="pStage1" class="stage-step active">
         <span class="stage-num">阶段 ①</span>
-        <span class="stage-name">全亮布尔池</span>
+        <span class="stage-name" id="stageName1">全亮布尔池</span>
       </div>
       <div id="pStage2" class="stage-step">
         <span class="stage-num">阶段 ②</span>
-        <span class="stage-name">第1人(2倍数)</span>
+        <span class="stage-name" id="stageName2">第1人(2倍数)</span>
       </div>
       <div id="pStage3" class="stage-step">
         <span class="stage-num">阶段 ③</span>
-        <span class="stage-name">第2人(3倍数)</span>
+        <span class="stage-name" id="stageName3">第2人(3倍数)</span>
       </div>
       <div id="pStage4" class="stage-step">
         <span class="stage-num">阶段 ④</span>
-        <span class="stage-name">搜集亮灯名单</span>
+        <span class="stage-name" id="stageName4">搜集亮灯名单</span>
       </div>
       <div id="pStage5" class="stage-step">
         <span class="stage-num">阶段 ⑤</span>
-        <span class="stage-name">换行交付答卷</span>
+        <span class="stage-name" id="stageName5">换行交付答卷</span>
       </div>
     </div>
 
@@ -546,42 +632,53 @@
       <!-- 左：代码高亮视窗与变量看板 -->
       <div class="code-panel">
         <div class="panel-header">
-          <span>🐍 Python 算法引擎</span>
+          <span id="codePanelTitle">🐍 Python 算法引擎（方法一）</span>
           <span id="codeStepTip" style="color:var(--accent);">准备就绪 · 点击单步执行</span>
         </div>
 
-        <div class="code-view">
-          <div class="code-line" id="line1"><span class="line-num">1</span><span class="line-text"><span class="code-comment"># 1. 变量初始化与全亮池</span></span></div>
-          <div class="code-line" id="line2"><span class="line-num">2</span><span class="line-text">n = <span class="code-fn">int</span>(<span class="code-fn">input</span>())</span></div>
-          <div class="code-line" id="line3"><span class="line-num">3</span><span class="line-text"><span class="code-var">lights</span> = [<span class="code-keyword">True</span>] * (n + <span class="code-keyword">1</span>)</span></div>
-          <div class="code-line" id="line4"><span class="line-num">4</span><span class="line-text"><span class="code-comment"># 2. 第1人：按2的倍数 (步长为2)</span></span></div>
-          <div class="code-line" id="line5"><span class="line-num">5</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">2</span>, n + <span class="code-keyword">1</span>, <span class="code-keyword">2</span>):</span></div>
-          <div class="code-line" id="line6"><span class="line-num">6</span><span class="line-text">    <span class="code-var">lights</span>[i] = <span class="code-keyword">not</span> <span class="code-var">lights</span>[i]</span></div>
-          <div class="code-line" id="line7"><span class="line-num">7</span><span class="line-text"><span class="code-comment"># 3. 第2人：按3的倍数 (步长为3)</span></span></div>
-          <div class="code-line" id="line8"><span class="line-num">8</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">3</span>, n + <span class="code-keyword">1</span>, <span class="code-keyword">3</span>):</span></div>
-          <div class="code-line" id="line9"><span class="line-num">9</span><span class="line-text">    <span class="code-var">lights</span>[i] = <span class="code-keyword">not</span> <span class="code-var">lights</span>[i]</span></div>
-          <div class="code-line" id="line10"><span class="line-num">10</span><span class="line-text"><span class="code-comment"># 4. 搜集亮着的灯编号并输出</span></span></div>
-          <div class="code-line" id="line11"><span class="line-num">11</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">1</span>, n + <span class="code-keyword">1</span>):</span></div>
-          <div class="code-line" id="line12"><span class="line-num">12</span><span class="line-text">    <span class="code-keyword">if</span> <span class="code-var">lights</span>[i]:</span></div>
-          <div class="code-line" id="line13"><span class="line-num">13</span><span class="line-text">        <span class="code-fn">print</span>(i)</span></div>
+        <!-- 方法一的代码视窗 -->
+        <div class="code-view" id="codeViewM1">
+          <div class="code-line" id="m1_line1"><span class="line-num">1</span><span class="line-text"><span class="code-comment"># 1. 变量初始化与全亮池</span></span></div>
+          <div class="code-line" id="m1_line2"><span class="line-num">2</span><span class="line-text">n = <span class="code-fn">int</span>(<span class="code-fn">input</span>())</span></div>
+          <div class="code-line" id="m1_line3"><span class="line-num">3</span><span class="line-text"><span class="code-var">lights</span> = [<span class="code-keyword">True</span>] * (n + <span class="code-keyword">1</span>)</span></div>
+          <div class="code-line" id="m1_line4"><span class="line-num">4</span><span class="line-text"><span class="code-comment"># 2. 第1人：按2的倍数 (步长为2)</span></span></div>
+          <div class="code-line" id="m1_line5"><span class="line-num">5</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">2</span>, n + <span class="code-keyword">1</span>, <span class="code-keyword">2</span>):</span></div>
+          <div class="code-line" id="m1_line6"><span class="line-num">6</span><span class="line-text">    <span class="code-var">lights</span>[i] = <span class="code-keyword">not</span> <span class="code-var">lights</span>[i]</span></div>
+          <div class="code-line" id="m1_line7"><span class="line-num">7</span><span class="line-text"><span class="code-comment"># 3. 第2人：按3的倍数 (步长为3)</span></span></div>
+          <div class="code-line" id="m1_line8"><span class="line-num">8</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">3</span>, n + <span class="code-keyword">1</span>, <span class="code-keyword">3</span>):</span></div>
+          <div class="code-line" id="m1_line9"><span class="line-num">9</span><span class="line-text">    <span class="code-var">lights</span>[i] = <span class="code-keyword">not</span> <span class="code-var">lights</span>[i]</span></div>
+          <div class="code-line" id="m1_line10"><span class="line-num">10</span><span class="line-text"><span class="code-comment"># 4. 搜集亮着的灯编号并输出</span></span></div>
+          <div class="code-line" id="m1_line11"><span class="line-num">11</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">1</span>, n + <span class="code-keyword">1</span>):</span></div>
+          <div class="code-line" id="m1_line12"><span class="line-num">12</span><span class="line-text">    <span class="code-keyword">if</span> <span class="code-var">lights</span>[i]:</span></div>
+          <div class="code-line" id="m1_line13"><span class="line-num">13</span><span class="line-text">        <span class="code-fn">print</span>(i)</span></div>
+        </div>
+
+        <!-- 方法二的代码视窗 -->
+        <div class="code-view" id="codeViewM2" style="display:none;">
+          <div class="code-line" id="m2_line1"><span class="line-num">1</span><span class="line-text"><span class="code-comment"># 方法二：数学整除判定法（单层循环直接输出）</span></span></div>
+          <div class="code-line" id="m2_line2"><span class="line-num">2</span><span class="line-text">n = <span class="code-fn">int</span>(<span class="code-fn">input</span>())</span></div>
+          <div class="code-line" id="m2_line3"><span class="line-num">3</span><span class="line-text"><span class="code-comment"># 只有按0次(既不是2也不是3的倍数)或按2次(6的倍数)才亮</span></span></div>
+          <div class="code-line" id="m2_line4"><span class="line-num">4</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">1</span>, n + <span class="code-keyword">1</span>):</span></div>
+          <div class="code-line" id="m2_line5"><span class="line-num">5</span><span class="line-text">    <span class="code-keyword">if</span> (i % <span class="code-keyword">2</span> != <span class="code-keyword">0</span> <span class="code-keyword">and</span> i % <span class="code-keyword">3</span> != <span class="code-keyword">0</span>) <span class="code-keyword">or</span> (i % <span class="code-keyword">6</span> == <span class="code-keyword">0</span>):</span></div>
+          <div class="code-line" id="m2_line6"><span class="line-num">6</span><span class="line-text">        <span class="code-fn">print</span>(i)</span></div>
         </div>
 
         <!-- 实时变量监控看板 -->
         <div class="vars-monitor">
           <div class="var-card">
-            <div class="var-title">当前循环 i</div>
+            <div class="var-title" id="lblVar1">当前循环 i</div>
             <div id="valI" class="var-val">-</div>
           </div>
           <div class="var-card">
-            <div class="var-title">目标灯 lights[i]</div>
+            <div class="var-title" id="lblVar2">目标灯 lights[i]</div>
             <div id="valLightI" class="var-val">-</div>
           </div>
           <div class="var-card">
-            <div class="var-title">当前亮灯总数</div>
+            <div class="var-title" id="lblVar3">当前亮灯总数</div>
             <div id="valOnCount" class="var-val">8</div>
           </div>
           <div class="var-card">
-            <div class="var-title">执行人物 / 阶段</div>
+            <div class="var-title" id="lblVar4">执行人物 / 阶段</div>
             <div id="valPerson" class="var-val" style="font-size:12px; font-weight:800;">准备</div>
           </div>
         </div>
@@ -709,17 +806,76 @@ function toggleAudio() {
 }
 
 /* ==================== 仿真状态机 ==================== */
+let activeMethod = 'm1'; // 'm1' 或 'm2'
+
 let simState = {
   n: 8,
   lights: [], // 1-indexed, true=on, false=off
   pressCounts: [],
-  stepPhase: 0, // 0: 初始化, 1: 第1人, 2: 第2人, 3: 输出搜集, 4: 完成
+  stepPhase: 0, // m1: 0:初始化, 1:第1人, 2:第2人, 3:输出搜集, 4:完成; m2: 0:初始化, 1:循环判定, 2:完成
   currentI: 0,
   outList: [],
   isFinished: false,
   timer: null,
   isPlaying: false
 };
+
+function switchMethod(method) {
+  if (activeMethod === method) return;
+  activeMethod = method;
+  
+  const tab1 = document.getElementById('tabMethod1');
+  const tab2 = document.getElementById('tabMethod2');
+  const codeView1 = document.getElementById('codeViewM1');
+  const codeView2 = document.getElementById('codeViewM2');
+  const codePanelTitle = document.getElementById('codePanelTitle');
+  const stageName1 = document.getElementById('stageName1');
+  const stageName2 = document.getElementById('stageName2');
+  const stageName3 = document.getElementById('stageName3');
+  const stageName4 = document.getElementById('stageName4');
+  const stageName5 = document.getElementById('stageName5');
+  const lblVar1 = document.getElementById('lblVar1');
+  const lblVar2 = document.getElementById('lblVar2');
+  const lblVar3 = document.getElementById('lblVar3');
+  const lblVar4 = document.getElementById('lblVar4');
+  const storyHeroDesc = document.getElementById('storyHeroDesc');
+
+  if (method === 'm1') {
+    tab1.classList.add('active');
+    tab2.classList.remove('active');
+    codeView1.style.display = 'block';
+    codeView2.style.display = 'none';
+    codePanelTitle.textContent = '🐍 Python 算法引擎（方法一：列表布尔模拟）';
+    stageName1.textContent = '全亮布尔池';
+    stageName2.textContent = '第1人(2倍数)';
+    stageName3.textContent = '第2人(3倍数)';
+    stageName4.textContent = '搜集亮灯名单';
+    stageName5.textContent = '换行交付答卷';
+    lblVar1.textContent = '当前循环 i';
+    lblVar2.textContent = '目标灯 lights[i]';
+    lblVar3.textContent = '当前亮灯总数';
+    lblVar4.textContent = '执行人物 / 阶段';
+    storyHeroDesc.innerHTML = '长廊里有 <b>n</b> 盏亮着的灯，按一次灭，再按一次亮。<br><b>第 1 个人</b> 按所有 2 的倍数；<b>第 2 个人</b> 按所有 3 的倍数。<br>【方法一：状态翻转法】用布尔列表模拟全过程，两轮巡视步进，清晰直观！';
+  } else {
+    tab2.classList.add('active');
+    tab1.classList.remove('active');
+    codeView2.style.display = 'block';
+    codeView1.style.display = 'none';
+    codePanelTitle.textContent = '🐍 Python 算法引擎（方法二：整除余数判定）';
+    stageName1.textContent = '读取输入 n';
+    stageName2.textContent = '循环遍历 1~n';
+    stageName3.textContent = '按0次条件检测';
+    stageName4.textContent = '按2次条件检测';
+    stageName5.textContent = '实时输出 print';
+    lblVar1.textContent = '当前检测 i';
+    lblVar2.textContent = '余数 (i%2, i%3)';
+    lblVar3.textContent = '按键次数与状态';
+    lblVar4.textContent = '分支判定结论';
+    storyHeroDesc.innerHTML = '长廊里有 <b>n</b> 盏亮着的灯，最初全亮。<br>灯最终是亮的 <b>充要条件</b>：按了 <b>偶数次</b>（0次 或 2次）！<br>• 按 0 次：既不是2的倍数也不是3的倍数（<code>i % 2 != 0 and i % 3 != 0</code>）<br>• 按 2 次：既是2又是3的倍数，即6的倍数（<code>i % 6 == 0</code>）。单层循环直接输出！';
+  }
+
+  resetSimulator();
+}
 
 function applyPreset(nVal) {
   document.getElementById('inputN').value = nVal;
@@ -792,6 +948,7 @@ function resetSimulator() {
   const boundedN = Math.max(1, Math.min(30, nVal));
   document.getElementById('inputN').value = boundedN;
 
+  // 对于方法二，我们可以让长廊初始全亮；每次判断后如果是灭的就变成灭，亮则保持亮
   simState = {
     n: boundedN,
     lights: new Array(boundedN + 1).fill(true),
@@ -810,19 +967,30 @@ function resetSimulator() {
     if (idx === 0) s.classList.add('active');
   });
 
-  document.getElementById('valI').textContent = '-';
-  document.getElementById('valLightI').textContent = '-';
-  document.getElementById('valOnCount').textContent = boundedN;
-  document.getElementById('valPerson').textContent = '准备就绪';
+  if (activeMethod === 'm1') {
+    document.getElementById('valI').textContent = '-';
+    document.getElementById('valLightI').textContent = '-';
+    document.getElementById('valOnCount').textContent = boundedN;
+    document.getElementById('valPerson').textContent = '准备就绪';
+    document.getElementById('codeStepTip').textContent = '准备就绪 · 点击单步执行';
+    document.getElementById('worldStatusBadge').textContent = '初始全亮';
+    document.getElementById('worldStatusBadge').style.color = 'var(--amber)';
+    document.getElementById('patrolIcon').innerText = '🚪';
+    document.getElementById('patrolText').innerText = '长廊准备就绪：1~' + boundedN + ' 盏灯初始全为 True (亮)。';
+  } else {
+    document.getElementById('valI').textContent = '-';
+    document.getElementById('valLightI').textContent = '-';
+    document.getElementById('valOnCount').textContent = '-';
+    document.getElementById('valPerson').textContent = '准备就绪';
+    document.getElementById('codeStepTip').textContent = '准备就绪 · 点击单步执行整除判定';
+    document.getElementById('worldStatusBadge').textContent = '待测长廊';
+    document.getElementById('worldStatusBadge').style.color = 'var(--cyan)';
+    document.getElementById('patrolIcon').innerText = '⚡';
+    document.getElementById('patrolText').innerText = '方法二准备就绪：即将循环 1~' + boundedN + '，逐个计算 (i%2, i%3, i%6) 判定开关灯最终状态！';
+  }
 
-  document.getElementById('codeStepTip').textContent = '准备就绪 · 点击单步执行';
-  document.getElementById('worldStatusBadge').textContent = '初始全亮';
-  document.getElementById('worldStatusBadge').style.color = 'var(--amber)';
   document.getElementById('termOutput').textContent = '等待输出…';
   document.getElementById('finishStamp').style.display = 'none';
-
-  document.getElementById('patrolIcon').innerText = '🚪';
-  document.getElementById('patrolText').innerText = '长廊准备就绪：1~' + boundedN + ' 盏灯初始全为 True (亮)。';
 
   renderBulbsGrid();
 }
@@ -830,11 +998,20 @@ function resetSimulator() {
 function stepSimulator() {
   if (simState.isFinished) return;
 
+  if (activeMethod === 'm1') {
+    stepSimulatorM1();
+  } else {
+    stepSimulatorM2();
+  }
+}
+
+/* ================= 方法一：状态机 ================= */
+function stepSimulatorM1() {
   // 阶段 0：变量初始化
   if (simState.stepPhase === 0) {
     sfx.playToggle(true);
     setStageStep(0);
-    highlightLines(['line2', 'line3']);
+    highlightLines(['m1_line2', 'm1_line3']);
     document.getElementById('codeStepTip').textContent = '【阶段1 初始化】n=' + simState.n + '，生成长度为 n+1 的全亮布尔列表 lights';
     document.getElementById('valI').textContent = 'init';
     document.getElementById('valLightI').textContent = '全 True';
@@ -842,7 +1019,6 @@ function stepSimulator() {
     document.getElementById('worldStatusBadge').textContent = '全灯就绪';
     document.getElementById('patrolText').innerText = '已生成 lights 列表，下标 1~' + simState.n + ' 对应每盏灯。准备开始第 1 人巡视！';
     
-    // 进入第 1 人阶段
     simState.stepPhase = 1;
     simState.currentI = 2;
     return;
@@ -852,7 +1028,7 @@ function stepSimulator() {
   if (simState.stepPhase === 1) {
     if (simState.currentI <= simState.n) {
       setStageStep(1);
-      highlightLines(['line5', 'line6']);
+      highlightLines(['m1_line5', 'm1_line6']);
       const i = simState.currentI;
       simState.lights[i] = !simState.lights[i];
       simState.pressCounts[i]++;
@@ -886,7 +1062,7 @@ function stepSimulator() {
   if (simState.stepPhase === 2) {
     if (simState.currentI <= simState.n) {
       setStageStep(2);
-      highlightLines(['line8', 'line9']);
+      highlightLines(['m1_line8', 'm1_line9']);
       const i = simState.currentI;
       simState.lights[i] = !simState.lights[i];
       simState.pressCounts[i]++;
@@ -921,7 +1097,7 @@ function stepSimulator() {
   if (simState.stepPhase === 3) {
     if (simState.currentI <= simState.n) {
       setStageStep(3);
-      highlightLines(['line11', 'line12', 'line13']);
+      highlightLines(['m1_line11', 'm1_line12', 'm1_line13']);
       const i = simState.currentI;
       const isOn = simState.lights[i];
       renderBulbsGrid(i);
@@ -965,6 +1141,116 @@ function stepSimulator() {
   }
 }
 
+/* ================= 方法二：状态机 ================= */
+function stepSimulatorM2() {
+  // 阶段 0：读取 n
+  if (simState.stepPhase === 0) {
+    sfx.playToggle(true);
+    setStageStep(0);
+    highlightLines(['m2_line2']);
+    document.getElementById('codeStepTip').textContent = '【阶段1 读取参数】读取灯总数 n = ' + simState.n + '，无需构建布尔列表，准备单循环整除判定！';
+    document.getElementById('valI').textContent = 'n=' + simState.n;
+    document.getElementById('valLightI').textContent = '-';
+    document.getElementById('valOnCount').textContent = '-';
+    document.getElementById('valPerson').textContent = '初始化完成';
+    document.getElementById('worldStatusBadge').textContent = '判定就绪';
+    document.getElementById('patrolText').innerText = '参数读取完毕，无需额外数组，准备逐一验证每个编号 i 的整除性！';
+
+    simState.stepPhase = 1;
+    simState.currentI = 1;
+    simState.outList = [];
+    return;
+  }
+
+  // 阶段 1：遍历 1 到 n
+  if (simState.stepPhase === 1) {
+    if (simState.currentI <= simState.n) {
+      const i = simState.currentI;
+      const mod2 = i % 2;
+      const mod3 = i % 3;
+      const mod6 = i % 6;
+
+      const isNeither = (mod2 !== 0 && mod3 !== 0); // 按0次
+      const isBoth = (mod6 === 0);                   // 按2次
+      const isLit = isNeither || isBoth;
+
+      // 计算真实被按次数
+      let presses = 0;
+      if (mod2 === 0) presses++;
+      if (mod3 === 0) presses++;
+      simState.pressCounts[i] = presses;
+      simState.lights[i] = isLit;
+
+      renderBulbsGrid(i);
+
+      document.getElementById('valI').textContent = 'i=' + i;
+      document.getElementById('valLightI').textContent = '余数(' + mod2 + ',' + mod3 + ')';
+      document.getElementById('valOnCount').textContent = presses + '次 ➔ ' + (isLit ? '亮' : '灭');
+
+      if (isNeither) {
+        // 按0次
+        setStageStep(2);
+        highlightLines(['m2_line4', 'm2_line5', 'm2_line6']);
+        simState.outList.push(i);
+        sfx.playToggle(true);
+        document.getElementById('termOutput').textContent = simState.outList.join(' , ');
+        document.getElementById('valPerson').textContent = '命中: 按0次';
+        document.getElementById('codeStepTip').textContent = '【条件命中·按0次】i=' + i + ' 既非2倍数也非3倍数（i%2!=0 且 i%3!=0），未被按过，保持点亮！print(' + i + ')';
+        document.getElementById('patrolIcon').innerText = '✨';
+        document.getElementById('patrolText').innerText = '#' + i + ' 号灯：不是2的倍数也不是3的倍数，未被按过(0次)，保持点亮！输出: ' + i;
+        document.getElementById('worldStatusBadge').textContent = '#' + i + ' 亮(0次)';
+        document.getElementById('worldStatusBadge').style.color = 'var(--success)';
+      } else if (isBoth) {
+        // 按2次 (6的倍数)
+        setStageStep(3);
+        highlightLines(['m2_line4', 'm2_line5', 'm2_line6']);
+        simState.outList.push(i);
+        sfx.playToggle(true);
+        document.getElementById('termOutput').textContent = simState.outList.join(' , ');
+        document.getElementById('valPerson').textContent = '命中: 按2次(6倍数)';
+        document.getElementById('codeStepTip').textContent = '【条件命中·按2次】i=' + i + ' 既是2的倍数又是3的倍数（i%6==0），被按2次状态复原，最终为亮！print(' + i + ')';
+        document.getElementById('patrolIcon').innerText = '🔄';
+        document.getElementById('patrolText').innerText = '#' + i + ' 号灯：同时是2和3的倍数(6的倍数)，按动2次(灭->又亮)，最终点亮！输出: ' + i;
+        document.getElementById('worldStatusBadge').textContent = '#' + i + ' 亮(2次)';
+        document.getElementById('worldStatusBadge').style.color = '#818CF8';
+      } else {
+        // 按1次 (仅2倍数或仅3倍数) -> 熄灭
+        setStageStep(1);
+        highlightLines(['m2_line4', 'm2_line5']);
+        sfx.playToggle(false);
+        const reason = (mod2 === 0) ? '仅2的倍数' : '仅3的倍数';
+        document.getElementById('valPerson').textContent = '熄灭(按1次)';
+        document.getElementById('codeStepTip').textContent = '【条件不满足·按1次】i=' + i + ' 属于' + reason + '，被按了恰好1次，状态变为熄灭，跳过。';
+        document.getElementById('patrolIcon').innerText = '⚫';
+        document.getElementById('patrolText').innerText = '#' + i + ' 号灯：属于' + reason + '，只被按了1次，熄灭跳过。';
+        document.getElementById('worldStatusBadge').textContent = '#' + i + ' 熄灭(1次)';
+        document.getElementById('worldStatusBadge').style.color = '#94A3B8';
+      }
+
+      simState.currentI++;
+      return;
+    } else {
+      // 遍历完成
+      setStageStep(4);
+      highlightLines([]);
+      simState.isFinished = true;
+      if (simState.timer) clearInterval(simState.timer);
+      simState.isPlaying = false;
+      document.getElementById('playIcon').textContent = '▶';
+
+      renderBulbsGrid(-1);
+      sfx.playSuccess();
+      document.getElementById('finishStamp').style.display = 'block';
+      document.getElementById('worldStatusBadge').textContent = '数学判定完成';
+      document.getElementById('worldStatusBadge').style.color = 'var(--success)';
+      document.getElementById('codeStepTip').textContent = '🎉 整除判定全部完成！最终亮灯编号：' + simState.outList.join(', ');
+      document.getElementById('patrolIcon').innerText = '🏆';
+      document.getElementById('patrolText').innerText = '整除判定法执行完毕！输出结果为：[' + simState.outList.join(', ') + ']';
+      return;
+    }
+  }
+}
+
 function togglePlaySimulator() {
   if (simState.isPlaying) {
     clearInterval(simState.timer);
@@ -990,6 +1276,5 @@ function togglePlaySimulator() {
 document.getElementById('inputN').addEventListener('change', resetSimulator);
 resetSimulator();
 </script>
-
 </body>
 </html>
