@@ -879,21 +879,23 @@ function playSound(type) {
     gain.connect(audioCtx.destination);
 
     if (type === 'tap') {
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(600, now);
-      osc.frequency.exponentialRampToValueAtTime(800, now + 0.04);
-      gain.gain.setValueAtTime(0.2, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
-      osc.start(now);
-      osc.stop(now + 0.07);
-    } else if (type === 'enter') {
+      // 柔和轻快的水滴/木琴短音，正弦波微泡音，音量舒适不疲劳
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(523.25, now);
-      osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.08);
-      gain.gain.setValueAtTime(0.25, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      osc.frequency.setValueAtTime(587.33, now); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.03); // A5
+      gain.gain.setValueAtTime(0.09, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
       osc.start(now);
-      osc.stop(now + 0.12);
+      osc.stop(now + 0.05);
+    } else if (type === 'enter') {
+      // 舒缓轻快的双音清脆和弦提示
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.06); // G5
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+      osc.start(now);
+      osc.stop(now + 0.09);
     } else if (type === 'error') {
       // 柔和低沉的“咚”声提示，使用正弦波(sine)与更低音量，温和友好不刺耳
       osc.type = 'sine';
@@ -904,13 +906,14 @@ function playSound(type) {
       osc.start(now);
       osc.stop(now + 0.13);
     } else if (type === 'laser') {
+      // 游戏击破单词：轻快泡泡啵声 (Pop)
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(900, now);
-      osc.frequency.exponentialRampToValueAtTime(200, now + 0.12);
-      gain.gain.setValueAtTime(0.15, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(987.77, now + 0.05);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
       osc.start(now);
-      osc.stop(now + 0.15);
+      osc.stop(now + 0.08);
     } else if (type === 'boom') {
       // 触地低沉沉闷的“噗通”提示，使用三角波(triangle)替代刺耳方波，音量更温和
       osc.type = 'triangle';
@@ -921,17 +924,20 @@ function playSound(type) {
       osc.start(now);
       osc.stop(now + 0.23);
     } else if (type === 'win') {
-      const freqs = [523.25, 659.25, 783.99, 1046.50];
+      // 优雅通关马林巴清脆琶音 (C大调五和弦 C5-E5-G5-B5-C6)，纯净如流水
+      const freqs = [523.25, 659.25, 783.99, 987.77, 1046.50];
       freqs.forEach((f, idx) => {
         const o = audioCtx.createOscillator();
         const g = audioCtx.createGain();
         o.connect(g);
         g.connect(audioCtx.destination);
+        o.type = 'sine';
         o.frequency.value = f;
-        g.gain.setValueAtTime(0.2, now + idx * 0.08);
-        g.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.25);
-        o.start(now + idx * 0.08);
-        o.stop(now + idx * 0.08 + 0.27);
+        const noteStart = now + idx * 0.06;
+        g.gain.setValueAtTime(0.1, noteStart);
+        g.gain.exponentialRampToValueAtTime(0.001, noteStart + 0.22);
+        o.start(noteStart);
+        o.stop(noteStart + 0.24);
       });
     }
   } catch (e) { console.log(e); }
