@@ -1121,7 +1121,9 @@ const TT_CURRICULUM = [
     steps: [
       { name: '9.1 贪心算法核心语句', text: 'ls.sort(reverse=True)\nx = m\ncnt = 0\nfor i in ls:\n' },
       { name: '9.2 约瑟夫环核心语句', text: 'while len(ls) > 1:\n    cnt += 1\n    if cnt == k:\n        ls.remove(ls[0])\n' },
-      { name: '9.3 输入输出与转换', text: 'n = int(input())\nm = int(input())\nprint(cnt)\n' }
+      { name: '9.3 输入输出与转换', text: 'n = int(input())\nm = int(input())\nprint(cnt)\n' },
+      { name: '9.4 倍数开关灯核心语句', text: 'lights = [True] * (n + 1)\nfor i in range(2, n + 1, 2):\n    lights[i] = not lights[i]\nfor i in range(3, n + 1, 3):\n    lights[i] = not lights[i]\n' },
+      { name: '9.5 快递去重与第k重判定', text: 'for i in a:\n    num = int(i)\n    if num not in ls:\n        ls.append(num)\nif k > len(ls):\n    print(\'None\')\nelse:\n    print(ls[k - 1])\n' }
     ]
   },
   {
@@ -1194,6 +1196,14 @@ const INFINITE_ARTICLES_POOL = [
   {
     title: 'Python 经典诗意 · The Zen of Python',
     text: 'Beautiful is better than ugly.\nExplicit is better than implicit.\nSimple is better than complex.\nReadability counts every single day.\n'
+  },
+  {
+    title: 'Python 算法实战 · 倍数开关灯',
+    text: 'n = int(input())\nlights = [True] * (n + 1)\nfor i in range(2, n + 1, 2):\n    lights[i] = not lights[i]\nfor i in range(3, n + 1, 3):\n    lights[i] = not lights[i]\nfor i in range(1, n + 1):\n    if lights[i]:\n        print(i)\n'
+  },
+  {
+    title: 'Python 算法实战 · 快递包裹第k重',
+    text: 'a = input().split(",")\nls = []\nfor i in a:\n    num = int(i)\n    if num not in ls:\n        ls.append(num)\nk = int(input())\nls.sort(reverse=True)\nif k > len(ls):\n    print(\'None\')\nelse:\n    print(ls[k - 1])\n'
   }
 ];
 
