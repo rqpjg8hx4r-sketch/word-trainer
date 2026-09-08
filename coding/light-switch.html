@@ -558,7 +558,7 @@
         <span>🚶</span> 方法一：长廊模拟巡查法 <span class="method-tag">列表状态翻转 · not lights[i]</span>
       </button>
       <button id="tabMethod2" class="tab-pill" onclick="switchMethod('m2')">
-        <span>⚡</span> 方法二：整除余数判定法 <span class="method-tag">单层循环数学归纳 · i%2 与 i%3</span>
+        <span>⚡</span> 方法二：单灯状态翻转法 <span class="method-tag">单层循环 · st = True 逐灯测试</span>
       </button>
     </div>
     <div class="theme-skin-toggle">
@@ -655,12 +655,16 @@
 
         <!-- 方法二的代码视窗 -->
         <div class="code-view" id="codeViewM2" style="display:none;">
-          <div class="code-line" id="m2_line1"><span class="line-num">1</span><span class="line-text"><span class="code-comment"># 方法二：数学整除判定法（单层循环直接输出）</span></span></div>
+          <div class="code-line" id="m2_line1"><span class="line-num">1</span><span class="line-text"><span class="code-comment"># 方法二：单灯独立翻转法（无需大列表，逐盏模拟）</span></span></div>
           <div class="code-line" id="m2_line2"><span class="line-num">2</span><span class="line-text">n = <span class="code-fn">int</span>(<span class="code-fn">input</span>())</span></div>
-          <div class="code-line" id="m2_line3"><span class="line-num">3</span><span class="line-text"><span class="code-comment"># 只有按0次(既不是2也不是3的倍数)或按2次(6的倍数)才亮</span></span></div>
-          <div class="code-line" id="m2_line4"><span class="line-num">4</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">1</span>, n + <span class="code-keyword">1</span>):</span></div>
-          <div class="code-line" id="m2_line5"><span class="line-num">5</span><span class="line-text">    <span class="code-keyword">if</span> (i % <span class="code-keyword">2</span> != <span class="code-keyword">0</span> <span class="code-keyword">and</span> i % <span class="code-keyword">3</span> != <span class="code-keyword">0</span>) <span class="code-keyword">or</span> (i % <span class="code-keyword">6</span> == <span class="code-keyword">0</span>):</span></div>
-          <div class="code-line" id="m2_line6"><span class="line-num">6</span><span class="line-text">        <span class="code-fn">print</span>(i)</span></div>
+          <div class="code-line" id="m2_line3"><span class="line-num">3</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-keyword">1</span>, n + <span class="code-keyword">1</span>):</span></div>
+          <div class="code-line" id="m2_line4"><span class="line-num">4</span><span class="line-text">    st = <span class="code-keyword">True</span>  <span class="code-comment"># 每盏灯初始全亮</span></span></div>
+          <div class="code-line" id="m2_line5"><span class="line-num">5</span><span class="line-text">    <span class="code-keyword">if</span> i % <span class="code-keyword">2</span> == <span class="code-keyword">0</span>:</span></div>
+          <div class="code-line" id="m2_line6"><span class="line-num">6</span><span class="line-text">        st = <span class="code-keyword">not</span> st  <span class="code-comment"># 第1人按动</span></span></div>
+          <div class="code-line" id="m2_line7"><span class="line-num">7</span><span class="line-text">    <span class="code-keyword">if</span> i % <span class="code-keyword">3</span> == <span class="code-keyword">0</span>:</span></div>
+          <div class="code-line" id="m2_line8"><span class="line-num">8</span><span class="line-text">        st = <span class="code-keyword">not</span> st  <span class="code-comment"># 第2人按动</span></span></div>
+          <div class="code-line" id="m2_line9"><span class="line-num">9</span><span class="line-text">    <span class="code-keyword">if</span> st:</span></div>
+          <div class="code-line" id="m2_line10"><span class="line-num">10</span><span class="line-text">        <span class="code-fn">print</span>(i)</span></div>
         </div>
 
         <!-- 实时变量监控看板 -->
@@ -861,17 +865,17 @@ function switchMethod(method) {
     tab1.classList.remove('active');
     codeView2.style.display = 'block';
     codeView1.style.display = 'none';
-    codePanelTitle.textContent = '🐍 Python 算法引擎（方法二：整除余数判定）';
+    codePanelTitle.textContent = '🐍 Python 算法引擎（方法二：单灯独立翻转法）';
     stageName1.textContent = '读取输入 n';
-    stageName2.textContent = '循环遍历 1~n';
-    stageName3.textContent = '按0次条件检测';
-    stageName4.textContent = '按2次条件检测';
-    stageName5.textContent = '实时输出 print';
-    lblVar1.textContent = '当前检测 i';
-    lblVar2.textContent = '余数 (i%2, i%3)';
-    lblVar3.textContent = '按键次数与状态';
-    lblVar4.textContent = '分支判定结论';
-    storyHeroDesc.innerHTML = '长廊里有 <b>n</b> 盏亮着的灯，最初全亮。<br>灯最终是亮的 <b>充要条件</b>：按了 <b>偶数次</b>（0次 或 2次）！<br>• 按 0 次：既不是2的倍数也不是3的倍数（<code>i % 2 != 0 and i % 3 != 0</code>）<br>• 按 2 次：既是2又是3的倍数，即6的倍数（<code>i % 6 == 0</code>）。单层循环直接输出！';
+    stageName2.textContent = '初始置亮 st=True';
+    stageName3.textContent = '第1人翻转 (i%2)';
+    stageName4.textContent = '第2人翻转 (i%3)';
+    stageName5.textContent = '若亮输出 print(i)';
+    lblVar1.textContent = '当前编号 i';
+    lblVar2.textContent = '单灯状态 st';
+    lblVar3.textContent = '倍数检测 (i%2, i%3)';
+    lblVar4.textContent = '当前执行微步';
+    storyHeroDesc.innerHTML = '长廊里有 <b>n</b> 盏亮着的灯，从 1 到 n 逐盏巡查。<br>【方法二：单灯独立翻转法】无需构建大列表，对每一盏灯 <code>i</code>：<br>① 初始设为亮 <code>st = True</code>；<br>② 如果是 2 的倍数，按一下翻转：<code>if i % 2 == 0: st = not st</code>；<br>③ 如果是 3 的倍数，再按一下翻转：<code>if i % 3 == 0: st = not st</code>；<br>④ 最终若依然点亮 <code>if st:</code>，直接输出 <code>print(i)</code>！逻辑极其直观！';
   }
 
   resetSimulator();
@@ -1141,96 +1145,148 @@ function stepSimulatorM1() {
   }
 }
 
-/* ================= 方法二：状态机 ================= */
+/* ================= 方法二：单灯独立翻转状态机 ================= */
+// m2Micro: 0=init, 1=loop start / st=True, 2=check %2, 3=check %3, 4=check st and print, 5=finish
+let m2Micro = 0;
+let m2CurrentSt = true;
+
 function stepSimulatorM2() {
-  // 阶段 0：读取 n
+  // 阶段 0：读取参数
   if (simState.stepPhase === 0) {
     sfx.playToggle(true);
     setStageStep(0);
     highlightLines(['m2_line2']);
-    document.getElementById('codeStepTip').textContent = '【阶段1 读取参数】读取灯总数 n = ' + simState.n + '，无需构建布尔列表，准备单循环整除判定！';
+    document.getElementById('codeStepTip').textContent = '【阶段1 读取参数】n = ' + simState.n + '，无需构建长列表，准备单循环逐盏考察！';
     document.getElementById('valI').textContent = 'n=' + simState.n;
     document.getElementById('valLightI').textContent = '-';
     document.getElementById('valOnCount').textContent = '-';
-    document.getElementById('valPerson').textContent = '初始化完成';
-    document.getElementById('worldStatusBadge').textContent = '判定就绪';
-    document.getElementById('patrolText').innerText = '参数读取完毕，无需额外数组，准备逐一验证每个编号 i 的整除性！';
+    document.getElementById('valPerson').textContent = '准备就绪';
+    document.getElementById('worldStatusBadge').textContent = '巡查就绪';
+    document.getElementById('patrolText').innerText = '参数读取完毕，准备从 i=1 开始，逐灯按规则独立翻转。';
 
     simState.stepPhase = 1;
     simState.currentI = 1;
+    m2Micro = 1;
     simState.outList = [];
     return;
   }
 
-  // 阶段 1：遍历 1 到 n
+  // 阶段 1：循环体微步推演
   if (simState.stepPhase === 1) {
-    if (simState.currentI <= simState.n) {
-      const i = simState.currentI;
-      const mod2 = i % 2;
-      const mod3 = i % 3;
-      const mod6 = i % 6;
+    const i = simState.currentI;
 
-      const isNeither = (mod2 !== 0 && mod3 !== 0); // 按0次
-      const isBoth = (mod6 === 0);                   // 按2次
-      const isLit = isNeither || isBoth;
-
-      // 计算真实被按次数
-      let presses = 0;
-      if (mod2 === 0) presses++;
-      if (mod3 === 0) presses++;
-      simState.pressCounts[i] = presses;
-      simState.lights[i] = isLit;
-
-      renderBulbsGrid(i);
-
-      document.getElementById('valI').textContent = 'i=' + i;
-      document.getElementById('valLightI').textContent = '余数(' + mod2 + ',' + mod3 + ')';
-      document.getElementById('valOnCount').textContent = presses + '次 ➔ ' + (isLit ? '亮' : '灭');
-
-      if (isNeither) {
-        // 按0次
-        setStageStep(2);
-        highlightLines(['m2_line4', 'm2_line5', 'm2_line6']);
-        simState.outList.push(i);
-        sfx.playToggle(true);
-        document.getElementById('termOutput').textContent = simState.outList.join(' , ');
-        document.getElementById('valPerson').textContent = '命中: 按0次';
-        document.getElementById('codeStepTip').textContent = '【条件命中·按0次】i=' + i + ' 既非2倍数也非3倍数（i%2!=0 且 i%3!=0），未被按过，保持点亮！print(' + i + ')';
-        document.getElementById('patrolIcon').innerText = '✨';
-        document.getElementById('patrolText').innerText = '#' + i + ' 号灯：不是2的倍数也不是3的倍数，未被按过(0次)，保持点亮！输出: ' + i;
-        document.getElementById('worldStatusBadge').textContent = '#' + i + ' 亮(0次)';
-        document.getElementById('worldStatusBadge').style.color = 'var(--success)';
-      } else if (isBoth) {
-        // 按2次 (6的倍数)
-        setStageStep(3);
-        highlightLines(['m2_line4', 'm2_line5', 'm2_line6']);
-        simState.outList.push(i);
-        sfx.playToggle(true);
-        document.getElementById('termOutput').textContent = simState.outList.join(' , ');
-        document.getElementById('valPerson').textContent = '命中: 按2次(6倍数)';
-        document.getElementById('codeStepTip').textContent = '【条件命中·按2次】i=' + i + ' 既是2的倍数又是3的倍数（i%6==0），被按2次状态复原，最终为亮！print(' + i + ')';
-        document.getElementById('patrolIcon').innerText = '🔄';
-        document.getElementById('patrolText').innerText = '#' + i + ' 号灯：同时是2和3的倍数(6的倍数)，按动2次(灭->又亮)，最终点亮！输出: ' + i;
-        document.getElementById('worldStatusBadge').textContent = '#' + i + ' 亮(2次)';
-        document.getElementById('worldStatusBadge').style.color = '#818CF8';
-      } else {
-        // 按1次 (仅2倍数或仅3倍数) -> 熄灭
+    if (i <= simState.n) {
+      // 微步 1：设置 st = True
+      if (m2Micro === 1) {
         setStageStep(1);
-        highlightLines(['m2_line4', 'm2_line5']);
-        sfx.playToggle(false);
-        const reason = (mod2 === 0) ? '仅2的倍数' : '仅3的倍数';
-        document.getElementById('valPerson').textContent = '熄灭(按1次)';
-        document.getElementById('codeStepTip').textContent = '【条件不满足·按1次】i=' + i + ' 属于' + reason + '，被按了恰好1次，状态变为熄灭，跳过。';
-        document.getElementById('patrolIcon').innerText = '⚫';
-        document.getElementById('patrolText').innerText = '#' + i + ' 号灯：属于' + reason + '，只被按了1次，熄灭跳过。';
-        document.getElementById('worldStatusBadge').textContent = '#' + i + ' 熄灭(1次)';
-        document.getElementById('worldStatusBadge').style.color = '#94A3B8';
+        highlightLines(['m2_line3', 'm2_line4']);
+        m2CurrentSt = true;
+        simState.lights[i] = true;
+        simState.pressCounts[i] = 0;
+        renderBulbsGrid(i);
+        sfx.playToggle(true);
+
+        document.getElementById('valI').textContent = 'i=' + i;
+        document.getElementById('valLightI').textContent = 'st = True (亮)';
+        document.getElementById('valOnCount').textContent = '(' + (i % 2) + ', ' + (i % 3) + ')';
+        document.getElementById('valPerson').textContent = '置亮 st=True';
+        document.getElementById('codeStepTip').textContent = '【考察 #' + i + ' 号灯】初始设为全亮 st = True';
+        document.getElementById('patrolIcon').innerText = '💡';
+        document.getElementById('patrolText').innerText = '开始考察 #' + i + ' 号灯：初始状态设定为 st = True (点亮)。';
+        document.getElementById('worldStatusBadge').textContent = '#' + i + ' 初始点亮';
+        document.getElementById('worldStatusBadge').style.color = 'var(--amber)';
+
+        m2Micro = 2;
+        return;
       }
 
-      simState.currentI++;
-      return;
+      // 微步 2：检测 i % 2 == 0
+      if (m2Micro === 2) {
+        setStageStep(2);
+        if (i % 2 === 0) {
+          highlightLines(['m2_line5', 'm2_line6']);
+          m2CurrentSt = !m2CurrentSt;
+          simState.lights[i] = m2CurrentSt;
+          simState.pressCounts[i]++;
+          renderBulbsGrid(i);
+          sfx.playToggle(m2CurrentSt);
+
+          document.getElementById('valI').textContent = 'i=' + i;
+          document.getElementById('valLightI').textContent = 'st = ' + (m2CurrentSt ? 'True (亮)' : 'False (灭)');
+          document.getElementById('valPerson').textContent = '第1人按下: ' + (m2CurrentSt ? '变亮' : '变灭');
+          document.getElementById('codeStepTip').textContent = '【第1人按下】' + i + ' % 2 == 0 成立，翻转为 st = ' + m2CurrentSt;
+          document.getElementById('patrolIcon').innerText = '👤';
+          document.getElementById('patrolText').innerText = '#' + i + ' 号灯是 2 的倍数，第 1 个人按下开关！状态翻转为 ' + (m2CurrentSt ? '亮' : '灭');
+        } else {
+          highlightLines(['m2_line5']);
+          document.getElementById('valPerson').textContent = '非2倍数(不按)';
+          document.getElementById('codeStepTip').textContent = '【第1人跳过】' + i + ' % 2 != 0，不是2的倍数，不按';
+          document.getElementById('patrolText').innerText = '#' + i + ' 号灯不是 2 的倍数，第 1 个人走过，不按开关。';
+        }
+
+        m2Micro = 3;
+        return;
+      }
+
+      // 微步 3：检测 i % 3 == 0
+      if (m2Micro === 3) {
+        setStageStep(3);
+        if (i % 3 === 0) {
+          highlightLines(['m2_line7', 'm2_line8']);
+          m2CurrentSt = !m2CurrentSt;
+          simState.lights[i] = m2CurrentSt;
+          simState.pressCounts[i]++;
+          renderBulbsGrid(i);
+          sfx.playToggle(m2CurrentSt);
+
+          document.getElementById('valI').textContent = 'i=' + i;
+          document.getElementById('valLightI').textContent = 'st = ' + (m2CurrentSt ? 'True (亮)' : 'False (灭)');
+          document.getElementById('valPerson').textContent = '第2人按下: ' + (m2CurrentSt ? '变亮' : '变灭');
+          document.getElementById('codeStepTip').textContent = '【第2人按下】' + i + ' % 3 == 0 成立，再次翻转为 st = ' + m2CurrentSt;
+          document.getElementById('patrolIcon').innerText = '👤';
+          document.getElementById('patrolText').innerText = '#' + i + ' 号灯是 3 的倍数，第 2 个人按下开关！状态翻转为 ' + (m2CurrentSt ? '亮' : '灭');
+        } else {
+          highlightLines(['m2_line7']);
+          document.getElementById('valPerson').textContent = '非3倍数(不按)';
+          document.getElementById('codeStepTip').textContent = '【第2人跳过】' + i + ' % 3 != 0，不是3的倍数，不按';
+          document.getElementById('patrolText').innerText = '#' + i + ' 号灯不是 3 的倍数，第 2 个人走过，不按开关。';
+        }
+
+        m2Micro = 4;
+        return;
+      }
+
+      // 微步 4：检测 if st: 输出
+      if (m2Micro === 4) {
+        setStageStep(4);
+        highlightLines(['m2_line9', 'm2_line10']);
+
+        if (m2CurrentSt) {
+          simState.outList.push(i);
+          sfx.playToggle(true);
+          document.getElementById('termOutput').textContent = simState.outList.join(' , ');
+          document.getElementById('valPerson').textContent = '亮灯留存 print(' + i + ')';
+          document.getElementById('codeStepTip').textContent = '【最终为亮】st 为 True，执行 print(' + i + ')！';
+          document.getElementById('patrolIcon').innerText = '✨';
+          document.getElementById('patrolText').innerText = '#' + i + ' 号灯最终保持点亮！输出编号: ' + i;
+          document.getElementById('worldStatusBadge').textContent = '#' + i + ' 最终点亮';
+          document.getElementById('worldStatusBadge').style.color = 'var(--success)';
+        } else {
+          document.getElementById('valPerson').textContent = '熄灭跳过';
+          document.getElementById('codeStepTip').textContent = '【最终熄灭】st 为 False，不输出。';
+          document.getElementById('patrolIcon').innerText = '⚫';
+          document.getElementById('patrolText').innerText = '#' + i + ' 号灯最终处于熄灭状态，跳过。';
+          document.getElementById('worldStatusBadge').textContent = '#' + i + ' 最终熄灭';
+          document.getElementById('worldStatusBadge').style.color = '#94A3B8';
+        }
+
+        // 移至下一个灯
+        simState.currentI++;
+        m2Micro = 1;
+        return;
+      }
     } else {
-      // 遍历完成
+      // 全部灯遍历完成
       setStageStep(4);
       highlightLines([]);
       simState.isFinished = true;
@@ -1241,11 +1297,11 @@ function stepSimulatorM2() {
       renderBulbsGrid(-1);
       sfx.playSuccess();
       document.getElementById('finishStamp').style.display = 'block';
-      document.getElementById('worldStatusBadge').textContent = '数学判定完成';
+      document.getElementById('worldStatusBadge').textContent = '逐灯推演完成';
       document.getElementById('worldStatusBadge').style.color = 'var(--success)';
-      document.getElementById('codeStepTip').textContent = '🎉 整除判定全部完成！最终亮灯编号：' + simState.outList.join(', ');
+      document.getElementById('codeStepTip').textContent = '🎉 逐灯推演全部完成！最终亮灯编号：' + simState.outList.join(', ');
       document.getElementById('patrolIcon').innerText = '🏆';
-      document.getElementById('patrolText').innerText = '整除判定法执行完毕！输出结果为：[' + simState.outList.join(', ') + ']';
+      document.getElementById('patrolText').innerText = '所有灯考察完毕！最终保持点亮的结果为：[' + simState.outList.join(', ') + ']';
       return;
     }
   }
