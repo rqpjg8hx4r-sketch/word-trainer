@@ -123,33 +123,67 @@
     }
 
     /* ==================== 模块导航与微步阶段 ==================== */
-    .module-tabs-scroll {
-      display: flex;
-      gap: 6px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      margin-bottom: 10px;
-      scrollbar-width: thin;
-    }
-    .module-tab-btn {
-      flex: none;
-      padding: 7px 12px;
-      border-radius: 9px;
-      border: 1.5px solid var(--border);
-      background: #F8FAFC;
-      color: #334155;
-      font-size: 11.5px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.15s;
+    .module-nav-row {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
-    .module-tab-btn.active {
-      border-color: var(--primary);
-      background: var(--primary-light);
+    .module-select-wrapper {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #F8FAFC;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 4px 10px;
+    }
+    .module-select-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--subtext);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .module-select {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+      cursor: pointer;
+      outline: none;
+      padding: 6px 4px;
+    }
+    .module-select option {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1E293B;
+      background: #FFFFFF;
+      padding: 6px;
+    }
+    .endless-badge-btn {
+      background: #EEF2FF;
+      border: 1.5px solid var(--primary);
+      border-radius: 10px;
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 800;
       color: var(--primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .endless-badge-btn:hover {
+      background: #E0E7FF;
     }
 
     /* 子阶段按钮组 */
@@ -157,17 +191,17 @@
       display: flex;
       gap: 6px;
       overflow-x: auto;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       padding-bottom: 4px;
     }
     .substep-btn {
       flex: 1;
       min-width: 140px;
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
+      padding: 7px 12px;
+      border-radius: 9px;
+      border: 1.5px solid var(--border);
       background: #FFFFFF;
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 700;
       color: var(--subtext);
       cursor: pointer;
@@ -181,78 +215,94 @@
       background: #EEF2FF;
       color: var(--primary);
       font-weight: 800;
-    }
-    .endless-btn {
-      background: #F1F5F9;
-      border: 1.5px solid var(--border);
-      border-radius: 999px;
-      padding: 3px 10px;
-      font-size: 11px;
-      font-weight: 800;
-      color: #475569;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.2s;
-    }
-    .endless-btn:hover {
-      background: #E2E8F0;
-    }
-    .endless-btn.active {
-      background: #EEF2FF;
-      border-color: var(--primary);
-      color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
+      box-shadow: 0 1px 4px rgba(79, 70, 229, 0.12);
     }
 
-    /* 字符流展示与所见即所敲 */
+    /* 字符流展示卡（静态完整排版，绝对零位移） */
     .stream-card {
-      background: #F8FAFC;
+      background: #FFFFFF;
       border: 1.5px solid var(--border);
       border-radius: 14px;
-      padding: 16px 14px;
-      text-align: center;
+      padding: 16px 18px;
       margin-bottom: 12px;
       position: relative;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
     }
     .stream-meta-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
-      font-size: 11.5px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+      font-size: 12px;
       font-weight: 800;
       color: var(--subtext);
     }
     .stream-box {
-      font-family: "Fira Code", "Consolas", monospace;
+      font-family: "Fira Code", "Consolas", "Courier New", monospace;
       font-variant-numeric: slashed-zero;
-      font-size: 32px;
-      font-weight: 800;
-      letter-spacing: 3px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 64px;
-      overflow-x: hidden;
-      white-space: pre;
+      font-size: 23px;
+      font-weight: 700;
+      line-height: 1.85;
+      letter-spacing: 1px;
+      text-align: left;
+      min-height: 110px;
+      max-height: 240px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      padding: 8px 12px;
+      background: #F8FAFC;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
     }
-    .char-done { color: #94A3B8; }
-    .char-current {
+    /* 静态字符样式 */
+    .tt-char {
+      display: inline-block;
+      transition: color 0.08s ease, background-color 0.08s ease;
+      border-radius: 3px;
+      position: relative;
+    }
+    .tt-char.pending {
+      color: #0F172A;
+    }
+    .tt-char.typed {
+      color: #94A3B8;
+    }
+    .tt-char.current {
       color: var(--primary);
       background: #E0E7FF;
-      border-bottom: 3.5px solid var(--primary);
-      padding: 0 5px;
-      border-radius: 5px;
-      animation: pulseChar 0.8s infinite alternate;
+      font-weight: 800;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.25);
+      border-bottom: 2.5px solid var(--primary);
+      animation: blinkCursor 0.9s infinite alternate;
     }
-    @keyframes pulseChar {
-      from { transform: scale(1); }
-      to { transform: scale(1.08); }
+    @keyframes blinkCursor {
+      0% { background: #EEF2FF; }
+      100% { background: #C7D2FE; }
     }
-    .char-upcoming { color: #1E293B; }
-    .char-error { background: #FEE2E2 !important; color: #DC2626 !important; }
+    .tt-char.error {
+      background: #FEE2E2 !important;
+      color: #DC2626 !important;
+      box-shadow: 0 0 0 2px #EF4444 !important;
+    }
+    .tt-char.is-space {
+      opacity: 0.65;
+    }
+    .tt-char.typed.is-space {
+      opacity: 0.35;
+      color: #CBD5E1;
+    }
+    .tt-char.is-newline {
+      color: #94A3B8;
+      font-size: 16px;
+      margin-right: 4px;
+      user-select: none;
+    }
+    .tt-char.typed.is-newline {
+      color: #CBD5E1;
+    }
 
     .anchor-guide-badge {
       display: inline-flex;
@@ -265,7 +315,7 @@
       font-weight: 800;
       padding: 4px 12px;
       border-radius: 999px;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
     /* 手指动态示意图 */
@@ -579,9 +629,17 @@
 
   <!-- ==================== 模块 1：TT 梯次练习系统 ==================== -->
   <div id="drillSection" class="card">
-    <!-- 10 大核心模块切换栏 -->
-    <div class="module-tabs-scroll" id="moduleTabs">
-      <!-- 动态生成 10 个模块按钮 -->
+    <!-- 10 大核心模块下拉选择器与篇章无尽模式 -->
+    <div class="module-nav-row">
+      <div class="module-select-wrapper">
+        <span class="module-select-label">📂 选择课程模块:</span>
+        <select id="moduleSelect" class="module-select" onchange="selectModule(parseInt(this.value))" onclick="event.stopPropagation()">
+          <!-- 动态生成 10 个模块选项 -->
+        </select>
+      </div>
+      <button id="endlessToggleBtn" class="endless-badge-btn" onclick="startInfiniteArticleMode(); event.stopPropagation();" title="进入经典 TT 综合长文无限随机练习模式">
+        <span>📖</span> <span>TT 篇章无尽畅练</span>
+      </button>
     </div>
 
     <!-- 模块内 3~4 个子阶段切换 -->
@@ -589,21 +647,17 @@
       <!-- 动态生成子阶段按钮 -->
     </div>
 
-    <!-- 打字字符流展示卡（彻底解决空格问题） -->
+    <!-- 静态多行字符排版展示卡（绝对零位移） -->
     <div class="stream-card">
       <div class="stream-meta-row">
         <span id="moduleTitleText">模块 1：基准键位锚定</span>
-        <div style="display:inline-flex; align-items:center; gap:10px;">
-          <button id="endlessToggleBtn" class="endless-btn" onclick="toggleEndlessMode(); event.stopPropagation();" title="开启后不会在打完预设文本后停止，而是持续自动生成随机练习流">
-            <span id="endlessIcon">♾️</span> <span id="endlessLabel">无限畅打：已关闭</span>
-          </button>
-          <span id="progressText">进度: 1 / 40 字符</span>
+        <div style="display:inline-flex; align-items:center; gap:12px;">
+          <span id="statBpm" style="color:var(--primary); font-family:monospace;">0 BPM (击/分)</span>
+          <span id="progressText">进度: 0 / 40 字符</span>
         </div>
       </div>
-      <div class="stream-box" id="streamBox">
-        <span id="charDone" class="char-done"></span>
-        <span id="charCurrent" class="char-current">f</span>
-        <span id="charUpcoming" class="char-upcoming"></span>
+      <div class="stream-box" id="streamBox" onclick="focusGameInput()">
+        <!-- 动态静态渲染完整文本的所有 span 字符 -->
       </div>
       <div>
         <span class="anchor-guide-badge">
@@ -774,6 +828,10 @@
       <div>
         <div class="metric-label">正确率</div>
         <div class="metric-val" id="modalAcc">98%</div>
+      </div>
+      <div style="grid-column: span 2; padding-top: 6px; border-top: 1px dashed var(--border);">
+        <div class="metric-label">按键节奏 (BPM)</div>
+        <div class="metric-val" id="modalBpm" style="font-size:18px; color:#0284C7;">0 击/分</div>
       </div>
     </div>
     <div class="modal-btns">
@@ -1066,6 +1124,54 @@ const TT_CURRICULUM = [
   }
 ];
 
+// TT 原版终极综合无限篇章库（经典童谣、伊索寓言、自然哲理与 Python 核心算法）
+const INFINITE_ARTICLES_POOL = [
+  {
+    title: '经典童谣 · Twinkle Little Star',
+    text: 'Twinkle, twinkle, little star,\nHow I wonder what you are!\nUp above the world so high,\nLike a diamond in the sky.\n'
+  },
+  {
+    title: '经典童谣 · Mary Had a Little Lamb',
+    text: 'Mary had a little lamb,\nIts fleece was white as snow;\nAnd everywhere that Mary went,\nThe lamb was sure to go.\n'
+  },
+  {
+    title: '经典童谣 · Row Your Boat',
+    text: 'Row, row, row your boat,\nGently down the stream.\nMerrily, merrily, merrily, merrily,\nLife is but a dream.\n'
+  },
+  {
+    title: '经典童谣 · Humpty Dumpty',
+    text: 'Humpty Dumpty sat on a wall,\nHumpty Dumpty had a great fall;\nAll the king horses and all the king men,\nCould not put Humpty together again.\n'
+  },
+  {
+    title: '经典童谣 · Jack and Jill',
+    text: 'Jack and Jill went up the hill,\nTo fetch a pail of water;\nJack fell down and broke his crown,\nAnd Jill came tumbling after.\n'
+  },
+  {
+    title: '伊索寓言 · The Fox and The Grapes',
+    text: 'A hungry fox saw some fine bunches of grapes hanging from a vine.\nHe tried his best to reach them by jumping high into the air.\nAt last he gave up and said: The grapes are sour anyway!\n'
+  },
+  {
+    title: '伊索寓言 · The Tortoise and The Hare',
+    text: 'A hare was mocking the slow tortoise for his feet.\nLet us race to the goal, said the tortoise with a quiet smile.\nSlow and steady wins the race, and perseverance brings victory.\n'
+  },
+  {
+    title: '自然物语 · Morning Sunlight',
+    text: 'Early in the morning, the golden sun rises over the green hill.\nThe birds sing sweet songs in the old apple tree.\nA brand new day has come with fresh hope and joy.\n'
+  },
+  {
+    title: 'Python 贪心算法 · Coin Change',
+    text: 'coins = [25, 10, 5, 1]\namount = 63\ncount = 0\nfor coin in coins:\n    count += amount // coin\n    amount %= coin\nprint(count)\n'
+  },
+  {
+    title: 'Python 算法实战 · Josephus Ring',
+    text: 'def josephus(n, k):\n    people = list(range(1, n + 1))\n    idx = 0\n    while len(people) > 1:\n        idx = (idx + k - 1) % len(people)\n        people.pop(idx)\n    return people[0]\n'
+  },
+  {
+    title: 'Python 经典诗意 · The Zen of Python',
+    text: 'Beautiful is better than ugly.\nExplicit is better than implicit.\nSimple is better than complex.\nReadability counts every single day.\n'
+  }
+];
+
 /* ==================== 4. 核心训练状态机 ==================== */
 let currentModuleIdx = 0;
 let currentStepIdx = 0;
@@ -1074,69 +1180,31 @@ let charIndex = 0;
 let totalTyped = 0;
 let correctTyped = 0;
 let startTime = null;
-let isEndlessMode = false;
-
-function toggleEndlessMode() {
-  isEndlessMode = !isEndlessMode;
-  const btn = document.getElementById('endlessToggleBtn');
-  const label = document.getElementById('endlessLabel');
-  if (isEndlessMode) {
-    btn.classList.add('active');
-    label.textContent = '无限畅打：开启中 🔥';
-    if (charIndex >= currentFullText.length - 5) {
-      appendEndlessContent();
-    }
-  } else {
-    btn.classList.remove('active');
-    label.textContent = '无限畅打：已关闭';
-  }
-  focusGameInput();
-}
-
-function generateRandomChunk() {
-  const mod = TT_CURRICULUM[currentModuleIdx];
-  const step = mod.steps[currentStepIdx];
-  const rawWords = step.text.split(/[\s\n]+/).filter(w => w.length > 0);
-  let pool = rawWords.length > 0 ? rawWords : ['asdf', 'jkl;', 'for', 'run'];
-
-  const count = 6;
-  const picks = [];
-  for (let i = 0; i < count; i++) {
-    const w = pool[Math.floor(Math.random() * pool.length)];
-    picks.push(w);
-  }
-  return ' ' + picks.join(' ');
-}
-
-function appendEndlessContent() {
-  const newChunk = generateRandomChunk();
-  currentFullText += newChunk;
-  renderStreamView();
-}
+let isInfiniteArticleMode = false;
+let currentArticleIdx = -1;
 
 function initCurriculumUI() {
-  const moduleTabs = document.getElementById('moduleTabs');
-  moduleTabs.innerHTML = '';
+  const select = document.getElementById('moduleSelect');
+  select.innerHTML = '';
 
   TT_CURRICULUM.forEach((mod, idx) => {
-    const btn = document.createElement('button');
-    btn.className = `module-tab-btn ${idx === 0 ? 'active' : ''}`;
-    btn.id = `mod_btn_${idx}`;
-    btn.innerHTML = `<span>${mod.id}.</span> <span>${mod.title.split('：')[1] || mod.title}</span>`;
-    btn.onclick = () => selectModule(idx);
-    moduleTabs.appendChild(btn);
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = `${mod.id}. ${mod.title}`;
+    select.appendChild(opt);
   });
 
+  select.value = 0;
   renderSubsteps();
   loadStepText();
 }
 
 function selectModule(idx) {
+  isInfiniteArticleMode = false;
   currentModuleIdx = idx;
   currentStepIdx = 0;
-  document.querySelectorAll('.module-tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', i === idx);
-  });
+  const select = document.getElementById('moduleSelect');
+  if (select.value != idx) select.value = idx;
   renderSubsteps();
   loadStepText();
   focusGameInput();
@@ -1149,9 +1217,11 @@ function renderSubsteps() {
 
   mod.steps.forEach((step, idx) => {
     const btn = document.createElement('button');
-    btn.className = `substep-btn ${idx === currentStepIdx ? 'active' : ''}`;
-    btn.innerHTML = `<span>${step.name}</span> <span>${idx === currentStepIdx ? '🎯' : '⚪'}</span>`;
-    btn.onclick = () => {
+    btn.className = `substep-btn ${idx === currentStepIdx && !isInfiniteArticleMode ? 'active' : ''}`;
+    btn.innerHTML = `<span>${step.name}</span> <span>${idx === currentStepIdx && !isInfiniteArticleMode ? '🎯' : '⚪'}</span>`;
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      isInfiniteArticleMode = false;
       currentStepIdx = idx;
       renderSubsteps();
       loadStepText();
@@ -1159,6 +1229,32 @@ function renderSubsteps() {
     };
     bar.appendChild(btn);
   });
+}
+
+function startInfiniteArticleMode() {
+  isInfiniteArticleMode = true;
+  document.querySelectorAll('.substep-btn').forEach(b => b.classList.remove('active'));
+
+  // 随机挑选不重复的篇章
+  let nextIdx = Math.floor(Math.random() * INFINITE_ARTICLES_POOL.length);
+  if (nextIdx === currentArticleIdx && INFINITE_ARTICLES_POOL.length > 1) {
+    nextIdx = (nextIdx + 1) % INFINITE_ARTICLES_POOL.length;
+  }
+  currentArticleIdx = nextIdx;
+  const art = INFINITE_ARTICLES_POOL[currentArticleIdx];
+
+  document.getElementById('moduleTitleText').textContent = `TT 篇章无尽畅练 · ${art.title} 🚀`;
+  document.getElementById('anchorRuleTip').textContent = '享受完整篇章连贯击键的肌肉记忆流，打完一篇自动无缝切入下一篇！';
+
+  currentFullText = art.text;
+  charIndex = 0;
+  totalTyped = 0;
+  correctTyped = 0;
+  startTime = null;
+
+  buildStaticTextDOM();
+  updateCharHighlights();
+  focusGameInput();
 }
 
 function loadStepText() {
@@ -1174,46 +1270,66 @@ function loadStepText() {
   correctTyped = 0;
   startTime = null;
 
-  renderStreamView();
+  buildStaticTextDOM();
+  updateCharHighlights();
 }
 
-/* 核心所见即所敲渲染器：空格用 ␣，回车用 ↵ 清晰标出 */
-function renderStreamView() {
-  const doneSlice = currentFullText.slice(Math.max(0, charIndex - 10), charIndex);
+/* 核心优化：静态渲染全文所有字符 Span，布局在整个练习期间绝对零位移 */
+function buildStaticTextDOM() {
+  const box = document.getElementById('streamBox');
+  box.innerHTML = '';
+  const frag = document.createDocumentFragment();
+
+  for (let i = 0; i < currentFullText.length; i++) {
+    const ch = currentFullText[i];
+    const span = document.createElement('span');
+    span.className = 'tt-char pending';
+    span.id = `ttc_${i}`;
+
+    if (ch === ' ') {
+      span.classList.add('is-space');
+      span.textContent = '␣'; // 醒目且等宽的空格符号
+    } else if (ch === '\n') {
+      span.classList.add('is-newline');
+      span.textContent = '↵'; // 回车符号
+      frag.appendChild(span);
+      frag.appendChild(document.createElement('br'));
+      continue;
+    } else {
+      span.textContent = ch;
+    }
+    frag.appendChild(span);
+  }
+
+  box.appendChild(frag);
+}
+
+/* 根据当前 charIndex，纯增删 CSS 类，绝不修改文本内容，绝不引起重排位移 */
+function updateCharHighlights() {
+  const total = currentFullText.length;
+
+  for (let i = 0; i < total; i++) {
+    const span = document.getElementById(`ttc_${i}`);
+    if (!span) continue;
+
+    if (i < charIndex) {
+      span.className = 'tt-char typed' + (currentFullText[i] === ' ' ? ' is-space' : '') + (currentFullText[i] === '\n' ? ' is-newline' : '');
+    } else if (i === charIndex) {
+      span.className = 'tt-char current' + (currentFullText[i] === ' ' ? ' is-space' : '') + (currentFullText[i] === '\n' ? ' is-newline' : '');
+      span.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+    } else {
+      span.className = 'tt-char pending' + (currentFullText[i] === ' ' ? ' is-space' : '') + (currentFullText[i] === '\n' ? ' is-newline' : '');
+    }
+  }
+
+  // 进度文本
+  if (isInfiniteArticleMode) {
+    document.getElementById('progressText').textContent = `篇章进度: ${charIndex} / ${total} 字符 (无尽模式)`;
+  } else {
+    document.getElementById('progressText').textContent = `进度: ${charIndex} / ${total} 字符`;
+  }
+
   const curChar = currentFullText[charIndex];
-  const upSlice = currentFullText.slice(charIndex + 1, charIndex + 18);
-
-  const formatStr = (str) => {
-    return str.replace(/ /g, '␣').replace(/\n/g, '↵\n');
-  };
-
-  const doneSpan = document.getElementById('charDone');
-  const curSpan = document.getElementById('charCurrent');
-  const upSpan = document.getElementById('charUpcoming');
-
-  doneSpan.textContent = formatStr(doneSlice);
-
-  if (curChar === undefined) {
-    curSpan.textContent = '🏁 完成';
-    upSpan.textContent = '';
-    return;
-  }
-
-  if (curChar === ' ') {
-    curSpan.textContent = '␣';
-  } else if (curChar === '\n') {
-    curSpan.textContent = '↵';
-  } else {
-    curSpan.textContent = curChar;
-  }
-
-  upSpan.textContent = formatStr(upSlice);
-  if (isEndlessMode) {
-    document.getElementById('progressText').textContent = `无限连击: ${charIndex} 字符已击破 🚀`;
-  } else {
-    document.getElementById('progressText').textContent = `进度: ${charIndex} / ${currentFullText.length} 字符`;
-  }
-
   highlightKeyboardAndHand(curChar);
 }
 
@@ -1221,7 +1337,10 @@ function highlightKeyboardAndHand(char) {
   document.querySelectorAll('.key').forEach(k => k.classList.remove('active-target'));
   document.querySelectorAll('.finger').forEach(f => f.classList.remove('active'));
 
-  if (!char) return;
+  if (!char) {
+    document.getElementById('fingerGuideText').innerHTML = '🎉 练习完成！按回车或空格继续！';
+    return;
+  }
 
   const lower = char.toLowerCase();
   const info = FINGER_MAP[lower] || FINGER_MAP[char];
@@ -1251,7 +1370,7 @@ function highlightKeyboardAndHand(char) {
 
 /* ==================== 5. 键盘事件监听 (iPad 蓝牙键盘友好) ==================== */
 function handleBodyClick(e) {
-  if (e && e.target && (e.target.closest('select') || e.target.closest('button') || e.target.closest('a') || e.target.closest('.modal-card') || e.target.closest('.substep-btn') || e.target.closest('.module-tab-btn'))) {
+  if (e && e.target && (e.target.closest('select') || e.target.closest('button') || e.target.closest('a') || e.target.closest('.modal-card') || e.target.closest('.substep-btn') || e.target.closest('.module-select'))) {
     return;
   }
   focusGameInput();
@@ -1265,7 +1384,7 @@ function focusGameInput() {
 }
 
 window.addEventListener('keydown', (e) => {
-  // 如果弹窗打开，支持按 Enter 确认进入下一关
+  // 如果弹窗打开，支持按 Enter 确认进入下一阶段 / 下一篇
   const compModal = document.getElementById('completionModal');
   if (compModal.style.display !== 'none') {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -1315,50 +1434,59 @@ function handleDrillKey(key) {
     correctTyped++;
     charIndex++;
 
-    // 无限畅打模式：动态无缝续接随机练习流
-    if (isEndlessMode && charIndex >= currentFullText.length - 10) {
-      appendEndlessContent();
-    }
-
     if (charIndex >= currentFullText.length) {
-      if (isEndlessMode) {
-        appendEndlessContent();
-      } else {
-        playSound('win');
-        const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
-        const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
-        const acc = Math.round((correctTyped / totalTyped) * 100);
+      playSound('win');
+      const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
+      const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
+      const bpm = Math.round(totalTyped / elapsedMinutes);
+      const acc = Math.round((correctTyped / totalTyped) * 100);
 
-        showCompletionModal(wpm, acc);
-        return;
-      }
+      document.getElementById('statWpm').textContent = wpm;
+      document.getElementById('statAcc').textContent = acc;
+      document.getElementById('statBpm').textContent = `${bpm} BPM (击/分)`;
+
+      updateCharHighlights();
+      showCompletionModal(wpm, acc, bpm);
+      return;
     }
   } else {
     playSound('error');
-    const curSpan = document.getElementById('charCurrent');
-    curSpan.classList.add('char-error');
-    setTimeout(() => curSpan.classList.remove('char-error'), 180);
+    const curSpan = document.getElementById(`ttc_${charIndex}`);
+    if (curSpan) {
+      curSpan.classList.add('error');
+      setTimeout(() => curSpan.classList.remove('error'), 180);
+    }
   }
 
   const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
   const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
+  const bpm = Math.round(totalTyped / elapsedMinutes);
   const acc = Math.round((correctTyped / totalTyped) * 100);
   document.getElementById('statWpm').textContent = wpm;
   document.getElementById('statAcc').textContent = acc;
+  document.getElementById('statBpm').textContent = `${bpm} BPM (击/分)`;
 
-  renderStreamView();
+  updateCharHighlights();
 }
 
 /* 优雅通关结算弹层 */
-function showCompletionModal(wpm, acc) {
+function showCompletionModal(wpm, acc, bpm) {
   const modal = document.getElementById('completionModal');
-  const mod = TT_CURRICULUM[currentModuleIdx];
-  const step = mod.steps[currentStepIdx];
 
-  document.getElementById('modalTitle').textContent = `🎉 通关成功！`;
-  document.getElementById('modalSubtitle').textContent = `完成 ${mod.title.split('：')[0]} · ${step.name}`;
+  if (isInfiniteArticleMode) {
+    const art = INFINITE_ARTICLES_POOL[currentArticleIdx];
+    document.getElementById('modalTitle').textContent = `🎉 篇章顺利击破！`;
+    document.getElementById('modalSubtitle').textContent = `完成 ${art.title}`;
+  } else {
+    const mod = TT_CURRICULUM[currentModuleIdx];
+    const step = mod.steps[currentStepIdx];
+    document.getElementById('modalTitle').textContent = `🎉 阶段顺利通关！`;
+    document.getElementById('modalSubtitle').textContent = `完成 ${mod.title.split('：')[0]} · ${step.name}`;
+  }
+
   document.getElementById('modalWpm').textContent = `${wpm} 词/分`;
   document.getElementById('modalAcc').textContent = `${acc}%`;
+  document.getElementById('modalBpm').textContent = `${bpm} 击/分 (BPM)`;
 
   let stars = '⭐⭐⭐';
   if (acc < 90) stars = '⭐';
@@ -1370,13 +1498,28 @@ function showCompletionModal(wpm, acc) {
 
 function replayCurrentStep() {
   document.getElementById('completionModal').style.display = 'none';
-  loadStepText();
+  if (isInfiniteArticleMode) {
+    const art = INFINITE_ARTICLES_POOL[currentArticleIdx];
+    currentFullText = art.text;
+    charIndex = 0;
+    totalTyped = 0;
+    correctTyped = 0;
+    startTime = null;
+    buildStaticTextDOM();
+    updateCharHighlights();
+  } else {
+    loadStepText();
+  }
   focusGameInput();
 }
 
 function confirmNextStep() {
   document.getElementById('completionModal').style.display = 'none';
-  advanceNextStep();
+  if (isInfiniteArticleMode) {
+    startInfiniteArticleMode(); // 篇章无尽模式：自动随机调取下一篇文章
+  } else {
+    advanceNextStep();
+  }
   focusGameInput();
 }
 
@@ -1389,13 +1532,12 @@ function advanceNextStep() {
       currentModuleIdx++;
       currentStepIdx = 0;
     } else {
-      currentModuleIdx = 0;
-      currentStepIdx = 0;
+      // 10 大模块全部完成后，自动进入终极篇章无尽实战
+      startInfiniteArticleMode();
+      return;
     }
   }
-  document.querySelectorAll('.module-tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', i === currentModuleIdx);
-  });
+  document.getElementById('moduleSelect').value = currentModuleIdx;
   renderSubsteps();
   loadStepText();
 }
@@ -1443,7 +1585,7 @@ const SPEED_CONFIG = {
   fast:   { speed: 2.25, spawnInterval: 1250 }
 };
 
-// 题库词库 (丰富扩充常见字与编程关键字)
+// 题库词库 (丰富扩充常见字、童谣经典词与编程关键字，源源不断随机生成)
 const WORD_POOLS = {
   letters: [
     'a','s','d','f','j','k','l','g','h','r','u','e','i','w','o','q','p','z','x','c','v','b','n','m',
@@ -1452,11 +1594,15 @@ const WORD_POOLS = {
   words: [
     'for', 'run', 'cat', 'dog', 'sun', 'sky', 'red', 'mud', 'box', 'top', 'big', 'car',
     'yes', 'get', 'try', 'see', 'far', 'day', 'boy', 'bed', 'hat', 'cup', 'fly', 'fun',
-    'hot', 'ice', 'key', 'map', 'new', 'old', 'pig', 'pen', 'row', 'sea', 'tea', 'zoo'
+    'hot', 'ice', 'key', 'map', 'new', 'old', 'pig', 'pen', 'row', 'sea', 'tea', 'zoo',
+    'star', 'boat', 'tree', 'milk', 'good', 'time', 'moon', 'lamp', 'fish', 'bird', 'blue',
+    'ring', 'king', 'wall', 'hand', 'face', 'gold', 'book', 'game', 'line', 'play', 'song'
   ],
   code: [
     'while', 'print', 'input', 'range', 'break', 'count', 'score', 'sort', 'split', 'append',
-    'else', 'true', 'false', 'list', 'index', 'def', 'return', 'class', 'import', 'math'
+    'else', 'true', 'false', 'list', 'index', 'def', 'return', 'class', 'import', 'math',
+    'self', 'open', 'read', 'write', 'close', 'float', 'string', 'length', 'upper', 'lower',
+    'pass', 'global', 'yield', 'lambda', 'except', 'finally', 'raise', 'assert', 'format'
   ]
 };
 
@@ -1513,6 +1659,7 @@ function updateLivesDisplay() {
   document.getElementById('gameLives').textContent = hearts || '💀 失败';
 }
 
+// 真正无尽生成：持续随机调配单词，只要生命值不为0，就永远不断落下挑战
 function spawnFallingItem() {
   if (!gameRunning) return;
   const pool = WORD_POOLS[currentStage] || WORD_POOLS.words;
@@ -1532,7 +1679,7 @@ function spawnFallingItem() {
   el.innerHTML = `${badge}<span class="word-typed"></span><span class="word-untyped">${targetText}</span>`;
 
   const arenaWidth = arena.clientWidth - 100;
-  const leftPos = 50 + Math.random() * arenaWidth;
+  const leftPos = 40 + Math.random() * Math.max(100, arenaWidth);
   el.style.left = `${leftPos}px`;
   el.style.top = '0px';
 
@@ -1549,11 +1696,12 @@ function updateGamePhysics() {
   if (!gameRunning) return;
   const groundY = 320;
   const cfg = SPEED_CONFIG[currentSpeed] || SPEED_CONFIG.normal;
-  const speed = cfg.speed;
+  // 随着得分逐步平滑微增（无尽生存街机感）
+  const dynamicSpeed = cfg.speed * (1 + Math.min(0.35, gameScore / 2500));
 
   for (let i = fallingItems.length - 1; i >= 0; i--) {
     const item = fallingItems[i];
-    item.y += speed;
+    item.y += dynamicSpeed;
     item.el.style.top = `${item.y}px`;
 
     if (item.y >= groundY) {
