@@ -897,14 +897,14 @@ function playSound(type) {
       osc.start(now);
       osc.stop(now + 0.09);
     } else if (type === 'error') {
-      // 柔和低沉的“咚”声提示，使用正弦波(sine)与更低音量，温和友好不刺耳
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(220, now);
-      osc.frequency.exponentialRampToValueAtTime(140, now + 0.1);
-      gain.gain.setValueAtTime(0.08, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+      // 柔和但清晰可辨的“笃”声（如同轻叩木鱼/温和低音），清晰度高但不刺耳
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(180, now + 0.08);
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
       osc.start(now);
-      osc.stop(now + 0.13);
+      osc.stop(now + 0.10);
     } else if (type === 'laser') {
       // 游戏击破单词：轻快泡泡啵声 (Pop)
       osc.type = 'sine';
@@ -915,14 +915,14 @@ function playSound(type) {
       osc.start(now);
       osc.stop(now + 0.08);
     } else if (type === 'boom') {
-      // 触地低沉沉闷的“噗通”提示，使用三角波(triangle)替代刺耳方波，音量更温和
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(120, now);
-      osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
-      gain.gain.setValueAtTime(0.12, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      // 触地失分：清晰但不刺耳的低音“咚”鼓声（类似轻踩底鼓）
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(55, now + 0.18);
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
       osc.start(now);
-      osc.stop(now + 0.23);
+      osc.stop(now + 0.22);
     } else if (type === 'win') {
       // 优雅通关马林巴清脆琶音 (C大调五和弦 C5-E5-G5-B5-C6)，纯净如流水
       const freqs = [523.25, 659.25, 783.99, 987.77, 1046.50];
