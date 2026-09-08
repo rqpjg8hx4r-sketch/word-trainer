@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#F8FAFC">
-  <title>1997 经典 TT 打字通 (Typing Tutor) · 深度渐进版</title>
+  <title>1997 经典 TT 打字通 (Typing Tutor) · 深度微步进阶版</title>
   <style>
     :root {
       --bg: #F8FAFC;
@@ -17,6 +17,7 @@
       --success: #10B981;
       --success-light: #ECFDF5;
       --amber: #D97706;
+      --amber-light: #FEF3C7;
       --danger: #EF4444;
 
       /* 指法专属色彩 */
@@ -203,6 +204,7 @@
     }
     .stream-box {
       font-family: "Fira Code", "Consolas", monospace;
+      font-variant-numeric: slashed-zero;
       font-size: 32px;
       font-weight: 800;
       letter-spacing: 3px;
@@ -228,14 +230,6 @@
     }
     .char-upcoming { color: #1E293B; }
     .char-error { background: #FEE2E2 !important; color: #DC2626 !important; }
-
-    /* 专用符号提示 */
-    .special-glyph {
-      font-size: 20px;
-      font-weight: 900;
-      vertical-align: middle;
-      color: var(--primary);
-    }
 
     .anchor-guide-badge {
       display: inline-flex;
@@ -337,6 +331,7 @@
       box-shadow: 0 2px 0 #CBD5E1;
       position: relative;
       transition: all 0.1s ease;
+      font-variant-numeric: slashed-zero;
     }
     .key.wide-tab { min-width: 50px; font-size: 10px; }
     .key.wide-caps { min-width: 58px; font-size: 10px; }
@@ -356,7 +351,7 @@
       border-radius: 2px;
     }
 
-    /* 指法专属色彩条 */
+    /* 指法色彩条 */
     .key[data-finger="l-pinky"] { border-top: 3px solid var(--c-l-pinky); }
     .key[data-finger="l-ring"]  { border-top: 3px solid var(--c-l-ring); }
     .key[data-finger="l-mid"]   { border-top: 3px solid var(--c-l-mid); }
@@ -403,20 +398,45 @@
       color: #F87171;
       letter-spacing: 2px;
     }
-    .falling-letter {
+    
+    /* 下落物品：单字符与整词 */
+    .falling-item {
       position: absolute;
-      width: 36px; height: 36px;
+      padding: 5px 10px;
       border-radius: 8px;
       background: #1E293B;
       border: 2px solid #38BDF8;
       color: #38BDF8;
-      font-family: monospace;
-      font-size: 20px;
+      font-family: "Fira Code", monospace;
+      font-variant-numeric: slashed-zero;
+      font-size: 18px;
       font-weight: 900;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+      display: flex; align-items: center; justify-content: center; gap: 2px;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
       transform: translateX(-50%);
+      transition: transform 0.1s;
     }
+    .falling-item.is-number {
+      border-color: #F59E0B;
+      color: #FBBF24;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
+    }
+    .falling-item.is-target {
+      border-color: #10B981;
+      box-shadow: 0 0 18px rgba(16, 185, 129, 0.6);
+    }
+    .item-badge {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 4px;
+      border-radius: 4px;
+      margin-right: 4px;
+      background: #334155;
+    }
+    .falling-item.is-number .item-badge { background: #B45309; color: #FEF3C7; }
+    .word-typed { color: #34D399; }
+    .word-untyped { color: #F8FAFC; }
+
     .game-toolbar {
       display: flex;
       justify-content: space-between;
@@ -426,9 +446,21 @@
       color: #FFFFFF;
       border-radius: 12px 12px 0 0;
       border-bottom: 1px solid #334155;
+      gap: 10px;
+      flex-wrap: wrap;
     }
     .game-stats { display: flex; gap: 14px; font-size: 13px; font-weight: 800; }
     .game-stats span { color: #38BDF8; }
+    .difficulty-select {
+      background: #0F172A;
+      border: 1px solid #475569;
+      color: #F8FAFC;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
 
     #hiddenInput {
       position: absolute;
@@ -436,6 +468,53 @@
       pointer-events: none;
       top: -100px; left: -100px;
     }
+
+    /* ==================== 优雅通关结算弹窗 (替代原生 alert) ==================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+      animation: fadeIn 0.2s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 24px 28px;
+      width: min(440px, 90vw);
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      animation: popScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popScale {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-stars { font-size: 32px; margin-bottom: 6px; }
+    .modal-title { margin: 0 0 6px 0; font-size: 20px; font-weight: 900; color: #0F172A; }
+    .modal-sub { font-size: 12.5px; color: var(--subtext); margin-bottom: 18px; font-weight: 700; }
+    .modal-metrics {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+      background: #F8FAFC; border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px; margin-bottom: 18px;
+    }
+    .metric-label { font-size: 11px; font-weight: 700; color: var(--subtext); }
+    .metric-val { font-size: 20px; font-weight: 900; color: var(--primary); font-family: monospace; margin-top: 2px; }
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-btn {
+      flex: 1; padding: 11px; border-radius: 10px; border: none;
+      font-size: 13px; font-weight: 800; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      transition: all 0.15s;
+    }
+    .modal-btn.primary { background: var(--primary); color: #FFFFFF; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+    .modal-btn.primary:hover { background: #4338CA; }
+    .modal-btn.secondary { background: #F1F5F9; color: #334155; }
+    .modal-btn.secondary:hover { background: #E2E8F0; }
   </style>
 </head>
 <body onclick="focusGameInput()">
@@ -465,7 +544,7 @@
         <span>📖</span> TT 梯次指法特训
       </button>
       <button id="tabGame" class="mode-tab" onclick="switchAppMode('game')">
-        <span>🚀</span> 经典字母保卫战 (DOS小游戏)
+        <span>🚀</span> 经典保卫战小游戏
       </button>
     </div>
 
@@ -615,7 +694,7 @@
     </div>
   </div>
 
-  <!-- ==================== 模块 2：TT 字母下落保卫战 ==================== -->
+  <!-- ==================== 模块 2：TT 字母/单词下落保卫战 ==================== -->
   <div id="gameSection" class="card">
     <div class="game-toolbar">
       <div class="game-stats">
@@ -623,7 +702,12 @@
         <div>连击: <span id="gameCombo">0</span></div>
         <div>生命值: <span id="gameLives">❤️❤️❤️</span></div>
       </div>
-      <div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <select id="gameDifficulty" class="difficulty-select" onchange="changeGameDifficulty(this.value)">
+          <option value="letters">🟢 初级：字母与数字</option>
+          <option value="words" selected>🟡 进阶：常见英文字 (for, cat, run...)</option>
+          <option value="code">🔴 挑战：Python 编程词 (print, while...)</option>
+        </select>
         <button class="nav-btn" onclick="toggleGameStart()">
           <span id="gameStartBtnText">▶ 开始游戏</span>
         </button>
@@ -632,7 +716,52 @@
 
     <div class="game-arena" id="gameArena">
       <div class="ground-line"></div>
-      <div class="ground-label">⚠️ 地面防线 · 勿让字母触地</div>
+      <div class="ground-label">⚠️ 地面防线 · 勿让目标触地</div>
+    </div>
+  </div>
+</div>
+
+<!-- 优雅通关结算弹窗 (替代系统 alert) -->
+<div id="completionModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-stars" id="modalStars">⭐⭐⭐</div>
+    <h3 class="modal-title" id="modalTitle">🎉 恭喜通关！</h3>
+    <div class="modal-sub" id="modalSubtitle">完成 模块 1 · 1.1 左手基准起步</div>
+    <div class="modal-metrics">
+      <div>
+        <div class="metric-label">打字速度</div>
+        <div class="metric-val" id="modalWpm">35 词/分</div>
+      </div>
+      <div>
+        <div class="metric-label">正确率</div>
+        <div class="metric-val" id="modalAcc">98%</div>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn secondary" onclick="replayCurrentStep()">🔄 再练一次</button>
+      <button class="modal-btn primary" onclick="confirmNextStep()">⏭ 进入下一阶段 (Enter)</button>
+    </div>
+  </div>
+</div>
+
+<!-- 游戏结束结算弹窗 -->
+<div id="gameOverModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-stars">💥</div>
+    <h3 class="modal-title">防线失守！</h3>
+    <div class="modal-sub">目标触地造成基地受损，再接再厉！</div>
+    <div class="modal-metrics">
+      <div>
+        <div class="metric-label">最终得分</div>
+        <div class="metric-val" id="overScore">0</div>
+      </div>
+      <div>
+        <div class="metric-label">最高连击</div>
+        <div class="metric-val" id="overCombo">0</div>
+      </div>
+    </div>
+    <div class="modal-btns">
+      <button class="modal-btn primary" style="width:100%;" onclick="closeGameOverModal()">🔄 重新挑战</button>
     </div>
   </div>
 </div>
@@ -661,7 +790,6 @@ function playSound(type) {
       osc.start(now);
       osc.stop(now + 0.07);
     } else if (type === 'enter') {
-      // 回车清脆下按音
       osc.type = 'sine';
       osc.frequency.setValueAtTime(523.25, now);
       osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.08);
@@ -761,12 +889,12 @@ const FINGER_MAP = {
 
   // 右无名指
   '9': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
-  'o': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
+  'o': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指 (圆弧字母 O)' },
   'l': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
   '.': { f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
 
-  // 右小指 (包含回车、分号、冒号)
-  '0': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  // 右小指 (包含回车、分号、冒号、数字0)
+  '0': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指 (数字 0，带斜线)' },
   '-': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
   '=': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
   'p': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
@@ -826,7 +954,7 @@ const TT_CURRICULUM = [
   {
     id: 5,
     title: '模块 5：无名指纵深（W/S/X 与 O/L/.）',
-    rule: '无名指相对独立性弱，保持放松，手腕微配合',
+    rule: '注意：字母 O 是圆弧饱满的；无名指相对独立性弱，保持放松',
     steps: [
       { name: '5.1 左无名 W-S-X 节拍', text: 'ssww swsw wsws wwss ssxx sxsx xsxs xxss wsx slow low cow fox six' },
       { name: '5.2 右无名 O-L-. 节拍', text: 'lloo lolo olol ooll ll.. l.l. .l.l ..ll ol. cool look old oil pool' },
@@ -845,13 +973,13 @@ const TT_CURRICULUM = [
   },
   {
     id: 7,
-    title: '模块 7：数字排（1 2 3 4 5 6 7 8 9 0）特训',
-    rule: '手指精准伸向数字排：1左小, 2左无, 3左中, 4/5左食, 6/7右食, 8右中, 9右无, 0右小',
+    title: '模块 7：数字全排（1~0，注意带斜线的数字0）',
+    rule: '数字 0 带有清晰斜线或特殊标记，请用右手小指按 0；字母 O 请用右手无名指',
     steps: [
       { name: '7.1 左手数字 1 2 3 4 5', text: '1 2 3 4 5 11 22 33 44 55 123 345 543 21 145 234' },
       { name: '7.2 右手数字 6 7 8 9 0', text: '6 7 8 9 0 66 77 88 99 00 678 890 098 76 680 789' },
-      { name: '7.3 全数字混编与计数', text: '10 20 50 100 256 1024 2026 31415 9876543210' },
-      { name: '7.4 数字与回车组合', text: 'day 001\nday 002\nstep 10\ncount 65\n' }
+      { name: '7.3 数字 0 与字母 O 区分特训', text: '0 o 0 o 10 to 20 so 50 no 100 zoo 2026 moon 0 o' },
+      { name: '7.4 数字批处理流', text: 'day 001\nday 002\nstep 10\ncount 65\n' }
     ]
   },
   {
@@ -977,7 +1105,6 @@ function renderStreamView() {
   const curChar = currentFullText[charIndex];
   const upSlice = currentFullText.slice(charIndex + 1, charIndex + 18);
 
-  // 格式化展示文本
   const formatStr = (str) => {
     return str.replace(/ /g, '␣').replace(/\n/g, '↵\n');
   };
@@ -1003,14 +1130,12 @@ function renderStreamView() {
   }
 
   upSpan.textContent = formatStr(upSlice);
-
   document.getElementById('progressText').textContent = `进度: ${charIndex} / ${currentFullText.length} 字符`;
 
   highlightKeyboardAndHand(curChar);
 }
 
 function highlightKeyboardAndHand(char) {
-  // 清理
   document.querySelectorAll('.key').forEach(k => k.classList.remove('active-target'));
   document.querySelectorAll('.finger').forEach(f => f.classList.remove('active'));
 
@@ -1023,11 +1148,9 @@ function highlightKeyboardAndHand(char) {
   if (char === ' ') targetKeyStr = ' ';
   if (char === '\n') targetKeyStr = 'Enter';
 
-  // 键盘按键高亮
   const keyEl = document.querySelector(`.key[data-k="${targetKeyStr}"]`);
   if (keyEl) keyEl.classList.add('active-target');
 
-  // 手指高亮
   if (info) {
     const fingerEl = document.getElementById(info.f);
     if (fingerEl) fingerEl.classList.add('active');
@@ -1035,6 +1158,8 @@ function highlightKeyboardAndHand(char) {
     let displayChar = char;
     if (char === ' ') displayChar = 'Space 空格 ␣';
     if (char === '\n') displayChar = 'Enter 回车 ↵';
+    if (char === '0') displayChar = '数字 0 (带斜线)';
+    if (char === 'o' || char === 'O') displayChar = '字母 O (饱满圆弧)';
 
     document.getElementById('fingerGuideText').innerHTML = `👉 请用【<strong style="color:var(--primary);">${info.name}</strong>】按下 【<strong>${displayChar}</strong>】`;
   } else {
@@ -1049,6 +1174,25 @@ function focusGameInput() {
 }
 
 window.addEventListener('keydown', (e) => {
+  // 如果弹窗打开，支持按 Enter 确认进入下一关
+  const compModal = document.getElementById('completionModal');
+  if (compModal.style.display !== 'none') {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      confirmNextStep();
+    }
+    return;
+  }
+
+  const overModal = document.getElementById('gameOverModal');
+  if (overModal.style.display !== 'none') {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      closeGameOverModal();
+    }
+    return;
+  }
+
   // 屏蔽默认系统行为
   if (e.key === ' ' || e.key === 'Backspace' || e.key === 'Tab') {
     e.preventDefault();
@@ -1082,10 +1226,11 @@ function handleDrillKey(key) {
 
     if (charIndex >= currentFullText.length) {
       playSound('win');
-      setTimeout(() => {
-        alert(`🎉 恭喜通关！本阶段练习完成！`);
-        advanceNextStep();
-      }, 120);
+      const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
+      const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
+      const acc = Math.round((correctTyped / totalTyped) * 100);
+
+      showCompletionModal(wpm, acc);
       return;
     }
   } else {
@@ -1095,7 +1240,6 @@ function handleDrillKey(key) {
     setTimeout(() => curSpan.classList.remove('char-error'), 180);
   }
 
-  // 计算速度与准确率
   const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
   const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
   const acc = Math.round((correctTyped / totalTyped) * 100);
@@ -1103,6 +1247,37 @@ function handleDrillKey(key) {
   document.getElementById('statAcc').textContent = acc;
 
   renderStreamView();
+}
+
+/* 优雅通关结算弹层 */
+function showCompletionModal(wpm, acc) {
+  const modal = document.getElementById('completionModal');
+  const mod = TT_CURRICULUM[currentModuleIdx];
+  const step = mod.steps[currentStepIdx];
+
+  document.getElementById('modalTitle').textContent = `🎉 通关成功！`;
+  document.getElementById('modalSubtitle').textContent = `完成 ${mod.title.split('：')[0]} · ${step.name}`;
+  document.getElementById('modalWpm').textContent = `${wpm} 词/分`;
+  document.getElementById('modalAcc').textContent = `${acc}%`;
+
+  let stars = '⭐⭐⭐';
+  if (acc < 90) stars = '⭐';
+  else if (acc < 95) stars = '⭐⭐';
+  document.getElementById('modalStars').textContent = stars;
+
+  modal.style.display = 'flex';
+}
+
+function replayCurrentStep() {
+  document.getElementById('completionModal').style.display = 'none';
+  loadStepText();
+  focusGameInput();
+}
+
+function confirmNextStep() {
+  document.getElementById('completionModal').style.display = 'none';
+  advanceNextStep();
+  focusGameInput();
 }
 
 function advanceNextStep() {
@@ -1150,7 +1325,7 @@ function switchAppMode(mode) {
   focusGameInput();
 }
 
-/* ==================== 7. 经典字母下落保卫战 ==================== */
+/* ==================== 7. 经典保卫战小游戏（难度与常见词升级） ==================== */
 let gameRunning = false;
 let gameScore = 0;
 let gameCombo = 0;
@@ -1158,6 +1333,22 @@ let gameLives = 3;
 let fallingItems = [];
 let gameLoopTimer = null;
 let spawnTimer = null;
+let currentDifficulty = 'words'; // 'letters' | 'words' | 'code'
+
+// 题库词库
+const WORD_POOLS = {
+  letters: ['a','s','d','f','j','k','l','g','h','r','u','e','i','w','o','1','2','3','4','5','6','7','8','9','0'],
+  words: ['for', 'run', 'cat', 'dog', 'sun', 'sky', 'red', 'mud', 'box', 'top', 'big', 'car', 'yes', 'get', 'try', 'see', 'far', 'day'],
+  code: ['while', 'print', 'input', 'range', 'break', 'count', 'score', 'sort', 'split', 'append', 'else', 'true', 'false']
+};
+
+function changeGameDifficulty(val) {
+  currentDifficulty = val;
+  if (gameRunning) {
+    stopGame();
+    startGame();
+  }
+}
 
 function toggleGameStart() {
   if (gameRunning) stopGame();
@@ -1176,9 +1367,10 @@ function startGame() {
   document.getElementById('gameStartBtnText').textContent = '⏸ 暂停游戏';
 
   const arena = document.getElementById('gameArena');
-  document.querySelectorAll('.falling-letter').forEach(e => e.remove());
+  document.querySelectorAll('.falling-item').forEach(e => e.remove());
 
-  spawnTimer = setInterval(spawnFallingLetter, 1300);
+  const spawnInterval = currentDifficulty === 'code' ? 2200 : (currentDifficulty === 'words' ? 1800 : 1300);
+  spawnTimer = setInterval(spawnFallingItem, spawnInterval);
   gameLoopTimer = setInterval(updateGamePhysics, 30);
   focusGameInput();
 }
@@ -1195,33 +1387,46 @@ function updateLivesDisplay() {
   document.getElementById('gameLives').textContent = hearts || '💀 失败';
 }
 
-function spawnFallingLetter() {
+function spawnFallingItem() {
   if (!gameRunning) return;
-  const chars = 'asdfjkl;ghqwertyuiopzxcvbnm1234567890';
-  const char = chars[Math.floor(Math.random() * chars.length)];
+  const pool = WORD_POOLS[currentDifficulty];
+  const targetText = pool[Math.floor(Math.random() * pool.length)];
   const arena = document.getElementById('gameArena');
 
   const el = document.createElement('div');
-  el.className = 'falling-letter';
-  el.textContent = char.toUpperCase();
-  el.dataset.char = char;
+  el.className = 'falling-item';
 
-  const arenaWidth = arena.clientWidth - 60;
-  const leftPos = 30 + Math.random() * arenaWidth;
+  const isNum = /^\d+$/.test(targetText);
+  if (isNum) el.classList.add('is-number');
+
+  let badge = '';
+  if (isNum) badge = `<span class="item-badge">#数</span>`;
+  else if (targetText.toLowerCase() === 'o') badge = `<span class="item-badge">字</span>`;
+
+  el.innerHTML = `${badge}<span class="word-typed"></span><span class="word-untyped">${targetText}</span>`;
+
+  const arenaWidth = arena.clientWidth - 100;
+  const leftPos = 50 + Math.random() * arenaWidth;
   el.style.left = `${leftPos}px`;
   el.style.top = '0px';
 
   arena.appendChild(el);
-  fallingItems.push({ el, y: 0, char });
+  fallingItems.push({
+    el,
+    y: 0,
+    text: targetText.toLowerCase(),
+    typedLen: 0
+  });
 }
 
 function updateGamePhysics() {
   if (!gameRunning) return;
   const groundY = 320;
+  const speed = currentDifficulty === 'code' ? 1.4 : (currentDifficulty === 'words' ? 1.5 : 1.7);
 
   for (let i = fallingItems.length - 1; i >= 0; i--) {
     const item = fallingItems[i];
-    item.y += 1.8;
+    item.y += speed;
     item.el.style.top = `${item.y}px`;
 
     if (item.y >= groundY) {
@@ -1235,38 +1440,79 @@ function updateGamePhysics() {
 
       if (gameLives <= 0) {
         stopGame();
-        alert(`💥 基地失守！最终得分：${gameScore}！再接再厉！`);
+        showGameOverModal(gameScore, gameCombo);
         return;
       }
     }
   }
 }
 
+function showGameOverModal(score, combo) {
+  document.getElementById('overScore').textContent = score;
+  document.getElementById('overCombo').textContent = combo;
+  document.getElementById('gameOverModal').style.display = 'flex';
+}
+
+function closeGameOverModal() {
+  document.getElementById('gameOverModal').style.display = 'none';
+  startGame();
+}
+
 function handleGameKey(key) {
   if (!gameRunning) return;
   const lower = key.toLowerCase();
 
+  // 1. 优先找已经在打且进度 > 0 的单词
   let targetIdx = -1;
-  let maxY = -1;
   for (let i = 0; i < fallingItems.length; i++) {
-    if (fallingItems[i].char === lower && fallingItems[i].y > maxY) {
-      maxY = fallingItems[i].y;
+    const item = fallingItems[i];
+    if (item.typedLen > 0 && item.text[item.typedLen] === lower) {
       targetIdx = i;
+      break;
+    }
+  }
+
+  // 2. 没有正在输入的词，则找首字母匹配且最靠近地面的单词
+  if (targetIdx === -1) {
+    let maxY = -1;
+    for (let i = 0; i < fallingItems.length; i++) {
+      const item = fallingItems[i];
+      if (item.typedLen === 0 && item.text[0] === lower && item.y > maxY) {
+        maxY = item.y;
+        targetIdx = i;
+      }
     }
   }
 
   if (targetIdx !== -1) {
-    playSound('laser');
     const item = fallingItems[targetIdx];
-    item.el.style.transform = 'translateX(-50%) scale(1.4)';
-    item.el.style.background = '#34D399';
-    setTimeout(() => item.el.remove(), 100);
-    fallingItems.splice(targetIdx, 1);
+    item.typedLen++;
+    item.el.classList.add('is-target');
 
-    gameCombo++;
-    gameScore += 10 * Math.min(gameCombo, 5);
-    document.getElementById('gameScore').textContent = gameScore;
-    document.getElementById('gameCombo').textContent = gameCombo;
+    const typedStr = item.text.slice(0, item.typedLen);
+    const untypedStr = item.text.slice(item.typedLen);
+
+    const typedSpan = item.el.querySelector('.word-typed');
+    const untypedSpan = item.el.querySelector('.word-untyped');
+    if (typedSpan) typedSpan.textContent = typedStr;
+    if (untypedSpan) untypedSpan.textContent = untypedStr;
+
+    if (item.typedLen >= item.text.length) {
+      // 击破！
+      playSound('laser');
+      item.el.style.transform = 'translateX(-50%) scale(1.3)';
+      item.el.style.background = '#34D399';
+      item.el.style.borderColor = '#10B981';
+      setTimeout(() => item.el.remove(), 100);
+      fallingItems.splice(targetIdx, 1);
+
+      gameCombo++;
+      gameScore += 10 * item.text.length + Math.min(gameCombo * 5, 30);
+      document.getElementById('gameScore').textContent = gameScore;
+      document.getElementById('gameCombo').textContent = gameCombo;
+    } else {
+      playSound('tap');
+    }
   } else {
     playSound('error');
     gameCombo = 0;
@@ -1274,7 +1520,7 @@ function handleGameKey(key) {
   }
 }
 
-// 页面载入初始化
+// 页面初始化
 window.addEventListener('DOMContentLoaded', () => {
   initCurriculumUI();
   focusGameInput();
