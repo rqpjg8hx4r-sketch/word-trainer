@@ -99,57 +99,14 @@
       border-color: var(--accent-border);
     }
 
-    /* 模式切换总开关 */
-    .mode-switch-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #FFFFFF;
+    /* 通用卡片容器 */
+    .card {
+      background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 6px 10px;
+      border-radius: 18px;
+      padding: 18px;
       margin-bottom: 16px;
-      gap: 10px;
-      flex-wrap: wrap;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    }
-    .tab-pills {
-      display: flex;
-      gap: 6px;
-    }
-    .tab-pill {
-      padding: 8px 16px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: #F1F5F9;
-      color: var(--subtext);
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-    .tab-pill.active {
-      background: var(--accent);
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
-    }
-    .theme-skin-toggle {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: #F8FAFC;
-      padding: 4px;
-      border-radius: 12px;
-      border: 1px solid var(--card-border);
-    }
-    .theme-label {
-      font-size: 12px;
-      color: var(--subtext);
-      padding: 0 6px;
-      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     }
 
     /* 剧情卡片 */
@@ -157,7 +114,7 @@
       background: linear-gradient(135deg, #FFFFFF, #EFF6FF);
       border: 1px solid #BFDBFE;
       border-radius: 18px;
-      padding: 18px 20px;
+      padding: 16px 20px;
       margin-bottom: 16px;
       position: relative;
     }
@@ -177,429 +134,375 @@
       line-height: 1.6;
     }
 
-    /* 控制面板卡 */
-    .card-panel {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 16px 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    }
-    .control-inputs-grid {
+    /* 顶部五阶段工序进度条 */
+    .pipeline-bar {
       display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 16px;
-      margin-bottom: 12px;
-      align-items: center;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-bottom: 16px;
     }
-    @media (max-width: 768px) {
-      .control-inputs-grid {
-        grid-template-columns: 1fr;
-      }
+    .stage-step {
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 6px;
+      text-align: center;
+      transition: all 0.25s ease;
+      position: relative;
     }
-    .input-field-group {
+    .stage-num {
+      font-size: 10px;
+      color: var(--subtext);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .stage-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: #475569;
+      white-space: nowrap;
+    }
+    .stage-step.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+    .stage-step.active .stage-num, .stage-step.active .stage-name { color: var(--accent); }
+    .stage-step.done {
+      border-color: #A7F3D0;
+      background: var(--success-light);
+    }
+    .stage-step.done .stage-num { color: var(--success); }
+    .stage-step.done .stage-name { color: #065F46; }
+
+    /* 控制栏工具条 */
+    .sim-toolbar {
       display: flex;
-      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .input-label { font-size: 12px; font-weight: 800; color: #334155; }
+    .sim-input {
+      background: #FFFFFF;
+      border: 1.5px solid #CBD5E1;
+      color: #0F172A;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: monospace;
+      font-weight: bold;
+      width: 60px;
+      text-align: center;
+    }
+    .sim-input.wide { width: 170px; text-align: left; }
+    .preset-btn {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      color: var(--subtext);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .preset-btn:hover { color: var(--accent); border-color: var(--accent-border); }
+
+    .control-btns {
+      display: flex;
+      align-items: center;
       gap: 6px;
     }
-    .input-field-group label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .text-input {
-      padding: 10px 14px;
-      border: 2px solid var(--card-border);
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #0F172A;
-      outline: none;
-      transition: border-color 0.2s;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
-    .text-input:focus {
-      border-color: var(--accent);
-    }
-    .num-input-small {
-      width: 90px;
-      padding: 10px 14px;
-      border: 2px solid var(--card-border);
-      border-radius: 10px;
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--accent);
-      text-align: center;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .num-input-small:focus {
-      border-color: var(--accent);
-    }
-
-    .preset-chips {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-    .preset-chip {
-      padding: 6px 12px;
+    .ctl-btn {
+      padding: 7px 14px;
       border-radius: 8px;
-      background: #F1F5F9;
-      border: 1px solid var(--card-border);
-      font-size: 12px;
-      font-weight: 700;
-      color: #475569;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .preset-chip:hover {
-      background: var(--accent-light);
-      color: var(--accent);
-      border-color: var(--accent-border);
-    }
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .btn {
-      padding: 10px 18px;
-      border-radius: 12px;
-      font-size: 13px;
-      font-weight: 800;
       border: none;
+      font-size: 12px;
+      font-weight: 800;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
+      gap: 4px;
+      transition: all 0.15s ease;
     }
-    .btn-primary {
-      background: var(--accent);
-      color: #FFFFFF;
-      box-shadow: 0 3px 10px rgba(79, 70, 229, 0.25);
-    }
-    .btn-primary:hover { background: #4338CA; }
-    .btn-secondary {
-      background: #F1F5F9;
-      color: #334155;
-      border: 1px solid var(--card-border);
-    }
-    .btn-secondary:hover { background: #E2E8F0; }
+    .ctl-btn.primary { background: var(--accent); color: #FFFFFF; box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25); }
+    .ctl-btn.primary:hover { background: #4338CA; }
+    .ctl-btn.secondary { background: #E2E8F0; color: #334155; }
+    .ctl-btn.secondary:hover { background: #CBD5E1; }
 
-    /* 分拣流水线主视场 */
-    .sorting-stage {
-      background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
-      border-radius: 20px;
-      padding: 24px;
+    /* 核心舞台左右分栏 */
+    .sim-stage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
       margin-bottom: 16px;
-      color: #FFFFFF;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.5), 0 8px 24px rgba(15, 23, 42, 0.15);
     }
-    .stage-header {
+    @media (max-width: 820px) {
+      .sim-stage-grid { grid-template-columns: 1fr; }
+    }
+
+    /* 左侧：代码视窗与变量监控 */
+    .code-panel {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
       display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .panel-header {
+      padding: 8px 12px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-    .stage-title {
-      font-size: 15px;
+      font-size: 12px;
       font-weight: 800;
-      color: #F8FAFC;
+      color: #475569;
+    }
+    .code-view {
+      padding: 10px 0;
+      font-family: "Fira Code", "Consolas", monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 0;
+      background: #FFFFFF;
+      flex: 1;
+    }
+    .code-line {
+      padding: 2px 14px;
       display: flex;
       align-items: center;
+      gap: 12px;
+      transition: background 0.2s;
+    }
+    .code-line .line-num {
+      width: 18px;
+      color: #94A3B8;
+      text-align: right;
+      font-size: 11px;
+      user-select: none;
+    }
+    .code-line .line-text { color: #1E293B; white-space: pre; }
+    .code-line.active {
+      background: #EEF2FF;
+      border-left: 3px solid var(--accent);
+    }
+    .code-line.active .line-text { color: #1E1B4B; font-weight: bold; }
+    .code-line.active .line-num { color: var(--accent); font-weight: bold; }
+    .code-comment { color: #94A3B8; font-style: italic; }
+    .code-keyword { color: #7C3AED; font-weight: bold; }
+    .code-fn { color: #0284C7; font-weight: bold; }
+    .code-var { color: #B45309; }
+
+    /* 变量看板 */
+    .vars-monitor {
+      padding: 10px 12px;
+      background: #F8FAFC;
+      border-top: 1px solid var(--card-border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
     }
-
-    /* 传送带进件区 (Raw Input) */
-    .conveyor-zone {
-      margin-bottom: 24px;
+    .var-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
-    .zone-title {
-      font-size: 12px;
-      font-weight: 700;
+    .var-title { font-size: 10px; color: var(--subtext); font-weight: 700; }
+    .var-val { font-size: 15px; font-weight: 900; font-family: monospace; color: var(--accent); margin-top: 2px; }
+
+    /* 右侧：分拣流水线动画视窗 */
+    .world-panel {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .world-canvas-container {
+      padding: 14px;
+      flex: 1;
+      min-height: 290px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+      color: #FFFFFF;
+      border-radius: 0 0 14px 14px;
+    }
+
+    /* 进件带与托盘 */
+    .zone-sub-title {
+      font-size: 11px;
+      font-weight: 800;
       color: #94A3B8;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .package-belt {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       overflow-x: auto;
-      padding: 10px 4px 14px 4px;
+      padding: 6px 2px;
+      margin-bottom: 12px;
     }
     .pkg-box {
-      width: 72px;
-      height: 72px;
+      width: 56px;
+      height: 56px;
       background: #D97706;
       border: 2px solid #FBBF24;
-      border-radius: 12px;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       position: relative;
       flex-shrink: 0;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .pkg-box.scanned {
       border-color: #38BDF8;
-      box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
-      transform: translateY(-4px);
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.7);
+      transform: translateY(-3px) scale(1.05);
     }
     .pkg-box.duplicate {
-      opacity: 0.35;
+      opacity: 0.3;
       background: #475569;
       border-color: #64748B;
       transform: scale(0.9);
     }
-    .pkg-weight {
-      font-size: 18px;
-      font-weight: 900;
-      color: #FFFFFF;
-    }
-    .pkg-unit {
-      font-size: 9px;
-      font-weight: 700;
-      color: #FDE68A;
-    }
+    .pkg-weight { font-size: 15px; font-weight: 900; color: #FFFFFF; }
+    .pkg-unit { font-size: 8px; font-weight: 700; color: #FDE68A; }
     .pkg-idx {
       position: absolute;
-      top: 3px;
-      left: 5px;
-      font-size: 9px;
+      top: 2px;
+      left: 4px;
+      font-size: 8px;
       color: rgba(255,255,255,0.7);
       font-family: monospace;
     }
 
-    /* 去重后清单与降序称重台 (Unique & Sorted) */
-    .sorted-zone {
-      background: rgba(255,255,255,0.04);
-      border: 1px dashed rgba(255,255,255,0.15);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
+    /* 去重与排序托盘 */
     .sorted-tray {
       display: flex;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
-      min-height: 80px;
+      min-height: 64px;
       align-items: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 8px 10px;
+      margin-bottom: 10px;
     }
     .tray-item {
       position: relative;
-      width: 76px;
-      height: 82px;
+      width: 58px;
+      height: 62px;
       background: linear-gradient(135deg, #4338CA, #3730A3);
-      border: 2px solid #818CF8;
-      border-radius: 14px;
+      border: 1.5px solid #818CF8;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      animation: popIn 0.35s ease;
-    }
-    @keyframes popIn {
-      0% { transform: scale(0.4); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+      box-shadow: 0 3px 8px rgba(79, 70, 229, 0.3);
+      animation: popIn 0.25s ease;
     }
     .tray-item.is-target-k {
       background: linear-gradient(135deg, #059669, #047857);
       border-color: #34D399;
       transform: scale(1.12);
-      box-shadow: 0 0 20px rgba(52, 211, 153, 0.6);
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.7);
     }
     .tray-rank {
       position: absolute;
-      top: -8px;
+      top: -6px;
       background: #F59E0B;
       color: #78350F;
-      font-size: 10px;
+      font-size: 8px;
       font-weight: 900;
-      padding: 2px 6px;
-      border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      padding: 1px 4px;
+      border-radius: 4px;
     }
-    .tray-weight {
-      font-size: 20px;
-      font-weight: 900;
-      color: #FFFFFF;
+    .tray-weight { font-size: 16px; font-weight: 900; color: #FFFFFF; margin-top: 4px; }
+    .tray-label { font-size: 8px; color: #C7D2FE; }
+
+    /* 底部长条 */
+    .conveyor-log {
+      background: rgba(0,0,0,0.35);
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: #E2E8F0;
       margin-top: 6px;
     }
-    .tray-label {
-      font-size: 10px;
-      color: #C7D2FE;
-    }
 
-    /* 状态解说长条 */
-    .conveyor-log {
-      background: rgba(0,0,0,0.3);
-      border-radius: 12px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 13px;
-      color: #CBD5E1;
-    }
-    .log-icon { font-size: 20px; }
-    .log-text { flex: 1; }
-
-    /* 最终装车结果看板 */
-    .result-board {
-      background: #FFFFFF;
-      border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-    }
-    .result-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-    }
-    .result-header h3 {
-      margin: 0;
-      font-size: 15px;
-      font-weight: 800;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .result-card-inner {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      background: #F8FAFC;
-      border: 1.5px solid var(--card-border);
-      border-radius: 14px;
-      padding: 16px 20px;
-    }
-    .result-huge-badge {
-      min-width: 90px;
-      height: 64px;
-      padding: 0 16px;
-      background: var(--accent-light);
-      border: 2px solid var(--accent-border);
-      color: var(--accent);
-      font-size: 28px;
-      font-weight: 900;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 10px rgba(79, 70, 229, 0.15);
-    }
-    .result-huge-badge.none-style {
-      background: #FEE2E2;
-      border-color: #FCA5A5;
-      color: #DC2626;
-      font-size: 22px;
-    }
-    .result-meta {
-      font-size: 13px;
-      color: #475569;
-      line-height: 1.6;
-    }
-
-    /* 五阶段工序流水线 */
-    .pipeline-view {
-      display: none;
-    }
-    .pipeline-view.active {
-      display: block;
-    }
-    .pipeline-steps {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .pipeline-step-card {
-      background: #FFFFFF;
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-    .step-badge {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: var(--accent-light);
-      color: var(--accent);
-      display: inline-block;
-      margin-bottom: 8px;
-    }
-    .step-title {
-      font-size: 14px;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .step-code {
-      background: var(--code-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 12px;
-      color: #334155;
-      margin-bottom: 6px;
-      white-space: pre-wrap;
-    }
-    .step-desc {
-      font-size: 12px;
-      color: var(--subtext);
-      line-height: 1.5;
-    }
-
-    /* 代码折叠 */
-    .code-accordion {
-      background: #FFFFFF;
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      margin-bottom: 16px;
-      overflow: hidden;
-    }
-    .code-accordion-header {
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      background: #F8FAFC;
-      border-bottom: 1px solid var(--card-border);
-      font-size: 14px;
-      font-weight: 800;
-    }
-    .code-body {
-      padding: 16px;
+    /* 终端打印区 */
+    .terminal-box {
       background: #0F172A;
-      color: #F8FAFC;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 13px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      overflow-x: auto;
+      border-top: 1px solid var(--card-border);
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .terminal-prompt { color: #34D399; font-weight: bold; }
+    .terminal-out { color: #FFFFFF; font-weight: 900; font-size: 15px; margin-left: 8px; }
+    .terminal-desc { color: #94A3B8; font-size: 11px; }
+
+    /* 达标印章 */
+    .finish-stamp {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-8deg);
+      border: 3px solid var(--success);
+      background: rgba(255, 255, 255, 0.96);
+      color: #065F46;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 900;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.35);
+      display: none;
+      z-index: 10;
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: translate(-50%, -50%) scale(0.85); opacity: 0; }
+      to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
     }
   </style>
 </head>
@@ -622,11 +525,10 @@
     </div>
   </div>
 
-  <!-- 模式切换开关 -->
+  <!-- 模式切换与音效 -->
   <div class="mode-switch-bar">
-    <div class="tab-pills">
-      <button class="tab-pill active" id="tabVisual" onclick="switchMode('visual')"><span>📦</span> 传送带分拣装车</button>
-      <button class="tab-pill" id="tabPipeline" onclick="switchMode('pipeline')"><span>⚙️</span> 五阶段工序流水线</button>
+    <div style="font-size:12px; font-weight:800; color:var(--subtext);">
+      📌 题目逻辑：接收 8 个包裹重量 ➔ 过滤去重 ➔ 降序从大到小排列 ➔ 判断 k 是否超界 ➔ 输出第 k 重重量
     </div>
     <div class="theme-skin-toggle">
       <span class="theme-label">声音音效</span>
@@ -636,164 +538,170 @@
 
   <!-- 剧情卡片 -->
   <div class="story-hero">
-    <h2><span>🚚</span> 智慧物流中心的第 k 重特训</h2>
+    <h2><span>🚚</span> 智慧物流分拣中心：第 k 重智能查找</h2>
     <p>
-      快递员现在需要送 8 个快递包裹，每个包裹的重量都是正整数。为了合理装车，需要精准获知<b>第 k 重</b>的包裹重量！<br>
-      ⚠️ <b>关键业务规则</b>：如果有相同重量的包裹，<b>只计算一次（去重）</b>；如果去重后包裹种类不足 k 种，则输出 <b>'None'</b>。<br>
-      让我们亲手操控传送带，体验 input().split(",")、if i not in ls 与 ls.sort(reverse=True) 的完整魅力！
+      快递员运送 8 个快递包裹，想要精准获取<b>第 k 重</b>的重量（相同重量<b>只算一次</b>，品种不足 k 种输出 <b>'None'</b>）。<br>
+      左侧代码逐行单步推演，底栏变量看板实时监控数值变化，右侧传送带与排序托盘实时联动！
     </p>
   </div>
 
-  <!-- 控制面板 -->
-  <div class="card-panel">
-    <div class="control-inputs-grid">
-      <div class="input-field-group">
-        <label for="weightsInput">8个包裹重量（用英文逗号隔开）：</label>
-        <input type="text" id="weightsInput" class="text-input" value="1,2,3,4,5,6,7,8">
+  <!-- 五阶段流水线主卡片 -->
+  <div class="card">
+    <!-- 顶部工序进度 -->
+    <div class="pipeline-bar">
+      <div id="pStage1" class="stage-step active">
+        <span class="stage-num">阶段 ①</span>
+        <span class="stage-name">切割进件 a</span>
       </div>
-      <div class="input-field-group">
-        <label for="kInput">第 k 重目标 (k)：</label>
-        <input type="number" id="kInput" class="num-input-small" min="1" max="15" value="4">
+      <div id="pStage2" class="stage-step">
+        <span class="stage-num">阶段 ②</span>
+        <span class="stage-name">循环去重 ls</span>
       </div>
-    </div>
-
-    <!-- 预设芯片 -->
-    <div class="preset-chips">
-      <span style="font-size:12px; color:var(--subtext); font-weight:700;">官方样例直达：</span>
-      <button class="preset-chip" onclick="applyPreset('1,2,3,4,5,6,7,8', 4)">样例一 (无重复 k=4 ➡️ 5)</button>
-      <button class="preset-chip" onclick="applyPreset('1,5,5,5,6,7,8,9', 5)">样例二 (重复5 k=5 ➡️ 5)</button>
-      <button class="preset-chip" onclick="applyPreset('2,2,2,2,2,2,2,2', 2)">极限全同 (k=2 ➡️ None)</button>
-      <button class="preset-chip" onclick="applyPreset('10,20,30,40,50,60,70,80', 1)">最大第1重 (k=1 ➡️ 80)</button>
-    </div>
-
-    <div class="btn-group">
-      <button class="btn btn-secondary" id="btnStep" onclick="manualStep()"><span>👣</span> 单步推演</button>
-      <button class="btn btn-primary" id="btnPlay" onclick="toggleAutoPlay()"><span>▶️</span> 自动演示</button>
-      <button class="btn btn-secondary" onclick="resetSim()"><span>🔄</span> 重置</button>
-    </div>
-  </div>
-
-  <!-- 视图 1: 传送带分拣主视场 -->
-  <div id="visualView">
-    <div class="sorting-stage">
-      <div class="stage-header">
-        <div class="stage-title"><span>🏭</span> 物流分拣中心流水线 <span id="simStageStatus" style="font-size:12px; font-weight:normal; color:#94A3B8; margin-left:8px;"></span></div>
+      <div id="pStage3" class="stage-step">
+        <span class="stage-num">阶段 ③</span>
+        <span class="stage-name">降序重排 sort</span>
       </div>
-
-      <!-- 进件传送带 -->
-      <div class="conveyor-zone">
-        <div class="zone-title"><span>📥</span> 进件传送带：原始包裹队列 (a = input().split(","))</div>
-        <div class="package-belt" id="packageBelt"></div>
+      <div id="pStage4" class="stage-step">
+        <span class="stage-num">阶段 ④</span>
+        <span class="stage-name">超界判断 guard</span>
       </div>
-
-      <!-- 去重与排序托盘 -->
-      <div class="sorted-zone">
-        <div class="zone-title"><span>⚖️</span> 称重与装车托盘：独一无二的重量池 (ls.sort(reverse=True))</div>
-        <div class="sorted-tray" id="sortedTray"></div>
-      </div>
-
-      <!-- 日志行 -->
-      <div class="conveyor-log">
-        <span class="log-icon" id="logIcon">📦</span>
-        <span class="log-text" id="logText">准备就绪：点击【单步推演】或【自动演示】开始分拣去重！</span>
+      <div id="pStage5" class="stage-step">
+        <span class="stage-num">阶段 ⑤</span>
+        <span class="stage-name">下标输出 k-1</span>
       </div>
     </div>
 
-    <!-- 结果面板 -->
-    <div class="result-board">
-      <div class="result-header">
-        <h3><span>🎯</span> 装车判定结果 (第 k 重输出)</h3>
-        <span id="kTargetBadge" style="font-size:12px; font-weight:800; color:var(--accent); background:var(--accent-light); padding:4px 10px; border-radius:8px;">目标: 第 4 重</span>
+    <!-- 控制条与参数输入 -->
+    <div class="sim-toolbar">
+      <div class="input-group">
+        <span class="input-label">包裹串:</span>
+        <input id="weightsInput" class="sim-input wide" type="text" value="1,2,3,4,5,6,7,8">
+        <span class="input-label" style="margin-left:6px;">目标 k:</span>
+        <input id="kInput" class="sim-input" type="number" value="4" min="1" max="15">
+        <button class="preset-btn" onclick="applyPreset('1,2,3,4,5,6,7,8', 4)">样例一(k=4)</button>
+        <button class="preset-btn" onclick="applyPreset('1,5,5,5,6,7,8,9', 5)">样例二(k=5)</button>
+        <button class="preset-btn" onclick="applyPreset('2,2,2,2,2,2,2,2', 2)">全同(None)</button>
+        <button class="preset-btn" onclick="applyPreset('10,20,30,40,50,60,70,80', 1)">最大(k=1)</button>
       </div>
-      <div class="result-card-inner">
-        <div class="result-huge-badge" id="hugeResultVal">?</div>
-        <div class="result-meta" id="resultMeta">
-          等待推演完成以判定装车重量...
+
+      <div class="control-btns">
+        <button id="btnStep" class="ctl-btn primary" onclick="stepSimulator()">
+          <span>⏭</span> 单步步进 (Step)
+        </button>
+        <button id="btnPlay" class="ctl-btn secondary" onclick="togglePlaySimulator()">
+          <span id="playIcon">▶</span> 连续播放
+        </button>
+        <button id="btnReset" class="ctl-btn secondary" onclick="resetSimulator()">
+          <span>🔄</span> 重置
+        </button>
+      </div>
+    </div>
+
+    <!-- 主舞台左右分栏 -->
+    <div class="sim-stage-grid">
+      <!-- 左：代码高亮视窗与变量看板 -->
+      <div class="code-panel">
+        <div class="panel-header">
+          <span>🐍 Python 算法引擎</span>
+          <span id="codeStepTip" style="color:var(--accent);">准备就绪 · 点击单步执行</span>
+        </div>
+
+        <div class="code-view">
+          <div class="code-line" id="line1"><span class="line-num">1</span><span class="line-text"><span class="code-comment"># 1. 切割进件与去重列表初始化</span></span></div>
+          <div class="code-line" id="line2"><span class="line-num">2</span><span class="line-text"><span class="code-var">a</span> = <span class="code-fn">input</span>().<span class="code-fn">split</span>(<span class="code-var">","</span>)</span></div>
+          <div class="code-line" id="line3"><span class="line-num">3</span><span class="line-text"><span class="code-var">ls</span> = []</span></div>
+          <div class="code-line" id="line4"><span class="line-num">4</span><span class="line-text"><span class="code-comment"># 2. 遍历过滤去重</span></span></div>
+          <div class="code-line" id="line5"><span class="line-num">5</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-var">a</span>:</span></div>
+          <div class="code-line" id="line6"><span class="line-num">6</span><span class="line-text">    num = <span class="code-fn">int</span>(i)</span></div>
+          <div class="code-line" id="line7"><span class="line-num">7</span><span class="line-text">    <span class="code-keyword">if</span> num <span class="code-keyword">not in</span> <span class="code-var">ls</span>:</span></div>
+          <div class="code-line" id="line8"><span class="line-num">8</span><span class="line-text">        <span class="code-var">ls</span>.<span class="code-fn">append</span>(num)</span></div>
+          <div class="code-line" id="line9"><span class="line-num">9</span><span class="line-text"><span class="code-comment"># 3. 降序从大到小排序</span></span></div>
+          <div class="code-line" id="line10"><span class="line-num">10</span><span class="line-text">k = <span class="code-fn">int</span>(<span class="code-fn">input</span>())</span></div>
+          <div class="code-line" id="line11"><span class="line-num">11</span><span class="line-text"><span class="code-var">ls</span>.<span class="code-fn">sort</span>(reverse=<span class="code-keyword">True</span>)</span></div>
+          <div class="code-line" id="line12"><span class="line-num">12</span><span class="line-text"><span class="code-comment"># 4 &amp; 5. 超界判断与下标输出</span></span></div>
+          <div class="code-line" id="line13"><span class="line-num">13</span><span class="line-text"><span class="code-keyword">if</span> k &gt; <span class="code-fn">len</span>(<span class="code-var">ls</span>):</span></div>
+          <div class="code-line" id="line14"><span class="line-num">14</span><span class="line-text">    <span class="code-fn">print</span>(<span class="code-var">'None'</span>)</span></div>
+          <div class="code-line" id="line15"><span class="line-num">15</span><span class="line-text"><span class="code-keyword">else</span>:</span></div>
+          <div class="code-line" id="line16"><span class="line-num">16</span><span class="line-text">    <span class="code-fn">print</span>(<span class="code-var">ls</span>[k - <span class="code-keyword">1</span>])</span></div>
+        </div>
+
+        <!-- 实时变量监控看板 -->
+        <div class="vars-monitor">
+          <div class="var-card">
+            <div class="var-title">当前元素 num</div>
+            <div id="valNum" class="var-val">-</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">去重池 ls (len)</div>
+            <div id="valLs" class="var-val">[] (0)</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">目标第 k 重</div>
+            <div id="valK" class="var-val">k=4</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">执行阶段 / 分支</div>
+            <div id="valPhase" class="var-val" style="font-size:12px; font-weight:800;">准备</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右：物理动画视窗 (传送带与排序托盘) -->
+      <div class="world-panel">
+        <div class="panel-header">
+          <span>📦 传送带分拣装车现场</span>
+          <span id="worldStatusBadge" style="color:var(--amber);">进件待命</span>
+        </div>
+
+        <div class="world-canvas-container">
+          <!-- 进件传送带 -->
+          <div>
+            <div class="zone-sub-title"><span>📥</span> 进件传送带：原始包裹队列 a = input().split(",")</div>
+            <div class="package-belt" id="packageBelt">
+              <!-- 包裹元素 -->
+            </div>
+          </div>
+
+          <!-- 去重与排序托盘 -->
+          <div>
+            <div class="zone-sub-title"><span>⚖️</span> 称重装车托盘：独一无二的重量池 ls (按从大到小排序)</div>
+            <div class="sorted-tray" id="sortedTray">
+              <!-- 托盘元素 -->
+            </div>
+          </div>
+
+          <!-- 传送带状态日志 -->
+          <div class="conveyor-log">
+            <span id="logIcon" style="font-size:16px;">📦</span>
+            <span id="logText" style="flex:1;">准备就绪：点击【单步步进】开始代码推演与动画联动！</span>
+          </div>
+
+          <!-- 达标盖章印记 -->
+          <div id="finishStamp" class="finish-stamp">
+            🎉 分拣完成！装车重量已输出
+          </div>
+        </div>
+
+        <!-- 终端打印区 -->
+        <div class="terminal-box">
+          <div>
+            <span class="terminal-prompt">Python &gt;&gt;&gt;</span>
+            <span id="termOutput" class="terminal-out">等待输出…</span>
+          </div>
+          <span class="terminal-desc">print(ls[k-1]) 或 print('None') 标准输出</span>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- 视图 2: 五阶段工序流水线 -->
-  <div id="pipelineView" class="pipeline-view">
-    <div class="pipeline-steps">
-      <div class="pipeline-step-card">
-        <span class="step-badge">阶段 1 · 字符串切分读取</span>
-        <div class="step-title">input().split(",")</div>
-        <div class="step-code">a = input().split(",")
-ls = []</div>
-        <div class="step-desc">第一行接收逗号分隔的8个包裹，通过 split(",") 切割为字符列表 a，并创建空列表 ls。</div>
-      </div>
-
-      <div class="pipeline-step-card">
-        <span class="step-badge">阶段 2 · 遍历过滤与去重</span>
-        <div class="step-title">for i in a: if i not in ls</div>
-        <div class="step-code">for i in a:
-    num = int(i)
-    if num not in ls:
-        ls.append(num)</div>
-        <div class="step-desc">逐一检查每个包裹重量。若该数值尚未收录到 ls 中，则转换为整数追加进去；重复的直接忽略。</div>
-      </div>
-
-      <div class="pipeline-step-card">
-        <span class="step-badge">阶段 3 · 降序从大到小排序</span>
-        <div class="step-title">ls.sort(reverse=True)</div>
-        <div class="step-code">k = int(input())
-ls.sort(reverse=True)</div>
-        <div class="step-desc">输入目标第 k 重。调用 sort(reverse=True)，将去重后的重量从大到小排列，第1大在下标0。</div>
-      </div>
-
-      <div class="pipeline-step-card">
-        <span class="step-badge">阶段 4 · 超界判断守卫</span>
-        <div class="step-title">if k > len(ls) 边界检测</div>
-        <div class="step-code">if k > len(ls):
-    print('None')</div>
-        <div class="step-desc">如果 k 大于去重后总品种数 len(ls)，说明根本没有第 k 重，安全输出 'None'。</div>
-      </div>
-
-      <div class="pipeline-step-card">
-        <span class="step-badge">阶段 5 · 精准定位输出</span>
-        <div class="step-title">print(ls[k - 1])</div>
-        <div class="step-code">else:
-    print(ls[k - 1])</div>
-        <div class="step-desc">因为 Python 索引从 0 开始计数，第 k 重对应的恰好是下标 k - 1！</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 题目标准 Python 代码透视 -->
-  <div class="code-accordion">
-    <div class="code-accordion-header" onclick="toggleCode()">
-      <span>🐍 Python 官方解题源码（精炼版）</span>
-      <span id="codeArrow">▼ 点击展开</span>
-    </div>
-    <div class="code-body" id="codeBody" style="display:none;"># 第一行输入8个正整数，逗号隔开
-a = input().split(",")
-ls = []
-for i in a:
-    num = int(i)
-    if num not in ls:
-        ls.append(num)
-
-# 第二行输入目标 k
-k = int(input())
-
-# 从重到轻（降序）排序
-ls.sort(reverse=True)
-
-# 判定是否有第 k 重
-if k > len(ls):
-    print('None')
-else:
-    print(ls[k - 1])
-</div>
   </div>
 </div>
 
 <script>
 /* ================= 柔和轻快音效系统 ================= */
 class SoundFx {
-  constructor() { this.ctx = null; this.muted = false; }
+  constructor() {
+    this.ctx = null;
+    this.muted = false;
+  }
   init() {
     if (!this.ctx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -801,7 +709,7 @@ class SoundFx {
     }
     if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
   }
-  playPop(freq = 440) {
+  playPop(freq = 480) {
     if (this.muted) return;
     this.init();
     if (!this.ctx) return;
@@ -810,11 +718,13 @@ class SoundFx {
     const gain = this.ctx.createGain();
     osc.type = "sine";
     osc.frequency.setValueAtTime(freq, now);
-    osc.frequency.exponentialRampToValueAtTime(freq * 1.3, now + 0.08);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.25, now + 0.08);
     gain.gain.setValueAtTime(0.06, now);
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(now); osc.stop(now + 0.09);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.09);
   }
   playSuccess() {
     if (this.muted) return;
@@ -829,8 +739,10 @@ class SoundFx {
       osc.frequency.setValueAtTime(freq, now);
       gain.gain.setValueAtTime(0.06, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-      osc.connect(gain); gain.connect(this.ctx.destination);
-      osc.start(now); osc.stop(now + 0.25);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.25);
     });
   }
   playMutedAlert() {
@@ -842,11 +754,13 @@ class SoundFx {
     const gain = this.ctx.createGain();
     osc.type = "triangle";
     osc.frequency.setValueAtTime(260, now);
-    osc.frequency.exponentialRampToValueAtTime(180, now + 0.16);
+    osc.frequency.exponentialRampToValueAtTime(180, now + 0.14);
     gain.gain.setValueAtTime(0.05, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-    osc.connect(gain); gain.connect(this.ctx.destination);
-    osc.start(now); osc.stop(now + 0.18);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.16);
   }
 }
 const sfx = new SoundFx();
@@ -854,58 +768,64 @@ const sfx = new SoundFx();
 function toggleAudio() {
   sfx.muted = !sfx.muted;
   const btn = document.getElementById("soundToggleBtn");
-  if (sfx.muted) { btn.innerHTML = "<span>🔇</span> 音效已静音"; btn.style.opacity = "0.6"; }
-  else { btn.innerHTML = "<span>🔊</span> 音效已开"; btn.style.opacity = "1"; sfx.init(); }
+  if (sfx.muted) {
+    btn.innerHTML = "<span>🔇</span> 音效已静音";
+    btn.style.opacity = "0.6";
+  } else {
+    btn.innerHTML = "<span>🔊</span> 音效已开";
+    btn.style.opacity = "1";
+    sfx.init();
+  }
 }
 
-/* ================= 模拟器状态机 ================= */
-let rawArray = [];
-let k = 4;
-let ls = []; // 去重后的数组
-let scanIdx = 0; // 当前正在扫描的 rawArray 索引
-let phase = 0; // 0: 准备, 1: 扫描去重中, 2: 降序排序, 3: 选定第k重判定, 4: 完成
-let autoTimer = null;
+/* ==================== 仿真状态机 ==================== */
+let simState = {
+  rawArray: [],
+  k: 4,
+  ls: [], // 去重池
+  scanIdx: 0,
+  stepPhase: 0, // 0: 初始化, 1: 扫描去重中, 2: 降序排序, 3: 判定与输出, 4: 完成
+  isSorted: false,
+  isFinished: false,
+  timer: null,
+  isPlaying: false
+};
 
-function initSimulation(rawStr, targetK) {
-  if (autoTimer) {
-    clearInterval(autoTimer);
-    autoTimer = null;
-    document.getElementById("btnPlay").innerHTML = "<span>▶️</span> 自动演示";
-  }
+function applyPreset(str, targetK) {
+  document.getElementById('weightsInput').value = str;
+  document.getElementById('kInput').value = targetK;
+  resetSimulator();
+}
 
-  const str = (rawStr !== undefined) ? rawStr : document.getElementById("weightsInput").value;
-  rawArray = str.split(",").map(s => s.trim()).filter(s => s.length > 0);
-  document.getElementById("weightsInput").value = rawArray.join(",");
+function setStageStep(stageIdx) {
+  document.querySelectorAll('.stage-step').forEach((s, idx) => {
+    s.classList.remove('active');
+    if (idx < stageIdx) s.classList.add('done');
+    if (idx === stageIdx) s.classList.add('active');
+  });
+}
 
-  k = parseInt(targetK !== undefined ? targetK : document.getElementById("kInput").value, 10) || 1;
-  if (k < 1) k = 1;
-  document.getElementById("kInput").value = k;
-  document.getElementById("kTargetBadge").innerText = "目标: 第 " + k + " 重";
-
-  ls = [];
-  scanIdx = 0;
-  phase = 0;
-
-  renderBelt();
-  renderTray();
-  updateLog("📦 准备就绪：输入包裹共 " + rawArray.length + " 个。点击【单步推演】或【自动演示】开始！");
-  resetResultBoard();
-  document.getElementById("simStageStatus").innerText = "(已就绪)";
+function highlightLines(lineIds) {
+  document.querySelectorAll('.code-line').forEach(l => l.classList.remove('active'));
+  lineIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+  });
 }
 
 function renderBelt(activeIdx = -1) {
   const belt = document.getElementById("packageBelt");
   belt.innerHTML = "";
-  rawArray.forEach((val, idx) => {
+  simState.rawArray.forEach((val, idx) => {
     const box = document.createElement("div");
     box.className = "pkg-box";
     box.id = "pkg_" + idx;
 
     if (idx === activeIdx) {
       box.classList.add("scanned");
-    } else if (idx < scanIdx) {
-      // 已经扫描过的，如果是重复的加上 duplicate 标志
-      const firstIndex = rawArray.indexOf(val);
+    } else if (idx < simState.scanIdx) {
+      // 检查之前是否已经出现过该数值
+      const firstIndex = simState.rawArray.indexOf(val);
       if (firstIndex < idx) {
         box.classList.add("duplicate");
       }
@@ -933,18 +853,18 @@ function renderBelt(activeIdx = -1) {
 function renderTray(targetRank = -1) {
   const tray = document.getElementById("sortedTray");
   tray.innerHTML = "";
-  if (ls.length === 0) {
+  if (simState.ls.length === 0) {
     tray.innerHTML = "<span style='font-size:12px; color:#64748B; font-style:italic;'>托盘暂空：等待包裹通过去重门...</span>";
     return;
   }
-  ls.forEach((weight, idx) => {
+  simState.ls.forEach((weight, idx) => {
     const item = document.createElement("div");
     item.className = "tray-item";
     if (idx + 1 === targetRank) {
       item.classList.add("is-target-k");
     }
 
-    if (phase >= 2) {
+    if (simState.isSorted) {
       const rankBadge = document.createElement("div");
       rankBadge.className = "tray-rank";
       rankBadge.innerText = "第 " + (idx + 1) + " 重";
@@ -958,7 +878,7 @@ function renderTray(targetRank = -1) {
 
     const lDiv = document.createElement("div");
     lDiv.className = "tray-label";
-    lDiv.innerText = (phase >= 2) ? ("Rank #" + (idx + 1)) : "KG";
+    lDiv.innerText = simState.isSorted ? ("Rank #" + (idx + 1)) : "KG";
     item.appendChild(lDiv);
 
     tray.appendChild(item);
@@ -970,156 +890,219 @@ function updateLog(msg, icon = "📦") {
   document.getElementById("logIcon").innerText = icon;
 }
 
-function resetResultBoard() {
-  const badge = document.getElementById("hugeResultVal");
-  badge.className = "result-huge-badge";
-  badge.innerText = "?";
-  document.getElementById("resultMeta").innerText = "等待推演完成以判定装车重量...";
+function resetSimulator() {
+  if (simState.timer) clearInterval(simState.timer);
+  simState.isPlaying = false;
+  document.getElementById('playIcon').textContent = '▶';
+
+  const rawStr = document.getElementById('weightsInput').value;
+  const rawArray = rawStr.split(",").map(s => s.trim()).filter(s => s.length > 0);
+  document.getElementById('weightsInput').value = rawArray.join(",");
+
+  let kVal = parseInt(document.getElementById('kInput').value, 10) || 1;
+  if (kVal < 1) kVal = 1;
+  document.getElementById('kInput').value = kVal;
+
+  simState = {
+    rawArray: rawArray,
+    k: kVal,
+    ls: [],
+    scanIdx: 0,
+    stepPhase: 0,
+    isSorted: false,
+    isFinished: false,
+    timer: null,
+    isPlaying: false
+  };
+
+  document.querySelectorAll('.code-line').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.stage-step').forEach((s, idx) => {
+    s.classList.remove('active', 'done');
+    if (idx === 0) s.classList.add('active');
+  });
+
+  document.getElementById('valNum').textContent = '-';
+  document.getElementById('valLs').textContent = '[] (0)';
+  document.getElementById('valK').textContent = 'k=' + kVal;
+  document.getElementById('valPhase').textContent = '准备就绪';
+
+  document.getElementById('codeStepTip').textContent = '准备就绪 · 点击单步执行';
+  document.getElementById('worldStatusBadge').textContent = '进件待命';
+  document.getElementById('worldStatusBadge').style.color = 'var(--amber)';
+  document.getElementById('termOutput').textContent = '等待输出…';
+  document.getElementById('finishStamp').style.display = 'none';
+
+  renderBelt();
+  renderTray();
+  updateLog("📦 准备就绪：输入包裹共 " + rawArray.length + " 个，目标查找第 " + kVal + " 重包裹。点击【单步步进】开始！");
 }
 
-function manualStep() {
-  sfx.init();
+function stepSimulator() {
+  if (simState.isFinished) return;
 
-  if (phase === 0) {
-    phase = 1;
-    scanIdx = 0;
-    document.getElementById("simStageStatus").innerText = "(正在分拣去重)";
+  // 阶段 0：初始化 a 与 ls
+  if (simState.stepPhase === 0) {
+    sfx.playPop(480);
+    setStageStep(0);
+    highlightLines(['line2', 'line3']);
+
+    document.getElementById('codeStepTip').textContent = '【阶段1 切割进件】读取逗号分隔的8个包裹存为 a，初始化空列表 ls = []';
+    document.getElementById('valNum').textContent = '-';
+    document.getElementById('valLs').textContent = '[] (0)';
+    document.getElementById('valPhase').textContent = '进件初始化';
+    document.getElementById('worldStatusBadge').textContent = '进件就绪';
+    updateLog("已读取 input 字符串，切割为包裹列表 a (共 " + simState.rawArray.length + " 个)，创建空去重池 ls=[]");
+
+    simState.stepPhase = 1;
+    simState.scanIdx = 0;
+    return;
   }
 
-  // 阶段 1: 逐个扫描去重
-  if (phase === 1) {
-    if (scanIdx < rawArray.length) {
-      const currentVal = parseInt(rawArray[scanIdx], 10);
-      const exists = ls.includes(currentVal);
+  // 阶段 1：遍历 a 进行去重
+  if (simState.stepPhase === 1) {
+    if (simState.scanIdx < simState.rawArray.length) {
+      setStageStep(1);
+      const rawVal = simState.rawArray[simState.scanIdx];
+      const num = parseInt(rawVal, 10);
+      const exists = simState.ls.includes(num);
 
-      renderBelt(scanIdx);
+      renderBelt(simState.scanIdx);
 
       if (!exists) {
-        ls.push(currentVal);
-        sfx.playPop(480 + ls.length * 35);
+        highlightLines(['line5', 'line6', 'line7', 'line8']);
+        simState.ls.push(num);
+        sfx.playPop(480 + simState.ls.length * 35);
         renderTray();
-        updateLog("扫描第 " + (scanIdx + 1) + " 个包裹 [" + currentVal + "kg]：尚未收录，收入去重池 ls！", "✅");
+
+        document.getElementById('codeStepTip').textContent = '【去重收入】i="' + rawVal + '", num=' + num + '，不在 ls 中，执行 ls.append(' + num + ')！';
+        document.getElementById('valNum').textContent = num;
+        document.getElementById('valLs').textContent = '[' + simState.ls.join(',') + '] (' + simState.ls.length + ')';
+        document.getElementById('valPhase').textContent = 'append(' + num + ')';
+        document.getElementById('worldStatusBadge').textContent = '去重扫描中';
+        document.getElementById('worldStatusBadge').style.color = '#38BDF8';
+        updateLog("扫描第 " + (simState.scanIdx + 1) + " 个包裹 [" + num + "kg]：新重量！成功收录至去重池 ls。", "✅");
       } else {
+        highlightLines(['line5', 'line6', 'line7']);
         sfx.playMutedAlert();
-        updateLog("扫描第 " + (scanIdx + 1) + " 个包裹 [" + currentVal + "kg]：已存在于池中，属于重复包裹，跳过。", "⚠️");
+        renderBelt(simState.scanIdx);
+
+        document.getElementById('codeStepTip').textContent = '【重复跳过】i="' + rawVal + '", num=' + num + ' 已在 ls 中，跳过 append';
+        document.getElementById('valNum').textContent = num;
+        document.getElementById('valPhase').textContent = '重复跳过';
+        document.getElementById('worldStatusBadge').textContent = '重复跳过';
+        document.getElementById('worldStatusBadge').style.color = '#F59E0B';
+        updateLog("扫描第 " + (simState.scanIdx + 1) + " 个包裹 [" + num + "kg]：去重池中已存在，忽略跳过。", "⚠️");
       }
-      scanIdx++;
+
+      simState.scanIdx++;
       return;
     } else {
-      // 扫描全部完毕，进入阶段 2
-      phase = 2;
+      // 扫描完毕，准备排序
+      simState.stepPhase = 2;
       renderBelt(-1);
-      updateLog("8个包裹全部扫描完毕！去重后共获得 " + ls.length + " 种不同重量。准备进行降序排序...", "⚖️");
+      setStageStep(2);
+      highlightLines(['line10', 'line11']);
+      updateLog("全部 " + simState.rawArray.length + " 个包裹去重完毕！共获得 " + simState.ls.length + " 种不同重量。准备降序排序...", "⚖️");
       return;
     }
   }
 
-  // 阶段 2: 降序排序
-  if (phase === 2) {
-    ls.sort((a, b) => b - a);
+  // 阶段 2：降序排序
+  if (simState.stepPhase === 2) {
+    setStageStep(2);
+    highlightLines(['line10', 'line11']);
+    simState.ls.sort((a, b) => b - a);
+    simState.isSorted = true;
     sfx.playSuccess();
     renderTray();
-    phase = 3;
-    updateLog("已完成降序排序 (ls.sort(reverse=True))！重量从大到小依次排列就绪。", "📊");
+
+    document.getElementById('codeStepTip').textContent = '【阶段3 降序排序】读取 k=' + simState.k + '，执行 ls.sort(reverse=True) 从大到小排列！';
+    document.getElementById('valNum').textContent = '-';
+    document.getElementById('valLs').textContent = '[' + simState.ls.join(',') + '] (' + simState.ls.length + ')';
+    document.getElementById('valPhase').textContent = 'sort(reverse=True)';
+    document.getElementById('worldStatusBadge').textContent = '降序完成';
+    document.getElementById('worldStatusBadge').style.color = '#818CF8';
+    updateLog("已完成降序从大到小排序 (ls.sort(reverse=True))！托盘展示 Rank 排名。", "📊");
+
+    simState.stepPhase = 3;
     return;
   }
 
-  // 阶段 3: 第 k 重判定
-  if (phase === 3) {
-    const badge = document.getElementById("hugeResultVal");
-    const meta = document.getElementById("resultMeta");
-
-    if (k > ls.length) {
+  // 阶段 3：超界判断与输出
+  if (simState.stepPhase === 3) {
+    if (simState.k > simState.ls.length) {
       // 超出界限
-      badge.className = "result-huge-badge none-style";
-      badge.innerText = "None";
-      meta.innerHTML = "<b>判定结果：'None'</b><br>由于目标 k = " + k + "，而去重后包裹种类只有 " + ls.length + " 种，条件 <code>k > len(ls)</code> 成立，没有第 " + k + " 重包裹！";
+      setStageStep(3);
+      highlightLines(['line13', 'line14']);
       sfx.playMutedAlert();
-      updateLog("判定：k (" + k + ") > len(ls) (" + ls.length + ")，种类不足，输出 'None'！", "🚫");
+      document.getElementById('termOutput').textContent = "'None'";
+      document.getElementById('codeStepTip').textContent = '【超界守护】k(' + simState.k + ') > len(ls)(' + simState.ls.length + ') 成立，执行 print(\'None\')！';
+      document.getElementById('valPhase').textContent = "print('None')";
+      document.getElementById('worldStatusBadge').textContent = "超界 None";
+      document.getElementById('worldStatusBadge').style.color = '#EF4444';
+      updateLog("判定：目标 k(" + simState.k + ") 超过去重后总种类数 len(ls)(" + simState.ls.length + ")，输出 'None'！", "🚫");
     } else {
-      // 命中第 k 重
-      const answer = ls[k - 1];
-      badge.className = "result-huge-badge";
-      badge.innerText = answer;
-      meta.innerHTML = "<b>判定结果：" + answer + " KG</b><br>目标 k = " + k + "，取出降序列表下标 <code>ls[" + (k - 1) + "]</code>，成功锁定第 " + k + " 重的包裹重量为 <b>" + answer + "</b>！";
-      renderTray(k);
+      // 正常命中第 k 重
+      setStageStep(4);
+      highlightLines(['line15', 'line16']);
+      const ans = simState.ls[simState.k - 1];
+      renderTray(simState.k);
       sfx.playSuccess();
-      updateLog("🎉 成功锁定！第 " + k + " 重包裹重量为 " + answer + " KG（下标 ls[" + (k - 1) + "]）！", "🏆");
+      document.getElementById('termOutput').textContent = ans;
+      document.getElementById('codeStepTip').textContent = '【下标输出】k <= len(ls)，取 ls[' + (simState.k - 1) + '] = ' + ans + '，执行 print(ls[k-1])！';
+      document.getElementById('valPhase').textContent = 'print(' + ans + ')';
+      document.getElementById('worldStatusBadge').textContent = '锁定第' + simState.k + '重: ' + ans;
+      document.getElementById('worldStatusBadge').style.color = 'var(--success)';
+      updateLog("🎉 成功锁定！第 " + simState.k + " 重包裹重量为 " + ans + " KG（下标 ls[" + (simState.k - 1) + "]）！", "🏆");
     }
 
-    phase = 4;
-    document.getElementById("simStageStatus").innerText = "(推演完成)";
-    if (autoTimer) {
-      clearInterval(autoTimer);
-      autoTimer = null;
-      document.getElementById("btnPlay").innerHTML = "<span>▶️</span> 自动演示";
+    simState.stepPhase = 4;
+    simState.isFinished = true;
+    document.getElementById('finishStamp').style.display = 'block';
+
+    if (simState.timer) {
+      clearInterval(simState.timer);
+      simState.timer = null;
+      simState.isPlaying = false;
+      document.getElementById('playIcon').textContent = '▶';
     }
     return;
   }
 
-  if (phase === 4) {
-    updateLog("推演已全部完成！您可以更换数据或点击【重置】重新演示。", "✅");
+  if (simState.stepPhase === 4) {
+    updateLog("推演已全部完成！您可以更换数据或点击【重置】重新推演。", "✅");
   }
 }
 
-function toggleAutoPlay() {
+function togglePlaySimulator() {
   sfx.init();
-  const btn = document.getElementById("btnPlay");
-  if (autoTimer) {
-    clearInterval(autoTimer);
-    autoTimer = null;
-    btn.innerHTML = "<span>▶️</span> 自动演示";
+  if (simState.isPlaying) {
+    clearInterval(simState.timer);
+    simState.timer = null;
+    simState.isPlaying = false;
+    document.getElementById('playIcon').textContent = '▶';
   } else {
-    if (phase === 4) {
-      initSimulation();
+    if (simState.isFinished) {
+      resetSimulator();
     }
-    btn.innerHTML = "<span>⏸️</span> 暂停演示";
-    autoTimer = setInterval(() => {
-      manualStep();
-      if (phase === 4) {
-        clearInterval(autoTimer);
-        autoTimer = null;
-        btn.innerHTML = "<span>▶️</span> 自动演示";
+    simState.isPlaying = true;
+    document.getElementById('playIcon').textContent = '⏸';
+    simState.timer = setInterval(() => {
+      stepSimulator();
+      if (simState.isFinished) {
+        clearInterval(simState.timer);
+        simState.timer = null;
+        simState.isPlaying = false;
+        document.getElementById('playIcon').textContent = '▶';
       }
-    }, 500);
+    }, 550);
   }
 }
 
-function resetSim() {
-  initSimulation();
-}
+document.getElementById("weightsInput").addEventListener("change", () => { resetSimulator(); });
+document.getElementById("kInput").addEventListener("change", () => { resetSimulator(); });
 
-function applyPreset(str, targetK) {
-  initSimulation(str, targetK);
-}
-
-function switchMode(mode) {
-  const tabVisual = document.getElementById("tabVisual");
-  const tabPipeline = document.getElementById("tabPipeline");
-  const visualView = document.getElementById("visualView");
-  const pipelineView = document.getElementById("pipelineView");
-
-  if (mode === "visual") {
-    tabVisual.classList.add("active"); tabPipeline.classList.remove("active");
-    visualView.style.display = "block"; pipelineView.classList.remove("active");
-  } else {
-    tabPipeline.classList.add("active"); tabVisual.classList.remove("active");
-    visualView.style.display = "none"; pipelineView.classList.add("active");
-  }
-}
-
-function toggleCode() {
-  const body = document.getElementById("codeBody");
-  const arrow = document.getElementById("codeArrow");
-  if (body.style.display === "none") { body.style.display = "block"; arrow.innerText = "▲ 点击折叠"; }
-  else { body.style.display = "none"; arrow.innerText = "▼ 点击展开"; }
-}
-
-document.getElementById("weightsInput").addEventListener("change", () => { initSimulation(); });
-document.getElementById("kInput").addEventListener("change", () => { initSimulation(); });
-
-initSimulation();
+resetSimulator();
 </script>
-
 </body>
 </html>
