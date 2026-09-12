@@ -250,12 +250,121 @@
       min-height: 110px;
       max-height: 240px;
       overflow-y: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-      padding: 8px 12px;
+      overflow-x: hidden !important; /* 强制锁定水平溢出，彻底杜绝行尾文字横向抖动与缩进 */
+      white-space: normal;
+      word-break: normal; /* 彻底移除 break-all，杜绝单词被腰斩劈开 */
+      overflow-wrap: break-word;
+      padding: 10px 14px;
       background: #F8FAFC;
       border-radius: 8px;
       border: 1px solid #E2E8F0;
+    }
+    /* 单词级原子包裹：单词作为一个不可拆分的整体在空格处自然换行 */
+    .tt-word {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    /* CapsLock 大写锁定温和呼吸提示条 */
+    .caps-warning {
+      background: #FEF3C7;
+      border: 1.5px solid #F59E0B;
+      color: #92400E;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      animation: breathPulse 1.5s infinite ease-in-out;
+    }
+    @keyframes breathPulse {
+      0%, 100% { opacity: 0.95; transform: scale(1); box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2); }
+      50% { opacity: 1; transform: scale(1.006); box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35); }
+    }
+
+    /* 失焦呼吸提示浮层 (Focus Loss Reminder) */
+    .focus-reminder-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(2px);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 30;
+      animation: fadeIn 0.15s ease;
+    }
+    .focus-reminder-badge {
+      background: var(--primary);
+      color: #FFFFFF;
+      padding: 11px 22px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.45);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: bounceTap 1.2s infinite ease-in-out;
+    }
+    @keyframes bounceTap {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-3px) scale(1.03); }
+    }
+
+    /* 长期成就感与段位激励体系徽章 */
+    .gamification-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-tier {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #EEF2FF;
+      border: 1px solid #C7D2FE;
+      color: #4338CA;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .badge-stars {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
+      color: #B45309;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .rankup-banner {
+      background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+      border: 1.5px solid #F59E0B;
+      color: #92400E;
+      border-radius: 12px;
+      padding: 10px;
+      margin-bottom: 14px;
+      font-size: 13.5px;
+      font-weight: 900;
+      animation: popScale 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    #gameCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
     }
     /* 静态字符样式 */
     .tt-char {
@@ -605,6 +714,10 @@
       </div>
     </div>
     <div class="nav-actions">
+      <div class="gamification-group" id="gamificationGroup" title="打字段位进阶与累计通关星数">
+        <span class="badge-tier" id="badgeTier">🌱 指法萌新</span>
+        <span class="badge-stars" id="badgeStars">⭐ 0</span>
+      </div>
       <a href="index.html" class="nav-btn"><span>🎯</span> 编程大厅</a>
       <a href="../index.html" class="nav-btn"><span>📚</span> 每日英语</a>
     </div>
@@ -649,6 +762,12 @@
 
     <!-- 静态多行字符排版展示卡（绝对零位移） -->
     <div class="stream-card">
+      <!-- CapsLock 误触监测与温和呼吸提示 -->
+      <div id="capsLockWarning" class="caps-warning" style="display:none;">
+        <span>⚠️</span>
+        <span>检测到键盘 <strong>CapsLock（大写锁定）</strong> 已开启，可能导致字母判定全部报错，请按一下键盘上的 <strong>Caps Lock</strong> 键关闭！</span>
+      </div>
+
       <div class="stream-meta-row">
         <span id="moduleTitleText">模块 1：基准键位锚定</span>
         <div style="display:inline-flex; align-items:center; gap:12px;">
@@ -656,8 +775,18 @@
           <span id="progressText">进度: 0 / 40 字符</span>
         </div>
       </div>
-      <div class="stream-box" id="streamBox" onclick="focusGameInput()">
-        <!-- 动态静态渲染完整文本的所有 span 字符 -->
+      <div style="position: relative;">
+        <!-- 失焦呼吸提示浮层 (Focus Loss Reminder) -->
+        <div id="focusReminder" class="focus-reminder-overlay" onclick="focusGameInput()" style="display:none;">
+          <div class="focus-reminder-badge">
+            <span>👆</span>
+            <span>点击此处激活打字输入（键盘准备就绪）</span>
+          </div>
+        </div>
+
+        <div class="stream-box" id="streamBox" onclick="focusGameInput()">
+          <!-- 动态静态渲染完整文本的所有 span 字符 (采用 word-wrapper 保证整词不拆分) -->
+        </div>
       </div>
       <div>
         <span class="anchor-guide-badge">
@@ -808,6 +937,7 @@
     </div>
 
     <div class="game-arena" id="gameArena">
+      <canvas id="gameCanvas"></canvas>
       <div class="ground-line"></div>
       <div class="ground-label">⚠️ 地面防线 · 勿让目标触地</div>
     </div>
@@ -820,6 +950,8 @@
     <div class="modal-stars" id="modalStars">⭐⭐⭐</div>
     <h3 class="modal-title" id="modalTitle">🎉 恭喜通关！</h3>
     <div class="modal-sub" id="modalSubtitle">完成 模块 1 · 1.1 左手基准起步</div>
+    <div id="modalRankUp" class="rankup-banner" style="display:none;"></div>
+    <div id="modalStarsGain" style="font-size:13.5px; font-weight:800; color:#D97706; margin-bottom:12px;"></div>
     <div class="modal-metrics">
       <div>
         <div class="metric-label">打字速度</div>
@@ -1342,11 +1474,13 @@ function loadStepText() {
   updateCharHighlights();
 }
 
-/* 核心优化：静态渲染全文所有字符 Span，布局在整个练习期间绝对零位移 */
+/* 核心优化：采用 word-wrapper 单词级原子包裹，整词永不拆开，只在空格处自然换行 */
 function buildStaticTextDOM() {
   const box = document.getElementById('streamBox');
   box.innerHTML = '';
   const frag = document.createDocumentFragment();
+
+  let currentWordSpan = null;
 
   for (let i = 0; i < currentFullText.length; i++) {
     const ch = currentFullText[i];
@@ -1355,26 +1489,37 @@ function buildStaticTextDOM() {
     span.id = `ttc_${i}`;
 
     if (ch === ' ') {
+      // 空格独立作为换行停靠点，结束前一个单词包裹
+      currentWordSpan = null;
       span.classList.add('is-space');
-      span.textContent = '␣'; // 醒目且等宽的空格符号
+      span.textContent = '␣'; // 醒目等宽空格符号
+      frag.appendChild(span);
     } else if (ch === '\n') {
+      currentWordSpan = null;
       span.classList.add('is-newline');
-      span.textContent = '↵'; // 回车符号
+      span.textContent = '↵'; // 回车换行符号
       frag.appendChild(span);
       frag.appendChild(document.createElement('br'));
-      continue;
     } else {
+      // 英文普通单词字符：原子级聚合在 .tt-word 内，保证长词在行尾绝不腰斩
+      if (!currentWordSpan) {
+        currentWordSpan = document.createElement('span');
+        currentWordSpan.className = 'tt-word';
+        frag.appendChild(currentWordSpan);
+      }
       span.textContent = ch;
+      currentWordSpan.appendChild(span);
     }
-    frag.appendChild(span);
   }
 
   box.appendChild(frag);
+  box.scrollLeft = 0;
 }
 
-/* 根据当前 charIndex，纯增删 CSS 类，绝不修改文本内容，绝不引起重排位移 */
+/* 核心优化：仅在垂直方向平滑换行滚动，强制锁定 scrollLeft = 0，绝对零水平位移抖动 */
 function updateCharHighlights() {
   const total = currentFullText.length;
+  const box = document.getElementById('streamBox');
 
   for (let i = 0; i < total; i++) {
     const span = document.getElementById(`ttc_${i}`);
@@ -1384,11 +1529,25 @@ function updateCharHighlights() {
       span.className = 'tt-char typed' + (currentFullText[i] === ' ' ? ' is-space' : '') + (currentFullText[i] === '\n' ? ' is-newline' : '');
     } else if (i === charIndex) {
       span.className = 'tt-char current' + (currentFullText[i] === ' ' ? ' is-space' : '') + (currentFullText[i] === '\n' ? ' is-newline' : '');
-      span.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+
+      // 仅垂直方向就近/平滑微调滚动，绝对禁止横向任何 inline 滚动（消除行末文字向左缩进跳动）
+      if (box && span) {
+        const boxRect = box.getBoundingClientRect();
+        const spanRect = span.getBoundingClientRect();
+        const relTop = spanRect.top - boxRect.top + box.scrollTop;
+        if (relTop < box.scrollTop + 25) {
+          box.scrollTo({ top: Math.max(0, relTop - 35), behavior: 'smooth' });
+        } else if (relTop > box.scrollTop + box.clientHeight - 55) {
+          box.scrollTo({ top: relTop - box.clientHeight + 75, behavior: 'smooth' });
+        }
+        box.scrollLeft = 0;
+      }
     } else {
       span.className = 'tt-char pending' + (currentFullText[i] === ' ' ? ' is-space' : '') + (currentFullText[i] === '\n' ? ' is-newline' : '');
     }
   }
+
+  if (box) box.scrollLeft = 0;
 
   // 进度文本
   if (isInfiniteArticleMode) {
@@ -1473,7 +1632,22 @@ function focusGameInput() {
   if (inp) inp.focus();
 }
 
+/* 实时 CapsLock 大写锁定状态侦测与提示 */
+function checkCapsLock(e) {
+  if (e && e.getModifierState) {
+    const isCaps = e.getModifierState('CapsLock');
+    const warn = document.getElementById('capsLockWarning');
+    if (warn) {
+      warn.style.display = isCaps ? 'flex' : 'none';
+    }
+  }
+}
+
+window.addEventListener('keyup', checkCapsLock);
+
 window.addEventListener('keydown', (e) => {
+  checkCapsLock(e);
+
   // 如果弹窗打开，支持按 Enter 确认进入下一阶段 / 下一篇
   const compModal = document.getElementById('completionModal');
   if (compModal.style.display !== 'none') {
@@ -1587,7 +1761,54 @@ function handleDrillKey(key) {
   updateCharHighlights();
 }
 
-/* 优雅通关结算弹层 */
+/* ==================== 长期成就感与段位成长体系 ==================== */
+const TIERS = [
+  { min: 0,  max: 9,        name: '指法萌新', icon: '🌱' },
+  { min: 10, max: 24,       name: '键盘学徒', icon: '🌿' },
+  { min: 25, max: 49,       name: '闪电快手', icon: '⚡' },
+  { min: 50, max: 79,       name: '极速飞侠', icon: '🚀' },
+  { min: 80, max: Infinity, name: '盲打大师', icon: '👑' }
+];
+
+function getTierInfo(stars) {
+  for (const t of TIERS) {
+    if (stars >= t.min && stars <= t.max) return t;
+  }
+  return TIERS[0];
+}
+
+function updateGamificationDisplay() {
+  const stars = parseInt(localStorage.getItem('tt_total_stars') || '0', 10);
+  const tier = getTierInfo(stars);
+  const tierEl = document.getElementById('badgeTier');
+  const starsEl = document.getElementById('badgeStars');
+  if (tierEl) tierEl.innerHTML = `${tier.icon} ${tier.name}`;
+  if (starsEl) starsEl.innerHTML = `⭐ ${stars}`;
+}
+
+function recordProgressStars(acc) {
+  let earnedStars = 1;
+  let starsText = '⭐ 顺利通关！+1 累计星数';
+  if (acc === 100) {
+    earnedStars = 3;
+    starsText = '⭐⭐⭐ 完美无暇！+3 累计星数';
+  } else if (acc >= 90) {
+    earnedStars = 2;
+    starsText = '⭐⭐ 表现优异！+2 累计星数';
+  }
+
+  const currentStars = parseInt(localStorage.getItem('tt_total_stars') || '0', 10);
+  const prevTier = getTierInfo(currentStars);
+  const totalStars = currentStars + earnedStars;
+  localStorage.setItem('tt_total_stars', totalStars);
+  const newTier = getTierInfo(totalStars);
+  updateGamificationDisplay();
+
+  const isRankUp = (newTier.name !== prevTier.name && totalStars > currentStars);
+  return { earnedStars, starsText, totalStars, newTier, isRankUp };
+}
+
+/* 优雅通关结算弹层 (升级段位与星星激励) */
 function showCompletionModal(wpm, acc, bpm) {
   const modal = document.getElementById('completionModal');
 
@@ -1610,6 +1831,23 @@ function showCompletionModal(wpm, acc, bpm) {
   if (acc < 90) stars = '⭐';
   else if (acc < 95) stars = '⭐⭐';
   document.getElementById('modalStars').textContent = stars;
+
+  // 累积星星并判定段位进阶
+  const { starsText, newTier, isRankUp, totalStars } = recordProgressStars(acc);
+  const starsGainEl = document.getElementById('modalStarsGain');
+  if (starsGainEl) {
+    starsGainEl.textContent = `${starsText}（总星数: ${totalStars} · 当前段位: ${newTier.icon} ${newTier.name}）`;
+  }
+
+  const rankUpEl = document.getElementById('modalRankUp');
+  if (rankUpEl) {
+    if (isRankUp) {
+      rankUpEl.innerHTML = `🎊 哇！段位突破晋阶：<strong>${newTier.icon} 【${newTier.name}】</strong>！太棒啦！`;
+      rankUpEl.style.display = 'block';
+    } else {
+      rankUpEl.style.display = 'none';
+    }
+  }
 
   modal.style.display = 'flex';
 }
@@ -1681,6 +1919,7 @@ function switchAppMode(mode) {
     gameSec.style.display = 'block';
     tabDrill.classList.remove('active');
     tabGame.classList.add('active');
+    setTimeout(() => initCanvas(), 50);
   }
   focusGameInput();
 }
@@ -1745,30 +1984,57 @@ function toggleGameStart() {
   else startGame();
 }
 
+/* ==================== 纯 HTML5 Canvas 60FPS 粒子爆炸引擎 ==================== */
+let gameCanvas = null;
+let gameCtx = null;
+let animFrameId = null;
+let particles = [];
+let floatingTexts = [];
+let laserBeams = [];
+let lastSpawnTime = 0;
+
+function initCanvas() {
+  const arena = document.getElementById('gameArena');
+  gameCanvas = document.getElementById('gameCanvas');
+  if (!arena || !gameCanvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const rect = arena.getBoundingClientRect();
+  gameCanvas.width = rect.width * dpr;
+  gameCanvas.height = rect.height * dpr;
+  gameCtx = gameCanvas.getContext('2d');
+  gameCtx.scale(dpr, dpr);
+}
+
+window.addEventListener('resize', () => {
+  if (currentAppMode === 'game') initCanvas();
+});
+
 function startGame() {
+  initCanvas();
   gameRunning = true;
   gameScore = 0;
   gameCombo = 0;
   gameLives = 3;
   fallingItems = [];
+  particles = [];
+  floatingTexts = [];
+  laserBeams = [];
+  lastSpawnTime = Date.now();
+
   document.getElementById('gameScore').textContent = '0';
   document.getElementById('gameCombo').textContent = '0';
   updateLivesDisplay();
   document.getElementById('gameStartBtnText').textContent = '⏸ 暂停游戏';
 
-  const arena = document.getElementById('gameArena');
-  document.querySelectorAll('.falling-item').forEach(e => e.remove());
-
-  const cfg = SPEED_CONFIG[currentSpeed] || SPEED_CONFIG.normal;
-  spawnTimer = setInterval(spawnFallingItem, cfg.spawnInterval);
-  gameLoopTimer = setInterval(updateGamePhysics, 30);
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  animFrameId = requestAnimationFrame(gameTick);
   focusGameInput();
 }
 
 function stopGame() {
   gameRunning = false;
-  if (spawnTimer) clearInterval(spawnTimer);
-  if (gameLoopTimer) clearInterval(gameLoopTimer);
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  animFrameId = null;
   document.getElementById('gameStartBtnText').textContent = '▶ 开始游戏';
 }
 
@@ -1777,54 +2043,193 @@ function updateLivesDisplay() {
   document.getElementById('gameLives').textContent = hearts || '💀 失败';
 }
 
-// 真正无尽生成：持续随机调配单词，只要生命值不为0，就永远不断落下挑战
 function spawnFallingItem() {
   if (!gameRunning) return;
+  const arena = document.getElementById('gameArena');
   const pool = WORD_POOLS[currentStage] || WORD_POOLS.words;
   const targetText = pool[Math.floor(Math.random() * pool.length)];
-  const arena = document.getElementById('gameArena');
-
-  const el = document.createElement('div');
-  el.className = 'falling-item';
-
   const isNum = /^\d+$/.test(targetText);
-  if (isNum) el.classList.add('is-number');
 
-  let badge = '';
-  if (isNum) badge = `<span class="item-badge">#数</span>`;
-  else if (targetText.toLowerCase() === 'o') badge = `<span class="item-badge">字</span>`;
+  const arenaW = arena ? arena.clientWidth : 800;
+  const estimatedW = Math.max(65, targetText.length * 15 + 36);
+  const minX = estimatedW / 2 + 25;
+  const maxX = arenaW - estimatedW / 2 - 25;
+  const x = minX + Math.random() * Math.max(10, maxX - minX);
 
-  el.innerHTML = `${badge}<span class="word-typed"></span><span class="word-untyped">${targetText}</span>`;
-
-  const arenaWidth = arena.clientWidth - 100;
-  const leftPos = 40 + Math.random() * Math.max(100, arenaWidth);
-  el.style.left = `${leftPos}px`;
-  el.style.top = '0px';
-
-  arena.appendChild(el);
   fallingItems.push({
-    el,
-    y: 0,
+    x,
+    y: 15,
     text: targetText.toLowerCase(),
-    typedLen: 0
+    displayText: targetText,
+    typedLen: 0,
+    isNum,
+    badge: isNum ? '#数' : (targetText.toLowerCase() === 'o' ? '字' : ''),
+    width: estimatedW,
+    height: 36
   });
 }
 
-function updateGamePhysics() {
+function createExplosion(x, y, count, color) {
+  const colors = [color, '#38BDF8', '#34D399', '#FBBF24', '#FFFFFF'];
+  const pCount = Math.min(45, Math.max(22, count * 5));
+  for (let i = 0; i < pCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = Math.random() * 6.5 + 1.5;
+    particles.push({
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 1.5,
+      gravity: 0.14,
+      size: Math.random() * 3.5 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: 1,
+      decay: Math.random() * 0.025 + 0.018
+    });
+  }
+}
+
+function createImpactParticles(x, y, color) {
+  for (let i = 0; i < 20; i++) {
+    const angle = Math.PI + (Math.random() - 0.5) * Math.PI;
+    const speed = Math.random() * 4.5 + 1;
+    particles.push({
+      x,
+      y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      gravity: 0.12,
+      size: Math.random() * 3 + 1.5,
+      color,
+      alpha: 1,
+      decay: 0.04
+    });
+  }
+}
+
+function drawFallingItem(ctx, item) {
+  const halfW = item.width / 2;
+  const halfH = item.height / 2;
+  const isLocked = item.typedLen > 0;
+
+  ctx.save();
+
+  let strokeColor = '#38BDF8';
+  let fillColor = 'rgba(30, 41, 59, 0.94)';
+  if (isLocked) {
+    strokeColor = '#10B981';
+    ctx.shadowColor = '#10B981';
+    ctx.shadowBlur = 18;
+  } else if (item.isNum) {
+    strokeColor = '#F59E0B';
+    ctx.shadowColor = 'rgba(245, 158, 11, 0.45)';
+    ctx.shadowBlur = 12;
+  } else {
+    ctx.shadowColor = 'rgba(56, 189, 248, 0.4)';
+    ctx.shadowBlur = 12;
+  }
+
+  // 胶囊背景
+  ctx.beginPath();
+  const radius = 9;
+  const rx = item.x - halfW;
+  const ry = item.y - halfH;
+  ctx.roundRect(rx, ry, item.width, item.height, radius);
+  ctx.fillStyle = fillColor;
+  ctx.fill();
+  ctx.lineWidth = isLocked ? 2.5 : 2;
+  ctx.strokeStyle = strokeColor;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // 角标
+  let textStartX = rx + 14;
+  if (item.badge) {
+    ctx.fillStyle = item.isNum ? '#B45309' : '#334155';
+    ctx.beginPath();
+    ctx.roundRect(rx + 6, ry + 6, 22, item.height - 12, 4);
+    ctx.fill();
+    ctx.font = 'bold 9px monospace';
+    ctx.fillStyle = item.isNum ? '#FEF3C7' : '#94A3B8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(item.badge, rx + 17, ry + halfH);
+    textStartX = rx + 34;
+  }
+
+  // 文本字符：已敲击绿色，待敲击白色
+  ctx.font = 'bold 17px "Fira Code", monospace';
+  ctx.textBaseline = 'middle';
+
+  const typedPart = item.displayText.slice(0, item.typedLen);
+  const untypedPart = item.displayText.slice(item.typedLen);
+
+  if (typedPart) {
+    ctx.fillStyle = '#34D399';
+    ctx.textAlign = 'left';
+    ctx.fillText(typedPart, textStartX, ry + halfH);
+    const typedW = ctx.measureText(typedPart).width;
+    textStartX += typedW;
+  }
+
+  if (untypedPart) {
+    ctx.fillStyle = '#F8FAFC';
+    ctx.textAlign = 'left';
+    ctx.fillText(untypedPart, textStartX, ry + halfH);
+  }
+
+  ctx.restore();
+}
+
+function gameTick() {
   if (!gameRunning) return;
-  const groundY = 320;
+
+  const arena = document.getElementById('gameArena');
+  if (!arena || !gameCtx || !gameCanvas) {
+    animFrameId = requestAnimationFrame(gameTick);
+    return;
+  }
+
+  const arenaW = arena.clientWidth;
+  const arenaH = arena.clientHeight;
+  const groundY = arenaH - 45;
+
+  const now = Date.now();
   const cfg = SPEED_CONFIG[currentSpeed] || SPEED_CONFIG.normal;
-  // 随着得分逐步平滑微增（无尽生存街机感）
+  if (now - lastSpawnTime >= cfg.spawnInterval) {
+    spawnFallingItem();
+    lastSpawnTime = now;
+  }
+
   const dynamicSpeed = cfg.speed * (1 + Math.min(0.35, gameScore / 2500));
 
+  // 60FPS Canvas 高清清空与背景绘制
+  gameCtx.clearRect(0, 0, arenaW, arenaH);
+  const bgGrad = gameCtx.createLinearGradient(0, 0, 0, arenaH);
+  bgGrad.addColorStop(0, '#0B1120');
+  bgGrad.addColorStop(1, '#0F172A');
+  gameCtx.fillStyle = bgGrad;
+  gameCtx.fillRect(0, 0, arenaW, arenaH);
+
+  // 绘制防线激光警示线
+  gameCtx.strokeStyle = '#EF4444';
+  gameCtx.lineWidth = 2;
+  gameCtx.shadowColor = '#EF4444';
+  gameCtx.shadowBlur = 10;
+  gameCtx.beginPath();
+  gameCtx.moveTo(0, groundY);
+  gameCtx.lineTo(arenaW, groundY);
+  gameCtx.stroke();
+  gameCtx.shadowBlur = 0;
+
+  // 1. 更新与绘制下落物品
   for (let i = fallingItems.length - 1; i >= 0; i--) {
     const item = fallingItems[i];
     item.y += dynamicSpeed;
-    item.el.style.top = `${item.y}px`;
 
-    if (item.y >= groundY) {
+    if (item.y + item.height / 2 >= groundY) {
       playSound('boom');
-      item.el.remove();
+      createImpactParticles(item.x, groundY, '#EF4444');
       fallingItems.splice(i, 1);
       gameLives--;
       gameCombo = 0;
@@ -1836,8 +2241,78 @@ function updateGamePhysics() {
         showGameOverModal(gameScore, gameCombo);
         return;
       }
+      continue;
     }
+
+    drawFallingItem(gameCtx, item);
   }
+
+  // 2. 更新与绘制激光束
+  for (let i = laserBeams.length - 1; i >= 0; i--) {
+    const beam = laserBeams[i];
+    gameCtx.save();
+    gameCtx.globalAlpha = Math.max(0, beam.alpha);
+    gameCtx.strokeStyle = beam.color;
+    gameCtx.lineWidth = beam.width;
+    gameCtx.shadowColor = beam.color;
+    gameCtx.shadowBlur = 14;
+    gameCtx.beginPath();
+    gameCtx.moveTo(beam.x1, beam.y1);
+    gameCtx.lineTo(beam.x2, beam.y2);
+    gameCtx.stroke();
+    gameCtx.restore();
+
+    beam.alpha -= 0.16;
+    if (beam.alpha <= 0) laserBeams.splice(i, 1);
+  }
+
+  // 3. 更新与绘制粒子爆炸
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += p.gravity;
+    p.alpha -= p.decay;
+
+    if (p.alpha <= 0) {
+      particles.splice(i, 1);
+      continue;
+    }
+
+    gameCtx.save();
+    gameCtx.globalAlpha = Math.max(0, p.alpha);
+    gameCtx.fillStyle = p.color;
+    gameCtx.shadowColor = p.color;
+    gameCtx.shadowBlur = 6;
+    gameCtx.beginPath();
+    gameCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    gameCtx.fill();
+    gameCtx.restore();
+  }
+
+  // 4. 更新与绘制浮动跳动文字
+  for (let i = floatingTexts.length - 1; i >= 0; i--) {
+    const ft = floatingTexts[i];
+    ft.y += ft.vy;
+    ft.alpha -= ft.decay;
+
+    if (ft.alpha <= 0) {
+      floatingTexts.splice(i, 1);
+      continue;
+    }
+
+    gameCtx.save();
+    gameCtx.globalAlpha = Math.max(0, ft.alpha);
+    gameCtx.font = 'bold 15px "Fira Code", monospace';
+    gameCtx.fillStyle = ft.color;
+    gameCtx.shadowColor = ft.color;
+    gameCtx.shadowBlur = 8;
+    gameCtx.textAlign = 'center';
+    gameCtx.fillText(ft.text, ft.x, ft.y);
+    gameCtx.restore();
+  }
+
+  animFrameId = requestAnimationFrame(gameTick);
 }
 
 function showGameOverModal(score, combo) {
@@ -1861,17 +2336,6 @@ function handleGameKey(key) {
       const item = fallingItems[i];
       if (item.typedLen > 0) {
         item.typedLen--;
-        const typedStr = item.text.slice(0, item.typedLen);
-        const untypedStr = item.text.slice(item.typedLen);
-
-        const typedSpan = item.el.querySelector('.word-typed');
-        const untypedSpan = item.el.querySelector('.word-untyped');
-        if (typedSpan) typedSpan.textContent = typedStr;
-        if (untypedSpan) untypedSpan.textContent = untypedStr;
-
-        if (item.typedLen === 0) {
-          item.el.classList.remove('is-target');
-        }
         playSound('delete');
         return;
       }
@@ -1906,29 +2370,55 @@ function handleGameKey(key) {
   if (targetIdx !== -1) {
     const item = fallingItems[targetIdx];
     item.typedLen++;
-    item.el.classList.add('is-target');
-
-    const typedStr = item.text.slice(0, item.typedLen);
-    const untypedStr = item.text.slice(item.typedLen);
-
-    const typedSpan = item.el.querySelector('.word-typed');
-    const untypedSpan = item.el.querySelector('.word-untyped');
-    if (typedSpan) typedSpan.textContent = typedStr;
-    if (untypedSpan) untypedSpan.textContent = untypedStr;
 
     if (item.typedLen >= item.text.length) {
-      // 击破！
+      // 成功击破！
       playSound('laser');
-      item.el.style.transform = 'translateX(-50%) scale(1.3)';
-      item.el.style.background = '#34D399';
-      item.el.style.borderColor = '#10B981';
-      setTimeout(() => item.el.remove(), 100);
-      fallingItems.splice(targetIdx, 1);
 
+      const arena = document.getElementById('gameArena');
+      const arenaW = arena ? arena.clientWidth : 800;
+      const arenaH = arena ? arena.clientHeight : 380;
+
+      // 击发激光光束
+      laserBeams.push({
+        x1: arenaW / 2,
+        y1: arenaH - 45,
+        x2: item.x,
+        y2: item.y,
+        color: '#10B981',
+        width: 3.5,
+        alpha: 1
+      });
+
+      // 粒子爆炸
+      createExplosion(item.x, item.y, item.text.length, '#10B981');
+
+      // 连击与倍率计算
       gameCombo++;
-      gameScore += 10 * item.text.length + Math.min(gameCombo * 5, 30);
+      let multiplier = 1;
+      if (gameCombo >= 20) multiplier = 3;
+      else if (gameCombo >= 10) multiplier = 2;
+      else if (gameCombo >= 5) multiplier = 1.5;
+
+      const basePoints = 10 * item.text.length + Math.min(gameCombo * 5, 30);
+      const points = Math.round(basePoints * multiplier);
+      gameScore += points;
+
       document.getElementById('gameScore').textContent = gameScore;
       document.getElementById('gameCombo').textContent = gameCombo;
+
+      // 浮动跳动暴击文字
+      floatingTexts.push({
+        x: item.x,
+        y: item.y - 12,
+        text: `+${points}${multiplier > 1 ? ' (' + multiplier + 'x)' : ''}`,
+        color: multiplier > 1 ? '#F59E0B' : '#34D399',
+        alpha: 1,
+        vy: -1.8,
+        decay: 0.02
+      });
+
+      fallingItems.splice(targetIdx, 1);
     } else {
       playSound('tap');
     }
@@ -1939,9 +2429,35 @@ function handleGameKey(key) {
   }
 }
 
+// 失焦呼吸提示监测 (Focus Loss Monitor)
+let focusCheckTimer = null;
+const hiddenInp = document.getElementById('hiddenInput');
+if (hiddenInp) {
+  hiddenInp.addEventListener('focus', () => {
+    if (focusCheckTimer) clearTimeout(focusCheckTimer);
+    const reminder = document.getElementById('focusReminder');
+    if (reminder) reminder.style.display = 'none';
+  });
+
+  hiddenInp.addEventListener('blur', () => {
+    if (focusCheckTimer) clearTimeout(focusCheckTimer);
+    focusCheckTimer = setTimeout(() => {
+      const compModal = document.getElementById('completionModal');
+      const overModal = document.getElementById('gameOverModal');
+      const isModalOpen = (compModal && compModal.style.display !== 'none') || (overModal && overModal.style.display !== 'none');
+      if (!isModalOpen && currentAppMode === 'drill') {
+        const reminder = document.getElementById('focusReminder');
+        if (reminder) reminder.style.display = 'flex';
+      }
+    }, 150);
+  });
+}
+
 // 页面初始化
 window.addEventListener('DOMContentLoaded', () => {
   initCurriculumUI();
+  updateGamificationDisplay();
+  initCanvas();
   focusGameInput();
 });
 </script>
