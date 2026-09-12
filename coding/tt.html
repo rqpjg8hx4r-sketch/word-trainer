@@ -896,6 +896,15 @@ function playSound(type) {
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
       osc.start(now);
       osc.stop(now + 0.09);
+    } else if (type === 'delete') {
+      // 柔和轻巧的退格清除音（舒适水泡轻啵声，不刺耳）
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(380, now);
+      osc.frequency.exponentialRampToValueAtTime(240, now + 0.04);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.048);
+      osc.start(now);
+      osc.stop(now + 0.05);
     } else if (type === 'error') {
       // 柔和但清晰可辨的“笃”声（如同轻叩木鱼/温和低音），清晰度高但不刺耳
       osc.type = 'triangle';
@@ -1028,6 +1037,30 @@ const FINGER_MAP = {
   '"': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指 (加Shift)' },
   '/': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
   '\n': { f: 'f_r_pinky', k: 'r-pinky', name: '右手小指 (回车 ↵ 换行)' }
+};
+
+/* Shift 组合符号映射表：记录物理基准按键与对应手指 */
+const SHIFT_MAP = {
+  '!': { base: '1', f: 'f_l_pinky', k: 'l-pinky', name: '左手小指' },
+  '@': { base: '2', f: 'f_l_ring', k: 'l-ring', name: '左手无名指' },
+  '#': { base: '3', f: 'f_l_mid', k: 'l-mid', name: '左手中指' },
+  '$': { base: '4', f: 'f_l_idx', k: 'l-idx', name: '左手食指' },
+  '%': { base: '5', f: 'f_l_idx', k: 'l-idx', name: '左手食指' },
+  '^': { base: '6', f: 'f_r_idx', k: 'r-idx', name: '右手食指' },
+  '&': { base: '7', f: 'f_r_idx', k: 'r-idx', name: '右手食指' },
+  '*': { base: '8', f: 'f_r_mid', k: 'r-mid', name: '右手中指' },
+  '(': { base: '9', f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
+  ')': { base: '0', f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  '_': { base: '-', f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  '+': { base: '=', f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  '{': { base: '[', f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  '}': { base: ']', f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  ':': { base: ';', f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  '"': { base: "'", f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  '<': { base: ',', f: 'f_r_mid', k: 'r-mid', name: '右手中指' },
+  '>': { base: '.', f: 'f_r_ring', k: 'r-ring', name: '右手无名指' },
+  '?': { base: '/', f: 'f_r_pinky', k: 'r-pinky', name: '右手小指' },
+  '~': { base: '`', f: 'f_l_pinky', k: 'l-pinky', name: '左手小指' }
 };
 
 /* ==================== 3. 经典 TT 10 大梯次累进大纲 ==================== */
@@ -1377,10 +1410,17 @@ function highlightKeyboardAndHand(char) {
     return;
   }
 
-  const lower = char.toLowerCase();
-  const info = FINGER_MAP[lower] || FINGER_MAP[char];
+  const isUpper = (char >= 'A' && char <= 'Z');
+  const shiftInfo = SHIFT_MAP[char];
+  const needsShift = isUpper || !!shiftInfo;
 
-  let targetKeyStr = lower;
+  let baseKey = char;
+  if (isUpper) baseKey = char.toLowerCase();
+  else if (shiftInfo) baseKey = shiftInfo.base;
+
+  const info = shiftInfo || FINGER_MAP[baseKey] || FINGER_MAP[char];
+
+  let targetKeyStr = baseKey;
   if (char === ' ') targetKeyStr = ' ';
   if (char === '\n') targetKeyStr = 'Enter';
 
@@ -1395,9 +1435,24 @@ function highlightKeyboardAndHand(char) {
     if (char === ' ') displayChar = 'Space 空格 ␣';
     if (char === '\n') displayChar = 'Enter 回车 ↵';
     if (char === '0') displayChar = '数字 0 (带斜线)';
-    if (char === 'o' || char === 'O') displayChar = '字母 O (饱满圆弧)';
+    if (char === 'o' || char === 'O') displayChar = isUpper ? '大写字母 O' : '字母 O (饱满圆弧)';
 
-    document.getElementById('fingerGuideText').innerHTML = `👉 请用【<strong style="color:var(--primary);">${info.name}</strong>】按下 【<strong>${displayChar}</strong>】`;
+    if (needsShift) {
+      // 触觉盲打交叉原则：打左手键用右手 Shift，打右手键用左手 Shift
+      const isLeftHand = info.k && info.k.startsWith('l-');
+      const shiftFinger = isLeftHand ? 'r-pinky' : 'l-pinky';
+      const shiftHandName = isLeftHand ? '右手小指' : '左手小指';
+
+      const shiftKeyEl = document.querySelector(`.key[data-k="Shift"][data-finger="${shiftFinger}"]`);
+      if (shiftKeyEl) shiftKeyEl.classList.add('active-target');
+
+      const shiftFingerEl = document.getElementById(isLeftHand ? 'f_r_pinky' : 'f_l_pinky');
+      if (shiftFingerEl) shiftFingerEl.classList.add('active');
+
+      document.getElementById('fingerGuideText').innerHTML = `👉 请按住【<strong style="color:var(--c-${shiftFinger});">${shiftHandName} Shift</strong>】+ 用【<strong style="color:var(--primary);">${info.name}</strong>】按下 【<strong>${displayChar}</strong>】`;
+    } else {
+      document.getElementById('fingerGuideText').innerHTML = `👉 请用【<strong style="color:var(--primary);">${info.name}</strong>】按下 【<strong>${displayChar}</strong>】`;
+    }
   } else {
     document.getElementById('fingerGuideText').textContent = `👉 请按下 【${char}】`;
   }
@@ -1438,9 +1493,14 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
-  // 屏蔽默认系统行为
+  // 屏蔽默认系统行为（空格滚动、退格后退、Tab 切焦）
   if (e.key === ' ' || e.key === 'Backspace' || e.key === 'Tab') {
     e.preventDefault();
+  }
+
+  // 忽略修饰键与控制键（Shift、Control、Alt、Meta、CapsLock、方向键等），不误触打字判定与报错
+  if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+    return;
   }
 
   if (currentAppMode === 'drill') {
@@ -1451,6 +1511,29 @@ window.addEventListener('keydown', (e) => {
 });
 
 function handleDrillKey(key) {
+  if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Escape'].includes(key)) return;
+
+  // 退格处理：撤销上一个字符，支持重新输入修正
+  if (key === 'Backspace') {
+    if (charIndex > 0) {
+      charIndex--;
+      if (correctTyped > 0) correctTyped--;
+      playSound('delete');
+      updateCharHighlights();
+
+      if (startTime) {
+        const elapsedMinutes = Math.max(0.01, (Date.now() - startTime) / 60000);
+        const wpm = Math.round((correctTyped / 5) / elapsedMinutes);
+        const bpm = Math.round(totalTyped / elapsedMinutes);
+        const acc = totalTyped > 0 ? Math.round((correctTyped / totalTyped) * 100) : 100;
+        document.getElementById('statWpm').textContent = wpm;
+        document.getElementById('statAcc').textContent = acc;
+        document.getElementById('statBpm').textContent = `${bpm} BPM (击/分)`;
+      }
+    }
+    return;
+  }
+
   if (charIndex >= currentFullText.length) return;
   if (!startTime) startTime = Date.now();
 
@@ -1770,6 +1853,32 @@ function closeGameOverModal() {
 
 function handleGameKey(key) {
   if (!gameRunning) return;
+  if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock', 'Escape'].includes(key)) return;
+
+  // 退格处理：撤回正在击打单词的进度
+  if (key === 'Backspace') {
+    for (let i = 0; i < fallingItems.length; i++) {
+      const item = fallingItems[i];
+      if (item.typedLen > 0) {
+        item.typedLen--;
+        const typedStr = item.text.slice(0, item.typedLen);
+        const untypedStr = item.text.slice(item.typedLen);
+
+        const typedSpan = item.el.querySelector('.word-typed');
+        const untypedSpan = item.el.querySelector('.word-untyped');
+        if (typedSpan) typedSpan.textContent = typedStr;
+        if (untypedSpan) untypedSpan.textContent = untypedStr;
+
+        if (item.typedLen === 0) {
+          item.el.classList.remove('is-target');
+        }
+        playSound('delete');
+        return;
+      }
+    }
+    return;
+  }
+
   const lower = key.toLowerCase();
 
   // 1. 优先找已经在打且进度 > 0 的单词
