@@ -250,10 +250,13 @@
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span>题库选择:</span>
           <select id="selectWordPool" style="padding:6px 10px; border-radius:8px; background:#0F172A; color:#FFF; border:1px solid var(--party-border); font-size:12px;">
-            <option value="life_food">🍽️ 亲子生活美食 (40组)</option>
-            <option value="nature_animals">🌿 自然动物常识 (35组)</option>
-            <option value="bilingual_esl">🇬🇧 少儿双语口语 (35组)</option>
-            <option value="humor_roles">🎭 趣味反差搞笑 (20组)</option>
+            <option value="all_random" selected>🔀 全题库随机大乱斗 (435+ 组)</option>
+            <option value="life_food">🍽️ 亲子生活美食 (85组)</option>
+            <option value="nature_animals">🌿 自然动物常识 (85组)</option>
+            <option value="school_sports">🏫 校园文体生活 (65组)</option>
+            <option value="sci_tech_universe">🚀 科技宇宙奇趣 (55组)</option>
+            <option value="humor_roles">🎭 趣味反差搞笑 (60组)</option>
+            <option value="bilingual_esl">🇬🇧 少儿双语口语 (85组)</option>
           </select>
         </div>
 
@@ -381,7 +384,10 @@
     </div>
 
     <div style="background:#0F172A; border-radius:12px; padding:12px; margin:14px 0;">
-      <div style="font-size:13px; font-weight:800; color:var(--party-gold); margin-bottom:6px;">📋 本局全员底牌揭秘：</div>
+      <div style="font-size:13px; font-weight:800; color:var(--party-gold); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
+        <span>📋 本局全员底牌揭秘：</span>
+        <span id="recapCategoryBadge" style="font-size:11px; font-weight:600; color:#94A3B8;"></span>
+      </div>
       <table class="recap-table" id="recapTable">
         <thead>
           <tr>
@@ -436,7 +442,7 @@ let myInfo = { avatar: '🦁', name: '爸爸' };
 let players = []; // { id, name, avatar, isHost, alive, role, word, votedFor, ready, votesCount }
 let gameState = 'lobby'; // lobby | peek | clues | vote | reveal
 let gameConfig = {
-  poolKey: 'life_food',
+  poolKey: 'all_random',
   undercoverCount: 1,
   hasBlank: false,
   timeLimit: 45
@@ -446,9 +452,39 @@ let currentSpeakerIdx = 0;
 let speakOrder = [];
 let turnTimer = null;
 let currentRoundWordPair = null;
+let usedWordHistory = [];
+
+/* 初始化题库下拉菜单 */
+function initWordPoolSelector() {
+  const sel = document.getElementById('selectWordPool');
+  if (!sel || typeof UNDERCOVER_WORD_POOLS === 'undefined') return;
+  sel.innerHTML = '';
+
+  let totalCount = 0;
+  for (const k in UNDERCOVER_WORD_POOLS) {
+    totalCount += UNDERCOVER_WORD_POOLS[k].pairs.length;
+  }
+
+  // 1. 全题库大乱斗
+  const allOpt = document.createElement('option');
+  allOpt.value = 'all_random';
+  allOpt.textContent = `🔀 全题库随机大乱斗 (${totalCount} 组海量词库)`;
+  sel.appendChild(allOpt);
+
+  // 2. 各独立分类词库
+  for (const [key, pool] of Object.entries(UNDERCOVER_WORD_POOLS)) {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = `${pool.name} (${pool.pairs.length} 组)`;
+    sel.appendChild(opt);
+  }
+  sel.value = 'all_random';
+}
 
 /* 页面加载初始化 */
 window.addEventListener('DOMContentLoaded', () => {
+  initWordPoolSelector();
+
   // 检查 URL 是否带 #room=xxxx
   const hash = window.location.hash;
   const match = hash.match(/room=(\d{4})/);
@@ -667,10 +703,29 @@ function hostStartGame() {
   gameConfig.hasBlank = document.getElementById('selectHasBlank').value === 'yes';
   gameConfig.timeLimit = parseInt(document.getElementById('selectTimeLimit').value, 10);
 
-  // 2. 从题库随机抽选一组词
-  const pool = UNDERCOVER_WORD_POOLS[gameConfig.poolKey] || UNDERCOVER_WORD_POOLS.life_food;
-  const pair = pool.pairs[Math.floor(Math.random() * pool.pairs.length)];
-  currentRoundWordPair = { ...pair, isBilingual: pool.isBilingual };
+  // 2. 从题库随机抽选一组词 (支持全题库大乱斗与防重机制)
+  let candidatePool = [];
+
+  if (gameConfig.poolKey === 'all_random') {
+    Object.values(UNDERCOVER_WORD_POOLS).forEach(p => {
+      candidatePool.push(...p.pairs.map(pair => ({ ...pair, isBilingual: !!p.isBilingual, categoryName: p.name })));
+    });
+  } else {
+    const pool = UNDERCOVER_WORD_POOLS[gameConfig.poolKey] || UNDERCOVER_WORD_POOLS.life_food;
+    candidatePool = pool.pairs.map(pair => ({ ...pair, isBilingual: !!pool.isBilingual, categoryName: pool.name }));
+  }
+
+  // 过滤近期用过的词 (最近 50 轮不重复)
+  let available = candidatePool.filter(p => !usedWordHistory.includes(p.c + ':::' + p.u));
+  if (available.length === 0) {
+    usedWordHistory = [];
+    available = candidatePool;
+  }
+  const pair = available[Math.floor(Math.random() * available.length)];
+  usedWordHistory.push(pair.c + ':::' + pair.u);
+  if (usedWordHistory.length > 50) usedWordHistory.shift();
+
+  currentRoundWordPair = pair;
 
   // 3. 分配身份与底牌
   const count = players.length;
@@ -1063,6 +1118,13 @@ function showRevealPhase(result) {
   }
 
   // 渲染底牌揭秘表
+  const catBadge = document.getElementById('recapCategoryBadge');
+  if (catBadge && currentRoundWordPair && currentRoundWordPair.categoryName) {
+    catBadge.textContent = `[所属题库：${currentRoundWordPair.categoryName}]`;
+  } else if (catBadge) {
+    catBadge.textContent = '';
+  }
+
   const tbody = document.getElementById('recapTableBody');
   tbody.innerHTML = '';
   result.players.forEach(p => {
