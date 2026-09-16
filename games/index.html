@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>家庭在线游戏 · Alex Family Party</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --card-border: #E2E8F0;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --accent-border: #C7D2FE;
+      --cyan: #0284C7;
+      --cyan-light: #E0F2FE;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --amber: #D97706;
+      --amber-light: #FEF3C7;
+      --text: #1E293B;
+      --subtext: #64748B;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      font-size: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--amber-light);
+      border: 1px solid #FDE68A;
+    }
+    .brand-text h1 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .brand-text .sub {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #F1F5F9;
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+    .hero {
+      background: linear-gradient(135deg, #FFFFFF, #FEF3C7);
+      border: 1px solid #FDE68A;
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(217, 119, 6, 0.06);
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: #FEF3C7;
+      color: #B45309;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      border: 1px solid #FDE68A;
+    }
+    .hero h2 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 14px;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0F172A;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .game-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .game-card.active-card {
+      border-color: #FDE68A;
+    }
+    .game-card.active-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--amber);
+      box-shadow: 0 8px 24px rgba(217, 119, 6, 0.12);
+    }
+    .game-card.locked {
+      opacity: 0.72;
+      background: #F8FAFC;
+      border-style: dashed;
+    }
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .card-icon {
+      font-size: 36px;
+    }
+    .status-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .status-tag.ready {
+      background: var(--success-light);
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+    .status-tag.locked-tag {
+      background: #F1F5F9;
+      color: var(--subtext);
+    }
+    .card-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin: 0 0 6px 0;
+      color: #0F172A;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--subtext);
+      line-height: 1.5;
+      margin: 0 0 14px 0;
+      flex: 1;
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #F1F5F9;
+      color: #475569;
+    }
+    .tag.highlight {
+      background: var(--amber-light);
+      color: #B45309;
+    }
+    .card-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .card-btn.primary-btn {
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+    }
+    .card-btn.primary-btn:hover {
+      background: #B45309;
+    }
+    .card-btn.disabled-btn {
+      background: #E2E8F0;
+      color: #94A3B8;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🎮</div>
+      <div class="brand-text">
+        <h1>家庭在线游戏 · Alex Family Party</h1>
+        <div class="sub">多终端独立画面 · 局域网 WebRTC 极速直连 · 零服务器延迟</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="../coding/" class="nav-btn"><span>💻</span> 编程思维</a>
+      <a href="../index.html" class="nav-btn"><span>📚</span> 每日英语</a>
+    </div>
+  </div>
+
+  <!-- 头部横幅 -->
+  <div class="hero">
+    <div class="hero-badge">⚡ 零外网延迟 · WebRTC 局域网直连</div>
+    <h2>全家各持设备 · 随时开局欢聚一堂</h2>
+    <p>
+      无需下载任何 App，利用先进的 WebRTC P2P 局域网穿透技术，数据直接在客厅 Wi-Fi 内部互通（即使没连 Wi-Fi 用 4G/5G 也能秒连）。每个人的 iPad 或 iPhone 都有专属独立画面，隐私防偷窥、操作零延迟，全家共享欢笑！
+    </p>
+  </div>
+
+  <!-- 游戏卡片网格 -->
+  <div class="section-title">
+    <span>🎴</span> 精选家庭聚会游戏列表
+  </div>
+
+  <div class="grid">
+    <!-- 卡片 1：谁是卧底 (首发上线) -->
+    <div class="game-card active-card">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">🕵️</div>
+          <span class="status-tag ready">🟢 即刻开战 (3~8人)</span>
+        </div>
+        <h3 class="card-title">谁是卧底 · 全家对决</h3>
+        <p class="card-desc">
+          经典家庭聚会推凶神作！每台手机各自独立画面，按住屏幕秘密看词，松开即刻隐藏严防身旁偷看。轮流一句话描述，匿名秘密投票。内置 130+ 组亲子生活美食、少儿双语口语及趣味反差词库！
+        </p>
+        <div class="tag-row">
+          <span class="tag highlight">P2P 局域网直连</span>
+          <span class="tag">长按防偷窥</span>
+          <span class="tag">少儿双语词库</span>
+          <span class="tag">匿名投票</span>
+        </div>
+      </div>
+      <a href="undercover.html" class="card-btn primary-btn">
+        <span>🚀</span> 立即创建 / 加入对局 →
+      </a>
+    </div>
+
+    <!-- 卡片 2：家庭卡丁车大奖赛 (即将推出) -->
+    <div class="game-card locked">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">🏎️</div>
+          <span class="status-tag locked-tag">🔒 规划开发中</span>
+        </div>
+        <h3 class="card-title">家庭卡丁车道具大奖赛</h3>
+        <p class="card-desc">
+          真正的同场赛车对决！每个人屏幕拥有独立的追随赛车视角，在同条赛道上实时超车、捡香蕉皮、导弹、护盾互坑，自带亲子落后追赶加速机制。
+        </p>
+        <div class="tag-row">
+          <span class="tag">60FPS 实时同场</span>
+          <span class="tag">独立追随镜头</span>
+          <span class="tag">道具互坑</span>
+        </div>
+      </div>
+      <div class="card-btn disabled-btn">即将推出 · 敬请期待</div>
+    </div>
+
+    <!-- 卡片 3：闪电极速抢答台 (即将推出) -->
+    <div class="game-card locked">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">⚡</div>
+          <span class="status-tag locked-tag">🔒 规划开发中</span>
+        </div>
+        <h3 class="card-title">闪电极速抢答台</h3>
+        <p class="card-desc">
+          毫秒级抢答判定！iPad 大屏主持出题，手机瞬间化身发光蜂鸣拍键。听力辨音、思维找规律、家庭百科，看谁的反应最快！
+        </p>
+        <div class="tag-row">
+          <span class="tag">1ms 极速蜂鸣</span>
+          <span class="tag">英语辨音</span>
+          <span class="tag">家庭积分榜</span>
+        </div>
+      </div>
+      <div class="card-btn disabled-btn">即将推出 · 敬请期待</div>
+    </div>
+
+    <!-- 卡片 4：亲子反应堆炸弹 (即将推出) -->
+    <div class="game-card locked">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">💣</div>
+          <span class="status-tag locked-tag">🔒 规划开发中</span>
+        </div>
+        <h3 class="card-title">亲子反应堆炸弹</h3>
+        <p class="card-desc">
+          心跳加速的数字与词汇接力！虚拟炸弹在全家手机间倒计时传递，手机剧烈震动心跳，规定时间内说出指定词语才能甩锅给下一个人！
+        </p>
+        <div class="tag-row">
+          <span class="tag">触觉震动</span>
+          <span class="tag">词语接力</span>
+          <span class="tag">紧张倒计时</span>
+        </div>
+      </div>
+      <div class="card-btn disabled-btn">即将推出 · 敬请期待</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

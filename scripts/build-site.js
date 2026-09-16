@@ -6,11 +6,13 @@ const outputDir = path.join(projectRoot, 'dist');
 const outputHomework = path.join(outputDir, 'homework');
 const outputPractice = path.join(outputDir, 'practice');
 const outputCoding = path.join(outputDir, 'coding');
+const outputGames = path.join(outputDir, 'games');
 
 fs.rmSync(outputDir, { recursive:true, force:true });
 fs.mkdirSync(outputHomework, { recursive:true });
 fs.mkdirSync(outputPractice, { recursive:true });
 fs.mkdirSync(outputCoding, { recursive:true });
+fs.mkdirSync(outputGames, { recursive:true });
 
 for (const filename of ['index.html', 'type.html', 'manifest.webmanifest', 'service-worker.js']) {
   fs.copyFileSync(path.join(projectRoot, filename), path.join(outputDir, filename));
@@ -24,6 +26,11 @@ if (fs.existsSync(codingDir)) {
   for (const filename of codingFiles) {
     fs.copyFileSync(path.join(codingDir, filename), path.join(outputCoding, filename));
   }
+}
+
+const gamesDir = path.join(projectRoot, 'games');
+if (fs.existsSync(gamesDir)) {
+  fs.cpSync(gamesDir, outputGames, { recursive: true });
 }
 
 const homeworkDir = path.join(projectRoot, 'homework');
