@@ -17,6 +17,7 @@
     .role-tag.civilian { background: #065F46; color: #A7F3D0; }
     .role-tag.undercover { background: #991B1B; color: #FECACA; }
     .role-tag.blank { background: #475569; color: #E2E8F0; }
+    .role-tag.spectator { background: #312E81; color: #C7D2FE; }
 
     /* 保密按住看词保险箱卡片 */
     .secret-vault-card {
@@ -31,6 +32,9 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       transition: all 0.15s ease;
       touch-action: none;
+      -webkit-touch-callout: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .secret-vault-card:active {
       transform: scale(0.98);
@@ -69,14 +73,16 @@
       justify-content: center;
       padding: 20px;
       animation: fadeIn 0.1s ease;
+      z-index: 10;
     }
     .word-text-large {
-      font-size: 38px;
+      font-size: 36px;
       font-weight: 900;
       color: #38BDF8;
       letter-spacing: 1.5px;
       margin: 8px 0;
       text-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+      word-break: break-all;
     }
     .word-role-label {
       font-size: 13px;
@@ -94,7 +100,7 @@
       border-radius: 10px;
       padding: 8px 12px;
       font-size: 12px;
-      color: #94A3B8;
+      color: #CBD5E1;
       max-width: 90%;
       margin-top: 6px;
       line-height: 1.4;
@@ -139,12 +145,13 @@
       border-bottom: 1px solid var(--party-border);
     }
 
-    /* 二维码弹窗 */
+    /* 二维码与通用遮罩弹窗 */
     .qr-modal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -165,11 +172,121 @@
       display: flex;
       justify-content: center;
     }
+
+    /* 精美原生风自定义弹窗 (替代系统 alert / confirm) */
+    .party-dialog-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 24px;
+      animation: fadeIn 0.15s ease-out;
+    }
+    .party-dialog-card {
+      background: linear-gradient(145deg, #1E293B, #0F172A);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      border-radius: 20px;
+      padding: 26px 20px;
+      text-align: center;
+      width: 100%;
+      max-width: 330px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(99, 102, 241, 0.25);
+      animation: popIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .dialog-icon {
+      font-size: 46px;
+      margin-bottom: 8px;
+    }
+    .dialog-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #F8FAFC;
+      margin: 0 0 8px 0;
+    }
+    .dialog-message {
+      font-size: 13.5px;
+      color: #94A3B8;
+      line-height: 1.55;
+      margin: 0 0 20px 0;
+    }
+    .dialog-actions {
+      display: flex;
+      gap: 10px;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* 顶部 Toast 提示 */
+    .party-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: #1E293B;
+      border: 1px solid #4F46E5;
+      color: #F8FAFC;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 1001;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .party-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* 观战席专属提示条 */
+    .spectator-banner {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid #6366F1;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #C7D2FE;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
   </style>
 </head>
 <body>
 
 <canvas id="confettiCanvas"></canvas>
+
+<!-- 自定义精美提示弹窗 (替代浏览器默认 alert / confirm) -->
+<div id="partyCustomModal" class="party-dialog-overlay" style="display:none;">
+  <div class="party-dialog-card">
+    <div class="dialog-icon" id="dialogIcon">⚠️</div>
+    <h3 class="dialog-title" id="dialogTitle">提示</h3>
+    <p class="dialog-message" id="dialogMessage">提示内容</p>
+    <div class="dialog-actions" id="dialogActions">
+      <button class="party-btn secondary" id="dialogCancelBtn" style="display:none;">取消</button>
+      <button class="party-btn primary" id="dialogOkBtn">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 顶部浮动轻量 Toast 提示 -->
+<div id="partyToast" class="party-toast">
+  <span id="toastIcon">💡</span>
+  <span id="toastMsg">提示消息</span>
+</div>
 
 <div class="party-container">
   <!-- 顶部标题栏 -->
@@ -182,6 +299,12 @@
       </div>
     </div>
     <a href="index.html" class="party-nav-btn"><span>🎮</span> 游戏大厅</a>
+  </div>
+
+  <!-- 观战者提示 -->
+  <div id="spectatorGlobalBanner" class="spectator-banner" style="display:none;">
+    <span>👀</span>
+    <span id="spectatorBannerText">您正在观战席，本局结束后将自动进入下一局对战！</span>
   </div>
 
   <!-- ==================== 视图 1：加入或创建房间 ==================== -->
@@ -214,7 +337,7 @@
       </div>
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px;">
         <span id="selectedAvatarIcon" style="font-size:28px;">🦁</span>
-        <input id="inputPlayerName" type="text" placeholder="输入玩家昵称" value="爸爸" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--party-border); background:#0F172A; color:#FFF; font-size:15px; font-weight:700;">
+        <input id="inputPlayerName" type="text" maxlength="12" placeholder="输入玩家昵称" value="爸爸" style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--party-border); background:#0F172A; color:#FFF; font-size:15px; font-weight:700;">
       </div>
       <div style="display:flex; gap:8px;">
         <button class="party-btn secondary" style="flex:1;" onclick="closeProfileModal()">取消</button>
@@ -238,7 +361,7 @@
     <div style="margin-top:12px;">
       <div style="font-size:12px; font-weight:800; color:var(--party-subtext);">已加入玩家 (<span id="playerCount">0</span> 人):</div>
       <div id="lobbyPlayerGrid" class="player-badge-grid">
-        <!-- 动态生成玩家列表 -->
+        <!-- 动态安全渲染玩家列表 -->
       </div>
     </div>
 
@@ -250,13 +373,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span>题库选择:</span>
           <select id="selectWordPool" style="padding:6px 10px; border-radius:8px; background:#0F172A; color:#FFF; border:1px solid var(--party-border); font-size:12px;">
-            <option value="all_random" selected>🔀 全题库随机大乱斗 (435+ 组)</option>
-            <option value="life_food">🍽️ 亲子生活美食 (85组)</option>
-            <option value="nature_animals">🌿 自然动物常识 (85组)</option>
-            <option value="school_sports">🏫 校园文体生活 (65组)</option>
-            <option value="sci_tech_universe">🚀 科技宇宙奇趣 (55组)</option>
-            <option value="humor_roles">🎭 趣味反差搞笑 (60组)</option>
-            <option value="bilingual_esl">🇬🇧 少儿双语口语 (85组)</option>
+            <!-- 动态生成题库选项 -->
           </select>
         </div>
 
@@ -271,8 +388,8 @@
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <span>加入白板(无词卧底):</span>
           <select id="selectHasBlank" style="padding:6px 10px; border-radius:8px; background:#0F172A; color:#FFF; border:1px solid var(--party-border); font-size:12px;">
-            <option value="no" selected>不加入</option>
-            <option value="yes">加入 1 名白板</option>
+            <option value="no" selected>不加入白板</option>
+            <option value="yes">加入 1 名白板 (需≥5人)</option>
           </select>
         </div>
 
@@ -303,17 +420,17 @@
   <!-- ==================== 视图 3：保密长按看词阶段 ==================== -->
   <div id="viewPeek" class="party-card" style="display:none;">
     <h3 style="margin:0 0 6px 0; text-align:center; font-size:18px;">第 1 步：查验你的底牌</h3>
-    <p style="margin:0 0 16px 0; text-align:center; font-size:12px; color:var(--party-subtext);">严防偷看！只有长按时才会显现，松开立刻藏起！</p>
+    <p style="margin:0 0 16px 0; text-align:center; font-size:12px; color:var(--party-subtext);">严防身旁偷看！只有长按时才会显现，松开立刻隐藏！</p>
 
     <!-- 按住看词保险箱 -->
     <div class="secret-vault-card" id="vaultCard">
       <span class="vault-lock-icon">🔒</span>
-      <div class="vault-instruction">长按此处 揭晓词语</div>
+      <div class="vault-instruction">长按此处 揭晓底牌</div>
       <div class="vault-sub">松开手指立即隐藏</div>
 
       <!-- 浮现层 -->
       <div class="word-reveal-box" id="wordRevealBox">
-        <div class="word-role-label" id="revealRoleText">平民身份</div>
+        <div class="word-role-label" id="revealRoleText">平民身份 🛡️</div>
         <div class="word-text-large" id="revealWordText">苹果</div>
         <div id="revealHintBox" class="word-hint-box" style="display:none;"></div>
       </div>
@@ -375,7 +492,7 @@
     </div>
   </div>
 
-  <!-- ==================== 视图 6：揭晓与结算阶段 ==================== -->
+  <!-- ==================== 视图 6：轮次播报与结算阶段 ==================== -->
   <div id="viewReveal" class="party-card" style="display:none;">
     <div style="text-align:center; padding:10px 0;">
       <div id="revealCelebrationIcon" style="font-size:52px; margin-bottom:6px;">🎉</div>
@@ -383,7 +500,14 @@
       <p id="revealResultSub" style="margin:0; font-size:13px; color:var(--party-subtext);">卧底已被全家成功揪出！</p>
     </div>
 
-    <div style="background:#0F172A; border-radius:12px; padding:12px; margin:14px 0;">
+    <!-- 轮次播报：未完待续时展示存活玩家（底牌严格保密） -->
+    <div id="roundAliveSurvivorsBox" style="display:none; background:#0F172A; border-radius:12px; padding:14px; margin:14px 0;">
+      <div style="font-size:13px; font-weight:800; color:var(--party-gold); margin-bottom:8px;">🛡️ 存活玩家名单 (继续对决)：</div>
+      <div id="survivorsBadgeGrid" class="player-badge-grid"></div>
+    </div>
+
+    <!-- 终局大揭秘：仅在游戏真正结束时展示全员底牌 -->
+    <div id="gameOverRecapBox" style="display:none; background:#0F172A; border-radius:12px; padding:12px; margin:14px 0;">
       <div style="font-size:13px; font-weight:800; color:var(--party-gold); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
         <span>📋 本局全员底牌揭秘：</span>
         <span id="recapCategoryBadge" style="font-size:11px; font-weight:600; color:#94A3B8;"></span>
@@ -401,13 +525,15 @@
       </table>
     </div>
 
-    <div id="hostNextRoundBox" style="display:none; display:flex; gap:10px;">
-      <button class="party-btn primary" onclick="hostNextRound()">
-        <span>🔄</span> 再来一局 (自动换新词)
+    <!-- 房主与客户端操作条 -->
+    <div id="hostNextRoundBox" style="display:none; display:flex; gap:10px; margin-top:12px;">
+      <!-- 动态设置进入下一轮发言或开启新局 -->
+      <button id="btnHostRoundAction" class="party-btn primary" onclick="onHostRoundActionClick()">
+        <span>📢</span> 进入下一轮发言
       </button>
     </div>
-    <div id="clientNextRoundTip" style="display:none; text-align:center; color:var(--party-subtext); font-size:13px; margin-top:8px;">
-      ⏳ 等待房主开启下一局...
+    <div id="clientNextRoundTip" style="display:none; text-align:center; color:var(--party-subtext); font-size:13px; margin-top:10px;">
+      ⏳ 等待房主操作推进...
     </div>
   </div>
 </div>
@@ -431,6 +557,93 @@
 <script src="undercover-words.js"></script>
 
 <script>
+/* ==================== 0. 安全辅助工具与自定义弹窗 ==================== */
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function showPartyAlert(message, title = '提示', icon = '💡') {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('partyCustomModal');
+    document.getElementById('dialogIcon').textContent = icon;
+    document.getElementById('dialogTitle').textContent = title;
+    document.getElementById('dialogMessage').textContent = message;
+    const cancelBtn = document.getElementById('dialogCancelBtn');
+    const okBtn = document.getElementById('dialogOkBtn');
+
+    cancelBtn.style.display = 'none';
+    okBtn.textContent = '我知道了';
+    modal.style.display = 'flex';
+    audio.play('tap');
+
+    const handleOk = () => {
+      audio.play('tap');
+      modal.style.display = 'none';
+      okBtn.removeEventListener('click', handleOk);
+      resolve(true);
+    };
+    okBtn.addEventListener('click', handleOk);
+  });
+}
+
+function showPartyConfirm(message, title = '确认操作', icon = '🤔') {
+  return new Promise((resolve) => {
+    const modal = document.getElementById('partyCustomModal');
+    document.getElementById('dialogIcon').textContent = icon;
+    document.getElementById('dialogTitle').textContent = title;
+    document.getElementById('dialogMessage').textContent = message;
+    const cancelBtn = document.getElementById('dialogCancelBtn');
+    const okBtn = document.getElementById('dialogOkBtn');
+
+    cancelBtn.style.display = 'block';
+    cancelBtn.textContent = '取消';
+    okBtn.textContent = '确定';
+    modal.style.display = 'flex';
+    audio.play('tap');
+
+    const handleOk = () => {
+      audio.play('tap');
+      modal.style.display = 'none';
+      cleanup();
+      resolve(true);
+    };
+
+    const handleCancel = () => {
+      audio.play('tap');
+      modal.style.display = 'none';
+      cleanup();
+      resolve(false);
+    };
+
+    function cleanup() {
+      okBtn.removeEventListener('click', handleOk);
+      cancelBtn.removeEventListener('click', handleCancel);
+    }
+
+    okBtn.addEventListener('click', handleOk);
+    cancelBtn.addEventListener('click', handleCancel);
+  });
+}
+
+let toastTimer = null;
+function showPartyToast(message, icon = '💡') {
+  const toast = document.getElementById('partyToast');
+  if (!toast) return;
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent = message;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2800);
+}
+
 /* ==================== 1. 全局状态机 ==================== */
 const audio = new GameAudio();
 const p2p = new P2PRoom();
@@ -439,8 +652,18 @@ let currentRoomCode = null;
 let isHost = false;
 let myPlayerId = null;
 let myInfo = { avatar: '🦁', name: '爸爸' };
-let players = []; // { id, name, avatar, isHost, alive, role, word, votedFor, ready, votesCount }
+let myCard = null; // 本人底牌：{ word, role, hint, categoryName }，严密保护
+let isSpectator = false;
+
+// players 列表：
+// 房主维护完整对象 { id, name, avatar, isHost, alive, role, word, votedFor, ready, votesCount }
+// 客户端仅维护公有对象 { id, name, avatar, isHost, alive }，绝不含他人 role 和 word！
+let players = [];
+let spectators = []; // 游戏中途加入的观战者列表 { id, name, avatar }
 let gameState = 'lobby'; // lobby | peek | clues | vote | reveal
+let currentRoundNumber = 1;
+let lastRoundResult = null;
+
 let gameConfig = {
   poolKey: 'all_random',
   undercoverCount: 1,
@@ -485,12 +708,19 @@ function initWordPoolSelector() {
 window.addEventListener('DOMContentLoaded', () => {
   initWordPoolSelector();
 
+  // 绑定规则配置变动时的合法性联动
+  const ucSelect = document.getElementById('selectUndercoverCount');
+  const blankSelect = document.getElementById('selectHasBlank');
+  if (ucSelect && blankSelect) {
+    ucSelect.addEventListener('change', syncRuleConstraints);
+    blankSelect.addEventListener('change', syncRuleConstraints);
+  }
+
   // 检查 URL 是否带 #room=xxxx
   const hash = window.location.hash;
   const match = hash.match(/room=(\d{4})/);
   if (match) {
     document.getElementById('inputRoomCode').value = match[1];
-    // 自动打开角色选择弹窗
     openJoinRoomModal(match[1]);
   }
 });
@@ -502,7 +732,6 @@ let pendingRoomCode = null;
 function openCreateRoomModal() {
   audio.play('tap');
   pendingMode = 'create';
-  // 随机生成 4 位房间码
   pendingRoomCode = String(Math.floor(1000 + Math.random() * 9000));
   document.getElementById('profileModalTitle').textContent = `创建房间 (代码: ${pendingRoomCode})`;
   document.getElementById('modalPlayerProfile').style.display = 'flex';
@@ -516,10 +745,10 @@ function openJoinRoomModal(code) {
   document.getElementById('modalPlayerProfile').style.display = 'flex';
 }
 
-function joinRoomByInput() {
+async function joinRoomByInput() {
   const code = document.getElementById('inputRoomCode').value.trim();
   if (!/^\d{4}$/.test(code)) {
-    alert('请输入 4 位纯数字房间码！');
+    await showPartyAlert('请输入 4 位纯数字房间码！', '房间码格式错误', '🔢');
     return;
   }
   openJoinRoomModal(code);
@@ -538,7 +767,8 @@ function closeProfileModal() {
 
 async function confirmProfileAndConnect() {
   audio.play('tap');
-  const name = document.getElementById('inputPlayerName').value.trim() || '玩家';
+  let name = document.getElementById('inputPlayerName').value.trim() || '玩家';
+  if (name.length > 12) name = name.slice(0, 12);
   myInfo.name = name;
   closeProfileModal();
 
@@ -551,8 +781,9 @@ async function confirmProfileAndConnect() {
       players = [{ id: 'host', name: myInfo.name, avatar: myInfo.avatar, isHost: true, alive: true }];
       setupHostListeners();
       showRoomLobby();
+      showPartyToast('房间创建成功！等待家人加入', '🎉');
     } catch (e) {
-      alert('房间创建失败，可能是网络问题或房间码被占用，请重试！');
+      await showPartyAlert('房间创建失败，可能是网络问题或房间码被占用，请重试！', '创建失败', '❌');
     }
   } else {
     isHost = false;
@@ -562,14 +793,16 @@ async function confirmProfileAndConnect() {
       myPlayerId = p2p.myPlayerInfo.id;
       setupClientListeners();
       showRoomLobby();
+      showPartyToast('已成功连接到房间！', '✅');
     } catch (e) {
-      alert('加入房间失败！请检查 4 位房间码是否输入正确，或房主是否已开启房间。');
+      await showPartyAlert('加入房间失败！请检查 4 位房间码是否输入正确，或房主是否已开启房间。', '加入失败', '🔍');
     }
   }
 }
 
-/* ==================== 3. 房间大厅与二维码 ==================== */
+/* ==================== 3. 房间大厅与人数配置约束 ==================== */
 function showRoomLobby() {
+  gameState = 'lobby';
   document.getElementById('viewStart').style.display = 'none';
   document.getElementById('viewRoomLobby').style.display = 'block';
   document.getElementById('lobbyRoomCode').textContent = currentRoomCode;
@@ -587,6 +820,36 @@ function showRoomLobby() {
   generateRoomQRCode();
 }
 
+function syncRuleConstraints() {
+  if (!isHost) return;
+  const count = players.length;
+  const ucSelect = document.getElementById('selectUndercoverCount');
+  const blankSelect = document.getElementById('selectHasBlank');
+  if (!ucSelect || !blankSelect) return;
+
+  // 1. 卧底人数动态选项：小于6人只能选1名卧底
+  if (count < 6) {
+    ucSelect.value = '1';
+    Array.from(ucSelect.options).forEach(opt => {
+      opt.disabled = opt.value === '2';
+    });
+  } else {
+    Array.from(ucSelect.options).forEach(opt => opt.disabled = false);
+  }
+
+  // 2. 白板选项：需平民严格大于非平民 (平民 > 卧底 + 白板)
+  // 小于5人禁止白板；若6人选2卧底，白板也需禁用防失衡
+  const curUc = parseInt(ucSelect.value, 10);
+  const blankOptYes = blankSelect.querySelector('option[value="yes"]');
+  const canHaveBlank = (count >= 5 && curUc === 1) || (count >= 7 && curUc === 2);
+  if (!canHaveBlank) {
+    blankSelect.value = 'no';
+    if (blankOptYes) blankOptYes.disabled = true;
+  } else {
+    if (blankOptYes) blankOptYes.disabled = false;
+  }
+}
+
 function updateLobbyPlayersUI() {
   const grid = document.getElementById('lobbyPlayerGrid');
   grid.innerHTML = '';
@@ -595,10 +858,17 @@ function updateLobbyPlayersUI() {
   players.forEach((p) => {
     const card = document.createElement('div');
     card.className = `player-badge-card ${p.id === myPlayerId ? 'is-me' : ''}`;
+    
+    // 安全转义输出
+    const safeAvatar = escapeHtml(p.avatar);
+    const safeName = escapeHtml(p.name);
+    const meTag = p.id === myPlayerId ? ' (我)' : '';
+    const statusText = p.isHost ? '房主' : '已就绪';
+
     card.innerHTML = `
-      <div class="player-avatar">${p.avatar}</div>
-      <div class="player-name">${p.name} ${p.id === myPlayerId ? '(我)' : ''}</div>
-      <div class="player-status-tag ${p.isHost ? 'host' : ''}">${p.isHost ? '房主' : '已就绪'}</div>
+      <div class="player-avatar">${safeAvatar}</div>
+      <div class="player-name">${safeName}${meTag}</div>
+      <div class="player-status-tag ${p.isHost ? 'host' : ''}">${statusText}</div>
     `;
     grid.appendChild(card);
   });
@@ -607,6 +877,8 @@ function updateLobbyPlayersUI() {
   if (tip) {
     tip.style.display = players.length < 3 ? 'block' : 'none';
   }
+
+  syncRuleConstraints();
 }
 
 function generateRoomQRCode() {
@@ -632,16 +904,47 @@ function closeQRCodeModal() {
   document.getElementById('modalQR').style.display = 'none';
 }
 
-/* ==================== 4. P2P 通信与消息分发 ==================== */
+// 获取脱敏的公开玩家列表（严禁带出 role 和 word）
+function getPublicPlayers() {
+  return players.map(p => ({
+    id: p.id,
+    name: p.name,
+    avatar: p.avatar,
+    isHost: p.isHost,
+    alive: p.alive,
+    disconnected: !!p.disconnected
+  }));
+}
+
+/* ==================== 4. P2P 通信与安全私密分发 ==================== */
 function setupHostListeners() {
   p2p.on('message', ({ peerId, data }) => {
     if (data.type === 'JOIN_ROOM') {
-      const newPlayer = { id: peerId, name: data.player.name, avatar: data.player.avatar, isHost: false, alive: true };
+      const sanitizedName = (data.player.name || '玩家').trim().slice(0, 12);
+      const newPlayer = {
+        id: peerId,
+        name: sanitizedName,
+        avatar: data.player.avatar || '🌟',
+        isHost: false,
+        alive: true
+      };
+
+      // 游戏中途加入 -> 开启观战模式
+      if (gameState !== 'lobby') {
+        spectators.push(newPlayer);
+        p2p.sendTo(peerId, 'JOIN_AS_SPECTATOR', {
+          message: '当前对局正在进行中，已为您开启观战模式！本局结束后自动加入下一局。',
+          publicPlayers: getPublicPlayers(),
+          roundNumber: currentRoundNumber
+        });
+        showPartyToast(`${newPlayer.avatar} ${newPlayer.name} 加入了观战`, '👀');
+        return;
+      }
+
       players.push(newPlayer);
       audio.play('tap');
       updateLobbyPlayersUI();
-      // 广播更新玩家列表
-      p2p.broadcast('PLAYERS_UPDATE', { players });
+      p2p.broadcast('PLAYERS_UPDATE', { players: getPublicPlayers() });
     } else if (data.type === 'PLAYER_READY') {
       const p = players.find(x => x.id === peerId);
       if (p) p.ready = true;
@@ -650,15 +953,50 @@ function setupHostListeners() {
       advanceSpeakerTurn();
     } else if (data.type === 'VOTE_SUBMIT') {
       const p = players.find(x => x.id === peerId);
-      if (p) p.votedFor = data.payload.targetId;
+      if (p && p.alive) p.votedFor = data.payload.targetId;
       checkAllVoted();
     }
   });
 
   p2p.on('playerDisconnected', (peerId) => {
-    players = players.filter(x => x.id !== peerId);
-    updateLobbyPlayersUI();
-    p2p.broadcast('PLAYERS_UPDATE', { players });
+    const p = players.find(x => x.id === peerId);
+    if (!p) {
+      spectators = spectators.filter(s => s.id !== peerId);
+      return;
+    }
+
+    showPartyToast(`${p.avatar} ${p.name} 离开了房间`, '👋');
+
+    if (gameState === 'lobby') {
+      players = players.filter(x => x.id !== peerId);
+      updateLobbyPlayersUI();
+      p2p.broadcast('PLAYERS_UPDATE', { players: getPublicPlayers() });
+    } else {
+      // 游戏中途离线
+      p.alive = false;
+      p.disconnected = true;
+      p2p.broadcast('PLAYER_DISCONNECTED_MIDGAME', {
+        disconnectedPlayerId: peerId,
+        publicPlayers: getPublicPlayers()
+      });
+
+      if (gameState === 'peek') {
+        checkAllPlayersReady();
+      } else if (gameState === 'clues') {
+        speakOrder = speakOrder.filter(id => id !== peerId);
+        if (speakOrder[currentSpeakerIdx] === peerId) {
+          showPartyToast(`${p.name} 离线，自动跳至下一位发言`, '⏩');
+          advanceSpeakerTurn();
+        } else {
+          updateTurnUI();
+        }
+      } else if (gameState === 'vote') {
+        checkAllVoted();
+      }
+
+      // 核查是否满足胜负条件
+      checkWinConditionMidGame();
+    }
   });
 }
 
@@ -666,15 +1004,26 @@ function setupClientListeners() {
   p2p.on('message', ({ data }) => {
     if (data.type === 'PLAYERS_UPDATE') {
       players = data.payload.players;
-      updateLobbyPlayersUI();
-    } else if (data.type === 'GAME_START') {
-      players = data.payload.players;
+      if (gameState === 'lobby') updateLobbyPlayersUI();
+    } else if (data.type === 'JOIN_AS_SPECTATOR') {
+      isSpectator = true;
+      players = data.payload.publicPlayers;
+      currentRoundNumber = data.payload.roundNumber || 1;
+      document.getElementById('spectatorGlobalBanner').style.display = 'flex';
+      showPartyToast(data.payload.message, '👀');
+    } else if (data.type === 'GAME_START_PRIVATE') {
+      // 仅接收自己的底牌，彻底防止全员底牌泄露
+      isSpectator = false;
+      myCard = data.payload.myCard;
+      players = data.payload.publicPlayers;
       gameConfig = data.payload.config;
-      currentRoundWordPair = data.payload.wordPair;
+      currentRoundNumber = data.payload.roundNumber || 1;
+      document.getElementById('spectatorGlobalBanner').style.display = 'none';
       startPeekPhase();
     } else if (data.type === 'START_CLUES') {
       speakOrder = data.payload.speakOrder;
       currentSpeakerIdx = 0;
+      currentRoundNumber = data.payload.roundNumber || currentRoundNumber;
       startCluesPhase();
     } else if (data.type === 'UPDATE_TURN') {
       currentSpeakerIdx = data.payload.speakerIdx;
@@ -684,28 +1033,54 @@ function setupClientListeners() {
     } else if (data.type === 'VOTE_PROGRESS') {
       document.getElementById('votedCount').textContent = data.payload.votedCount;
       document.getElementById('aliveCount').textContent = data.payload.aliveCount;
-    } else if (data.type === 'REVEAL_RESULT') {
-      showRevealPhase(data.payload);
+    } else if (data.type === 'ROUND_RESULT') {
+      showRoundEliminationReport(data.payload);
+    } else if (data.type === 'FINAL_GAME_OVER') {
+      showFinalGameOver(data.payload);
+    } else if (data.type === 'PLAYER_DISCONNECTED_MIDGAME') {
+      players = data.payload.publicPlayers;
+      showPartyToast('场上有玩家离线', '⚠️');
+      if (gameState === 'vote') updateVoteProgressUI();
     }
   });
 }
 
-/* ==================== 5. 游戏流程控制 ==================== */
-function hostStartGame() {
+/* ==================== 5. 游戏流程核心逻辑 ==================== */
+async function hostStartGame() {
   if (players.length < 3) {
-    if (!confirm('当前玩家少于 3 人，是否开启家庭测试模式继续体验？')) return;
+    const confirmed = await showPartyConfirm('当前玩家少于 3 人，是否开启家庭测试模式继续体验？', '人数提示', '👥');
+    if (!confirmed) return;
   }
   audio.play('tap');
 
-  // 1. 读取规则配置
+  // 将之前的观战者全部纳入新一局对局
+  if (spectators.length > 0) {
+    spectators.forEach(s => players.push({ ...s, isHost: false, alive: true }));
+    spectators = [];
+  }
+
+  currentRoundNumber = 1;
+  lastRoundResult = null;
+
+  // 1. 读取并严格校验人数比例
   gameConfig.poolKey = document.getElementById('selectWordPool').value;
-  gameConfig.undercoverCount = parseInt(document.getElementById('selectUndercoverCount').value, 10);
-  gameConfig.hasBlank = document.getElementById('selectHasBlank').value === 'yes';
+  let ucCount = parseInt(document.getElementById('selectUndercoverCount').value, 10);
+  let hasBlank = document.getElementById('selectHasBlank').value === 'yes';
   gameConfig.timeLimit = parseInt(document.getElementById('selectTimeLimit').value, 10);
 
-  // 2. 从题库随机抽选一组词 (支持全题库大乱斗与防重机制)
-  let candidatePool = [];
+  const count = players.length;
+  // 防御性纠正比例失衡：平民必须严格大于非平民总数 (平民 > 卧底 + 白板)
+  if (count < 6) ucCount = 1;
+  let blankCount = (hasBlank && ((count >= 5 && ucCount === 1) || (count >= 7 && ucCount === 2))) ? 1 : 0;
+  if (count - ucCount - blankCount <= ucCount + blankCount && count >= 3) {
+    ucCount = 1;
+    blankCount = 0;
+  }
+  gameConfig.undercoverCount = ucCount;
+  gameConfig.hasBlank = blankCount > 0;
 
+  // 2. 从题库抽选一组词 (支持防重与全题库大乱斗)
+  let candidatePool = [];
   if (gameConfig.poolKey === 'all_random') {
     Object.values(UNDERCOVER_WORD_POOLS).forEach(p => {
       candidatePool.push(...p.pairs.map(pair => ({ ...pair, isBilingual: !!p.isBilingual, categoryName: p.name })));
@@ -715,7 +1090,7 @@ function hostStartGame() {
     candidatePool = pool.pairs.map(pair => ({ ...pair, isBilingual: !!pool.isBilingual, categoryName: pool.name }));
   }
 
-  // 过滤近期用过的词 (最近 50 轮不重复)
+  // 过滤近期使用过的词
   let available = candidatePool.filter(p => !usedWordHistory.includes(p.c + ':::' + p.u));
   if (available.length === 0) {
     usedWordHistory = [];
@@ -727,47 +1102,71 @@ function hostStartGame() {
 
   currentRoundWordPair = pair;
 
-  // 3. 分配身份与底牌
-  const count = players.length;
+  // 3. 房主在本地分配身份与底牌
   const indices = players.map((_, idx) => idx).sort(() => Math.random() - 0.5);
 
-  let ucCount = Math.min(gameConfig.undercoverCount, Math.floor(count / 2));
-  let blankCount = gameConfig.hasBlank && count >= 4 ? 1 : 0;
-
-  players.forEach((p, i) => {
+  players.forEach((p) => {
     p.alive = true;
     p.ready = false;
     p.votedFor = null;
     p.votesCount = 0;
+    p.disconnected = false;
   });
 
-  // 随机卧底
+  // 分配卧底
   for (let i = 0; i < ucCount; i++) {
     const idx = indices[i];
     players[idx].role = 'undercover';
     players[idx].word = pair.u;
   }
 
-  // 随机白板 (若有)
+  // 分配白板
   for (let i = ucCount; i < ucCount + blankCount; i++) {
     const idx = indices[i];
     players[idx].role = 'blank';
     players[idx].word = '【白板·无词】';
   }
 
-  // 其余平民
+  // 分配平民
   for (let i = ucCount + blankCount; i < count; i++) {
     const idx = indices[i];
     players[idx].role = 'civilian';
     players[idx].word = pair.c;
   }
 
-  // 4. 房主广播发牌
-  p2p.broadcast('GAME_START', { players, config: gameConfig, wordPair: currentRoundWordPair });
+  // 4. 私密下发底牌，公开列表脱敏
+  const publicPlayers = getPublicPlayers();
+
+  // 房主本人的底牌
+  const hostP = players.find(p => p.id === myPlayerId || p.isHost);
+  myCard = {
+    word: hostP.word,
+    role: hostP.role,
+    hint: pair.isBilingual ? pair.hint : null,
+    categoryName: pair.categoryName
+  };
+
+  // 给每位非房主客户端通过 sendTo 单独发送其本人的底牌
+  players.forEach((p) => {
+    if (p.id !== 'host' && p.id !== myPlayerId) {
+      p2p.sendTo(p.id, 'GAME_START_PRIVATE', {
+        myCard: {
+          word: p.word,
+          role: p.role,
+          hint: pair.isBilingual ? pair.hint : null,
+          categoryName: pair.categoryName
+        },
+        publicPlayers,
+        config: gameConfig,
+        roundNumber: 1
+      });
+    }
+  });
+
   startPeekPhase();
 }
 
-/* 阶段 1：查验底牌 */
+/* 阶段 1：查验底牌（带按钮解禁防卡死） */
 function startPeekPhase() {
   gameState = 'peek';
   document.getElementById('viewRoomLobby').style.display = 'none';
@@ -776,14 +1175,20 @@ function startPeekPhase() {
   document.getElementById('viewReveal').style.display = 'none';
   document.getElementById('viewPeek').style.display = 'block';
 
-  const myP = players.find(x => x.id === myPlayerId) || players[0];
-  const roleText = myP.role === 'undercover' ? '卧底身份 🕵️' : (myP.role === 'blank' ? '白板身份 ⚪' : '平民身份 🛡️');
+  // 彻底解禁并重置就绪按钮（修复第 2 局卡死问题）
+  const readyBtn = document.getElementById('btnReadyToSpeak');
+  readyBtn.disabled = false;
+  readyBtn.innerHTML = '<span>👍</span> 我已记好词语，准备开始描述！';
+  document.getElementById('peekWaitStatus').textContent = '全员记好后自动进入发言阶段...';
+
+  // 设置本人的底牌显示
+  const roleText = myCard.role === 'undercover' ? '卧底身份 🕵️' : (myCard.role === 'blank' ? '白板身份 ⚪' : '平民身份 🛡️');
   document.getElementById('revealRoleText').textContent = roleText;
-  document.getElementById('revealWordText').textContent = myP.word;
+  document.getElementById('revealWordText').textContent = myCard.word;
 
   const hintBox = document.getElementById('revealHintBox');
-  if (currentRoundWordPair && currentRoundWordPair.isBilingual && currentRoundWordPair.hint) {
-    hintBox.innerHTML = `🇬🇧 <strong>口语提示</strong>: "${currentRoundWordPair.hint}"`;
+  if (myCard.hint) {
+    hintBox.innerHTML = `🇬🇧 <strong>口语提示</strong>: "${escapeHtml(myCard.hint)}"`;
     hintBox.style.display = 'block';
   } else {
     hintBox.style.display = 'none';
@@ -818,8 +1223,10 @@ function setupVaultTouch() {
 
 function playerReadyForGame() {
   audio.play('tap');
-  document.getElementById('btnReadyToSpeak').disabled = true;
-  document.getElementById('peekWaitStatus').textContent = '已就绪！等待其他家人查验完毕...';
+  const readyBtn = document.getElementById('btnReadyToSpeak');
+  readyBtn.disabled = true;
+  readyBtn.innerHTML = '<span>⏳</span> 已就绪，等待其他家人...';
+  document.getElementById('peekWaitStatus').textContent = '你已准备好！等待全员就绪...';
 
   if (isHost) {
     const myP = players.find(x => x.id === myPlayerId);
@@ -832,12 +1239,16 @@ function playerReadyForGame() {
 
 function checkAllPlayersReady() {
   if (!isHost) return;
-  const allReady = players.every(p => p.ready);
-  if (allReady) {
-    // 随机打乱发言顺序
-    speakOrder = players.filter(p => p.alive).map(p => p.id).sort(() => Math.random() - 0.5);
-    p2p.broadcast('START_CLUES', { speakOrder });
+  const alivePlayers = players.filter(p => p.alive && !p.disconnected);
+  const allReady = alivePlayers.every(p => p.ready);
+  if (allReady && alivePlayers.length > 0) {
+    // 随机打乱存活玩家发言顺序
+    speakOrder = alivePlayers.map(p => p.id).sort(() => Math.random() - 0.5);
     currentSpeakerIdx = 0;
+    p2p.broadcast('START_CLUES', {
+      speakOrder,
+      roundNumber: currentRoundNumber
+    });
     startCluesPhase();
   }
 }
@@ -846,6 +1257,8 @@ function checkAllPlayersReady() {
 function startCluesPhase() {
   gameState = 'clues';
   document.getElementById('viewPeek').style.display = 'none';
+  document.getElementById('viewReveal').style.display = 'none';
+  document.getElementById('viewVote').style.display = 'none';
   document.getElementById('viewClues').style.display = 'block';
   updateTurnUI();
 }
@@ -854,9 +1267,14 @@ function updateTurnUI() {
   const speakerId = speakOrder[currentSpeakerIdx];
   const speaker = players.find(p => p.id === speakerId);
 
-  document.getElementById('currentTurnBadge').innerHTML = `正在发言：${speaker ? speaker.avatar + ' ' + speaker.name : '----'}`;
+  const currentBadge = document.getElementById('currentTurnBadge');
+  if (speaker) {
+    currentBadge.innerHTML = `正在发言 (第 ${currentRoundNumber} 轮)：${escapeHtml(speaker.avatar)} ${escapeHtml(speaker.name)}`;
+  } else {
+    currentBadge.textContent = `第 ${currentRoundNumber} 轮发言阶段`;
+  }
 
-  // 渲染发言顺序列表
+  // 渲染发言顺序列表（仅存活玩家）
   const orderList = document.getElementById('speakingOrderList');
   orderList.innerHTML = '';
   speakOrder.forEach((id, idx) => {
@@ -866,18 +1284,17 @@ function updateTurnUI() {
     const card = document.createElement('div');
     card.className = `player-badge-card ${isCurrent ? 'is-active' : ''}`;
     card.innerHTML = `
-      <div class="player-avatar">${p.avatar}</div>
-      <div class="player-name">${p.name}</div>
+      <div class="player-avatar">${escapeHtml(p.avatar)}</div>
+      <div class="player-name">${escapeHtml(p.name)}</div>
       <div class="player-status-tag ${isCurrent ? 'speaking' : ''}">${isCurrent ? '发言中' : `第 ${idx + 1} 棒`}</div>
     `;
     orderList.appendChild(card);
   });
 
-  // 是否轮到我
-  const isMyTurn = speakerId === myPlayerId;
+  // 操作按钮：仅轮到且存活且非观战者可点击
+  const isMyTurn = speakerId === myPlayerId && !isSpectator;
   document.getElementById('myTurnActionBox').style.display = isMyTurn ? 'block' : 'none';
 
-  // 发言倒计时
   startTurnTimer();
 }
 
@@ -948,16 +1365,17 @@ function startVotePhase() {
   const list = document.getElementById('voteCandidateList');
   list.innerHTML = '';
 
-  const alivePlayers = players.filter(p => p.alive && p.id !== myPlayerId);
-  alivePlayers.forEach(p => {
+  // 投票候选人仅限其他【存活且在线】的玩家
+  const candidatePlayers = players.filter(p => p.alive && !p.disconnected && p.id !== myPlayerId);
+  candidatePlayers.forEach(p => {
     const card = document.createElement('div');
     card.className = 'vote-card';
     card.id = `voteCard_${p.id}`;
     card.onclick = () => selectCandidate(p.id);
     card.innerHTML = `
-      <div style="font-size:26px;">${p.avatar}</div>
+      <div style="font-size:26px;">${escapeHtml(p.avatar)}</div>
       <div style="flex:1;">
-        <div style="font-weight:800; font-size:15px;">${p.name}</div>
+        <div style="font-weight:800; font-size:15px;">${escapeHtml(p.name)}</div>
         <div style="font-size:11.5px; color:var(--party-subtext);">指认为卧底嫌疑人</div>
       </div>
       <div class="vote-check" style="font-size:20px;">○</div>
@@ -965,11 +1383,24 @@ function startVotePhase() {
     list.appendChild(card);
   });
 
-  document.getElementById('btnConfirmVote').disabled = true;
+  const confirmBtn = document.getElementById('btnConfirmVote');
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = '🗳️ 确认投票 (投出后不可修改)';
+
+  // 如果自己已经死亡或观战，不可投票
+  const me = players.find(p => p.id === myPlayerId);
+  if ((me && !me.alive) || isSpectator) {
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = '👻 您已出局或观战中，请静候投票结果';
+  }
+
   updateVoteProgressUI();
 }
 
 function selectCandidate(targetId) {
+  const me = players.find(p => p.id === myPlayerId);
+  if ((me && !me.alive) || isSpectator) return;
+
   audio.play('tap');
   selectedVoteTargetId = targetId;
   document.querySelectorAll('.vote-card').forEach(c => {
@@ -991,7 +1422,7 @@ function submitMyVote() {
   audio.play('vote');
   audio.vibrate(50);
   document.getElementById('btnConfirmVote').disabled = true;
-  document.getElementById('btnConfirmVote').textContent = '已完成投票 (等待他人)';
+  document.getElementById('btnConfirmVote').textContent = '已完成投票 (等待其他家人)';
 
   if (isHost) {
     const myP = players.find(x => x.id === myPlayerId);
@@ -1003,37 +1434,36 @@ function submitMyVote() {
 }
 
 function updateVoteProgressUI() {
-  const aliveCount = players.filter(p => p.alive).length;
-  const votedCount = players.filter(p => p.alive && p.votedFor).length;
+  const alivePlayers = players.filter(p => p.alive && !p.disconnected);
+  const votedCount = alivePlayers.filter(p => p.votedFor).length;
   document.getElementById('votedCount').textContent = votedCount;
-  document.getElementById('aliveCount').textContent = aliveCount;
+  document.getElementById('aliveCount').textContent = alivePlayers.length;
 }
 
 function checkAllVoted() {
   if (!isHost) return;
   updateVoteProgressUI();
-  const alivePlayers = players.filter(p => p.alive);
+  const alivePlayers = players.filter(p => p.alive && !p.disconnected);
   const votedCount = alivePlayers.filter(p => p.votedFor).length;
 
   p2p.broadcast('VOTE_PROGRESS', { votedCount, aliveCount: alivePlayers.length });
 
-  if (votedCount >= alivePlayers.length) {
-    // 计票
+  if (votedCount >= alivePlayers.length && alivePlayers.length > 0) {
     tallyVotesAndReveal();
   }
 }
 
-/* 阶段 4：计票与处决揭晓 */
+/* 阶段 4：计票与胜负仲裁 */
 function tallyVotesAndReveal() {
   // 清零票数
   players.forEach(p => p.votesCount = 0);
-  players.filter(p => p.alive).forEach(p => {
+  const alivePlayers = players.filter(p => p.alive && !p.disconnected);
+  alivePlayers.forEach(p => {
     const target = players.find(x => x.id === p.votedFor);
     if (target) target.votesCount++;
   });
 
   // 找最高得票者
-  const alivePlayers = players.filter(p => p.alive);
   let maxVotes = -1;
   let outPlayer = null;
   let isTie = false;
@@ -1052,7 +1482,6 @@ function tallyVotesAndReveal() {
   let outRole = null;
 
   if (isTie) {
-    // 平票：无人出局，进入下一轮发言
     outPlayer = null;
   } else if (outPlayer) {
     outPlayer.alive = false;
@@ -1071,22 +1500,61 @@ function tallyVotesAndReveal() {
     winner = 'continue';
   }
 
-  const payload = {
-    players,
-    outPlayerId: outPlayer ? outPlayer.id : null,
-    outRole,
+  lastRoundResult = {
+    winner,
     isTie,
-    winner
+    outPlayerId: outPlayer ? outPlayer.id : null,
+    outPlayerName: outPlayer ? outPlayer.name : null,
+    outPlayerAvatar: outPlayer ? outPlayer.avatar : null,
+    outRole,
+    roundNumber: currentRoundNumber,
+    publicPlayers: getPublicPlayers()
   };
 
-  p2p.broadcast('REVEAL_RESULT', payload);
-  showRevealPhase(payload);
+  // 如果游戏尚未分胜负，只发送轮次播报（严禁泄露存活者身份）
+  if (winner === 'continue') {
+    p2p.broadcast('ROUND_RESULT', lastRoundResult);
+    showRoundEliminationReport(lastRoundResult);
+  } else {
+    // 胜负已分，此时才向全员广播终局大揭秘
+    const finalPayload = {
+      winner,
+      finalPlayers: players.map(p => ({
+        id: p.id,
+        name: p.name,
+        avatar: p.avatar,
+        role: p.role,
+        word: p.word,
+        votesCount: p.votesCount
+      })),
+      categoryName: currentRoundWordPair.categoryName
+    };
+    p2p.broadcast('FINAL_GAME_OVER', finalPayload);
+    showFinalGameOver(finalPayload);
+  }
 }
 
-function showRevealPhase(result) {
+// 游戏中途离线时的胜负结算
+function checkWinConditionMidGame() {
+  if (!isHost || gameState === 'lobby' || gameState === 'reveal') return;
+  const remainingCivilians = players.filter(p => p.alive && p.role === 'civilian').length;
+  const remainingUndercovers = players.filter(p => p.alive && (p.role === 'undercover' || p.role === 'blank')).length;
+
+  if (remainingUndercovers === 0 || remainingCivilians <= remainingUndercovers) {
+    tallyVotesAndReveal();
+  }
+}
+
+/* ==================== 6. 播报与终局揭秘界面 ==================== */
+// 阶段 5A：轮次播报（胜负未分，保护存活者底牌）
+function showRoundEliminationReport(result) {
   gameState = 'reveal';
   document.getElementById('viewVote').style.display = 'none';
+  document.getElementById('viewClues').style.display = 'none';
   document.getElementById('viewReveal').style.display = 'block';
+
+  document.getElementById('roundAliveSurvivorsBox').style.display = 'block';
+  document.getElementById('gameOverRecapBox').style.display = 'none';
 
   audio.play('suspense');
 
@@ -1094,66 +1562,150 @@ function showRevealPhase(result) {
   const subEl = document.getElementById('revealResultSub');
   const iconEl = document.getElementById('revealCelebrationIcon');
 
-  if (result.winner === 'civilian') {
-    iconEl.textContent = '🎉';
-    titleEl.textContent = '平民大获全胜！';
-    subEl.textContent = '全家慧眼识珠，成功将卧底淘汰出局！';
-    audio.play('victory');
-    triggerConfetti();
-  } else if (result.winner === 'undercover') {
-    iconEl.textContent = '🕵️';
-    titleEl.textContent = '卧底成功潜伏获胜！';
-    subEl.textContent = '演技太精湛了！卧底瞒过了所有平民！';
-    audio.play('victory');
-    triggerConfetti();
-  } else if (result.isTie) {
+  if (result.isTie) {
     iconEl.textContent = '⚖️';
-    titleEl.textContent = '平票僵局！';
-    subEl.textContent = '最高票数相同，无人出局，进入下一轮唇枪舌剑！';
+    titleEl.textContent = '平票僵局！无人出局';
+    subEl.textContent = `第 ${result.roundNumber} 轮最高票数相同，全员安全，进入下一轮唇枪舌剑！`;
   } else {
-    const outP = result.players.find(p => p.id === result.outPlayerId);
     iconEl.textContent = '💥';
-    titleEl.textContent = `${outP ? outP.name : '有玩家'} 被投票出局！`;
-    subEl.textContent = `真实身份是：【${result.outRole === 'civilian' ? '平民 🛡️' : '卧底 🕵️'}】，战局继续！`;
+    const safeName = escapeHtml(result.outPlayerName);
+    const safeAvatar = escapeHtml(result.outPlayerAvatar);
+    titleEl.textContent = `${safeAvatar} ${safeName} 被投票出局！`;
+    const roleName = result.outRole === 'civilian' ? '平民 🛡️' : (result.outRole === 'blank' ? '白板 ⚪' : '卧底 🕵️');
+    subEl.textContent = `真实身份是：【${roleName}】，战局继续！`;
   }
 
-  // 渲染底牌揭秘表
+  // 渲染存活玩家列表（绝不公开身份和词牌）
+  const survivorsGrid = document.getElementById('survivorsBadgeGrid');
+  survivorsGrid.innerHTML = '';
+  result.publicPlayers.filter(p => p.alive).forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'player-badge-card';
+    card.innerHTML = `
+      <div class="player-avatar">${escapeHtml(p.avatar)}</div>
+      <div class="player-name">${escapeHtml(p.name)}</div>
+      <div class="player-status-tag">存活</div>
+    `;
+    survivorsGrid.appendChild(card);
+  });
+
+  // 房主与客户端推进按钮
+  const hostBox = document.getElementById('hostNextRoundBox');
+  const clientTip = document.getElementById('clientNextRoundTip');
+  const btnHost = document.getElementById('btnHostRoundAction');
+
+  if (isHost) {
+    hostBox.style.display = 'flex';
+    clientTip.style.display = 'none';
+    btnHost.innerHTML = `<span>📢</span> 开始第 ${currentRoundNumber + 1} 轮发言`;
+    btnHost.onclick = hostStartNextClueRound;
+  } else {
+    hostBox.style.display = 'none';
+    clientTip.style.display = 'block';
+    clientTip.textContent = `⏳ 等待房主开启第 ${currentRoundNumber + 1} 轮发言...`;
+  }
+}
+
+// 房主开启下一轮发言
+function hostStartNextClueRound() {
+  audio.play('tap');
+  currentRoundNumber++;
+
+  // 重置存活玩家本轮状态
+  players.forEach(p => {
+    p.votedFor = null;
+    p.votesCount = 0;
+  });
+
+  const alivePlayers = players.filter(p => p.alive && !p.disconnected);
+  speakOrder = alivePlayers.map(p => p.id).sort(() => Math.random() - 0.5);
+  currentSpeakerIdx = 0;
+
+  p2p.broadcast('START_CLUES', {
+    speakOrder,
+    roundNumber: currentRoundNumber
+  });
+
+  startCluesPhase();
+}
+
+// 阶段 5B：终局大揭秘（胜负已分，此时公布全员底牌）
+function showFinalGameOver(payload) {
+  gameState = 'reveal';
+  document.getElementById('viewVote').style.display = 'none';
+  document.getElementById('viewClues').style.display = 'none';
+  document.getElementById('viewReveal').style.display = 'block';
+
+  document.getElementById('roundAliveSurvivorsBox').style.display = 'none';
+  document.getElementById('gameOverRecapBox').style.display = 'block';
+
+  audio.play('victory');
+  triggerConfetti();
+
+  const titleEl = document.getElementById('revealResultTitle');
+  const subEl = document.getElementById('revealResultSub');
+  const iconEl = document.getElementById('revealCelebrationIcon');
+
+  if (payload.winner === 'civilian') {
+    iconEl.textContent = '🎉';
+    titleEl.textContent = '平民大获全胜！';
+    subEl.textContent = '全家慧眼识珠，成功将所有卧底揪出淘汰！';
+  } else {
+    iconEl.textContent = '🕵️';
+    titleEl.textContent = '卧底成功潜伏获胜！';
+    subEl.textContent = '演技太精湛了！卧底成功瞒过了所有人！';
+  }
+
+  // 类别标签
   const catBadge = document.getElementById('recapCategoryBadge');
-  if (catBadge && currentRoundWordPair && currentRoundWordPair.categoryName) {
-    catBadge.textContent = `[所属题库：${currentRoundWordPair.categoryName}]`;
+  if (catBadge && payload.categoryName) {
+    catBadge.textContent = `[所属题库：${escapeHtml(payload.categoryName)}]`;
   } else if (catBadge) {
     catBadge.textContent = '';
   }
 
+  // 渲染全员底牌对比表格
   const tbody = document.getElementById('recapTableBody');
   tbody.innerHTML = '';
-  result.players.forEach(p => {
+  payload.finalPlayers.forEach(p => {
     const tr = document.createElement('tr');
-    const roleBadge = p.role === 'undercover' ? '<span class="role-tag undercover">卧底</span>' : (p.role === 'blank' ? '<span class="role-tag blank">白板</span>' : '<span class="role-tag civilian">平民</span>');
+    const roleBadge = p.role === 'undercover'
+      ? '<span class="role-tag undercover">卧底</span>'
+      : (p.role === 'blank' ? '<span class="role-tag blank">白板</span>' : '<span class="role-tag civilian">平民</span>');
+
     tr.innerHTML = `
-      <td>${p.avatar} ${p.name}</td>
+      <td>${escapeHtml(p.avatar)} ${escapeHtml(p.name)}</td>
       <td>${roleBadge}</td>
-      <td style="font-weight:700; color:#38BDF8;">${p.word}</td>
+      <td style="font-weight:700; color:#38BDF8;">${escapeHtml(p.word)}</td>
       <td>${p.votesCount || 0} 票</td>
     `;
     tbody.appendChild(tr);
   });
 
+  // 房主与客户端再来一局按钮
+  const hostBox = document.getElementById('hostNextRoundBox');
+  const clientTip = document.getElementById('clientNextRoundTip');
+  const btnHost = document.getElementById('btnHostRoundAction');
+
   if (isHost) {
-    document.getElementById('hostNextRoundBox').style.display = 'block';
-    document.getElementById('clientNextRoundTip').style.display = 'none';
+    hostBox.style.display = 'flex';
+    clientTip.style.display = 'none';
+    btnHost.innerHTML = '<span>🔄</span> 再来一局 (重新发牌开局)';
+    btnHost.onclick = hostNextGameRematch;
   } else {
-    document.getElementById('hostNextRoundBox').style.display = 'none';
-    document.getElementById('clientNextRoundTip').style.display = 'block';
+    hostBox.style.display = 'none';
+    clientTip.style.display = 'block';
+    clientTip.textContent = '⏳ 等待房主开启下一局全新对局...';
   }
 }
 
-function hostNextRound() {
+// 房主重开新局
+function hostNextGameRematch() {
   audio.play('tap');
   hostStartGame();
 }
 
-/* ==================== 6. 获胜全屏五彩礼花 ==================== */
+/* ==================== 7. 全屏五彩礼花动画 ==================== */
 function triggerConfetti() {
   const canvas = document.getElementById('confettiCanvas');
   const ctx = canvas.getContext('2d');
