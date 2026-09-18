@@ -950,11 +950,17 @@ function setupHostListeners() {
       if (p) p.ready = true;
       checkAllPlayersReady();
     } else if (data.type === 'FINISH_TURN') {
-      advanceSpeakerTurn();
+      if (gameState === 'clues' && speakOrder[currentSpeakerIdx] === peerId) {
+        advanceSpeakerTurn();
+      }
     } else if (data.type === 'VOTE_SUBMIT') {
       const p = players.find(x => x.id === peerId);
-      if (p && p.alive) p.votedFor = data.payload.targetId;
-      checkAllVoted();
+      const targetId = data.payload.targetId;
+      const target = players.find(x => x.id === targetId);
+      if (gameState === 'vote' && p && p.alive && !p.disconnected && target && target.alive && !target.disconnected && targetId !== peerId) {
+        p.votedFor = targetId;
+        checkAllVoted();
+      }
     }
   });
 
@@ -1024,6 +1030,9 @@ function setupClientListeners() {
       speakOrder = data.payload.speakOrder;
       currentSpeakerIdx = 0;
       currentRoundNumber = data.payload.roundNumber || currentRoundNumber;
+      if (data.payload.publicPlayers) {
+        players = data.payload.publicPlayers;
+      }
       startCluesPhase();
     } else if (data.type === 'UPDATE_TURN') {
       currentSpeakerIdx = data.payload.speakerIdx;
@@ -1034,6 +1043,9 @@ function setupClientListeners() {
       document.getElementById('votedCount').textContent = data.payload.votedCount;
       document.getElementById('aliveCount').textContent = data.payload.aliveCount;
     } else if (data.type === 'ROUND_RESULT') {
+      if (data.payload.publicPlayers) {
+        players = data.payload.publicPlayers;
+      }
       showRoundEliminationReport(data.payload);
     } else if (data.type === 'FINAL_GAME_OVER') {
       showFinalGameOver(data.payload);
@@ -1047,16 +1059,27 @@ function setupClientListeners() {
 
 /* ==================== 5. 游戏流程核心逻辑 ==================== */
 async function hostStartGame() {
-  if (players.length < 3) {
-    const confirmed = await showPartyConfirm('当前玩家少于 3 人，是否开启家庭测试模式继续体验？', '人数提示', '👥');
-    if (!confirmed) return;
-  }
   audio.play('tap');
 
-  // 将之前的观战者全部纳入新一局对局
+  // 1. 清理已断开连接的玩家（防止断线玩家滞留进入新对局导致卡死）
+  players = players.filter(p => p.isHost || (!p.disconnected && p2p.connections.has(p.id) && p2p.connections.get(p.id).open));
+
+  // 2. 将连接正常的观战者纳入新局
   if (spectators.length > 0) {
-    spectators.forEach(s => players.push({ ...s, isHost: false, alive: true }));
+    spectators.filter(s => p2p.connections.has(s.id) && p2p.connections.get(s.id).open).forEach(s => {
+      players.push({ ...s, isHost: false, alive: true, disconnected: false });
+    });
     spectators = [];
+  }
+
+  // 3. 检查存活连接人数
+  if (players.length < 3) {
+    const confirmed = await showPartyConfirm(`当前在线仅 ${players.length} 人，不足 3 人，是否开启家庭测试模式继续体验？`, '人数提示', '👥');
+    if (!confirmed) {
+      showRoomLobby();
+      p2p.broadcast('PLAYERS_UPDATE', { players: getPublicPlayers() });
+      return;
+    }
   }
 
   currentRoundNumber = 1;
@@ -1293,7 +1316,12 @@ function updateTurnUI() {
 
   // 操作按钮：仅轮到且存活且非观战者可点击
   const isMyTurn = speakerId === myPlayerId && !isSpectator;
-  document.getElementById('myTurnActionBox').style.display = isMyTurn ? 'block' : 'none';
+  const myActionBox = document.getElementById('myTurnActionBox');
+  myActionBox.style.display = isMyTurn ? 'block' : 'none';
+  if (isMyTurn) {
+    const btn = myActionBox.querySelector('button');
+    if (btn) btn.disabled = false;
+  }
 
   startTurnTimer();
 }
@@ -1331,8 +1359,14 @@ function startTurnTimer() {
 function finishMyTurn() {
   audio.play('tap');
   if (turnTimer) clearInterval(turnTimer);
+
+  const myActionBtn = document.querySelector('#myTurnActionBox button');
+  if (myActionBtn) myActionBtn.disabled = true;
+
   if (isHost) {
-    advanceSpeakerTurn();
+    if (speakOrder[currentSpeakerIdx] === 'host' || speakOrder[currentSpeakerIdx] === myPlayerId) {
+      advanceSpeakerTurn();
+    }
   } else {
     p2p.sendToHost('FINISH_TURN');
   }
@@ -1459,12 +1493,13 @@ function tallyVotesAndReveal() {
   players.forEach(p => p.votesCount = 0);
   const alivePlayers = players.filter(p => p.alive && !p.disconnected);
   alivePlayers.forEach(p => {
-    const target = players.find(x => x.id === p.votedFor);
+    // 只有投向存活且在线的目标才计入有效票数
+    const target = alivePlayers.find(x => x.id === p.votedFor);
     if (target) target.votesCount++;
   });
 
   // 找最高得票者
-  let maxVotes = -1;
+  let maxVotes = 0;
   let outPlayer = null;
   let isTie = false;
 
@@ -1473,10 +1508,16 @@ function tallyVotesAndReveal() {
       maxVotes = p.votesCount;
       outPlayer = p;
       isTie = false;
-    } else if (p.votesCount === maxVotes) {
+    } else if (p.votesCount === maxVotes && maxVotes > 0) {
       isTie = true;
     }
   });
+
+  // 若所有人均为 0 票，视为平票无人出局
+  if (maxVotes === 0) {
+    isTie = true;
+    outPlayer = null;
+  }
 
   let winner = null; // 'civilian' | 'undercover' | 'continue'
   let outRole = null;
@@ -1534,20 +1575,45 @@ function tallyVotesAndReveal() {
   }
 }
 
-// 游戏中途离线时的胜负结算
+// 游戏中途离线时的胜负直接结算（绝不额外触发投票淘汰）
 function checkWinConditionMidGame() {
   if (!isHost || gameState === 'lobby' || gameState === 'reveal') return;
-  const remainingCivilians = players.filter(p => p.alive && p.role === 'civilian').length;
-  const remainingUndercovers = players.filter(p => p.alive && (p.role === 'undercover' || p.role === 'blank')).length;
+  const remainingCivilians = players.filter(p => p.alive && !p.disconnected && p.role === 'civilian').length;
+  const remainingUndercovers = players.filter(p => p.alive && !p.disconnected && (p.role === 'undercover' || p.role === 'blank')).length;
 
-  if (remainingUndercovers === 0 || remainingCivilians <= remainingUndercovers) {
-    tallyVotesAndReveal();
+  if (remainingUndercovers === 0) {
+    hostEndGameDirectly('civilian', '场上所有卧底均已离线或出局，平民大获全胜！');
+  } else if (remainingCivilians <= remainingUndercovers) {
+    hostEndGameDirectly('undercover', '存活平民人数不足，卧底潜伏获胜！');
   }
+}
+
+function hostEndGameDirectly(winner, customSubText = '') {
+  if (turnTimer) clearInterval(turnTimer);
+  const finalPayload = {
+    winner,
+    customSubText,
+    finalPlayers: players.map(p => ({
+      id: p.id,
+      name: p.name,
+      avatar: p.avatar,
+      role: p.role,
+      word: p.word,
+      votesCount: p.votesCount || 0,
+      disconnected: !!p.disconnected
+    })),
+    categoryName: currentRoundWordPair ? currentRoundWordPair.categoryName : ''
+  };
+  p2p.broadcast('FINAL_GAME_OVER', finalPayload);
+  showFinalGameOver(finalPayload);
 }
 
 /* ==================== 6. 播报与终局揭秘界面 ==================== */
 // 阶段 5A：轮次播报（胜负未分，保护存活者底牌）
 function showRoundEliminationReport(result) {
+  if (result.publicPlayers) {
+    players = result.publicPlayers;
+  }
   gameState = 'reveal';
   document.getElementById('viewVote').style.display = 'none';
   document.getElementById('viewClues').style.display = 'none';
@@ -1623,7 +1689,8 @@ function hostStartNextClueRound() {
 
   p2p.broadcast('START_CLUES', {
     speakOrder,
-    roundNumber: currentRoundNumber
+    roundNumber: currentRoundNumber,
+    publicPlayers: getPublicPlayers()
   });
 
   startCluesPhase();
@@ -1646,7 +1713,11 @@ function showFinalGameOver(payload) {
   const subEl = document.getElementById('revealResultSub');
   const iconEl = document.getElementById('revealCelebrationIcon');
 
-  if (payload.winner === 'civilian') {
+  if (payload.customSubText) {
+    subEl.textContent = payload.customSubText;
+    iconEl.textContent = payload.winner === 'civilian' ? '🎉' : '🕵️';
+    titleEl.textContent = payload.winner === 'civilian' ? '平民大获全胜！' : '卧底成功潜伏获胜！';
+  } else if (payload.winner === 'civilian') {
     iconEl.textContent = '🎉';
     titleEl.textContent = '平民大获全胜！';
     subEl.textContent = '全家慧眼识珠，成功将所有卧底揪出淘汰！';
