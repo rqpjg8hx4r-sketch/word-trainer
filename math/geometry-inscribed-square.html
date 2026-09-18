@@ -18,6 +18,7 @@
       --indigo-light: #EEF2FF;
       --indigo-border: #C7D2FE;
       --amber: #D97706;
+      --amber-dark: #B45309;
       --amber-light: #FEF3C7;
       --amber-border: #FDE68A;
       --rose: #E11D48;
@@ -408,12 +409,12 @@
       font-size: 18px;
     }
 
-    /* 推导讲解总区 */
+    /* 核心推导板块 */
     .explanation-container {
       margin-bottom: 24px;
     }
 
-    /* 四年级拼图法专区 */
+    /* 面积翻倍拼图动画专区 */
     .kid-expl-card {
       background: #FFFFFF;
       border: 2px solid #FDE68A;
@@ -434,39 +435,125 @@
       border-radius: 8px;
       margin-bottom: 12px;
     }
-    .kid-hero-formula {
-      background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
-      border: 2px dashed #F59E0B;
+
+    /* 交互式动画播放机 */
+    .anim-player-box {
+      background: #FFFDF7;
+      border: 1px solid #FDE68A;
       border-radius: 16px;
-      padding: 18px 20px;
+      padding: 16px;
       margin-bottom: 20px;
-      text-align: center;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.06);
     }
-    .kid-hero-formula h3 {
-      margin: 0 0 8px 0;
-      font-size: 17px;
+    .anim-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #FDE68A;
+    }
+    .anim-title {
+      font-size: 14.5px;
+      font-weight: 800;
       color: #92400E;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .kid-equation-banner {
-      font-family: var(--font-mono);
-      font-size: 20px;
-      font-weight: 900;
-      color: #B45309;
+    .anim-controls-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .anim-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
       background: #FFFFFF;
-      padding: 10px 16px;
-      border-radius: 12px;
-      display: inline-block;
-      box-shadow: 0 2px 6px rgba(180, 83, 9, 0.1);
-      margin: 6px 0;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
     }
-    .kid-hero-formula p {
-      margin: 8px 0 0 0;
-      font-size: 13.5px;
-      color: #78350F;
-      line-height: 1.6;
+    .anim-btn:hover {
+      background: #FEF3C7;
+      border-color: #F59E0B;
+      color: #B45309;
+    }
+    .anim-btn.primary {
+      background: #F59E0B;
+      color: #FFFFFF;
+      border-color: #F59E0B;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+    }
+    .anim-btn.primary:hover {
+      background: #D97706;
     }
 
-    /* 四年级 4 步拼图直观流程卡片 */
+    /* 动画步骤指示器胶囊 */
+    .anim-step-pills {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .anim-pill {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+      background: #FFFFFF;
+      color: #64748B;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .anim-pill.active {
+      background: #B45309;
+      color: #FFFFFF;
+      border-color: #B45309;
+      box-shadow: 0 2px 6px rgba(180, 83, 9, 0.25);
+    }
+
+    /* 动画 SVG 视窗 */
+    .anim-canvas-wrapper {
+      background: #FFFFFF;
+      border: 1px solid #FDE68A;
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .anim-caption-banner {
+      margin-top: 10px;
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      color: #78350F;
+      font-weight: 700;
+      line-height: 1.6;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 4 步卡片微缩图文 */
     .puzzle-steps-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -513,16 +600,8 @@
       line-height: 1.65;
       flex: 1;
     }
-    .puzzle-svg-mini {
-      margin-top: 12px;
-      background: #FFFFFF;
-      border: 1px solid #FEF3C7;
-      border-radius: 10px;
-      padding: 8px;
-      text-align: center;
-    }
 
-    /* 初中相似比标准推导 */
+    /* 进阶探索法标准推导 */
     .proof-section {
       background: #FFFFFF;
       border: 1px solid var(--border);
@@ -879,9 +958,6 @@
     .highlight-glow-rose {
       filter: drop-shadow(0 0 6px rgba(225, 29, 72, 0.7));
     }
-    .highlight-glow-cyan {
-      filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.7));
-    }
   </style>
 </head>
 <body>
@@ -905,8 +981,8 @@
   <div class="problem-header">
     <div class="problem-tag-row">
       <div class="tag-badges-group">
-        <span class="tag-badge kid">🌟 四年级可秒解 · 面积翻倍法</span>
-        <span class="tag-badge">📐 初中中考 · 经典母题</span>
+        <span class="tag-badge kid">🌟 妙思速解 · 面积翻倍拼图法</span>
+        <span class="tag-badge">📐 经典几何模型探究</span>
       </div>
       <button class="orig-photo-btn" onclick="openModal()">
         <span>📷</span> 查看试卷原题真迹
@@ -925,15 +1001,15 @@
     <button id="tabKid" class="method-tab-btn active kid-tab" onclick="setMethodMode('kid')">
       <span class="icon">🧒</span>
       <div>
-        <div class="title">小学四年级直观法：面积翻倍拼图法</div>
-        <div class="subtitle">无需相似三角形、无需未知数分式，仅用长方形面积和乘法分配律</div>
+        <div class="title">直观拼图法：面积翻倍变长方形（推荐）</div>
+        <div class="subtitle">无需繁琐未知数分式，仅用长方形面积和乘法分配律直观拆拼</div>
       </div>
     </button>
     <button id="tabMiddle" class="method-tab-btn middle-tab" onclick="setMethodMode('middle')">
       <span class="icon">🎓</span>
       <div>
-        <div class="title">初中标准培优法：相似三角形高线比</div>
-        <div class="subtitle">A字型相似模型，利用“高之比等于相似比”列一元一次方程</div>
+        <div class="title">进阶探索法：比例线段与高线比</div>
+        <div class="subtitle">经典A字型几何模型，利用“对应高之比等于底之比”列比例式求解</div>
       </div>
     </button>
   </div>
@@ -947,7 +1023,7 @@
           <span>🎨</span> 几何画板（支持拖动滑块形变验证）
         </div>
         <div id="modeStatusTag" style="font-size:12px; font-weight:700; color:#B45309; background:#FEF3C7; padding:3px 8px; border-radius:6px;">
-          当前：四年级拼图图解视界
+          当前：直观拼图视界 (上下切开翻倍)
         </div>
       </div>
 
@@ -974,7 +1050,7 @@
           <!-- 内接正方形 DEFG -->
           <polygon id="polyDEFG" class="geo-square" points="0,0 0,0 0,0 0,0"/>
 
-          <!-- 分割线 DG 延长/切线指示 (四年级切一刀) -->
+          <!-- 分割线 DG 延长/切线指示 (切一刀) -->
           <line id="cutLineDG" stroke="#F59E0B" stroke-width="2" stroke-dasharray="3,3" opacity="0"/>
 
           <!-- 高线 AH 虚线 -->
@@ -1092,24 +1168,52 @@
   <!-- 解题推导专区 -->
   <div class="explanation-container">
     
-    <!-- 1. 四年级直观法板块 (默认激活) -->
+    <!-- 1. 面积翻倍拼图法板块 (默认激活) -->
     <div id="kidSection" class="kid-expl-card">
       <div class="badge-top">
-        <span>✨</span> Alex 专属四年级思维视界 · 面积翻倍拼图法
+        <span>✨</span> Alex 的妙趣几何探秘 · 面积翻倍拼图法
       </div>
 
-      <div class="kid-hero-formula">
-        <h3>🎉 四年级绝妙巧思：把图形翻倍（×2），秒变大长方形！</h3>
-        <div class="kid-equation-banner" id="kidEquationBanner">
-          x × (40 + 60) = 40 × 60
+      <!-- 🎬 动画动态演示馆 -->
+      <div class="anim-player-box">
+        <div class="anim-toolbar">
+          <div class="anim-title">
+            <span>🎬</span> <strong>拼图动态演示馆</strong>：一步步看长方形合体！
+          </div>
+          <div class="anim-controls-group">
+            <button id="btnAnimAuto" class="anim-btn primary" onclick="toggleAnimAuto()">
+              <span id="animAutoIcon">▶</span> <span id="animAutoText">自动播放演示</span>
+            </button>
+            <button class="anim-btn" onclick="prevAnimStep()">◀ 上一步</button>
+            <button class="anim-btn" onclick="nextAnimStep()">下一步 ▶</button>
+            <button class="anim-btn" onclick="resetAnimStep()">↺ 重新演示</button>
+          </div>
         </div>
-        <p>
-          原三角形翻倍面积是 <strong>底 × 高 = 40 × 60 = 2400</strong>。<br>
-          上下两部分各自翻倍拼成长方形，神奇合体后正好是一个长 <strong>(40 + 60) = 100</strong>、宽为 <strong>x</strong> 的大长方形！<br>
-          👉 所以边长 <strong>x = 2400 ÷ 100 = 24 cm</strong>！
-        </p>
+
+        <!-- 5 个步骤指示胶囊 -->
+        <div class="anim-step-pills">
+          <button class="anim-pill active" onclick="gotoAnimStep(1)">1. 原始图形</button>
+          <button class="anim-pill" onclick="gotoAnimStep(2)">2. 水平切开</button>
+          <button class="anim-pill" onclick="gotoAnimStep(3)">3. 翻倍变两矩形 (×2)</button>
+          <button class="anim-pill" onclick="gotoAnimStep(4)">4. 神奇合体抵消</button>
+          <button class="anim-pill" onclick="gotoAnimStep(5)">5. 天平平衡秒杀</button>
+        </div>
+
+        <!-- 动画 SVG 视窗 -->
+        <div class="anim-canvas-wrapper">
+          <svg id="animSvg" viewBox="0 0 680 260" width="100%" height="260" preserveAspectRatio="xMidYMid meet">
+            <!-- 动态图形组 -->
+            <g id="animStageGroup"></g>
+          </svg>
+        </div>
+
+        <!-- 当前步骤图解说明横幅 -->
+        <div class="anim-caption-banner" id="animCaptionBanner">
+          <span>💡</span> <span id="animCaptionText">正在载入演示...</span>
+        </div>
       </div>
 
+      <!-- 四年级算理核心横幅 -->
       <div class="puzzle-steps-grid">
         <!-- 步骤 1 -->
         <div class="puzzle-step-card">
@@ -1123,14 +1227,6 @@
               <li><strong>上一半</strong>：小三角形 △<em>ADG</em>，底是 <em>x</em>，高是 <em>(40 - x)</em>。</li>
               <li><strong>下一半</strong>：梯形 <em>BCGD</em>，上底 <em>x</em>，下底 60，高是 <em>x</em>。</li>
             </ul>
-          </div>
-          <div class="puzzle-svg-mini">
-            <svg viewBox="0 0 240 70" width="100%" height="70">
-              <polygon points="120,5 90,35 150,35" fill="rgba(245, 158, 11, 0.3)" stroke="#D97706" stroke-width="1.5"/>
-              <polygon points="90,35 150,35 190,65 50,65" fill="rgba(2, 132, 199, 0.2)" stroke="#0284C7" stroke-width="1.5"/>
-              <text x="120" y="24" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">上：小三角形</text>
-              <text x="120" y="54" font-size="11" font-weight="bold" fill="#0369A1" text-anchor="middle">下：梯形(含正方形)</text>
-            </svg>
           </div>
         </div>
 
@@ -1147,14 +1243,6 @@
               <li><strong>下一半 × 2</strong>：两个梯形拼成<strong>矩形②</strong>，长是 <em>(60 + x)</em>，高是 <em>x</em>，面积是 <span class="math-block" style="padding:2px 6px;">x × (60 + x)</span>。</li>
             </ul>
           </div>
-          <div class="puzzle-svg-mini">
-            <svg viewBox="0 0 240 70" width="100%" height="70">
-              <rect x="25" y="15" width="80" height="40" fill="rgba(245, 158, 11, 0.25)" stroke="#D97706" stroke-width="1.5" rx="3"/>
-              <text x="65" y="38" font-size="10" font-weight="bold" fill="#B45309" text-anchor="middle">矩形①: x × (40-x)</text>
-              <rect x="125" y="10" width="95" height="50" fill="rgba(2, 132, 199, 0.2)" stroke="#0284C7" stroke-width="1.5" rx="3"/>
-              <text x="172" y="38" font-size="10" font-weight="bold" fill="#0369A1" text-anchor="middle">矩形②: x × (60+x)</text>
-            </svg>
-          </div>
         </div>
 
         <!-- 步骤 3 -->
@@ -1164,21 +1252,12 @@
             <span>乘法分配律：神奇合体抵消</span>
           </div>
           <div class="puzzle-step-text">
-            看！矩形①和矩形②有一条边<strong>都是 x</strong>！我们把它们拼在一起：
-            <div style="margin: 8px 0; font-weight:800; color:#B45309; font-size:13.5px;">
+            看！矩形①和矩形②有一条边<strong>都是 x</strong>！我们把它们沿着边长 x 拼在一起：
+            <div style="margin: 6px 0; font-weight:800; color:#B45309; font-size:13.5px;">
               总长 = (40 - x) + (60 + x) = 40 + 60 = 100！
             </div>
             其中的 <em>-x</em> 和 <em>+x</em> 刚好<strong>完全抵消</strong>了！拼合成一个宽是 <em>x</em>、长是 100 的大长方形，面积正是：
             <span class="math-block" style="background:#FEF3C7; color:#B45309; border-color:#FDE68A; margin-top:4px;">x × (40 + 60) = 100x</span>
-          </div>
-          <div class="puzzle-svg-mini">
-            <svg viewBox="0 0 240 70" width="100%" height="70">
-              <rect x="20" y="15" width="200" height="40" fill="rgba(16, 185, 129, 0.2)" stroke="#059669" stroke-width="2" rx="4"/>
-              <line x1="80" y1="15" x2="80" y2="55" stroke="#059669" stroke-width="1.5" stroke-dasharray="3,3"/>
-              <text x="50" y="38" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">(40 - x)</text>
-              <text x="140" y="38" font-size="11" font-weight="bold" fill="#0369A1" text-anchor="middle">(60 + x)</text>
-              <text x="228" y="38" font-size="11" font-weight="bold" fill="#059669" text-anchor="middle">宽x</text>
-            </svg>
           </div>
         </div>
 
@@ -1189,28 +1268,23 @@
             <span>天平对等：一步除法秒杀</span>
           </div>
           <div class="puzzle-step-text">
-            原大三角形本来底是 60，高是 40。如果把原三角形也翻倍（×2），面积本来就是：
+            原大三角形本来底是 60，高是 40。如果把原三角形整体翻倍（×2），面积本来就是：
             <div style="margin: 6px 0; font-weight:800; color:#0F172A;">
               原三角形翻倍 = 底 × 高 = 60 × 40 = 2400
             </div>
-            两种拼法得到的面积必须完全相等：
+            两种拼法得到的翻倍总面积必须完全相等：
             <div style="margin: 6px 0; font-weight:900; color:#B45309; font-size:15px;">
               x × (60 + 40) = 2400
             </div>
             一步除法：<span class="math-block" style="color:#059669; font-size:15px; font-weight:900;">x = 2400 ÷ 100 = 24 cm！</span>
           </div>
-          <div class="puzzle-svg-mini" style="background:#ECFDF5; border-color:#A7F3D0;">
-            <div style="font-size:13px; font-weight:800; color:#047857; padding:10px 0;">
-              ⚖️ 天平平衡：100 · x = 2400  ⟹  x = 24 cm
-            </div>
-          </div>
         </div>
       </div>
 
-      <!-- 四年级总结口诀 -->
+      <!-- 总结口诀 -->
       <div style="background: #FFFFFF; border: 2px solid #F59E0B; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
         <div>
-          <h4 style="margin:0 0 4px 0; font-size:15px; color:#B45309;">🌟 Alex 的四年级秒杀总结口诀：</h4>
+          <h4 style="margin:0 0 4px 0; font-size:15px; color:#B45309;">🌟 Alex 的超能秒杀口诀：</h4>
           <p style="margin:0; font-size:13px; color:#475569;">
             上下一翻倍，正负 x 全抵消！拼成大矩形，长是底加高！
           </p>
@@ -1221,28 +1295,28 @@
       </div>
     </div>
 
-    <!-- 2. 初中标准培优法板块 -->
+    <!-- 2. 进阶探索法板块 -->
     <div id="middleSection" class="proof-section" style="display:none;">
       <div class="proof-head">
         <div class="proof-title">
-          <span>💡</span> 交互式解题思维链（点击分步点亮图形）
+          <span>💡</span> 进阶几何思维链（点击分步点亮图形）
         </div>
         <div class="proof-steps-tabs">
           <button class="step-tab active" onclick="switchStep(1)">步骤 1: 发现相似</button>
           <button class="step-tab" onclick="switchStep(2)">步骤 2: 高线比性质</button>
           <button class="step-tab" onclick="switchStep(3)">步骤 3: 列方程求解</button>
-          <button class="step-tab" onclick="switchStep(4)">步骤 4: 秒杀口诀</button>
+          <button class="step-tab" onclick="switchStep(4)">步骤 4: 通用公式</button>
         </div>
       </div>
 
       <!-- 步骤 1 -->
       <div id="stepBox1" class="step-content-box">
         <div class="step-heading">
-          <span>🔹 步骤 1：判定相似三角形（A 字型经典模型）</span>
+          <span>🔹 步骤 1：判定相似图形（A 字型经典模型）</span>
         </div>
         <div class="step-body">
           因为四边形 <em>DEFG</em> 是正方形，所以对边平行：<span class="math-block">DG // BC</span>。<br>
-          平行于三角形一边的直线截其它两边，所截得的三角形与原三角形相似：
+          平行于三角形一边的直线截其它两边，所截得的三角形与原三角形形状完全同构（成比例）：
           <div style="margin-top:6px;">
             👉 故可得：<span class="math-block" style="color:var(--emerald); background:#ECFDF5; border-color:var(--emerald-border);">△ADG ∽ △ABC</span>
           </div>
@@ -1255,11 +1329,11 @@
       <!-- 步骤 2 -->
       <div id="stepBox2" class="step-content-box" style="display:none;">
         <div class="step-heading">
-          <span>🔹 步骤 2：相似三角形核心性质（对应高之比等于相似比）</span>
+          <span>🔹 步骤 2：对应高线比等于底边比</span>
         </div>
         <div class="step-body">
           高线 <em>AH</em> 与 <em>DG</em> 交于点 <em>P</em>。因为 <em>DG // BC</em> 且 <em>AH ⊥ BC</em>，所以 <em>AP ⊥ DG</em>，即 <strong>AP 是 △ADG 的高线</strong>。<br>
-          根据相似三角形定理：“<strong>相似三角形对应高的比等于相似比，等于对应底边的比</strong>”：
+          成比例图形的重要定理：“<strong>对应高的比等于对应底边的比</strong>”：
           <div style="margin-top:6px;">
             👉 <span class="math-block">AP / AH = DG / BC</span>
           </div>
@@ -1272,7 +1346,7 @@
       <!-- 步骤 3 -->
       <div id="stepBox3" class="step-content-box" style="display:none;">
         <div class="step-heading">
-          <span>🔹 步骤 3：设未知数并代入已知量列出一元一次方程</span>
+          <span>🔹 步骤 3：设未知数并代入已知量列出方程</span>
         </div>
         <div class="step-body">
           设正方形的边长为 <span class="math-block">x</span>，则：
@@ -1294,7 +1368,7 @@
       <!-- 步骤 4 -->
       <div id="stepBox4" class="step-content-box" style="display:none;">
         <div class="step-heading">
-          <span>🔹 步骤 4：提炼母题通用解法与中考秒杀口诀</span>
+          <span>🔹 步骤 4：提炼通用秒杀公式</span>
         </div>
         <div class="step-body">
           若设任意三角形底边为 <strong>a</strong>，高为 <strong>h</strong>，内接正方形边长为 <strong>x</strong>：<br>
@@ -1303,15 +1377,15 @@
           <div style="margin: 8px 0; font-size:15px; font-weight:800; color:var(--emerald);">
             🌟 x = (a · h) / (a + h)
           </div>
-          两边同除以 a·h·x，还可以得到极具美感的调和倒数形式：<span class="math-block">1/x = 1/a + 1/h</span>。
+          两边同除以 a·h·x，还可以得到极具美感的倒数形式：<span class="math-block">1/x = 1/a + 1/h</span>。
         </div>
       </div>
 
       <!-- 底部横幅总结 -->
       <div class="formula-banner">
         <div class="formula-left">
-          <h4>⚡️ 中考培优秒杀口诀：底高之积除以底高之和</h4>
-          <p>凡是三角形内接正方形（或长宽比固定的矩形），只要知道对应底和高，不用重画辅助线，直接带入公式：</p>
+          <h4>⚡️ 超能秒杀口诀：底高之积除以底高之和</h4>
+          <p>凡是三角形内接正方形，只要知道对应底和高，直接带入口诀公式计算：</p>
         </div>
         <div class="formula-formula">
           x = (底 × 高) ÷ (底 + 高)
@@ -1326,7 +1400,7 @@
       <div class="quiz-title">
         <span>🎯</span> 举一反三 · 秒杀闯关挑战
       </div>
-      <span style="font-size:12px; color:var(--subtext);">用刚学到的“拼图法”或“口诀”快速通关吧！</span>
+      <span style="font-size:12px; color:var(--subtext);">用刚学到的“拼图法”快速通关吧！</span>
     </div>
 
     <div class="quiz-body">
@@ -1367,8 +1441,10 @@
     a: 60,       // 底边 BC
     h: 40,       // 高线 AH
     skew: 0,     // 顶点 A 偏角/偏移
-    methodMode: 'kid', // 'kid' (四年级面积翻倍) 或 'middle' (初中相似比)
-    activeStep: 1
+    methodMode: 'kid', // 'kid' (直观拼图法) 或 'middle' (进阶探索法)
+    activeStep: 1,
+    animStep: 1, // 动画当前步骤 1~5
+    animTimer: null
   };
 
   // SVG 元素缓存
@@ -1384,7 +1460,6 @@
     rightAngleP: document.getElementById('rightAngleP'),
     hlDG: document.getElementById('hlDG'),
     hlBC: document.getElementById('hlBC'),
-    // 点
     ptA: document.getElementById('ptA'),
     ptB: document.getElementById('ptB'),
     ptC: document.getElementById('ptC'),
@@ -1394,7 +1469,6 @@
     ptF: document.getElementById('ptF'),
     ptH: document.getElementById('ptH'),
     ptP: document.getElementById('ptP'),
-    // 标签
     lblA: document.getElementById('lblA'),
     lblB: document.getElementById('lblB'),
     lblC: document.getElementById('lblC'),
@@ -1404,26 +1478,27 @@
     lblF: document.getElementById('lblF'),
     lblH: document.getElementById('lblH'),
     lblP: document.getElementById('lblP'),
-    // 标注
     dimBC: document.getElementById('dimBC'),
     dimAH: document.getElementById('dimAH'),
     dimDG: document.getElementById('dimDG'),
     dimAP: document.getElementById('dimAP'),
-    // 控制器数值显示
     valBC: document.getElementById('valBC'),
     valAH: document.getElementById('valAH'),
     valSkew: document.getElementById('valSkew'),
-    // 统计面板
     dispX: document.getElementById('dispX'),
     dispSum: document.getElementById('dispSum'),
     dispProduct: document.getElementById('dispProduct'),
     dispDoubleArea: document.getElementById('dispDoubleArea'),
-    // 四年级公式动态横幅
-    kidEquationBanner: document.getElementById('kidEquationBanner'),
-    modeStatusTag: document.getElementById('modeStatusTag')
+    modeStatusTag: document.getElementById('modeStatusTag'),
+    // 动画元素
+    animStageGroup: document.getElementById('animStageGroup'),
+    animCaptionText: document.getElementById('animCaptionText'),
+    btnAnimAuto: document.getElementById('btnAnimAuto'),
+    animAutoIcon: document.getElementById('animAutoIcon'),
+    animAutoText: document.getElementById('animAutoText')
   };
 
-  // 解题模式切换 (kid / middle)
+  // 解题模式切换
   function setMethodMode(mode) {
     state.methodMode = mode;
     const tabKid = document.getElementById('tabKid');
@@ -1436,7 +1511,7 @@
       tabMiddle.classList.remove('active');
       kidSection.style.display = 'block';
       middleSection.style.display = 'none';
-      el.modeStatusTag.textContent = '当前：四年级拼图图解视界 (上下切开翻倍)';
+      el.modeStatusTag.textContent = '当前：直观拼图视界 (上下切开翻倍)';
       el.modeStatusTag.style.color = '#B45309';
       el.modeStatusTag.style.background = '#FEF3C7';
     } else {
@@ -1444,11 +1519,12 @@
       tabKid.classList.remove('active');
       kidSection.style.display = 'none';
       middleSection.style.display = 'block';
-      el.modeStatusTag.textContent = '当前：初中相似高线比视界';
+      el.modeStatusTag.textContent = '当前：进阶比例线段视界';
       el.modeStatusTag.style.color = '#047857';
       el.modeStatusTag.style.background = '#ECFDF5';
     }
     updateGeometry();
+    renderAnimStage(state.animStep);
   }
 
   // 几何计算并重绘 SVG
@@ -1457,28 +1533,20 @@
     const h = state.h;
     const skew = state.skew;
 
-    // 计算内接正方形边长: x = (a * h) / (a + h)
     const x = (a * h) / (a + h);
     const ap = h - x;
     const sumAH = a + h;
     const prodAH = a * h;
 
-    // 更新界面数值
     el.valBC.textContent = a + ' cm';
     el.valAH.textContent = h + ' cm';
-    el.valSkew.textContent = skew === 0 ? '居中 (等腰)' : (skew > 0 ? `右偏 ${skew}` : `左偏 ${Math.abs(skew)}`);
+    el.valSkew.textContent = skew === 0 ? '居中 (对称)' : (skew > 0 ? `右偏 ${skew}` : `左偏 ${Math.abs(skew)}`);
 
     el.dispX.textContent = x.toFixed(2) + ' cm';
     el.dispSum.textContent = sumAH.toFixed(0) + ' cm';
     el.dispProduct.textContent = prodAH.toFixed(0);
     el.dispDoubleArea.textContent = prodAH.toFixed(0) + ' cm²';
 
-    // 更新四年级动态公式横幅
-    if (el.kidEquationBanner) {
-      el.kidEquationBanner.innerHTML = `x × (${h} + ${a}) = ${h} × ${a}  ⟹  ${sumAH}x = ${prodAH}  ⟹  x = ${x.toFixed(2)} cm`;
-    }
-
-    // 坐标系映射到 SVG (viewBox 0 0 640 400)
     const yBase = 330;
     const xCenter = 320;
     const scale = Math.min(480 / Math.max(a, 60), 240 / Math.max(h, 40));
@@ -1488,43 +1556,35 @@
     const pixX = x * scale;
     const pixSkew = skew * scale * 1.5;
 
-    // 点 B, C
     const xB = xCenter - pixA / 2;
     const yB = yBase;
     const xC = xCenter + pixA / 2;
     const yC = yBase;
 
-    // 顶点 A 与垂足 H
     const xH = xCenter + pixSkew;
     const yH = yBase;
     const xA = xH;
     const yA = yH - pixH;
 
-    // 内接正方形 D, G 在边 AB, AC 上，且 DG 距离 BC 为 pixX
     const t = ap / h;
     const xD = xA + t * (xB - xA);
     const yD = yBase - pixX;
-
     const xG = xA + t * (xC - xA);
     const yG = yBase - pixX;
 
-    // E, F 在 BC 上
     const xE = xD;
     const yE = yBase;
     const xF = xG;
     const yF = yBase;
 
-    // P 是 AH 与 DG 的交点
     const xP = xA;
     const yP = yD;
 
-    // 赋值到 SVG 元素
     el.polyABC.setAttribute('points', `${xA},${yA} ${xB},${yB} ${xC},${yC}`);
     el.polyADG.setAttribute('points', `${xA},${yA} ${xD},${yD} ${xG},${yG}`);
     el.polyBCGD.setAttribute('points', `${xD},${yD} ${xG},${yG} ${xC},${yC} ${xB},${yB}`);
     el.polyDEFG.setAttribute('points', `${xD},${yD} ${xG},${yG} ${xF},${yF} ${xE},${yE}`);
 
-    // 切线指示
     el.cutLineDG.setAttribute('x1', xD - 30);
     el.cutLineDG.setAttribute('y1', yD);
     el.cutLineDG.setAttribute('x2', xG + 30);
@@ -1540,13 +1600,11 @@
     el.lineAP.setAttribute('x2', xP);
     el.lineAP.setAttribute('y2', yP);
 
-    // 直角符号 (边长 9px)
     const ra = 9;
     const hDir = xH > xCenter ? -1 : 1;
     el.rightAngleH.setAttribute('points', `${xH + hDir*ra},${yH} ${xH + hDir*ra},${yH - ra} ${xH},${yH - ra}`);
     el.rightAngleP.setAttribute('points', `${xP + hDir*ra},${yP} ${xP + hDir*ra},${yP - ra} ${xP},${yP - ra}`);
 
-    // 重点线段高亮指示
     el.hlDG.setAttribute('x1', xD);
     el.hlDG.setAttribute('y1', yD);
     el.hlDG.setAttribute('x2', xG);
@@ -1557,7 +1615,6 @@
     el.hlBC.setAttribute('x2', xC);
     el.hlBC.setAttribute('y2', yC);
 
-    // 点圆心
     setPt(el.ptA, xA, yA);
     setPt(el.ptB, xB, yB);
     setPt(el.ptC, xC, yC);
@@ -1568,7 +1625,6 @@
     setPt(el.ptH, xH, yH);
     setPt(el.ptP, xP, yP);
 
-    // 文字标签坐标
     setLbl(el.lblA, xA, yA - 10);
     setLbl(el.lblB, xB - 10, yB + 16);
     setLbl(el.lblC, xC + 10, yC + 16);
@@ -1579,7 +1635,6 @@
     setLbl(el.lblH, xH, yH + 16);
     setLbl(el.lblP, xP + 8, yP + 12);
 
-    // 尺寸标注
     setLbl(el.dimBC, xCenter, yBase + 34);
     el.dimBC.textContent = `底 BC = ${a}`;
 
@@ -1592,9 +1647,7 @@
     setLbl(el.dimAP, xP + 10, (yA + yP)/2);
     el.dimAP.textContent = `${h} - x`;
 
-    // 模式视觉修饰
     if (state.methodMode === 'kid') {
-      // 四年级模式：显著显示上下两块颜色与切一刀
       el.cutLineDG.setAttribute('opacity', '1');
       el.polyBCGD.setAttribute('opacity', '1');
       el.polyADG.style.fill = 'rgba(245, 158, 11, 0.28)';
@@ -1606,6 +1659,8 @@
       el.polyBCGD.setAttribute('opacity', '0');
       applyStepHighlights(state.activeStep);
     }
+
+    renderAnimStage(state.animStep);
   }
 
   function setPt(elem, cx, cy) {
@@ -1618,7 +1673,7 @@
     elem.setAttribute('y', y);
   }
 
-  // 初中步骤切换与对应 SVG 高亮机制
+  // 进阶步骤切换
   function switchStep(step) {
     state.activeStep = step;
     document.querySelectorAll('.step-tab').forEach((tab, idx) => {
@@ -1668,6 +1723,243 @@
     } else if (step === 4) {
       el.polyADG.style.fill = 'rgba(16, 185, 129, 0.2)';
       el.polyDEFG.style.fill = 'rgba(79, 70, 229, 0.2)';
+    }
+  }
+
+  // ==================== 🎬 动态拼图动画演示馆核心引擎 ====================
+  function gotoAnimStep(step) {
+    state.animStep = step;
+    document.querySelectorAll('.anim-pill').forEach((pill, idx) => {
+      pill.classList.toggle('active', idx + 1 === step);
+    });
+    renderAnimStage(step);
+  }
+
+  function nextAnimStep() {
+    let next = state.animStep + 1;
+    if (next > 5) next = 1;
+    gotoAnimStep(next);
+  }
+
+  function prevAnimStep() {
+    let prev = state.animStep - 1;
+    if (prev < 1) prev = 5;
+    gotoAnimStep(prev);
+  }
+
+  function resetAnimStep() {
+    stopAnimAuto();
+    gotoAnimStep(1);
+  }
+
+  function toggleAnimAuto() {
+    if (state.animTimer) {
+      stopAnimAuto();
+    } else {
+      startAnimAuto();
+    }
+  }
+
+  function startAnimAuto() {
+    el.btnAnimAuto.classList.add('primary');
+    el.animAutoIcon.textContent = '⏸';
+    el.animAutoText.textContent = '暂停演示';
+    state.animTimer = setInterval(() => {
+      let next = state.animStep + 1;
+      if (next > 5) next = 1;
+      gotoAnimStep(next);
+    }, 2800);
+  }
+
+  function stopAnimAuto() {
+    if (state.animTimer) {
+      clearInterval(state.animTimer);
+      state.animTimer = null;
+    }
+    el.btnAnimAuto.classList.remove('primary');
+    el.animAutoIcon.textContent = '▶';
+    el.animAutoText.textContent = '自动播放演示';
+  }
+
+  // 渲染 5 个步骤的矢量动画场景 (SVG viewBox 0 0 680 260)
+  function renderAnimStage(step) {
+    const a = state.a;
+    const h = state.h;
+    const x = (a * h) / (a + h);
+    const ap = h - x;
+    const sumAH = a + h;
+    const prodAH = a * h;
+
+    const g = el.animStageGroup;
+    g.innerHTML = ''; // 清空上一帧
+
+    if (step === 1) {
+      // 场景 1: 原始完整图形
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 1 步 · 原始图形】</strong>：三角形底边长 <strong>${a} cm</strong>，高为 <strong>${h} cm</strong>，内部嵌有一个边长为 <strong>x</strong> 的正方形。`;
+      
+      // 居中绘制大三角形和正方形
+      g.innerHTML = `
+        <polygon points="340,35 220,225 460,225" fill="#F8FAFC" stroke="#334155" stroke-width="2.5"/>
+        <line x1="340" y1="35" x2="340" y2="225" stroke="#E11D48" stroke-width="1.8" stroke-dasharray="4,3"/>
+        <rect x="290" y="145" width="100" height="80" fill="rgba(79, 70, 229, 0.2)" stroke="#4F46E5" stroke-width="2.5" rx="3"/>
+        
+        <!-- 标签文字 -->
+        <text x="340" y="24" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+        <text x="210" y="235" font-size="14" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
+        <text x="470" y="235" font-size="14" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
+        
+        <text x="340" y="250" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">底边 BC = ${a} cm</text>
+        <text x="350" y="90" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="start">高 AH = ${h}</text>
+        <text x="340" y="190" font-size="14" font-weight="900" fill="#4F46E5" text-anchor="middle">边长 x</text>
+      `;
+
+    } else if (step === 2) {
+      // 场景 2: 沿 DG 水平切一刀
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 2 步 · 沿边切开】</strong>：剪刀 ✂️ 沿着正方形上边水平切开，分为<strong>【上一半：小三角形】</strong>与<strong>【下一半：梯形】</strong>！`;
+      
+      g.innerHTML = `
+        <!-- 切割线虚线与剪刀 -->
+        <line x1="160" y1="125" x2="520" y2="125" stroke="#F59E0B" stroke-width="2" stroke-dasharray="5,4"/>
+        <text x="140" y="130" font-size="18" text-anchor="end">✂️</text>
+
+        <!-- 上一半：小三角形向上浮动 15px -->
+        <g transform="translate(0, -16)">
+          <polygon points="340,35 290,115 390,115" fill="rgba(245, 158, 11, 0.35)" stroke="#D97706" stroke-width="2.5"/>
+          <line x1="340" y1="35" x2="340" y2="115" stroke="#E11D48" stroke-width="1.8" stroke-dasharray="3,3"/>
+          <text x="340" y="24" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">上一半：小三角形</text>
+          <text x="340" y="132" font-size="12" font-weight="bold" fill="#D97706" text-anchor="middle">底 = x</text>
+          <text x="352" y="75" font-size="11" font-weight="bold" fill="#E11D48" text-anchor="start">高 ${h}-x</text>
+        </g>
+
+        <!-- 下一半：梯形向下浮动 15px -->
+        <g transform="translate(0, 16)">
+          <polygon points="290,125 390,125 450,205 230,205" fill="rgba(2, 132, 199, 0.22)" stroke="#0284C7" stroke-width="2.5"/>
+          <rect x="290" y="125" width="100" height="80" fill="rgba(79, 70, 229, 0.15)" stroke="#4F46E5" stroke-width="1.5" stroke-dasharray="3,3"/>
+          <text x="340" y="165" font-size="13" font-weight="bold" fill="#4F46E5" text-anchor="middle">正方形 x</text>
+          <text x="340" y="226" font-size="13" font-weight="bold" fill="#0284C7" text-anchor="middle">下底 = ${a}</text>
+          <text x="340" y="116" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="middle">上底 = x</text>
+          <text x="460" y="168" font-size="12" font-weight="bold" fill="#0369A1" text-anchor="start">高 = x</text>
+        </g>
+      `;
+
+    } else if (step === 3) {
+      // 场景 3: 每一半翻倍 (×2) 变长方形
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 3 步 · 翻倍变两矩形】</strong>：两个小三角形拼成<strong>矩形① (面积 x·(${h}-x))</strong>；两个梯形拼成<strong>矩形② (面积 x·(${a}+x))</strong>！`;
+
+      g.innerHTML = `
+        <!-- 矩形 ① -->
+        <g transform="translate(80, 50)">
+          <rect x="0" y="0" width="130" height="90" fill="rgba(245, 158, 11, 0.25)" stroke="#D97706" stroke-width="2.5" rx="6"/>
+          <line x1="0" y1="0" x2="130" y2="90" stroke="#D97706" stroke-width="1.5" stroke-dasharray="4,4"/>
+          
+          <text x="65" y="-10" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">矩形 ① (上小三角 × 2)</text>
+          <text x="65" y="45" font-size="12" font-weight="900" fill="#92400E" text-anchor="middle">面积 = x × (${h} - x)</text>
+          
+          <!-- 边长标注 -->
+          <text x="65" y="110" font-size="12" font-weight="bold" fill="#D97706" text-anchor="middle">长 = x</text>
+          <text x="-10" y="50" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="end">宽 = ${h} - x</text>
+        </g>
+
+        <!-- 中间加号 -->
+        <text x="270" y="105" font-size="28" font-weight="900" fill="#64748B" text-anchor="middle">＋</text>
+
+        <!-- 矩形 ② -->
+        <g transform="translate(330, 40)">
+          <rect x="0" y="0" width="240" height="110" fill="rgba(2, 132, 199, 0.2)" stroke="#0284C7" stroke-width="2.5" rx="6"/>
+          <!-- 虚线示意两个梯形拼接 -->
+          <line x1="150" y1="0" x2="90" y2="110" stroke="#0284C7" stroke-width="1.5" stroke-dasharray="4,4"/>
+          
+          <text x="120" y="-10" font-size="13" font-weight="900" fill="#0369A1" text-anchor="middle">矩形 ② (下半梯形 × 2)</text>
+          <text x="120" y="55" font-size="13" font-weight="900" fill="#0369A1" text-anchor="middle">面积 = x × (${a} + x)</text>
+          
+          <!-- 边长标注 -->
+          <text x="120" y="130" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="middle">长 = ${a} + x</text>
+          <text x="250" y="60" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="start">高 = x</text>
+        </g>
+      `;
+
+    } else if (step === 4) {
+      // 场景 4: 神奇合体拼成大长方形，-x 与 +x 抵消
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 4 步 · 神奇合体抵消】</strong>：两个矩形都有一条边等于 <strong>x</strong>！拼合后长正好是 <strong>(${h} - x) + (${a} + x) = ${h} + ${a} = ${sumAH}</strong>！`;
+
+      g.innerHTML = `
+        <!-- 合体大长方形 (宽 x，总长 100) -->
+        <g transform="translate(70, 60)">
+          <!-- 左块 (40-x) -->
+          <rect x="0" y="0" width="160" height="95" fill="rgba(245, 158, 11, 0.3)" stroke="#D97706" stroke-width="2.5"/>
+          <!-- 右块 (60+x) -->
+          <rect x="160" y="0" width="360" height="95" fill="rgba(2, 132, 199, 0.25)" stroke="#0284C7" stroke-width="2.5"/>
+          
+          <!-- 接缝处高亮 -->
+          <line x1="160" y1="0" x2="160" y2="95" stroke="#10B981" stroke-width="3" stroke-dasharray="4,3"/>
+          <circle cx="160" cy="47" r="14" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+          <text x="160" y="52" font-size="14" text-anchor="middle">✨</text>
+          
+          <!-- 左块说明 -->
+          <text x="80" y="45" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">(${h} - x)</text>
+          <text x="80" y="65" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">矩形 ①</text>
+          
+          <!-- 右块说明 -->
+          <text x="340" y="45" font-size="13" font-weight="900" fill="#0369A1" text-anchor="middle">(${a} + x)</text>
+          <text x="340" y="65" font-size="11" font-weight="bold" fill="#0369A1" text-anchor="middle">矩形 ②</text>
+          
+          <!-- 边长标注 -->
+          <text x="-12" y="52" font-size="14" font-weight="900" fill="#4F46E5" text-anchor="end">宽 = x</text>
+          
+          <!-- 顶部总长总括号 -->
+          <path d="M 0,-6 Q 260,-22 520,-6" fill="none" stroke="#10B981" stroke-width="2"/>
+          <text x="260" y="-22" font-size="14" font-weight="900" fill="#047857" text-anchor="middle">
+            总长度 = (${h} - x) + (${a} + x) = ${h} + ${a} = ${sumAH} cm！
+          </text>
+          
+          <!-- 底部总面积 -->
+          <text x="260" y="130" font-size="14" font-weight="900" fill="#1E293B" text-anchor="middle">
+            合体大矩形总面积 = x × ${sumAH} = ${sumAH}x
+          </text>
+        </g>
+      `;
+
+    } else if (step === 5) {
+      // 场景 5: 天平平衡与一步秒杀
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 5 步 · 天平对等秒杀】</strong>：原三角形翻倍是 <strong>${a} × ${h} = ${prodAH}</strong>，与拼图总面积完全相等：<strong>${sumAH}x = ${prodAH} ⟹ x = ${x.toFixed(2)} cm</strong>！`;
+
+      g.innerHTML = `
+        <!-- 左侧：合体长方形 -->
+        <g transform="translate(60, 50)">
+          <rect x="0" y="0" width="220" height="90" fill="rgba(16, 185, 129, 0.2)" stroke="#059669" stroke-width="2.5" rx="6"/>
+          <text x="110" y="38" font-size="13" font-weight="900" fill="#047857" text-anchor="middle">合体拼图长方形</text>
+          <text x="110" y="62" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle">面积 = ${sumAH} · x</text>
+          <text x="110" y="112" font-size="12" font-weight="bold" fill="#059669" text-anchor="middle">长 ${sumAH} × 宽 x</text>
+        </g>
+
+        <!-- 中间等号 / 天平 -->
+        <g transform="translate(340, 95)">
+          <circle cx="0" cy="0" r="22" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
+          <text x="0" y="7" font-size="20" font-weight="900" fill="#B45309" text-anchor="middle">＝</text>
+          <text x="0" y="38" font-size="12" font-weight="900" fill="#D97706" text-anchor="middle">天平平衡</text>
+        </g>
+
+        <!-- 右侧：原三角形翻倍长方形 -->
+        <g transform="translate(400, 50)">
+          <rect x="0" y="0" width="220" height="90" fill="rgba(79, 70, 229, 0.18)" stroke="#4F46E5" stroke-width="2.5" rx="6"/>
+          <text x="110" y="38" font-size="13" font-weight="900" fill="#3730A3" text-anchor="middle">原三角形翻倍 (2×S)</text>
+          <text x="110" y="62" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle">底 × 高 = ${prodAH}</text>
+          <text x="110" y="112" font-size="12" font-weight="bold" fill="#4F46E5" text-anchor="middle">${a} × ${h} = ${prodAH} cm²</text>
+        </g>
+
+        <!-- 底部算式秒杀弹幕 -->
+        <g transform="translate(340, 205)">
+          <rect x="-240" y="-18" width="480" height="38" fill="#ECFDF5" stroke="#10B981" stroke-width="2" rx="10"/>
+          <text x="0" y="7" font-size="15" font-weight="900" fill="#047857" text-anchor="middle">
+            🎉 ${sumAH} · x = ${prodAH}  ⟹  x = ${prodAH} ÷ ${sumAH} = ${x.toFixed(2)} cm！
+          </text>
+        </g>
+      `;
     }
   }
 
@@ -1732,7 +2024,7 @@
 
     currentQuiz = next;
     document.getElementById('quizPrompt').innerHTML = 
-      `在 △ABC 中，已知底边 <strong>BC = ${currentQuiz.a} cm</strong>，高 <strong>AH = ${currentQuiz.h} cm</strong>。它的内接正方形边长 <em>x</em> 是多少？`;
+      `在某个三角形中，已知底边 <strong>BC = ${currentQuiz.a} cm</strong>，高 <strong>AH = ${currentQuiz.h} cm</strong>。它的内接正方形边长 <em>x</em> 是多少？`;
     const ansInput = document.getElementById('quizAns');
     ansInput.value = '';
     ansInput.focus();
@@ -1754,8 +2046,8 @@
 
     if (Math.abs(inputVal - currentQuiz.ans) < 0.01) {
       fb.className = 'quiz-feedback success';
-      fb.innerHTML = `🎉 <strong>太厉害了！秒杀成功！回答完全正确！</strong><br>
-        【四年级拼图法算式】：翻倍总面积 = ${currentQuiz.a} × ${currentQuiz.h} = ${currentQuiz.a * currentQuiz.h}；翻倍总长 = ${currentQuiz.a} + ${currentQuiz.h} = ${currentQuiz.a + currentQuiz.h}。<br>
+      fb.innerHTML = `🎉 <strong>太棒了！秒杀成功！回答完全正确！</strong><br>
+        【拼图法算式】：翻倍总面积 = ${currentQuiz.a} × ${currentQuiz.h} = ${currentQuiz.a * currentQuiz.h}；翻倍总长 = ${currentQuiz.a} + ${currentQuiz.h} = ${currentQuiz.a + currentQuiz.h}。<br>
         边长 x = ${currentQuiz.a * currentQuiz.h} ÷ ${currentQuiz.a + currentQuiz.h} = <strong>${currentQuiz.ans} cm</strong>！`;
     } else {
       fb.className = 'quiz-feedback wrong';
