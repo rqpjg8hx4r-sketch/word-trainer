@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>鸡兔同笼与蜘蛛同笼 · 假设法实验室 · Alex Math Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+      --emerald: #059669;
+      --emerald-dark: #047857;
+      --emerald-light: #ECFDF5;
+      --emerald-border: #A7F3D0;
+      --indigo: #4F46E5;
+      --indigo-light: #EEF2FF;
+      --indigo-border: #C7D2FE;
+      --amber: #D97706;
+      --amber-dark: #B45309;
+      --amber-light: #FEF3C7;
+      --amber-border: #FDE68A;
+      --rose: #E11D48;
+      --rose-light: #FFE4E6;
+      --cyan: #0284C7;
+      --cyan-light: #F0F9FF;
+      --text: #1E293B;
+      --subtext: #64748B;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(16px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 980px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .breadcrumb a {
+      color: var(--emerald);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb .sep { color: #94A3B8; }
+    .breadcrumb .current { color: #0F172A; }
+    .nav-actions { display: flex; gap: 8px; }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { background: #F1F5F9; }
+
+    .problem-header {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .problem-tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .tag-badges-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag-badge {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      border: 1px solid var(--emerald-border);
+    }
+    .tag-badge.kid {
+      background: #FEF3C7;
+      color: #B45309;
+      border-color: #FDE68A;
+    }
+    .problem-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 10px 0;
+    }
+    .problem-text {
+      font-size: 15px;
+      color: #334155;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    /* 动物模式大卡片切换 (鸡兔 vs 鸡蛛 vs 车辆) */
+    .animal-mode-switch {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 6px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    @media (max-width: 680px) {
+      .animal-mode-switch { grid-template-columns: 1fr; }
+    }
+    .mode-tab-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 2px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .mode-tab-btn .icon { font-size: 26px; }
+    .mode-tab-btn .title { font-size: 14px; font-weight: 800; color: #334155; }
+    .mode-tab-btn .subtitle { font-size: 11.5px; color: var(--subtext); margin-top: 2px; }
+    .mode-tab-btn.active.rabbit {
+      background: #FFFBEB;
+      border-color: #F59E0B;
+    }
+    .mode-tab-btn.active.rabbit .title { color: #B45309; }
+    .mode-tab-btn.active.spider {
+      background: #ECFDF5;
+      border-color: #10B981;
+    }
+    .mode-tab-btn.active.spider .title { color: #047857; }
+    .mode-tab-btn.active.vehicle {
+      background: #EEF2FF;
+      border-color: #6366F1;
+    }
+    .mode-tab-btn.active.vehicle .title { color: #4338CA; }
+
+    /* 实验室双列布局 */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 860px) { .lab-grid { grid-template-columns: 1fr; } }
+
+    .canvas-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .canvas-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .canvas-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .svg-container {
+      width: 100%;
+      background: #FAFBF9;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      position: relative;
+    }
+    svg { display: block; width: 100%; height: auto; user-select: none; }
+
+    /* 控制面板 */
+    .control-card { display: flex; flex-direction: column; gap: 16px; }
+    .card-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .box-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #1E293B;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .slider-item { margin-bottom: 14px; }
+    .slider-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .slider-val {
+      font-family: var(--font-mono);
+      font-weight: 900;
+      color: var(--emerald);
+    }
+    .range-input {
+      width: 100%;
+      accent-color: var(--emerald);
+      cursor: pointer;
+    }
+    .preset-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .preset-btn {
+      padding: 7px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      background: #F8FAFC;
+      color: #334155;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .preset-btn:hover {
+      background: #ECFDF5;
+      border-color: #6EE7B7;
+      color: var(--emerald-dark);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .metric-item {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .metric-item.accent {
+      background: #FFFBEB;
+      border-color: #FDE68A;
+    }
+    .metric-name {
+      font-size: 11.5px;
+      color: #64748B;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .metric-val {
+      font-size: 17px;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: #0F172A;
+    }
+    .metric-item.accent .metric-val { color: #B45309; }
+
+    /* 假设视角切换卡片 */
+    .view-switch-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .view-pill-btn {
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      font-size: 13px;
+      font-weight: 800;
+      color: #475569;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .view-pill-btn.active {
+      background: #FEF3C7;
+      border-color: #F59E0B;
+      color: #B45309;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.15);
+    }
+
+    /* 动画馆 */
+    .anim-player-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .anim-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .anim-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .anim-controls-group { display: flex; gap: 6px; }
+    .anim-btn {
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #334155;
+      cursor: pointer;
+    }
+    .anim-btn.primary {
+      background: var(--emerald);
+      color: #FFFFFF;
+      border-color: var(--emerald);
+    }
+    .anim-step-pills {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+    .anim-pill {
+      padding: 6px 12px;
+      font-size: 11.5px;
+      font-weight: 800;
+      border-radius: 20px;
+      border: 1px solid #CBD5E1;
+      background: #F8FAFC;
+      color: #475569;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .anim-pill.active {
+      background: #059669;
+      color: #FFFFFF;
+      border-color: #059669;
+    }
+    .anim-canvas-wrapper {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+    }
+    .anim-caption-banner {
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
+      font-size: 13.5px;
+      color: #B45309;
+      line-height: 1.6;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    /* 推导卡片 */
+    .puzzle-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .puzzle-step-card {
+      background: #FFFDF7;
+      border: 1px solid #FDE68A;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .puzzle-step-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #B45309;
+      margin-bottom: 8px;
+    }
+    .puzzle-step-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #F59E0B;
+      color: #FFFFFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .puzzle-step-text {
+      font-size: 13.5px;
+      color: #475569;
+      line-height: 1.65;
+    }
+    .math-block {
+      font-family: var(--font-mono);
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 4px 8px;
+      margin: 4px 0;
+      display: inline-block;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    /* 闯关挑战 */
+    .quiz-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .quiz-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .quiz-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .quiz-body {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+    .quiz-input-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .quiz-input {
+      width: 120px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      outline: none;
+    }
+    .quiz-submit-btn {
+      padding: 9px 18px;
+      background: var(--emerald);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .quiz-refresh-btn {
+      padding: 9px 14px;
+      background: #FFFFFF;
+      color: #475569;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .quiz-feedback {
+      margin-top: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+    }
+    .quiz-feedback.success { display: block; background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+    .quiz-feedback.wrong { display: block; background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="index.html"><span>📐</span> 数学思维</a>
+      <span class="sep">/</span>
+      <span class="current">专题 2：鸡兔同笼与假设法思维</span>
+    </div>
+    <div class="nav-actions">
+      <a href="../games/" class="nav-btn"><span>🎮</span> 游戏</a>
+      <a href="../coding/" class="nav-btn"><span>💻</span> 编程</a>
+      <a href="../index.html" class="nav-btn"><span>📚</span> 英语</a>
+    </div>
+  </div>
+
+  <div class="problem-header">
+    <div class="problem-tag-row">
+      <div class="tag-badges-group">
+        <span class="tag-badge kid">🌟 假设法（补脚/削脚）</span>
+        <span class="tag-badge">🐾 鸡兔 & 鸡蜘蛛同笼</span>
+        <span class="tag-badge">🎵 金鸡独立吹哨法</span>
+      </div>
+    </div>
+    <h2 class="problem-title">鸡兔同笼与蜘蛛同笼 · 假设法互动实验室</h2>
+    <p class="problem-text">
+      古代数学名著《孙子算经》经典名题：“今有雉兔同笼，上有三十五头，下有九十四足，问雉兔各几何？”<br>
+      Alex 四年级专属思维：<strong>拒绝死记硬背公式，不设未知数列方程！</strong>
+      用像搭积木一样的“假设法（补脚与削脚）”和爆笑的“吹哨抬脚法”，一眼看穿头脚差异的数学本质！
+    </p>
+  </div>
+
+  <!-- 动物模式切换 (鸡兔 vs 鸡蜘蛛 vs 车辆模型) -->
+  <div class="animal-mode-switch">
+    <button id="btnModeRabbit" class="mode-tab-btn active rabbit" onclick="setAnimalMode('rabbit')">
+      <span class="icon">🐔🐰</span>
+      <div>
+        <div class="title">经典鸡兔同笼</div>
+        <div class="subtitle">鸡 2 只脚，兔 4 只脚 (单体差 2)</div>
+      </div>
+    </button>
+    <button id="btnModeSpider" class="mode-tab-btn spider" onclick="setAnimalMode('spider')">
+      <span class="icon">🐔🕷️</span>
+      <div>
+        <div class="title">丛林鸡蛛同笼</div>
+        <div class="subtitle">鸡 2 只脚，蜘蛛 8 只脚 (单体差 6)</div>
+      </div>
+    </button>
+    <button id="btnModeVehicle" class="mode-tab-btn vehicle" onclick="setAnimalMode('vehicle')">
+      <span class="icon">🚲🚗</span>
+      <div>
+        <div class="title">生活车辆同笼</div>
+        <div class="subtitle">自行车 2 轮，轿车 4 轮 (单体差 2)</div>
+      </div>
+    </button>
+  </div>
+
+  <!-- 几何与农场实验室 -->
+  <div class="lab-grid">
+    <div class="canvas-card">
+      <div class="canvas-title-bar">
+        <div class="canvas-title">
+          <span>🎨</span> 动物农场可视画布（动态排布头与脚）
+        </div>
+        <div id="modeStatusTag" style="font-size:12px; font-weight:700; color:#B45309; background:#FEF3C7; padding:3px 8px; border-radius:6px;">
+          当前：经典鸡兔农场 (10头, 28脚)
+        </div>
+      </div>
+
+      <div class="svg-container">
+        <svg id="farmSvg" viewBox="0 0 600 360" preserveAspectRatio="xMidYMid meet">
+          <g id="farmGroup"></g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="control-card">
+      <div class="card-box">
+        <div class="box-title">
+          <span>⚙️</span> 动物数量自由调节
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>总头数（总动物数）</span>
+            <span class="slider-val" id="valTotalHeads">10 头</span>
+          </div>
+          <input type="range" id="inputHeads" class="range-input" min="6" max="16" value="10" step="1">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span id="labelSpecialAnimal">兔子只数</span>
+            <span class="slider-val" id="valSpecialCount">4 只</span>
+          </div>
+          <input type="range" id="inputSpecial" class="range-input" min="0" max="10" value="4" step="1">
+        </div>
+
+        <div class="preset-btns">
+          <button class="preset-btn" onclick="applyPreset(10, 4)">经典10头28脚</button>
+          <button class="preset-btn" onclick="applyPreset(8, 5)">8头26脚</button>
+          <button class="preset-btn" onclick="applyPreset(12, 6)">12头36脚</button>
+          <button class="preset-btn" onclick="applyPreset(6, 2)">6头16脚</button>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div class="box-title">
+          <span>📊</span> 实时脚数天平与差额检测
+        </div>
+        <div class="metric-grid">
+          <div class="metric-item">
+            <div class="metric-name">总头数</div>
+            <div class="metric-val" id="dispMetricHeads">10</div>
+          </div>
+          <div class="metric-item accent">
+            <div class="metric-name">现实总脚数</div>
+            <div class="metric-val" id="dispMetricLegs">28</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-name" id="dispNameChickens">小鸡数量 (2脚)</div>
+            <div class="metric-val" id="dispMetricChickens">6 只</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-name" id="dispNameSpecial">兔子数量 (4脚)</div>
+            <div class="metric-val" id="dispMetricSpecial">4 只</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 解法视角切换与动画馆 -->
+  <div class="anim-player-box">
+    <div class="anim-toolbar">
+      <div class="anim-title">
+        <span>🎬</span> <strong id="animSectionTitle">假设法互动推导馆</strong>
+      </div>
+      <div class="anim-controls-group">
+        <button id="btnAnimAuto" class="anim-btn primary" onclick="toggleAnimAuto()">
+          <span id="animAutoIcon">▶</span> <span id="animAutoText">自动播放演示</span>
+        </button>
+        <button class="anim-btn" onclick="prevAnimStep()">◀ 上一步</button>
+        <button class="anim-btn" onclick="nextAnimStep()">下一步 ▶</button>
+        <button class="anim-btn" onclick="resetAnimStep()">↺ 重新演示</button>
+      </div>
+    </div>
+
+    <!-- 视角模式切换 -->
+    <div class="view-switch-row">
+      <button id="btnViewAssumeChick" class="view-pill-btn active" onclick="setViewMode('assume_chicken')">
+        <span>🎭</span> 假设视角 1：假装全是鸡（从零件箱补脚 ➔ 算出兔/蜘蛛）
+      </button>
+      <button id="btnViewAssumeSpecial" class="view-pill-btn" onclick="setViewMode('assume_special')">
+        <span>🐰</span> 假设视角 2：假装全是兔/蜘蛛（多出脚削掉 ➔ 算出鸡）
+      </button>
+      <button id="btnViewLiftLeg" class="view-pill-btn" onclick="setViewMode('lift_legs')">
+        <span>🎵</span> 趣味视角 3：金鸡独立“吹哨抬脚法”
+      </button>
+    </div>
+
+    <div class="anim-step-pills" id="animStepPills">
+      <!-- 动态生成动画步骤按钮 -->
+    </div>
+
+    <div class="anim-canvas-wrapper">
+      <svg id="animSvg" viewBox="0 0 680 260" width="100%" height="260" preserveAspectRatio="xMidYMid meet">
+        <g id="animStageGroup"></g>
+      </svg>
+    </div>
+
+    <div class="anim-caption-banner">
+      <span>💡</span> <span id="animCaptionText">正在载入推导演示...</span>
+    </div>
+  </div>
+
+  <!-- 4 步图解卡片 -->
+  <div id="stepsContainer" class="puzzle-steps-grid">
+    <!-- 动态按所选视角渲染 4 张专属解题卡片 -->
+  </div>
+
+  <!-- Alex 专属秒杀口诀 -->
+  <div id="summaryCard" style="background: #FFFFFF; border: 2px solid #F59E0B; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 24px;">
+    <div>
+      <h4 style="margin:0 0 4px 0; font-size:15px; color:#B45309;">🌟 Alex 的假设法一眼看透心法：</h4>
+      <p style="margin:0; font-size:13px; color:#475569;" id="summaryText">
+        假设全是鸡，算出来的一定是兔子；假设全是兔，算出来的一定是鸡！因为算出来的差额，正是那个被你误解的“冒牌货”引起的！
+      </p>
+    </div>
+    <div id="summaryFormula" style="font-family:var(--font-mono); font-size:18px; font-weight:900; color:#B45309; background:#FEF3C7; padding:8px 16px; border-radius:10px;">
+      兔子 = (实际脚数 - 假设脚数) ÷ 2
+    </div>
+  </div>
+
+  <!-- 举一反三秒杀挑战 -->
+  <div class="quiz-card">
+    <div class="quiz-title-row">
+      <div class="quiz-title">
+        <span>🎯</span> 举一反三 · 假设法秒杀闯关挑战
+      </div>
+      <span style="font-size:12px; color:var(--subtext);">用假设法试试看，不用列方程式！</span>
+    </div>
+
+    <div class="quiz-body">
+      <div class="quiz-question" id="quizPrompt">
+        正在出题中...
+      </div>
+      <div class="quiz-input-row">
+        <label for="quizAns" style="font-size:13.5px; font-weight:700;" id="quizAnsLabel">兔子只数 =</label>
+        <input type="number" id="quizAns" class="quiz-input" placeholder="输入数值" min="0" step="1">
+        <span style="font-size:13.5px; font-weight:700;">只</span>
+        <button class="quiz-submit-btn" onclick="checkQuiz()">提交验证</button>
+        <button class="quiz-refresh-btn" onclick="nextQuiz()">换一题 🎲</button>
+      </div>
+      <div id="quizFeedback" class="quiz-feedback"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let state = {
+    animalMode: 'rabbit',       // 'rabbit' (4脚), 'spider' (8脚), 'vehicle' (4轮)
+    viewMode: 'assume_chicken', // 'assume_chicken', 'assume_special', 'lift_legs'
+    heads: 10,
+    specialCount: 4,            // 兔/蜘蛛/轿车数量
+    animStep: 1,
+    animTimer: null
+  };
+
+  const animalMeta = {
+    rabbit: {
+      name1: '小鸡', leg1: 2, icon1: '🐔',
+      name2: '兔子', leg2: 4, icon2: '🐰',
+      diff: 2, unit: '只',
+      tagText: '经典鸡兔农场'
+    },
+    spider: {
+      name1: '小鸡', leg1: 2, icon1: '🐔',
+      name2: '蜘蛛', leg2: 8, icon2: '🕷️',
+      diff: 6, unit: '只',
+      tagText: '丛林鸡蛛农场'
+    },
+    vehicle: {
+      name1: '自行车', leg1: 2, icon1: '🚲',
+      name2: '小轿车', leg2: 4, icon2: '🚗',
+      diff: 2, unit: '辆',
+      tagText: '车轮同笼停车场'
+    }
+  };
+
+  const el = {
+    farmGroup: document.getElementById('farmGroup'),
+    modeStatusTag: document.getElementById('modeStatusTag'),
+    valTotalHeads: document.getElementById('valTotalHeads'),
+    valSpecialCount: document.getElementById('valSpecialCount'),
+    labelSpecialAnimal: document.getElementById('labelSpecialAnimal'),
+    inputHeads: document.getElementById('inputHeads'),
+    inputSpecial: document.getElementById('inputSpecial'),
+    dispMetricHeads: document.getElementById('dispMetricHeads'),
+    dispMetricLegs: document.getElementById('dispMetricLegs'),
+    dispMetricChickens: document.getElementById('dispMetricChickens'),
+    dispMetricSpecial: document.getElementById('dispMetricSpecial'),
+    dispNameChickens: document.getElementById('dispNameChickens'),
+    dispNameSpecial: document.getElementById('dispNameSpecial'),
+    animStageGroup: document.getElementById('animStageGroup'),
+    animCaptionText: document.getElementById('animCaptionText'),
+    btnAnimAuto: document.getElementById('btnAnimAuto'),
+    animAutoIcon: document.getElementById('animAutoIcon'),
+    animAutoText: document.getElementById('animAutoText'),
+    stepsContainer: document.getElementById('stepsContainer'),
+    summaryText: document.getElementById('summaryText'),
+    summaryFormula: document.getElementById('summaryFormula'),
+    quizAnsLabel: document.getElementById('quizAnsLabel')
+  };
+
+  function setAnimalMode(mode) {
+    state.animalMode = mode;
+    state.animStep = 1;
+    stopAnimAuto();
+
+    document.getElementById('btnModeRabbit').classList.toggle('active', mode === 'rabbit');
+    document.getElementById('btnModeSpider').classList.toggle('active', mode === 'spider');
+    document.getElementById('btnModeVehicle').classList.toggle('active', mode === 'vehicle');
+
+    const meta = animalMeta[mode];
+    el.labelSpecialAnimal.textContent = meta.name2 + '数量';
+    el.dispNameChickens.textContent = meta.name1 + ' (' + meta.leg1 + '脚)';
+    el.dispNameSpecial.textContent = meta.name2 + ' (' + meta.leg2 + '脚)';
+    el.quizAnsLabel.textContent = meta.name2 + '数量 =';
+
+    updateFarm();
+    renderAnimPills();
+    renderAnimStage(state.animStep);
+    renderStepCards();
+    nextQuiz();
+  }
+
+  function setViewMode(vMode) {
+    state.viewMode = vMode;
+    state.animStep = 1;
+    stopAnimAuto();
+
+    document.getElementById('btnViewAssumeChick').classList.toggle('active', vMode === 'assume_chicken');
+    document.getElementById('btnViewAssumeSpecial').classList.toggle('active', vMode === 'assume_special');
+    document.getElementById('btnViewLiftLeg').classList.toggle('active', vMode === 'lift_legs');
+
+    renderAnimPills();
+    renderAnimStage(state.animStep);
+    renderStepCards();
+  }
+
+  function updateFarm() {
+    const meta = animalMeta[state.animalMode];
+    const totalH = state.heads;
+    const specialCount = Math.min(state.specialCount, totalH);
+    const chickenCount = totalH - specialCount;
+    const totalLegs = chickenCount * meta.leg1 + specialCount * meta.leg2;
+
+    el.valTotalHeads.textContent = totalH + ' 头';
+    el.valSpecialCount.textContent = specialCount + ' ' + meta.unit;
+    el.inputSpecial.max = totalH;
+
+    el.dispMetricHeads.textContent = totalH;
+    el.dispMetricLegs.textContent = totalLegs;
+    el.dispMetricChickens.textContent = chickenCount + ' ' + meta.unit;
+    el.dispMetricSpecial.textContent = specialCount + ' ' + meta.unit;
+
+    el.modeStatusTag.textContent = meta.tagText + ' (' + totalH + '头, ' + totalLegs + '脚)';
+
+    drawFarmSvg(totalH, chickenCount, specialCount, meta);
+  }
+
+  function drawFarmSvg(totalH, chickenCount, specialCount, meta) {
+    const g = el.farmGroup;
+    g.innerHTML = '';
+
+    const totalLegs = chickenCount * meta.leg1 + specialCount * meta.leg2;
+
+    g.innerHTML += '<rect x="15" y="15" width="570" height="330" rx="14" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="2"/>';
+    g.innerHTML += '<line x1="15" y1="280" x2="585" y2="280" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="4,4"/>';
+    g.innerHTML += '<text x="30" y="42" font-size="13" font-weight="900" fill="#64748B">🏡 农场大笼子：共 ' + totalH + ' 个头，' + totalLegs + ' 只脚</text>';
+
+    const cols = Math.min(totalH, 8);
+    const cellW = 540 / cols;
+    const cellH = 105;
+
+    let idx = 0;
+    for (let i = 0; i < chickenCount; i++) {
+      const col = idx % cols;
+      const row = Math.floor(idx / cols);
+      const cx = 40 + col * cellW + cellW / 2;
+      const cy = 70 + row * cellH + cellH / 2;
+      drawAnimalItem(g, cx, cy, meta.name1, meta.leg1, meta.icon1, '#B45309', '#FEF3C7');
+      idx++;
+    }
+    for (let i = 0; i < specialCount; i++) {
+      const col = idx % cols;
+      const row = Math.floor(idx / cols);
+      const cx = 40 + col * cellW + cellW / 2;
+      const cy = 70 + row * cellH + cellH / 2;
+      drawAnimalItem(g, cx, cy, meta.name2, meta.leg2, meta.icon2, '#047857', '#ECFDF5');
+      idx++;
+    }
+
+    g.innerHTML += '<text x="300" y="315" font-size="13.5" font-weight="900" fill="#334155" text-anchor="middle">' +
+      chickenCount + ' 只 ' + meta.name1 + ' (' + (chickenCount * meta.leg1) + '脚) ＋ ' +
+      specialCount + ' 只 ' + meta.name2 + ' (' + (specialCount * meta.leg2) + '脚) ＝ 总共 ' +
+      totalLegs + ' 只脚！</text>';
+  }
+
+  function drawAnimalItem(g, cx, cy, name, legs, icon, textColor, bgColor) {
+    g.innerHTML += '<g transform="translate(' + cx + ', ' + cy + ')">' +
+      '<circle cx="0" cy="0" r="24" fill="' + bgColor + '" stroke="' + textColor + '" stroke-width="2"/>' +
+      '<text x="0" y="8" font-size="22" text-anchor="middle">' + icon + '</text>' +
+      '<rect x="-14" y="24" width="28" height="15" rx="4" fill="' + textColor + '"/>' +
+      '<text x="0" y="35" font-size="10" font-weight="900" fill="#FFFFFF" text-anchor="middle">' + legs + '脚</text>' +
+      '</g>';
+  }
+
+  // ==================== 🎬 动画引擎 ====================
+  const animStepsConfig = {
+    assume_chicken: [
+      '1. 笼子全貌',
+      '2. 全戴小鸡面具',
+      '3. 对比缺口',
+      '4. 补脚除法秒杀'
+    ],
+    assume_special: [
+      '1. 笼子全貌',
+      '2. 全戴兔子面具',
+      '3. 脚数爆表',
+      '4. 削脚除法秒杀'
+    ],
+    lift_legs: [
+      '1. 所有人站好',
+      '2. 吹哨抬 1 只脚',
+      '3. 吹哨再抬 1 只脚 (鸡全飞起)',
+      '4. 地上除法秒杀'
+    ]
+  };
+
+  function renderAnimPills() {
+    const list = animStepsConfig[state.viewMode];
+    const box = document.getElementById('animStepPills');
+    box.innerHTML = '';
+    list.forEach((label, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'anim-pill' + (idx + 1 === state.animStep ? ' active' : '');
+      btn.textContent = label;
+      btn.onclick = () => gotoAnimStep(idx + 1);
+      box.appendChild(btn);
+    });
+  }
+
+  function gotoAnimStep(step) {
+    state.animStep = step;
+    document.querySelectorAll('.anim-pill').forEach((pill, idx) => {
+      pill.classList.toggle('active', idx + 1 === step);
+    });
+    renderAnimStage(step);
+  }
+
+  function nextAnimStep() {
+    const max = animStepsConfig[state.viewMode].length;
+    let next = state.animStep + 1;
+    if (next > max) next = 1;
+    gotoAnimStep(next);
+  }
+  function prevAnimStep() {
+    const max = animStepsConfig[state.viewMode].length;
+    let prev = state.animStep - 1;
+    if (prev < 1) prev = max;
+    gotoAnimStep(prev);
+  }
+  function resetAnimStep() { stopAnimAuto(); gotoAnimStep(1); }
+
+  function toggleAnimAuto() {
+    if (state.animTimer) stopAnimAuto();
+    else startAnimAuto();
+  }
+  function startAnimAuto() {
+    el.btnAnimAuto.classList.add('primary');
+    el.animAutoIcon.textContent = '⏸';
+    el.animAutoText.textContent = '暂停演示';
+    state.animTimer = setInterval(() => {
+      nextAnimStep();
+    }, 2800);
+  }
+  function stopAnimAuto() {
+    if (state.animTimer) {
+      clearInterval(state.animTimer);
+      state.animTimer = null;
+    }
+    el.btnAnimAuto.classList.remove('primary');
+    el.animAutoIcon.textContent = '▶';
+    el.animAutoText.textContent = '自动播放演示';
+  }
+
+  function renderAnimStage(step) {
+    const meta = animalMeta[state.animalMode];
+    const totalH = state.heads;
+    const specialCount = Math.min(state.specialCount, totalH);
+    const chickenCount = totalH - specialCount;
+    const actualLegs = chickenCount * meta.leg1 + specialCount * meta.leg2;
+    const assumedChickLegs = totalH * meta.leg1;
+    const legGap = actualLegs - assumedChickLegs;
+
+    const g = el.animStageGroup;
+    g.innerHTML = '';
+
+    if (state.viewMode === 'assume_chicken') {
+      if (step === 1) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 1 步 · 观察现实全貌】</strong>：农场里有 <strong>' + totalH + ' 个头</strong>，地上数出 <strong>' + actualLegs + ' 只脚</strong>。不知道有几只 ' + meta.name1 + '、几只 ' + meta.name2 + '。';
+        g.innerHTML = 
+          '<g transform="translate(100, 45)">' +
+            '<rect x="0" y="0" width="220" height="90" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>' +
+            '<text x="110" y="36" font-size="14" font-weight="900" fill="#B45309" text-anchor="middle">总头数</text>' +
+            '<text x="110" y="70" font-size="26" font-weight="900" fill="#B45309" text-anchor="middle">' + totalH + ' 个头</text>' +
+          '</g>' +
+          '<g transform="translate(360, 45)">' +
+            '<rect x="0" y="0" width="220" height="90" rx="12" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>' +
+            '<text x="110" y="36" font-size="14" font-weight="900" fill="#047857" text-anchor="middle">地上实际总脚数</text>' +
+            '<text x="110" y="70" font-size="26" font-weight="900" fill="#047857" text-anchor="middle">' + actualLegs + ' 只脚</text>' +
+          '</g>' +
+          '<text x="340" y="195" font-size="15" font-weight="900" fill="#475569" text-anchor="middle">' +
+            '单只脚数：' + meta.name1 + ' ' + meta.leg1 + ' 脚，' + meta.name2 + ' ' + meta.leg2 + ' 脚（单只相差 ' + meta.diff + ' 脚）' +
+          '</text>';
+      } else if (step === 2) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 2 步 · 假装全都是 ' + meta.name1 + '】</strong>：全员戴上 ' + meta.name1 + ' 面具！每只只算 ' + meta.leg1 + ' 脚：<strong>' + totalH + ' × ' + meta.leg1 + ' = ' + assumedChickLegs + ' 只脚</strong>。';
+        g.innerHTML = 
+          '<g transform="translate(180, 40)">' +
+            '<rect x="0" y="0" width="320" height="100" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5" filter="drop-shadow(0 4px 10px rgba(245,158,11,0.15))"/>' +
+            '<text x="160" y="32" font-size="14" font-weight="900" fill="#B45309" text-anchor="middle">假装全都是 ' + meta.name1 + ' (' + meta.leg1 + '脚)：</text>' +
+            '<text x="160" y="66" font-size="24" font-weight="900" fill="#B45309" text-anchor="middle">' + totalH + ' × ' + meta.leg1 + ' ＝ ' + assumedChickLegs + ' 只脚</text>' +
+            '<text x="160" y="88" font-size="11.5" font-weight="bold" fill="#78350F" text-anchor="middle">（大家全戴上面具，脚数明显少了！）</text>' +
+          '</g>';
+      } else if (step === 3) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 3 步 · 对比缺口发现差额】</strong>：实际 ' + actualLegs + ' 只脚，假装只有 ' + assumedChickLegs + ' 只脚，<strong>少了 ' + actualLegs + ' - ' + assumedChickLegs + ' = ' + legGap + ' 只脚</strong>！这 ' + legGap + ' 只脚全在备用零件箱里！';
+        g.innerHTML = 
+          '<g transform="translate(80, 50)">' +
+            '<rect x="0" y="0" width="220" height="75" rx="10" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>' +
+            '<text x="110" y="30" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">实际有 ' + actualLegs + ' 只脚</text>' +
+            '<text x="110" y="58" font-size="16" font-weight="900" fill="#047857" text-anchor="middle">实际脚数</text>' +
+          '</g>' +
+          '<text x="330" y="95" font-size="28" font-weight="900" fill="#E11D48" text-anchor="middle">－</text>' +
+          '<g transform="translate(380, 50)">' +
+            '<rect x="0" y="0" width="220" height="75" rx="10" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>' +
+            '<text x="110" y="30" font-size="13" font-weight="bold" fill="#B45309" text-anchor="middle">假装有 ' + assumedChickLegs + ' 只脚</text>' +
+            '<text x="110" y="58" font-size="16" font-weight="900" fill="#B45309" text-anchor="middle">假装脚数</text>' +
+          '</g>' +
+          '<g transform="translate(240, 160)">' +
+            '<rect x="0" y="0" width="200" height="50" rx="8" fill="#FFE4E6" stroke="#E11D48" stroke-width="2"/>' +
+            '<text x="100" y="32" font-size="18" font-weight="900" fill="#E11D48" text-anchor="middle">差额 ＝ ' + legGap + ' 只脚！</text>' +
+          '</g>';
+      } else if (step === 4) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 4 步 · 补脚除法秒杀】</strong>：每给一只假动物补装 ' + meta.diff + ' 只脚，就还原一只 ' + meta.name2 + '！<strong>' + legGap + ' ÷ ' + meta.diff + ' = ' + specialCount + ' 只 ' + meta.name2 + '</strong>！';
+        g.innerHTML = 
+          '<g transform="translate(140, 40)">' +
+            '<rect x="0" y="0" width="400" height="110" rx="14" fill="#FFFFFF" stroke="#059669" stroke-width="2.5" filter="drop-shadow(0 4px 12px rgba(5,150,105,0.15))"/>' +
+            '<text x="200" y="34" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">每补装 ' + meta.diff + ' 只脚，变回一只 ' + meta.name2 + '：</text>' +
+            '<text x="200" y="72" font-size="24" font-weight="900" fill="#047857" text-anchor="middle">' +
+              meta.name2 + ' = ' + legGap + ' ÷ ' + meta.diff + ' ＝ ' + specialCount + ' ' + meta.unit + '！' +
+            '</text>' +
+            '<text x="200" y="96" font-size="13" font-weight="bold" fill="#B45309" text-anchor="middle">' +
+              meta.name1 + ' = ' + totalH + ' － ' + specialCount + ' ＝ ' + chickenCount + ' ' + meta.unit + '！' +
+            '</text>' +
+          '</g>' +
+          '<text x="340" y="200" font-size="15" font-weight="900" fill="#059669" text-anchor="middle">' +
+            '🎉 假设全是鸡，秒杀抓出 ' + meta.name2 + '！' +
+          '</text>';
+      }
+    } else if (state.viewMode === 'assume_special') {
+      const assumedSpecialLegs = totalH * meta.leg2;
+      const surplusLegs = assumedSpecialLegs - actualLegs;
+
+      if (step === 1) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 1 步 · 观察全貌】</strong>：共 <strong>' + totalH + ' 个头</strong>，地上实际有 <strong>' + actualLegs + ' 只脚</strong>。';
+        g.innerHTML = 
+          '<text x="340" y="110" font-size="24" font-weight="900" fill="#0F172A" text-anchor="middle">' + totalH + ' 个头，实际共 ' + actualLegs + ' 只脚</text>' +
+          '<text x="340" y="150" font-size="14" font-weight="bold" fill="#64748B" text-anchor="middle">这次换个视角：假设全都是多脚的 ' + meta.name2 + '！</text>';
+      } else if (step === 2) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 2 步 · 假装全都是 ' + meta.name2 + '】</strong>：全员假装是 ' + meta.name2 + ' (' + meta.leg2 + '脚)：<strong>' + totalH + ' × ' + meta.leg2 + ' = ' + assumedSpecialLegs + ' 只脚</strong>！';
+        g.innerHTML = 
+          '<g transform="translate(170, 45)">' +
+            '<rect x="0" y="0" width="340" height="95" rx="12" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>' +
+            '<text x="170" y="34" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">假装全都是 ' + meta.name2 + ' (' + meta.leg2 + '脚)：</text>' +
+            '<text x="170" y="70" font-size="24" font-weight="900" fill="#047857" text-anchor="middle">' + totalH + ' × ' + meta.leg2 + ' ＝ ' + assumedSpecialLegs + ' 只脚</text>' +
+          '</g>';
+      } else if (step === 3) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 3 步 · 脚数严重爆表】</strong>：假装有 ' + assumedSpecialLegs + ' 只脚，实际只有 ' + actualLegs + ' 只脚，<strong>多算了 ' + assumedSpecialLegs + ' - ' + actualLegs + ' = ' + surplusLegs + ' 只脚</strong>！';
+        g.innerHTML = 
+          '<g transform="translate(200, 60)">' +
+            '<rect x="0" y="0" width="280" height="75" rx="10" fill="#FFE4E6" stroke="#E11D48" stroke-width="2"/>' +
+            '<text x="140" y="32" font-size="14" font-weight="bold" fill="#9F1239" text-anchor="middle">多算出了脚数（爆表）：</text>' +
+            '<text x="140" y="60" font-size="20" font-weight="900" fill="#E11D48" text-anchor="middle">' + assumedSpecialLegs + ' － ' + actualLegs + ' ＝ ' + surplusLegs + ' 只脚！</text>' +
+          '</g>';
+      } else if (step === 4) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 4 步 · 削脚除法秒杀】</strong>：每拔掉 ' + meta.diff + ' 只假脚，还原一只 ' + meta.name1 + '！<strong>' + surplusLegs + ' ÷ ' + meta.diff + ' = ' + chickenCount + ' 只 ' + meta.name1 + '</strong>！';
+        g.innerHTML = 
+          '<g transform="translate(140, 40)">' +
+            '<rect x="0" y="0" width="400" height="110" rx="14" fill="#FFFFFF" stroke="#B45309" stroke-width="2.5" filter="drop-shadow(0 4px 12px rgba(180,83,9,0.15))"/>' +
+            '<text x="200" y="34" font-size="14" font-weight="bold" fill="#B45309" text-anchor="middle">每削掉 ' + meta.diff + ' 只脚，变回一只 ' + meta.name1 + '：</text>' +
+            '<text x="200" y="72" font-size="24" font-weight="900" fill="#B45309" text-anchor="middle">' +
+              meta.name1 + ' = ' + surplusLegs + ' ÷ ' + meta.diff + ' ＝ ' + chickenCount + ' ' + meta.unit + '！' +
+            '</text>' +
+            '<text x="200" y="96" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">' +
+              meta.name2 + ' = ' + totalH + ' － ' + chickenCount + ' ＝ ' + specialCount + ' ' + meta.unit + '！' +
+            '</text>' +
+          '</g>' +
+          '<text x="340" y="200" font-size="15" font-weight="900" fill="#B45309" text-anchor="middle">' +
+            '🎉 假设全是兔，秒杀抓出 ' + meta.name1 + '！' +
+          '</text>';
+      }
+    } else {
+      const totalLiftedLegs = totalH * 2;
+      const remainingGroundLegs = actualLegs - totalLiftedLegs;
+
+      if (step === 1) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 1 步 · 所有人站好】</strong>：笼子里有 ' + totalH + ' 个头，地上共 ' + actualLegs + ' 只脚。饲养员准备吹响神奇哨子！';
+        g.innerHTML = 
+          '<text x="340" y="100" font-size="22" font-weight="900" fill="#0F172A" text-anchor="middle">🎵 哨子已就位：各就各位，预备！</text>' +
+          '<text x="340" y="140" font-size="15" font-weight="bold" fill="#475569" text-anchor="middle">总头数 ' + totalH + '，总脚数 ' + actualLegs + '</text>';
+      } else if (step === 2) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 2 步 · 哔——抬起 1 只脚！】</strong>：所有动物同时抬起 1 只脚，地上少了 ' + totalH + ' 只脚，还剩 ' + (actualLegs - totalH) + ' 只脚！';
+        g.innerHTML = 
+          '<g transform="translate(180, 50)">' +
+            '<rect x="0" y="0" width="320" height="90" rx="12" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>' +
+            '<text x="160" y="34" font-size="16" font-weight="900" fill="#B45309" text-anchor="middle">🎵 哔！每只动物抬 1 只脚！</text>' +
+            '<text x="160" y="68" font-size="18" font-weight="bold" fill="#78350F" text-anchor="middle">地上少掉 ' + totalH + ' 只脚</text>' +
+          '</g>';
+      } else if (step === 3) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 3 步 · 哔——再抬 1 只脚！】</strong>：所有动物再抬 1 只脚！<strong>所有 ' + meta.name1 + ' 两只脚全抬起（飞起来了！地上没有一只 ' + meta.name1 + ' 脚！）</strong>，地上全是 ' + meta.name2 + ' 的脚！';
+        g.innerHTML = 
+          '<g transform="translate(150, 40)">' +
+            '<rect x="0" y="0" width="380" height="110" rx="14" fill="#ECFDF5" stroke="#10B981" stroke-width="2.5"/>' +
+            '<text x="190" y="32" font-size="15" font-weight="900" fill="#047857" text-anchor="middle">🕊️ 所有小鸡双脚悬空起飞！</text>' +
+            '<text x="190" y="62" font-size="13.5" font-weight="bold" fill="#065F46" text-anchor="middle">两声哨子共抬走：' + totalH + ' × 2 = ' + totalLiftedLegs + ' 只脚</text>' +
+            '<text x="190" y="92" font-size="18" font-weight="900" fill="#E11D48" text-anchor="middle">地上剩余脚数 ＝ ' + remainingGroundLegs + ' 只！</text>' +
+          '</g>';
+      } else if (step === 4) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 4 步 · 地上除法秒杀】</strong>：地上的脚全是 ' + meta.name2 + ' 的！每只 ' + meta.name2 + ' 抬了 2 只脚，还剩 ' + (meta.leg2 - 2) + ' 只脚站在地上！<strong>' + meta.name2 + ' = ' + remainingGroundLegs + ' ÷ ' + (meta.leg2 - 2) + ' = ' + specialCount + ' 只</strong>！';
+        g.innerHTML = 
+          '<g transform="translate(140, 40)">' +
+            '<rect x="0" y="0" width="400" height="110" rx="14" fill="#FFFFFF" stroke="#059669" stroke-width="2.5" filter="drop-shadow(0 4px 12px rgba(5,150,105,0.15))"/>' +
+            '<text x="200" y="34" font-size="14" font-weight="bold" fill="#047857" text-anchor="middle">地上只剩 ' + meta.name2 + ' 支撑的脚（每只剩 ' + (meta.leg2 - 2) + ' 脚）：</text>' +
+            '<text x="200" y="72" font-size="24" font-weight="900" fill="#047857" text-anchor="middle">' +
+              meta.name2 + ' = ' + remainingGroundLegs + ' ÷ ' + (meta.leg2 - 2) + ' ＝ ' + specialCount + ' ' + meta.unit + '！' +
+            '</text>' +
+            '<text x="200" y="96" font-size="13" font-weight="bold" fill="#B45309" text-anchor="middle">' +
+              meta.name1 + ' = ' + totalH + ' － ' + specialCount + ' ＝ ' + chickenCount + ' ' + meta.unit + '！' +
+            '</text>' +
+          '</g>' +
+          '<text x="340" y="200" font-size="15" font-weight="900" fill="#059669" text-anchor="middle">' +
+            '🎉 吹哨抬脚法秒杀！地上剩下的除以剩余脚数！' +
+          '</text>';
+      }
+    }
+  }
+
+  // ==================== 4 步图解卡片渲染 ====================
+  function renderStepCards() {
+    const meta = animalMeta[state.animalMode];
+    const totalH = state.heads;
+    const specialCount = Math.min(state.specialCount, totalH);
+    const chickenCount = totalH - specialCount;
+    const actualLegs = chickenCount * meta.leg1 + specialCount * meta.leg2;
+
+    const box = el.stepsContainer;
+    box.innerHTML = '';
+
+    if (state.viewMode === 'assume_chicken') {
+      const assumedLegs = totalH * meta.leg1;
+      const legGap = actualLegs - assumedLegs;
+      box.innerHTML = 
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge">1</span>' +
+            '<span>假装全都是 ' + meta.name1 + '</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '全员戴上 ' + meta.name1 + ' 面具，每只只有 ' + meta.leg1 + ' 只脚：<br>' +
+            '<span class="math-block">假设总脚数 = ' + totalH + ' × ' + meta.leg1 + ' = ' + assumedLegs + ' 只</span><br>' +
+            '大家全都假装是 ' + meta.name1 + '，脚数被我们算少了！' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge">2</span>' +
+            '<span>寻找差额，找出少算的脚</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '实际地上明明有 ' + actualLegs + ' 只脚，怎么差了这么多？<br>' +
+            '<span class="math-block">脚数差额 = ' + actualLegs + ' - ' + assumedLegs + ' = ' + legGap + ' 只</span><br>' +
+            '少掉的这 ' + legGap + ' 只脚，全被收纳在备用零件箱里！' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge">3</span>' +
+            '<span>除以单只脚数差，给冒牌货补脚</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '一只 ' + meta.name2 + ' 被当成 ' + meta.name1 + '，被扣除了 ' + meta.leg2 + ' - ' + meta.leg1 + ' = <strong>' + meta.diff + ' 只脚</strong>。<br>' +
+            '从零件箱里拿脚给它装回去，每装 ' + meta.diff + ' 只变回一只 ' + meta.name2 + '：<br>' +
+            '<span class="math-block">' + meta.name2 + ' = ' + legGap + ' ÷ ' + meta.diff + ' = ' + specialCount + ' ' + meta.unit + '！</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge">4</span>' +
+            '<span>总头数一减，全员现形！</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            meta.name2 + ' 现出原形后，用总头数减去就是 ' + meta.name1 + '：<br>' +
+            '<span class="math-block">' + meta.name1 + ' = ' + totalH + ' - ' + specialCount + ' = ' + chickenCount + ' ' + meta.unit + '！</span><br>' +
+            '验算：' + chickenCount + '×' + meta.leg1 + ' + ' + specialCount + '×' + meta.leg2 + ' = ' + actualLegs + ' 只，完美符合！' +
+          '</div>' +
+        '</div>';
+      el.summaryText.textContent = '假设全是鸡，算出来的一定是兔子/蜘蛛！因为算出来的差额，正是那个被你误解扣掉脚的冒牌货引起的！';
+      el.summaryFormula.textContent = meta.name2 + ' = (实际脚数 - 头数×' + meta.leg1 + ') ÷ ' + meta.diff;
+    } else if (state.viewMode === 'assume_special') {
+      const assumedSpecialLegs = totalH * meta.leg2;
+      const surplusLegs = assumedSpecialLegs - actualLegs;
+      box.innerHTML = 
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge" style="background:#059669;">1</span>' +
+            '<span>假装全都是 ' + meta.name2 + '</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '全员假装是多脚的 ' + meta.name2 + '，每只算 ' + meta.leg2 + ' 只脚：<br>' +
+            '<span class="math-block">假设总脚数 = ' + totalH + ' × ' + meta.leg2 + ' = ' + assumedSpecialLegs + ' 只</span><br>' +
+            '大家都长了 ' + meta.leg2 + ' 只脚，脚数严重爆表了！' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge" style="background:#059669;">2</span>' +
+            '<span>对比现实，找出多算的脚</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '现实只有 ' + actualLegs + ' 只脚，我们多算了好多脚：<br>' +
+            '<span class="math-block">爆表多出 = ' + assumedSpecialLegs + ' - ' + actualLegs + ' = ' + surplusLegs + ' 只</span><br>' +
+            '为什么多？因为把小脚动物强行多装了假腿！' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge" style="background:#059669;">3</span>' +
+            '<span>拔掉多余的脚，还原 ' + meta.name1 + '</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '一只 ' + meta.name1 + ' 被强行多算了 ' + meta.leg2 + ' - ' + meta.leg1 + ' = <strong>' + meta.diff + ' 只脚</strong>。<br>' +
+            '多出来的 ' + surplusLegs + ' 只脚，每拔掉 ' + meta.diff + ' 只就变回一只 ' + meta.name1 + '：<br>' +
+            '<span class="math-block">' + meta.name1 + ' = ' + surplusLegs + ' ÷ ' + meta.diff + ' = ' + chickenCount + ' ' + meta.unit + '！</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge" style="background:#059669;">4</span>' +
+            '<span>总头数一减，求出 ' + meta.name2 + '</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            meta.name1 + ' 拔完腿还原后，剩下的就是 ' + meta.name2 + '：<br>' +
+            '<span class="math-block">' + meta.name2 + ' = ' + totalH + ' - ' + chickenCount + ' = ' + specialCount + ' ' + meta.unit + '！</span><br>' +
+            '四年级削脚法秒杀！' +
+          '</div>' +
+        '</div>';
+      el.summaryText.textContent = '假设全是兔/蜘蛛，算出来的一定是鸡！因为多算出来的脚，正是被你强行插上假腿的小鸡！';
+      el.summaryFormula.textContent = meta.name1 + ' = (头数×' + meta.leg2 + ' - 实际脚数) ÷ ' + meta.diff;
+    } else {
+      const remainingGroundLegs = actualLegs - totalH * 2;
+      box.innerHTML = 
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge" style="background:#4338CA;">1</span>' +
+            '<span>哨声一响，全员抬脚</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '饲养员吹响第一声哨子：每只动物抬起 1 只脚。<br>' +
+            '地上少掉了 ' + totalH + ' 只脚，还剩 ' + (actualLegs - totalH) + ' 只脚！' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge" style="background:#4338CA;">2</span>' +
+            '<span>再吹一声哨子，两脚全抬起</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '饲养员再吹一声哨子：所有人再抬 1 只脚。<br>' +
+            '两脚动物一共抬起了 2 只脚，<strong>扑棱翅膀双脚悬空起飞</strong>，地上一只脚都没有了！' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge" style="background:#4338CA;">3</span>' +
+            '<span>地上的脚全归多脚怪兽</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '地上剩下的 ' + remainingGroundLegs + ' 只脚，全是 ' + meta.name2 + ' 的！<br>' +
+            '每只 ' + meta.name2 + ' 抬走 2 只脚，地上还剩下 ' + meta.leg2 + ' - 2 = <strong>' + (meta.leg2 - 2) + ' 只脚</strong>落地！' +
+          '</div>' +
+        '</div>' +
+        '<div class="puzzle-step-card">' +
+          '<div class="puzzle-step-head">' +
+            '<span class="puzzle-step-badge" style="background:#4338CA;">4</span>' +
+            '<span>除以剩余脚数，秒杀结果</span>' +
+          '</div>' +
+          '<div class="puzzle-step-text">' +
+            '地上剩余脚数除以每只落地的脚数：<br>' +
+            '<span class="math-block">' + meta.name2 + ' = ' + remainingGroundLegs + ' ÷ ' + (meta.leg2 - 2) + ' = ' + specialCount + ' ' + meta.unit + '！</span><br>' +
+            meta.name1 + ' = ' + totalH + ' - ' + specialCount + ' = ' + chickenCount + ' ' + meta.unit + '！' +
+          '</div>' +
+        '</div>';
+      el.summaryText.textContent = '两声哨子每只动物抬 2 只脚，小鸡双脚全抬起直接飞走，地上剩下的脚全是兔子/蜘蛛的！';
+      el.summaryFormula.textContent = meta.name2 + ' = (总脚数 - 总头数×2) ÷ (' + meta.leg2 + ' - 2)';
+    }
+  }
+
+  // ==================== 滑块事件与预设 ====================
+  el.inputHeads.addEventListener('input', (e) => {
+    state.heads = parseInt(e.target.value);
+    if (state.specialCount > state.heads) state.specialCount = state.heads;
+    updateFarm();
+    renderAnimStage(state.animStep);
+    renderStepCards();
+  });
+
+  el.inputSpecial.addEventListener('input', (e) => {
+    state.specialCount = parseInt(e.target.value);
+    updateFarm();
+    renderAnimStage(state.animStep);
+    renderStepCards();
+  });
+
+  function applyPreset(heads, special) {
+    state.heads = heads;
+    state.specialCount = special;
+    el.inputHeads.value = heads;
+    el.inputSpecial.value = special;
+    updateFarm();
+    renderAnimStage(state.animStep);
+    renderStepCards();
+  }
+
+  // ==================== 举一反三秒杀闯关 ====================
+  let currentQuiz = null;
+  const quizBank = [
+    // 鸡兔
+    { type: 'rabbit', heads: 12, special: 5, q: '笼子里有鸡和兔子共 12 个头，一共有 34 只脚。请问兔子有几只？', ans: 5 },
+    { type: 'rabbit', heads: 15, special: 6, q: '笼子里有鸡和兔子共 15 个头，一共有 42 只脚。请问兔子有几只？', ans: 6 },
+    { type: 'rabbit', heads: 20, special: 8, q: '草地上有鸡和兔子共 20 只，地上数出 56 只脚。请问兔子有几只？', ans: 8 },
+    { type: 'rabbit', heads: 35, special: 12, q: '《孙子算经》名题：鸡兔同笼，上有 35 头，下有 94 足。请问兔子有几只？', ans: 12 },
+    // 鸡蛛
+    { type: 'spider', heads: 10, special: 3, q: '丛林笼子里有鸡和蜘蛛共 10 个头（蜘蛛 8 只脚），共有 38 只脚。请问蜘蛛有几只？', ans: 3 },
+    { type: 'spider', heads: 8, special: 5, q: '树林里有鸡和蜘蛛共 8 个头，地上共有 46 只脚。请问蜘蛛有几只？', ans: 5 },
+    { type: 'spider', heads: 12, special: 4, q: '盒子里有鸡和蜘蛛共 12 个头，一共数出 48 只脚。请问蜘蛛有几只？', ans: 4 },
+    // 自行车和汽车
+    { type: 'vehicle', heads: 10, special: 4, q: '停车场停着两轮自行车和小轿车共 10 辆，地上数出 28 个轮子。请问小轿车有几辆？', ans: 4 },
+    { type: 'vehicle', heads: 14, special: 6, q: '停车场有两轮自行车和小轿车共 14 辆，一共有 40 个轮子。请问小轿车有几辆？', ans: 6 }
+  ];
+
+  function nextQuiz() {
+    let list = quizBank.filter(item => item.type === state.animalMode);
+    if (!list.length) list = quizBank;
+    let next;
+    do {
+      next = list[Math.floor(Math.random() * list.length)];
+    } while (currentQuiz && next.q === currentQuiz.q && list.length > 1);
+    currentQuiz = next;
+    document.getElementById('quizPrompt').innerHTML = currentQuiz.q;
+    const ansInput = document.getElementById('quizAns');
+    ansInput.value = '';
+    ansInput.focus();
+    const fb = document.getElementById('quizFeedback');
+    fb.style.display = 'none';
+  }
+
+  function checkQuiz() {
+    if (!currentQuiz) return;
+    const val = parseInt(document.getElementById('quizAns').value.trim());
+    const fb = document.getElementById('quizFeedback');
+    if (isNaN(val)) {
+      fb.className = 'quiz-feedback wrong';
+      fb.textContent = '请输入数值！';
+      return;
+    }
+    if (val === currentQuiz.ans) {
+      fb.className = 'quiz-feedback success';
+      fb.innerHTML = '🎉 <strong>太厉害了！秒杀完全正确！</strong><br>' +
+        '口算技巧：假设全都是小鸡（2脚），差额脚数除以单体差，瞬间揪出冒牌货！';
+    } else {
+      fb.className = 'quiz-feedback wrong';
+      fb.innerHTML = '💡 <strong>差一点点，再心算一下！</strong><br>' +
+        '口诀提示：先假设全是 2 只脚，算出少了多少只脚，再除以脚数差！';
+    }
+  }
+
+  document.getElementById('quizAns').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') checkQuiz();
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    setAnimalMode('rabbit');
+  });
+</script>
+
+</body>
+</html>
