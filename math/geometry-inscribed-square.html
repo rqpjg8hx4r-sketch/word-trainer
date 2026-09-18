@@ -1782,6 +1782,7 @@
   }
 
   // 渲染 5 个步骤的矢量动画场景 (SVG viewBox 0 0 680 260)
+    // 渲染 5 个步骤的矢量动画场景 (SVG viewBox 0 0 680 260) - 严格真几何内接约束
   function renderAnimStage(step) {
     const a = state.a;
     const h = state.h;
@@ -1794,131 +1795,197 @@
     g.innerHTML = ''; // 清空上一帧
 
     if (step === 1) {
-      // 场景 1: 原始完整图形
+      // 场景 1: 原始完整图形 (正方形顶点 D, G 严格内接在边 AB, AC 上，绝非悬空悬浮)
       el.animCaptionText.innerHTML = 
-        `<strong>【第 1 步 · 原始图形】</strong>：三角形底边长 <strong>${a} cm</strong>，高为 <strong>${h} cm</strong>，内部嵌有一个边长为 <strong>x</strong> 的正方形。`;
+        `<strong>【第 1 步 · 原始图形】</strong>：三角形底边 <strong>BC = ${a} cm</strong>，高 <strong>AH = ${h} cm</strong>。内部<strong>内接正方形 DEFG</strong> 的顶点 <strong>D, G 严格落在边 AB, AC 上</strong>，求边长 <strong>x</strong>。`;
       
-      // 居中绘制大三角形和正方形
+      // 精确比例尺映射
+      const scale = Math.min(320 / a, 145 / h);
+      const W = a * scale;
+      const H = h * scale;
+      const X = x * scale; // 正方形在画布上的像素尺寸 (宽 = 高 = X)
+
+      const cx = 340;
+      const yBase = 210;
+      const xB = cx - W / 2;
+      const xC = cx + W / 2;
+      const yA = yBase - H;
+
+      // 内接正方形顶点 (真实数学计算: xD, xG 恰好在 AB, AC 上)
+      const xD = cx - X / 2;
+      const xG = cx + X / 2;
+      const yD = yBase - X;
+
       g.innerHTML = `
-        <polygon points="340,35 220,225 460,225" fill="#F8FAFC" stroke="#334155" stroke-width="2.5"/>
-        <line x1="340" y1="35" x2="340" y2="225" stroke="#E11D48" stroke-width="1.8" stroke-dasharray="4,3"/>
-        <rect x="290" y="145" width="100" height="80" fill="rgba(79, 70, 229, 0.2)" stroke="#4F46E5" stroke-width="2.5" rx="3"/>
+        <!-- 大三角形 ABC -->
+        <polygon points="${cx},${yA} ${xB},${yBase} ${xC},${yBase}" fill="#F8FAFC" stroke="#334155" stroke-width="2.5" stroke-linejoin="round"/>
         
-        <!-- 标签文字 -->
-        <text x="340" y="24" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
-        <text x="210" y="235" font-size="14" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
-        <text x="470" y="235" font-size="14" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
+        <!-- 高线 AH 虚线 -->
+        <line x1="${cx}" y1="${yA}" x2="${cx}" y2="${yBase}" stroke="#E11D48" stroke-width="1.8" stroke-dasharray="4,3"/>
         
-        <text x="340" y="250" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">底边 BC = ${a} cm</text>
-        <text x="350" y="90" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="start">高 AH = ${h}</text>
-        <text x="340" y="190" font-size="14" font-weight="900" fill="#4F46E5" text-anchor="middle">边长 x</text>
+        <!-- 内接正方形 DEFG (宽 = 高 = X, 顶点 D, G 严格落在边 AB, AC 上) -->
+        <polygon points="${xD},${yD} ${xG},${yD} ${xG},${yBase} ${xD},${yBase}" fill="rgba(79, 70, 229, 0.22)" stroke="#4F46E5" stroke-width="2.5" stroke-linejoin="round"/>
+        
+        <!-- 点标记 -->
+        <circle cx="${cx}" cy="${yA}" r="3.5" fill="#0F172A"/>
+        <circle cx="${xB}" cy="${yBase}" r="3.5" fill="#0F172A"/>
+        <circle cx="${xC}" cy="${yBase}" r="3.5" fill="#0F172A"/>
+        <circle cx="${xD}" cy="${yD}" r="4" fill="#4F46E5"/>
+        <circle cx="${xG}" cy="${yD}" r="4" fill="#4F46E5"/>
+        <circle cx="${xD}" cy="${yBase}" r="3.5" fill="#4F46E5"/>
+        <circle cx="${xG}" cy="${yBase}" r="3.5" fill="#4F46E5"/>
+        <circle cx="${cx}" cy="${yD}" r="3" fill="#E11D48"/>
+        <circle cx="${cx}" cy="${yBase}" r="3" fill="#E11D48"/>
+
+        <!-- 字母标注 -->
+        <text x="${cx}" y="${yA - 10}" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+        <text x="${xB - 12}" y="${yBase + 5}" font-size="14" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
+        <text x="${xC + 12}" y="${yBase + 5}" font-size="14" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
+        <text x="${xD - 10}" y="${yD - 4}" font-size="13" font-weight="900" fill="#4F46E5" text-anchor="end">D</text>
+        <text x="${xG + 10}" y="${yD - 4}" font-size="13" font-weight="900" fill="#4F46E5" text-anchor="start">G</text>
+        <text x="${xD}" y="${yBase + 16}" font-size="12" font-weight="bold" fill="#4F46E5" text-anchor="middle">E</text>
+        <text x="${xG}" y="${yBase + 16}" font-size="12" font-weight="bold" fill="#4F46E5" text-anchor="middle">F</text>
+        <text x="${cx + 8}" y="${yD + 14}" font-size="11" font-weight="bold" fill="#E11D48">P</text>
+        <text x="${cx}" y="${yBase + 16}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">H</text>
+
+        <!-- 尺寸标注 -->
+        <text x="${cx}" y="${yBase + 34}" font-size="13" font-weight="bold" fill="#475569" text-anchor="middle">底边 BC = ${a} cm</text>
+        <text x="${cx + 10}" y="${yA + H * 0.4}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="start">高 AH = ${h}</text>
+        <text x="${cx}" y="${yD + X/2 + 5}" font-size="14" font-weight="900" fill="#4F46E5" text-anchor="middle">边长 x</text>
       `;
 
     } else if (step === 2) {
       // 场景 2: 沿 DG 水平切一刀
       el.animCaptionText.innerHTML = 
-        `<strong>【第 2 步 · 沿边切开】</strong>：剪刀 ✂️ 沿着正方形上边水平切开，分为<strong>【上一半：小三角形】</strong>与<strong>【下一半：梯形】</strong>！`;
+        `<strong>【第 2 步 · 沿边切开】</strong>：剪刀 ✂️ 沿着正方形上边 <strong>DG</strong> 水平切开，分为<strong>【上一半：小三角形 △ADG】</strong>(底 x, 高 ${h}-x) 与<strong>【下一半：梯形 BCGD】</strong>(上底 x, 下底 ${a}, 高 x)！`;
       
+      const scale = Math.min(320 / a, 145 / h);
+      const W = a * scale;
+      const H = h * scale;
+      const X = x * scale;
+
+      const cx = 340;
+      const yBase = 210;
+      const xB = cx - W / 2;
+      const xC = cx + W / 2;
+      const yA = yBase - H;
+
+      const xD = cx - X / 2;
+      const xG = cx + X / 2;
+      const yD = yBase - X;
+
       g.innerHTML = `
         <!-- 切割线虚线与剪刀 -->
-        <line x1="160" y1="125" x2="520" y2="125" stroke="#F59E0B" stroke-width="2" stroke-dasharray="5,4"/>
-        <text x="140" y="130" font-size="18" text-anchor="end">✂️</text>
+        <line x1="${xD - 50}" y1="${yD}" x2="${xG + 50}" y2="${yD}" stroke="#F59E0B" stroke-width="2" stroke-dasharray="5,4"/>
+        <text x="${xD - 60}" y="${yD + 6}" font-size="20" text-anchor="end">✂️</text>
 
-        <!-- 上一半：小三角形向上浮动 15px -->
-        <g transform="translate(0, -16)">
-          <polygon points="340,35 290,115 390,115" fill="rgba(245, 158, 11, 0.35)" stroke="#D97706" stroke-width="2.5"/>
-          <line x1="340" y1="35" x2="340" y2="115" stroke="#E11D48" stroke-width="1.8" stroke-dasharray="3,3"/>
-          <text x="340" y="24" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">上一半：小三角形</text>
-          <text x="340" y="132" font-size="12" font-weight="bold" fill="#D97706" text-anchor="middle">底 = x</text>
-          <text x="352" y="75" font-size="11" font-weight="bold" fill="#E11D48" text-anchor="start">高 ${h}-x</text>
+        <!-- 上一半：小三角形 ADG 向上轻盈浮动 18px -->
+        <g transform="translate(0, -18)">
+          <polygon points="${cx},${yA} ${xD},${yD} ${xG},${yD}" fill="rgba(245, 158, 11, 0.35)" stroke="#D97706" stroke-width="2.5" stroke-linejoin="round"/>
+          <line x1="${cx}" y1="${yA}" x2="${cx}" y2="${yD}" stroke="#E11D48" stroke-width="1.8" stroke-dasharray="3,3"/>
+          <text x="${cx}" y="${yA - 10}" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">上一半：小三角形 △ADG</text>
+          <text x="${cx}" y="${yD + 15}" font-size="12" font-weight="bold" fill="#D97706" text-anchor="middle">底 DG = x</text>
+          <text x="${cx + 8}" y="${(yA + yD)/2}" font-size="11" font-weight="bold" fill="#E11D48">高 ${h}-x</text>
         </g>
 
-        <!-- 下一半：梯形向下浮动 15px -->
-        <g transform="translate(0, 16)">
-          <polygon points="290,125 390,125 450,205 230,205" fill="rgba(2, 132, 199, 0.22)" stroke="#0284C7" stroke-width="2.5"/>
-          <rect x="290" y="125" width="100" height="80" fill="rgba(79, 70, 229, 0.15)" stroke="#4F46E5" stroke-width="1.5" stroke-dasharray="3,3"/>
-          <text x="340" y="165" font-size="13" font-weight="bold" fill="#4F46E5" text-anchor="middle">正方形 x</text>
-          <text x="340" y="226" font-size="13" font-weight="bold" fill="#0284C7" text-anchor="middle">下底 = ${a}</text>
-          <text x="340" y="116" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="middle">上底 = x</text>
-          <text x="460" y="168" font-size="12" font-weight="bold" fill="#0369A1" text-anchor="start">高 = x</text>
+        <!-- 下一半：梯形 BCGD 向下浮动 18px -->
+        <g transform="translate(0, 18)">
+          <polygon points="${xD},${yD} ${xG},${yD} ${xC},${yBase} ${xB},${yBase}" fill="rgba(2, 132, 199, 0.22)" stroke="#0284C7" stroke-width="2.5" stroke-linejoin="round"/>
+          <!-- 内含正方形轮廓 -->
+          <polygon points="${xD},${yD} ${xG},${yD} ${xG},${yBase} ${xD},${yBase}" fill="rgba(79, 70, 229, 0.16)" stroke="#4F46E5" stroke-width="1.5" stroke-dasharray="3,3"/>
+          
+          <text x="${cx}" y="${yD - 6}" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="middle">上底 = x</text>
+          <text x="${cx}" y="${yD + X/2 + 5}" font-size="13" font-weight="bold" fill="#4F46E5" text-anchor="middle">正方形 (高 x)</text>
+          <text x="${cx}" y="${yBase + 18}" font-size="13" font-weight="bold" fill="#0284C7" text-anchor="middle">下底 BC = ${a}</text>
+          <text x="${xC + 10}" y="${(yD + yBase)/2}" font-size="12" font-weight="bold" fill="#0369A1">高 = x</text>
         </g>
       `;
 
     } else if (step === 3) {
       // 场景 3: 每一半翻倍 (×2) 变长方形
       el.animCaptionText.innerHTML = 
-        `<strong>【第 3 步 · 翻倍变两矩形】</strong>：两个小三角形拼成<strong>矩形① (面积 x·(${h}-x))</strong>；两个梯形拼成<strong>矩形② (面积 x·(${a}+x))</strong>！`;
+        `<strong>【第 3 步 · 翻倍变两矩形】</strong>：两个小三角形拼成<strong>矩形① (宽 x, 高 ${h}-x)</strong>；两个梯形拼成<strong>矩形② (长 ${a}+x, 高 x)</strong>！`;
+
+      // 缩放适应并排展示
+      const scale3 = Math.min(180 / (a + x), 85 / Math.max(h, x));
+      const w1 = x * scale3 * 1.3;
+      const h1 = (h - x) * scale3 * 1.3;
+      const w2 = (a + x) * scale3 * 1.3;
+      const h2 = x * scale3 * 1.3;
 
       g.innerHTML = `
-        <!-- 矩形 ① -->
-        <g transform="translate(80, 50)">
-          <rect x="0" y="0" width="130" height="90" fill="rgba(245, 158, 11, 0.25)" stroke="#D97706" stroke-width="2.5" rx="6"/>
-          <line x1="0" y1="0" x2="130" y2="90" stroke="#D97706" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <!-- 矩形 ① (上小三角 × 2) -->
+        <g transform="translate(80, 70)">
+          <rect x="0" y="0" width="${w1}" height="${h1}" fill="rgba(245, 158, 11, 0.28)" stroke="#D97706" stroke-width="2.5" rx="6"/>
+          <line x1="0" y1="0" x2="${w1}" y2="${h1}" stroke="#D97706" stroke-width="1.5" stroke-dasharray="4,4"/>
           
-          <text x="65" y="-10" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">矩形 ① (上小三角 × 2)</text>
-          <text x="65" y="45" font-size="12" font-weight="900" fill="#92400E" text-anchor="middle">面积 = x × (${h} - x)</text>
+          <text x="${w1/2}" y="-12" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">矩形 ① (上小三角 × 2)</text>
+          <text x="${w1/2}" y="${h1/2 + 4}" font-size="12" font-weight="900" fill="#92400E" text-anchor="middle">x · (${h} - x)</text>
           
-          <!-- 边长标注 -->
-          <text x="65" y="110" font-size="12" font-weight="bold" fill="#D97706" text-anchor="middle">长 = x</text>
-          <text x="-10" y="50" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="end">宽 = ${h} - x</text>
+          <text x="${w1/2}" y="${h1 + 18}" font-size="12" font-weight="bold" fill="#D97706" text-anchor="middle">宽 = x</text>
+          <text x="-10" y="${h1/2 + 4}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="end">高 = ${h} - x</text>
         </g>
 
         <!-- 中间加号 -->
-        <text x="270" y="105" font-size="28" font-weight="900" fill="#64748B" text-anchor="middle">＋</text>
+        <text x="260" y="125" font-size="32" font-weight="900" fill="#64748B" text-anchor="middle">＋</text>
 
-        <!-- 矩形 ② -->
-        <g transform="translate(330, 40)">
-          <rect x="0" y="0" width="240" height="110" fill="rgba(2, 132, 199, 0.2)" stroke="#0284C7" stroke-width="2.5" rx="6"/>
-          <!-- 虚线示意两个梯形拼接 -->
-          <line x1="150" y1="0" x2="90" y2="110" stroke="#0284C7" stroke-width="1.5" stroke-dasharray="4,4"/>
+        <!-- 矩形 ② (下半梯形 × 2) -->
+        <g transform="translate(320, 70)">
+          <rect x="0" y="0" width="${w2}" height="${h2}" fill="rgba(2, 132, 199, 0.22)" stroke="#0284C7" stroke-width="2.5" rx="6"/>
+          <line x1="${w2 * 0.6}" y1="0" x2="${w2 * 0.4}" y2="${h2}" stroke="#0284C7" stroke-width="1.5" stroke-dasharray="4,4"/>
           
-          <text x="120" y="-10" font-size="13" font-weight="900" fill="#0369A1" text-anchor="middle">矩形 ② (下半梯形 × 2)</text>
-          <text x="120" y="55" font-size="13" font-weight="900" fill="#0369A1" text-anchor="middle">面积 = x × (${a} + x)</text>
+          <text x="${w2/2}" y="-12" font-size="13" font-weight="900" fill="#0369A1" text-anchor="middle">矩形 ② (下半梯形 × 2)</text>
+          <text x="${w2/2}" y="${h2/2 + 4}" font-size="12" font-weight="900" fill="#0369A1" text-anchor="middle">x · (${a} + x)</text>
           
-          <!-- 边长标注 -->
-          <text x="120" y="130" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="middle">长 = ${a} + x</text>
-          <text x="250" y="60" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="start">高 = x</text>
+          <text x="${w2/2}" y="${h2 + 18}" font-size="12" font-weight="bold" fill="#0284C7" text-anchor="middle">长 = ${a} + x</text>
+          <text x="${w2 + 10}" y="${h2/2 + 4}" font-size="12" font-weight="bold" fill="#0284C7">高 = x</text>
         </g>
       `;
 
     } else if (step === 4) {
-      // 场景 4: 神奇合体拼成大长方形，-x 与 +x 抵消
+      // 场景 4: 神奇合体抵消
       el.animCaptionText.innerHTML = 
-        `<strong>【第 4 步 · 神奇合体抵消】</strong>：两个矩形都有一条边等于 <strong>x</strong>！拼合后长正好是 <strong>(${h} - x) + (${a} + x) = ${h} + ${a} = ${sumAH}</strong>！`;
+        `<strong>【第 4 步 · 神奇合体抵消】</strong>：两块矩形都有公共边 <strong>x</strong>！合体拼成长条大长方形，长正好是 <strong>(${h} - x) + (${a} + x) = ${h} + ${a} = ${sumAH} cm</strong>！`;
+
+      const scale4 = Math.min(480 / sumAH, 85 / x);
+      const part1W = (h - x) * scale4;
+      const part2W = (a + x) * scale4;
+      const totalW = sumAH * scale4;
+      const hRect = x * scale4;
+
+      const startX = 340 - totalW / 2;
 
       g.innerHTML = `
-        <!-- 合体大长方形 (宽 x，总长 100) -->
-        <g transform="translate(70, 60)">
-          <!-- 左块 (40-x) -->
-          <rect x="0" y="0" width="160" height="95" fill="rgba(245, 158, 11, 0.3)" stroke="#D97706" stroke-width="2.5"/>
-          <!-- 右块 (60+x) -->
-          <rect x="160" y="0" width="360" height="95" fill="rgba(2, 132, 199, 0.25)" stroke="#0284C7" stroke-width="2.5"/>
+        <g transform="translate(${startX}, 70)">
+          <!-- 左块 (h - x) 对应矩形 ① 旋转 90 度贴合 -->
+          <rect x="0" y="0" width="${part1W}" height="${hRect}" fill="rgba(245, 158, 11, 0.3)" stroke="#D97706" stroke-width="2.5"/>
+          <!-- 右块 (a + x) 对应矩形 ② -->
+          <rect x="${part1W}" y="0" width="${part2W}" height="${hRect}" fill="rgba(2, 132, 199, 0.25)" stroke="#0284C7" stroke-width="2.5"/>
           
-          <!-- 接缝处高亮 -->
-          <line x1="160" y1="0" x2="160" y2="95" stroke="#10B981" stroke-width="3" stroke-dasharray="4,3"/>
-          <circle cx="160" cy="47" r="14" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
-          <text x="160" y="52" font-size="14" text-anchor="middle">✨</text>
+          <!-- 接缝处高亮与抵消粒子 -->
+          <line x1="${part1W}" y1="0" x2="${part1W}" y2="${hRect}" stroke="#10B981" stroke-width="3" stroke-dasharray="4,3"/>
+          <circle cx="${part1W}" cy="${hRect/2}" r="14" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2"/>
+          <text x="${part1W}" y="${hRect/2 + 5}" font-size="14" text-anchor="middle">✨</text>
           
-          <!-- 左块说明 -->
-          <text x="80" y="45" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">(${h} - x)</text>
-          <text x="80" y="65" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">矩形 ①</text>
+          <!-- 文字标注 -->
+          <text x="${part1W / 2}" y="${hRect/2 - 4}" font-size="12" font-weight="900" fill="#B45309" text-anchor="middle">${h} - x</text>
+          <text x="${part1W / 2}" y="${hRect/2 + 14}" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">(矩形①)</text>
           
-          <!-- 右块说明 -->
-          <text x="340" y="45" font-size="13" font-weight="900" fill="#0369A1" text-anchor="middle">(${a} + x)</text>
-          <text x="340" y="65" font-size="11" font-weight="bold" fill="#0369A1" text-anchor="middle">矩形 ②</text>
+          <text x="${part1W + part2W / 2}" y="${hRect/2 - 4}" font-size="12" font-weight="900" fill="#0369A1" text-anchor="middle">${a} + x</text>
+          <text x="${part1W + part2W / 2}" y="${hRect/2 + 14}" font-size="11" font-weight="bold" fill="#0369A1" text-anchor="middle">(矩形②)</text>
           
           <!-- 边长标注 -->
-          <text x="-12" y="52" font-size="14" font-weight="900" fill="#4F46E5" text-anchor="end">宽 = x</text>
+          <text x="-12" y="${hRect/2 + 5}" font-size="14" font-weight="900" fill="#4F46E5" text-anchor="end">宽 = x</text>
           
-          <!-- 顶部总长总括号 -->
-          <path d="M 0,-6 Q 260,-22 520,-6" fill="none" stroke="#10B981" stroke-width="2"/>
-          <text x="260" y="-22" font-size="14" font-weight="900" fill="#047857" text-anchor="middle">
+          <!-- 顶部总长弧线 -->
+          <path d="M 0,-6 Q ${totalW/2},-22 ${totalW},-6" fill="none" stroke="#10B981" stroke-width="2"/>
+          <text x="${totalW/2}" y="-22" font-size="13" font-weight="900" fill="#047857" text-anchor="middle">
             总长度 = (${h} - x) + (${a} + x) = ${h} + ${a} = ${sumAH} cm！
           </text>
           
           <!-- 底部总面积 -->
-          <text x="260" y="130" font-size="14" font-weight="900" fill="#1E293B" text-anchor="middle">
-            合体大矩形总面积 = x × ${sumAH} = ${sumAH}x
+          <text x="${totalW/2}" y="${hRect + 26}" font-size="14" font-weight="900" fill="#1E293B" text-anchor="middle">
+            合体长方形总面积 = 宽 x × 长 ${sumAH} = ${sumAH}x
           </text>
         </g>
       `;
@@ -1926,30 +1993,30 @@
     } else if (step === 5) {
       // 场景 5: 天平平衡与一步秒杀
       el.animCaptionText.innerHTML = 
-        `<strong>【第 5 步 · 天平对等秒杀】</strong>：原三角形翻倍是 <strong>${a} × ${h} = ${prodAH}</strong>，与拼图总面积完全相等：<strong>${sumAH}x = ${prodAH} ⟹ x = ${x.toFixed(2)} cm</strong>！`;
+        `<strong>【第 5 步 · 天平对等秒杀】</strong>：原大三角形翻倍本来就是 <strong>${a} × ${h} = ${prodAH}</strong>，天平两端完全相等：<strong>${sumAH} · x = ${prodAH} ⟹ x = ${x.toFixed(2)} cm</strong>！`;
 
       g.innerHTML = `
-        <!-- 左侧：合体长方形 -->
-        <g transform="translate(60, 50)">
-          <rect x="0" y="0" width="220" height="90" fill="rgba(16, 185, 129, 0.2)" stroke="#059669" stroke-width="2.5" rx="6"/>
-          <text x="110" y="38" font-size="13" font-weight="900" fill="#047857" text-anchor="middle">合体拼图长方形</text>
-          <text x="110" y="62" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle">面积 = ${sumAH} · x</text>
-          <text x="110" y="112" font-size="12" font-weight="bold" fill="#059669" text-anchor="middle">长 ${sumAH} × 宽 x</text>
+        <!-- 左侧：合体拼图长方形 (100 · x) -->
+        <g transform="translate(60, 45)">
+          <rect x="0" y="0" width="220" height="95" fill="rgba(16, 185, 129, 0.22)" stroke="#059669" stroke-width="2.5" rx="8"/>
+          <text x="110" y="32" font-size="13" font-weight="900" fill="#047857" text-anchor="middle">拼图合体长方形</text>
+          <text x="110" y="60" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">面积 = ${sumAH} · x</text>
+          <text x="110" y="82" font-size="11" font-weight="bold" fill="#059669" text-anchor="middle">长 ${sumAH} × 宽 x</text>
         </g>
 
         <!-- 中间等号 / 天平 -->
-        <g transform="translate(340, 95)">
-          <circle cx="0" cy="0" r="22" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
-          <text x="0" y="7" font-size="20" font-weight="900" fill="#B45309" text-anchor="middle">＝</text>
-          <text x="0" y="38" font-size="12" font-weight="900" fill="#D97706" text-anchor="middle">天平平衡</text>
+        <g transform="translate(340, 92)">
+          <circle cx="0" cy="0" r="24" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5"/>
+          <text x="0" y="8" font-size="22" font-weight="900" fill="#B45309" text-anchor="middle">＝</text>
+          <text x="0" y="38" font-size="11" font-weight="900" fill="#D97706" text-anchor="middle">天平平衡</text>
         </g>
 
-        <!-- 右侧：原三角形翻倍长方形 -->
-        <g transform="translate(400, 50)">
-          <rect x="0" y="0" width="220" height="90" fill="rgba(79, 70, 229, 0.18)" stroke="#4F46E5" stroke-width="2.5" rx="6"/>
-          <text x="110" y="38" font-size="13" font-weight="900" fill="#3730A3" text-anchor="middle">原三角形翻倍 (2×S)</text>
-          <text x="110" y="62" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle">底 × 高 = ${prodAH}</text>
-          <text x="110" y="112" font-size="12" font-weight="bold" fill="#4F46E5" text-anchor="middle">${a} × ${h} = ${prodAH} cm²</text>
+        <!-- 右侧：原三角形翻倍长方形 (a × h) -->
+        <g transform="translate(400, 45)">
+          <rect x="0" y="0" width="220" height="95" fill="rgba(79, 70, 229, 0.18)" stroke="#4F46E5" stroke-width="2.5" rx="8"/>
+          <text x="110" y="32" font-size="13" font-weight="900" fill="#3730A3" text-anchor="middle">原三角形翻倍 (2×S)</text>
+          <text x="110" y="60" font-size="16" font-weight="900" fill="#0F172A" text-anchor="middle">底 × 高 = ${prodAH}</text>
+          <text x="110" y="82" font-size="11" font-weight="bold" fill="#4F46E5" text-anchor="middle">${a} × ${h} = ${prodAH} cm²</text>
         </g>
 
         <!-- 底部算式秒杀弹幕 -->
@@ -1963,7 +2030,6 @@
     }
   }
 
-  // 预设参数切换
   function setPreset(a, h, skew) {
     state.a = a;
     state.h = h;
