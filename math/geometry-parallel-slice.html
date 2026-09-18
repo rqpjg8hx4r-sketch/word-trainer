@@ -757,12 +757,8 @@
           </div>
         </div>
 
-        <div class="anim-step-pills">
-          <button class="anim-pill active" onclick="gotoAnimStep(1)">1. 原始三角形三边 (5, 6, 7)</button>
-          <button class="anim-pill" onclick="gotoAnimStep(2)">2. 扣除公用 DE 边</button>
-          <button class="anim-pill" onclick="gotoAnimStep(3)">3. 绳子平分两半</button>
-          <button class="anim-pill" onclick="gotoAnimStep(4)">4. 确定相似比 k</button>
-          <button class="anim-pill" onclick="gotoAnimStep(5)">5. 一步算出 DE</button>
+        <div class="anim-step-pills" id="animStepPills">
+          <!-- 动态按第 (1) 问 / 第 (2) 问生成对应步骤按钮 -->
         </div>
 
         <div class="anim-canvas-wrapper">
@@ -776,23 +772,22 @@
         </div>
       </div>
 
-      <div class="puzzle-steps-grid">
-        <!-- 卡片 1 -->
+      <!-- 第 (1) 问：等周长专属推导 4 步 -->
+      <div id="stepsGridPerimeter" class="puzzle-steps-grid">
         <div class="puzzle-step-card">
           <div class="puzzle-step-head">
             <span class="puzzle-step-badge">1</span>
-            <span>第 (1) 问：公用 DE 边直接扣除</span>
+            <span>公用 DE 边天平两端扣除</span>
           </div>
           <div class="puzzle-step-text">
             △<em>ADE</em> 周长是 <em>(AD + AE) + DE</em>；梯形 <em>BCED</em> 周长是 <em>(DB + EC) + BC + DE</em>。<br>
-            两边都含有一条公用的 <em>DE</em>！天平两端同时拿走 <em>DE</em>：
+            两边都含有一条公用的红线 <em>DE</em>！天平两端同时拿走 <em>DE</em>：
             <div style="margin-top:4px; font-weight:800; color:#B45309;">
               👉 AD + AE = (DB + EC) + 6
             </div>
           </div>
         </div>
 
-        <!-- 卡片 2 -->
         <div class="puzzle-step-card">
           <div class="puzzle-step-head">
             <span class="puzzle-step-badge">2</span>
@@ -801,48 +796,117 @@
           <div class="puzzle-step-text">
             因为 <em>(AD + AE) + (DB + EC) = AB + AC = 5 + 7 = 12</em>。<br>
             代入得：<em>(AD + AE) = (12 - (AD + AE)) + 6 = 18 - (AD + AE)</em>。<br>
-            移项即得：<span class="math-block">2 · (AD + AE) = 18  ⟹  AD + AE = 9</span>！
+            移项即得：<span class="math-block">2 · (AD + AE) = 18  ⟹  AD + AE = 9</span>！<br>
+            相当于一根 18 cm 绳子平分成两半，小三角两腰分得 9！
           </div>
         </div>
 
-        <!-- 卡片 3 -->
         <div class="puzzle-step-card">
           <div class="puzzle-step-head">
             <span class="puzzle-step-badge">3</span>
             <span>按比例算出缩放比 k = 3/4</span>
           </div>
           <div class="puzzle-step-text">
-            因为 <em>DE // BC</em>，△<em>ADE ∽ △ABC</em>，所以：<br>
-            <em>AD = 5k, AE = 7k</em>，两边相加是 <em>12k</em>。<br>
-            <em>12k = 9 ⟹ k = 9/12 = 3/4 = 0.75</em>！<br>
-            👉 <strong>DE = 6 × (3/4) = 4.5 cm</strong>！
+            因为 <em>DE // BC</em>，△<em>ADE ∽ △ABC</em>，所以各边按相同比例缩小：<br>
+            小三角形两腰和是 9，大三角形两腰和是 12：<br>
+            <span class="math-block">k = 9 / 12 = 3 / 4 = 0.75</span>！
           </div>
         </div>
 
-        <!-- 卡片 4 -->
         <div class="puzzle-step-card">
           <div class="puzzle-step-head">
             <span class="puzzle-step-badge">4</span>
-            <span>第 (2) 问：面积对半平分</span>
+            <span>一步乘出底边 DE = 4.5 cm</span>
           </div>
           <div class="puzzle-step-text">
-            △<em>ADE</em> 面积等于梯形面积，说明小三角形面积是原大三角形的<strong>一半 (1/2)</strong>！<br>
-            面积比等于相似比的平方：<span class="math-block">k² = 1/2  ⟹  k = √2 / 2</span>。<br>
-            👉 <strong>DE = 6 × (√2 / 2) = 3√2 ≈ 4.24 cm</strong>！
+            大三角形底边 <em>BC = 6</em>，所以截线 <em>DE</em> 长度为：
+            <div style="margin:6px 0; font-size:16px; font-weight:900; color:#B45309;">
+              DE = 6 × (3 / 4) = 4.5 cm！
+            </div>
+            四年级拉直绳子平分，不用设 x 列方程，口算秒出！
           </div>
         </div>
       </div>
 
-      <!-- 总结口诀 -->
-      <div style="background: #FFFFFF; border: 2px solid #F59E0B; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+      <!-- 第 (2) 问：等面积专属推导 4 步 -->
+      <div id="stepsGridArea" class="puzzle-steps-grid" style="display:none;">
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge" style="background:#10B981;">1</span>
+            <span>面积平分天平：小三角占 1/2</span>
+          </div>
+          <div class="puzzle-step-text">
+            题目要求：△<em>ADE</em> 面积与梯形 <em>BCED</em> 面积相等。<br>
+            就像把整块三角形蛋糕对半分开，小三角形面积正好占大三角形的<strong>一半</strong>：
+            <div style="margin-top:4px; font-weight:800; color:#047857;">
+              👉 S<sub>△ADE</sub> / S<sub>△ABC</sub> = 1 / 2！
+            </div>
+          </div>
+        </div>
+
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge" style="background:#10B981;">2</span>
+            <span>相似原理：面积比等于相似比平方</span>
+          </div>
+          <div class="puzzle-step-text">
+            因为 <em>DE // BC</em>，△<em>ADE ∽ △ABC</em>（形状完全相同）。<br>
+            设边长缩放比为 <em>k</em>（底缩小到 k 倍，高也缩小到 k 倍）。<br>
+            三角形面积 = 底 × 高 ÷ 2，所以面积缩小到 <em>k × k = k²</em> 倍！<br>
+            <span class="math-block">k² = 1 / 2</span>！
+          </div>
+        </div>
+
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge" style="background:#10B981;">3</span>
+            <span>开平方求边长缩放比 k = √2 / 2</span>
+          </div>
+          <div class="puzzle-step-text">
+            面积缩小到 1/2，边长缩放比 <em>k</em> 就是“谁乘自己等于 1/2”：<br>
+            <span class="math-block">k = √(1/2) = 1/√2 = √2 / 2 ≈ 0.707</span>！<br>
+            边长大约缩小为大三角形的 70.7%！
+          </div>
+        </div>
+
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge" style="background:#10B981;">4</span>
+            <span>一步乘出底边 DE = 3√2 cm</span>
+          </div>
+          <div class="puzzle-step-text">
+            大三角形底边 <em>BC = 6</em>，所以截线 <em>DE</em> 长度为：
+            <div style="margin:6px 0; font-size:16px; font-weight:900; color:#047857;">
+              DE = 6 × (√2 / 2) = 3√2 ≈ 4.24 cm！
+            </div>
+            面积对半平分开平方，乘上底边秒杀！
+          </div>
+        </div>
+      </div>
+
+      <!-- 总结口诀（第 1 问） -->
+      <div id="summaryPerimeter" style="background: #FFFFFF; border: 2px solid #F59E0B; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
         <div>
-          <h4 style="margin:0 0 4px 0; font-size:15px; color:#B45309;">🌟 Alex 的秒杀口诀：</h4>
+          <h4 style="margin:0 0 4px 0; font-size:15px; color:#B45309;">🌟 Alex 的第 (1) 问口诀：</h4>
           <p style="margin:0; font-size:13px; color:#475569;">
-            等周长公用边抵消，等周比看两腰和！等面积对半平分，底边乘以根号二分之二！
+            等周长公用边抵消，两腰加底平分半！腰和比出相似比，底边乘上就过关！
           </p>
         </div>
         <div style="font-family:var(--font-mono); font-size:18px; font-weight:900; color:#B45309; background:#FEF3C7; padding:8px 16px; border-radius:10px;">
-          (1) DE = 4.5 cm ； (2) DE = 3√2 cm
+          DE = 6 × (9/12) = 4.5 cm
+        </div>
+      </div>
+
+      <!-- 总结口诀（第 2 问） -->
+      <div id="summaryArea" style="display:none; background: #FFFFFF; border: 2px solid #10B981; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+        <div>
+          <h4 style="margin:0 0 4px 0; font-size:15px; color:#047857;">🌟 Alex 的第 (2) 问口诀：</h4>
+          <p style="margin:0; font-size:13px; color:#475569;">
+            等面积对半平分，面积比是比平方！开方得到根号二分之二，底边相乘秒杀出！
+          </p>
+        </div>
+        <div style="font-family:var(--font-mono); font-size:18px; font-weight:900; color:#047857; background:#ECFDF5; padding:8px 16px; border-radius:10px;">
+          DE = 6 × (√2/2) = 3√2 ≈ 4.24 cm
         </div>
       </div>
     </div>
@@ -935,20 +999,29 @@
     document.getElementById('tabPerimeter').classList.toggle('active', mode === 'perimeter');
     document.getElementById('tabArea').classList.toggle('active', mode === 'area');
 
-    if (mode === 'perimeter') {
+    const isPerim = mode === 'perimeter';
+    document.getElementById('stepsGridPerimeter').style.display = isPerim ? 'grid' : 'none';
+    document.getElementById('stepsGridArea').style.display = isPerim ? 'none' : 'grid';
+    document.getElementById('summaryPerimeter').style.display = isPerim ? 'flex' : 'none';
+    document.getElementById('summaryArea').style.display = isPerim ? 'none' : 'flex';
+
+    if (isPerim) {
       setK(0.75);
       el.modeStatusTag.textContent = '当前：等周长目标追踪 (DE = 4.5)';
       el.modeStatusTag.style.color = '#B45309';
       el.modeStatusTag.style.background = '#FEF3C7';
-      el.animTitleText.innerHTML = '<span>🎬</span> <strong>拉绳子比周长动画馆 (第 1 问)</strong>';
+      el.animTitleText.innerHTML = '<span>🎬</span> <strong>拉绳子比周长动画馆 (第 1 问专属)</strong>';
     } else {
       setK(0.7071);
       el.modeStatusTag.textContent = '当前：等面积对半平分目标 (DE ≈ 4.24)';
       el.modeStatusTag.style.color = '#047857';
       el.modeStatusTag.style.background = '#ECFDF5';
-      el.animTitleText.innerHTML = '<span>🎬</span> <strong>面积对半平分天平动画馆 (第 2 问)</strong>';
+      el.animTitleText.innerHTML = '<span>🎬</span> <strong>面积对半平分天平动画馆 (第 2 问专属)</strong>';
     }
+
+    renderAnimPills();
     renderAnimStage(state.animStep);
+    nextQuiz();
   }
 
   function setK(val) {
@@ -981,10 +1054,6 @@
     el.dispAreaRatio.textContent = (areaRatio * 100).toFixed(1) + '%';
 
     // 坐标系绘制 △ABC (AB=5, BC=6, AC=7)
-    // 利用余弦定理: cos B = (5^2 + 6^2 - 7^2) / (2*5*6) = (25+36-49)/60 = 12/60 = 0.2
-    // sin B = sqrt(1 - 0.04) = sqrt(0.96) ≈ 0.9798
-    // B 为 (160, 310), BC 沿水平到 C (160 + 6*60 = 520, 310)
-    // A 在 (160 + 5*60*0.2, 310 - 5*60*0.9798) = (160 + 60, 310 - 293.94) = (220, 50)
     const scale = 50;
     const xB = 170, yB = 310;
     const xC = xB + 6 * scale; // 470
@@ -1033,6 +1102,41 @@
   function setLbl(elem, x, y) { elem.setAttribute('x', x); elem.setAttribute('y', y); }
 
   // ==================== 🎬 动画引擎 ====================
+  const animConfig = {
+    perimeter: {
+      maxStep: 5,
+      pills: [
+        '1. 原始三边 (5, 6, 7)',
+        '2. 扣除公用 DE 边',
+        '3. 绳子平分两半 (9)',
+        '4. 确定相似比 (3/4)',
+        '5. 一步算出 DE (4.5)'
+      ]
+    },
+    area: {
+      maxStep: 4,
+      pills: [
+        '1. 面积对半平分 (1/2)',
+        '2. 面积比等于比平方 (k²)',
+        '3. 开平方求比值 (k=√2/2)',
+        '4. 一步算出 DE (3√2)'
+      ]
+    }
+  };
+
+  function renderAnimPills() {
+    const cfg = animConfig[state.qMode];
+    const box = document.getElementById('animStepPills');
+    box.innerHTML = '';
+    cfg.pills.forEach((label, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'anim-pill' + (idx + 1 === state.animStep ? ' active' : '');
+      btn.textContent = label;
+      btn.onclick = () => gotoAnimStep(idx + 1);
+      box.appendChild(btn);
+    });
+  }
+
   function gotoAnimStep(step) {
     state.animStep = step;
     document.querySelectorAll('.anim-pill').forEach((pill, idx) => {
@@ -1040,14 +1144,17 @@
     });
     renderAnimStage(step);
   }
+
   function nextAnimStep() {
+    const max = animConfig[state.qMode].maxStep;
     let next = state.animStep + 1;
-    if (next > 5) next = 1;
+    if (next > max) next = 1;
     gotoAnimStep(next);
   }
   function prevAnimStep() {
+    const max = animConfig[state.qMode].maxStep;
     let prev = state.animStep - 1;
-    if (prev < 1) prev = 5;
+    if (prev < 1) prev = max;
     gotoAnimStep(prev);
   }
   function resetAnimStep() { stopAnimAuto(); gotoAnimStep(1); }
@@ -1061,9 +1168,7 @@
     el.animAutoIcon.textContent = '⏸';
     el.animAutoText.textContent = '暂停演示';
     state.animTimer = setInterval(() => {
-      let next = state.animStep + 1;
-      if (next > 5) next = 1;
-      gotoAnimStep(next);
+      nextAnimStep();
     }, 2800);
   }
   function stopAnimAuto() {
@@ -1082,7 +1187,7 @@
     g.innerHTML = '';
 
     if (isPerim) {
-      // 问 (1): 等周长动画 (5 步)
+      // 问 (1): 等周长专属 5 步动画
       if (step === 1) {
         el.animCaptionText.innerHTML = 
           '<strong>【第 1 步 · 原始三边长】</strong>：大三角形三边为 <strong>AB = 5, BC = 6, AC = 7</strong>。总周长 = 5 + 6 + 7 = 18。';
@@ -1152,44 +1257,120 @@
         `;
       }
     } else {
-      // 问 (2): 等面积动画 (面积平分)
-      if (step === 1 || step === 2) {
+      // 问 (2): 等面积专属 4 步动画
+      const kVal = Math.SQRT1_2; // ≈ 0.7071
+      const xA = 340, yA = 40;
+      const xB = 200, yB = 215;
+      const xC = 480, yC = 215;
+      const xD = xA + kVal * (xB - xA);
+      const yD = yA + kVal * (yB - yA);
+      const xE = xA + kVal * (xC - xA);
+      const yE = yD;
+
+      if (step === 1) {
         el.animCaptionText.innerHTML = 
-          '<strong>【面积对半平分】</strong>：小三角形 △ADE 面积等于梯形 BCED 面积，意味着小三角面积刚好是原大三角的 <strong>一半 (1/2)</strong>！';
+          '<strong>【第 1 步 · 面积对半平分】</strong>：小三角形 △ADE 面积等于梯形 BCED 面积，意味着小三角面积正好是原大三角总面积的 <strong>一半 (1/2)</strong>！';
         g.innerHTML = `
-          <polygon points="340,40 200,215 480,215" fill="#F8FAFC" stroke="#334155" stroke-width="2.5"/>
-          <polygon points="340,40 241,164 439,164" fill="rgba(16, 185, 129, 0.3)" stroke="#059669" stroke-width="2"/>
-          <text x="340" y="115" font-size="14" font-weight="900" fill="#047857" text-anchor="middle">△ADE: 面积 1 份</text>
-          <text x="340" y="195" font-size="14" font-weight="900" fill="#0369A1" text-anchor="middle">梯形 BCED: 面积 1 份</text>
-        `;
-      } else {
-        el.animCaptionText.innerHTML = 
-          '<strong>【边长缩放比】</strong>：面积缩小到 1/2，边长缩放比是 <strong>k = √(1/2) = √2 / 2</strong>！底边 <strong>DE = 6 × (√2 / 2) = 3√2 ≈ 4.24 cm</strong>！';
-        g.innerHTML = `
-          <g transform="translate(170, 70)">
-            <rect x="0" y="0" width="340" height="100" fill="#ECFDF5" stroke="#10B981" stroke-width="2" rx="10"/>
-            <text x="170" y="32" font-size="14" font-weight="bold" fill="#065F46" text-anchor="middle">面积比等于相似比平方: k² = 1/2</text>
-            <text x="170" y="62" font-size="16" font-weight="900" fill="#059669" text-anchor="middle">k = √2 / 2 ≈ 0.707</text>
-            <text x="170" y="86" font-size="16" font-weight="900" fill="#E11D48" text-anchor="middle">DE = 6 × (√2 / 2) = 3√2 ≈ 4.24 cm！</text>
+          <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#334155" stroke-width="2.5"/>
+          <!-- 小三角 -->
+          <polygon points="${xA},${yA} ${xD},${yD} ${xE},${yE}" fill="rgba(16, 185, 129, 0.35)" stroke="#059669" stroke-width="2.5"/>
+          <!-- 梯形 -->
+          <polygon points="${xD},${yD} ${xE},${yE} ${xC},${yC} ${xB},${yB}" fill="rgba(2, 132, 199, 0.2)" stroke="#0284C7" stroke-width="2"/>
+          <line x1="${xD}" y1="${yD}" x2="${xE}" y2="${yE}" stroke="#059669" stroke-width="3"/>
+
+          <text x="${xA}" y="${yA - 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+          <text x="${xB - 8}" y="${yB + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
+          <text x="${xC + 8}" y="${yC + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
+          <text x="${xD - 8}" y="${yD + 4}" font-size="12" font-weight="bold" fill="#059669" text-anchor="end">D</text>
+          <text x="${xE + 8}" y="${yE + 4}" font-size="12" font-weight="bold" fill="#059669" text-anchor="start">E</text>
+
+          <text x="${xA}" y="${(yA + yD)/2 + 6}" font-size="14" font-weight="900" fill="#047857" text-anchor="middle">△ADE: 面积 1 份 (50%)</text>
+          <text x="${(xB + xC)/2}" y="${(yD + yB)/2 + 6}" font-size="14" font-weight="900" fill="#0369A1" text-anchor="middle">梯形 BCED: 面积 1 份 (50%)</text>
+          
+          <g transform="translate(340, 245)">
+            <text x="0" y="0" font-size="13" font-weight="900" fill="#047857" text-anchor="middle">⚖️ 面积天平对半：S(△ADE) = 1/2 · S(△ABC)</text>
           </g>
+        `;
+      } else if (step === 2) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 2 步 · 面积比是相似比平方】</strong>：DE // BC 使得两个三角形相似。底和高同时缩小 k 倍，面积缩小 k × k = <strong>k² 倍</strong>！所以 <strong>k² = 1/2</strong>！';
+        g.innerHTML = `
+          <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
+          <polygon points="${xA},${yA} ${xD},${yD} ${xE},${yE}" fill="rgba(16, 185, 129, 0.25)" stroke="#059669" stroke-width="2"/>
+          
+          <g transform="translate(340, 125)">
+            <rect x="-170" y="-35" width="340" height="70" fill="#FFFFFF" stroke="#10B981" stroke-width="2" rx="10" filter="drop-shadow(0 4px 10px rgba(16,185,129,0.15))"/>
+            <text x="0" y="-12" font-size="13.5" font-weight="bold" fill="#065F46" text-anchor="middle">
+              相似三角形：底缩小 k 倍，高也缩小 k 倍
+            </text>
+            <text x="0" y="16" font-size="16" font-weight="900" fill="#047857" text-anchor="middle">
+              面积比 S₁ / S总 = k × k = k² ⟹ k² = 1/2！
+            </text>
+          </g>
+        `;
+      } else if (step === 3) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 3 步 · 开平方求边长缩放比】</strong>：面积比是 1/2，开平方求得边长比例 <strong>k = √(1/2) = √2 / 2 ≈ 0.707</strong>（约 70.7%）！';
+        g.innerHTML = `
+          <g transform="translate(340, 115)">
+            <rect x="-175" y="-45" width="350" height="90" fill="#ECFDF5" stroke="#10B981" stroke-width="2" rx="12"/>
+            <text x="0" y="-18" font-size="14" font-weight="bold" fill="#065F46" text-anchor="middle">开平方计算边长比例：</text>
+            <text x="0" y="10" font-size="18" font-weight="900" fill="#059669" text-anchor="middle">
+              k = √(1/2) = 1/√2 = √2 / 2
+            </text>
+            <text x="0" y="32" font-size="13" font-weight="bold" fill="#047857" text-anchor="middle">
+              数值近似约为 0.7071 (即大三角形的 70.7%)
+            </text>
+          </g>
+        `;
+      } else if (step === 4) {
+        el.animCaptionText.innerHTML = 
+          '<strong>【第 4 步 · 一步算底边 DE】</strong>：底边 BC 是 6，所以 <strong>DE = 6 × (√2 / 2) = 3√2 ≈ 4.24 cm</strong>！口算秒杀通关！';
+        g.innerHTML = `
+          <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="2"/>
+          <polygon points="${xA},${yA} ${xD},${yD} ${xE},${yE}" fill="rgba(16, 185, 129, 0.35)" stroke="#059669" stroke-width="3"/>
+          <line x1="${xD}" y1="${yD}" x2="${xE}" y2="${yE}" stroke="#047857" stroke-width="3.5"/>
+
+          <text x="${xA}" y="${yA - 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+          <text x="${xB - 8}" y="${yB + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
+          <text x="${xC + 8}" y="${yC + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
+          <text x="${(xB+xC)/2}" y="${yB+22}" font-size="13" font-weight="bold" fill="#64748B" text-anchor="middle">BC = 6</text>
+
+          <g transform="translate(340, 105)">
+            <rect x="-160" y="-20" width="320" height="44" fill="#FFFFFF" stroke="#059669" stroke-width="2.5" rx="10" filter="drop-shadow(0 4px 10px rgba(5,150,105,0.15))"/>
+            <text x="0" y="8" font-size="17" font-weight="900" fill="#047857" text-anchor="middle">
+              🎉 DE = 6 × (√2 / 2) = 3√2 ≈ 4.24 cm！
+            </text>
+          </g>
+          <text x="340" y="245" font-size="13.5" font-weight="bold" fill="#0F172A" text-anchor="middle">
+            底边乘上开方比例，一步搞定！
+          </text>
         `;
       }
     }
   }
 
-  // 举一反三闯关题库
+  // ==================== 举一反三闯关题库 ====================
   let currentQuiz = null;
-  const quizBank = [
-    { text: '在 △ABC 中，AB=6, BC=8, AC=10。DE//BC。若 △ADE 周长等于梯形 BCED 周长，求 DE 的长。', ans: 6 }, // 2腰和=16, 绳子总=24, 小两腰=12, k=12/16=3/4, DE = 8*(3/4)=6
-    { text: '在 △ABC 中，AB=4, BC=5, AC=6。DE//BC。若 △ADE 周长等于梯形 BCED 周长，求 DE 的长。', ans: 3.75 }, // 2腰和=10, 绳子总=15, 小两腰=7.5, k=7.5/10=3/4, DE = 5*(3/4)=3.75
-    { text: '在 △ABC 中，AB=3, BC=4, AC=5。DE//BC。若 △ADE 周长等于梯形 BCED 周长，求 DE 的长。', ans: 3 } // 2腰和=8, 绳子总=12, 小两腰=6, k=6/8=3/4, DE = 4*(3/4)=3
+  const quizBankPerimeter = [
+    { text: '在 △ABC 中，AB=6, BC=8, AC=10。DE//BC。若 △ADE 周长等于梯形 BCED 周长，求 DE 的长。', ans: 6, hint: '两腰和=16，绳子总长=24，平分得小两腰=12，k=12/16=3/4，DE = 8×3/4 = 6' },
+    { text: '在 △ABC 中，AB=4, BC=5, AC=6。DE//BC。若 △ADE 周长等于梯形 BCED 周长，求 DE 的长。', ans: 3.75, hint: '两腰和=10，绳子总长=15，平分得小两腰=7.5，k=7.5/10=3/4，DE = 5×3/4 = 3.75' },
+    { text: '在 △ABC 中，AB=3, BC=4, AC=5。DE//BC。若 △ADE 周长等于梯形 BCED 周长，求 DE 的长。', ans: 3, hint: '两腰和=8，绳子总长=12，平分得小两腰=6，k=6/8=3/4，DE = 4×3/4 = 3' }
+  ];
+
+  const quizBankArea = [
+    { text: '在 △ABC 中，底边 BC = 6。DE // BC。若 △ADE 面积等于梯形 BCED 面积，求 DE 的长（近似值，保留两位小数）。', ans: 4.24, hint: '面积占 1/2 ⟹ k = √2/2 ⟹ DE = 6 × √2/2 = 3√2 ≈ 4.24' },
+    { text: '在 △ABC 中，底边 BC = 8。DE // BC。若 △ADE 面积等于梯形 BCED 面积，求 DE 的长（近似值，保留两位小数）。', ans: 5.66, hint: '面积占 1/2 ⟹ k = √2/2 ⟹ DE = 8 × √2/2 = 4√2 ≈ 5.66' },
+    { text: '在 △ABC 中，底边 BC = 10。DE // BC。若 △ADE 面积等于梯形 BCED 面积，求 DE 的长（近似值，保留两位小数）。', ans: 7.07, hint: '面积占 1/2 ⟹ k = √2/2 ⟹ DE = 10 × √2/2 = 5√2 ≈ 7.07' },
+    { text: '在 △ABC 中，底边 BC = 4。DE // BC。若 △ADE 面积等于梯形 BCED 面积，求 DE 的长（近似值，保留两位小数）。', ans: 2.83, hint: '面积占 1/2 ⟹ k = √2/2 ⟹ DE = 4 × √2/2 = 2√2 ≈ 2.83' }
   ];
 
   function nextQuiz() {
+    const bank = state.qMode === 'perimeter' ? quizBankPerimeter : quizBankArea;
     let next;
     do {
-      next = quizBank[Math.floor(Math.random() * quizBank.length)];
-    } while (currentQuiz && next.ans === currentQuiz.ans);
+      next = bank[Math.floor(Math.random() * bank.length)];
+    } while (currentQuiz && next.text === currentQuiz.text);
     currentQuiz = next;
     document.getElementById('quizPrompt').innerHTML = currentQuiz.text;
     const ansInput = document.getElementById('quizAns');
@@ -1211,11 +1392,11 @@
     if (Math.abs(val - currentQuiz.ans) < 0.05) {
       fb.className = 'quiz-feedback success';
       fb.innerHTML = `🎉 <strong>秒杀成功！计算完全正确！</strong><br>
-        拉绳子算式：两腰和平分后算得相似比 k = 3/4，截线 DE = 底边 × 3/4 = <strong>${currentQuiz.ans} cm</strong>！`;
+        推导口诀：${currentQuiz.hint}！`;
     } else {
       fb.className = 'quiz-feedback wrong';
       fb.innerHTML = `💡 <strong>差一点点，再思考一下！</strong><br>
-        口诀提示：把两腰相加，再加上底边算出绳子总长，除以 2 得到小三角形两腰和，再除以大两腰和求出比值 k！`;
+        口诀提示：${state.qMode === 'perimeter' ? '绳子总长除以 2 得到小三角形两腰和，除以 12 得 3/4，再乘底边！' : '面积平分说明面积比为 1/2，开平方得 √2/2，再乘以底边长！'}`;
     }
   }
 
@@ -1230,7 +1411,6 @@
   window.addEventListener('DOMContentLoaded', () => {
     setQMode('perimeter');
     updateGeometry();
-    nextQuiz();
   });
 </script>
 
