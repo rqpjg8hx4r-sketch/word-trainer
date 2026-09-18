@@ -1235,9 +1235,9 @@
     const xE = xA + t * (xC - xA);
     const yE = yA + t * (yC - yA);
 
-    // F 在 AB 上: AF:FB = r:1 => BF:BA = 1:(r+1) = t
-    const xF = xB + (1 - t) * (xA - xB);
-    const yF = yB + (1 - t) * (yA - yB);
+    // F 在 AB 上: AF:FB = r:1 => BF:BA = 1:(r+1) = t => F = B + t * (A - B)
+    const xF = xB + t * (xA - xB);
+    const yF = yB + t * (yA - yB);
 
     el.polyABC.setAttribute('points', `${xA},${yA} ${xB},${yB} ${xC},${yC}`);
     el.polyAEDF.setAttribute('points', `${xA},${yA} ${xE},${yE} ${xD},${yD} ${xF},${yF}`);
@@ -1377,8 +1377,8 @@
     const yD = yB;
     const xE = xA + t * (xC - xA);
     const yE = yA + t * (yC - yA);
-    const xF = xB + (1 - t) * (xA - xB);
-    const yF = yB + (1 - t) * (yA - yB);
+    const xF = xB + t * (xA - xB);
+    const yF = yB + t * (yA - yB);
 
     if (step === 1) {
       el.animCaptionText.innerHTML = 
