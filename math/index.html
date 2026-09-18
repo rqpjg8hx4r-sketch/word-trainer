@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>数学思维探索营 · Alex Math Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --card-border: #E2E8F0;
+      --emerald: #059669;
+      --emerald-light: #ECFDF5;
+      --emerald-border: #A7F3D0;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --amber: #D97706;
+      --amber-light: #FEF3C7;
+      --text: #1E293B;
+      --subtext: #64748B;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 920px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-icon {
+      font-size: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      background: var(--emerald-light);
+      border: 1px solid var(--emerald-border);
+    }
+    .brand-text h1 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .brand-text .sub {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12.5px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover {
+      background: #F1F5F9;
+      color: var(--emerald);
+      border-color: var(--emerald-border);
+    }
+    .hero {
+      background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%);
+      border: 1px solid var(--emerald-border);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(5, 150, 105, 0.06);
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .hero h2 {
+      margin: 0 0 8px 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: #064E3B;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 14px;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 28px 0 14px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .topic-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      transition: all 0.2s;
+    }
+    .topic-card.active-card {
+      border-color: var(--emerald-border);
+    }
+    .topic-card.active-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--emerald);
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.12);
+    }
+    .topic-card.locked {
+      opacity: 0.75;
+      background: #F8FAFC;
+      border-style: dashed;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .card-icon {
+      font-size: 36px;
+    }
+    .status-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+    .status-tag.ready {
+      background: var(--emerald-light);
+      color: #065F46;
+      border: 1px solid var(--emerald-border);
+    }
+    .status-tag.locked-tag {
+      background: #F1F5F9;
+      color: var(--subtext);
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin: 0 0 6px 0;
+      color: #0F172A;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: var(--subtext);
+      line-height: 1.5;
+      margin: 0 0 14px 0;
+      flex: 1;
+    }
+
+    /* 题目精选列表容器 (卡片1 下面的 3 个题目) */
+    .problem-sublist {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .problem-item {
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      transition: all 0.15s;
+    }
+    .problem-item.highlight {
+      background: #F0FDF4;
+      border-color: var(--emerald-border);
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.05);
+    }
+    .problem-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .problem-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+    .problem-badge.active-badge {
+      background: #059669;
+      color: #FFFFFF;
+    }
+    .problem-badge.wait-badge {
+      background: #E2E8F0;
+      color: #64748B;
+    }
+    .problem-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .problem-desc-snippet {
+      font-size: 12px;
+      color: var(--subtext);
+      line-height: 1.45;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #F1F5F9;
+      color: #475569;
+    }
+    .tag.highlight {
+      background: var(--emerald-light);
+      color: var(--emerald);
+      border: 1px solid var(--emerald-border);
+    }
+
+    .card-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .card-btn.primary-btn {
+      background: linear-gradient(135deg, #059669, #047857);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    }
+    .card-btn.primary-btn:hover {
+      background: #047857;
+    }
+    .card-btn.disabled-btn {
+      background: #E2E8F0;
+      color: #94A3B8;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon">📐</div>
+      <div class="brand-text">
+        <h1>Alex 数学思维探索营 · Math Lab</h1>
+        <div class="sub">几何可视化动态画板 · 母题模型提炼 · 培优与中考解题观</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="../games/" class="nav-btn"><span>🎮</span> 家庭游戏</a>
+      <a href="../coding/" class="nav-btn"><span>💻</span> 编程思维</a>
+      <a href="../index.html" class="nav-btn"><span>📚</span> 每日英语</a>
+    </div>
+  </div>
+
+  <!-- 头部横幅 -->
+  <div class="hero">
+    <div class="hero-badge">✨ 动态几何 · 模型化思维 · 直观可视化</div>
+    <h2>从直观图形到严谨代数，洞察几何本质</h2>
+    <p>
+      几何不是死记硬背辅助线，而是发现图形运动中的不变规律！利用可交互动态几何画板，自由拖动顶点与滑块，亲手验证定理与相似模型；分步高亮推导过程，提炼秒杀母题公式，让解题思维自然生发。
+    </p>
+  </div>
+
+  <!-- 专题卡片网格 -->
+  <div class="section-title">
+    <span>📚</span> 初中几何培优与模型实验室
+  </div>
+
+  <div class="grid">
+    <!-- 卡片 1：相似三角形与比例线段 (首发核心卡片，包含 3 道经典母题) -->
+    <div class="topic-card active-card" style="grid-column: 1 / -1;">
+      <div>
+        <div class="card-head">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="card-icon">📐</div>
+            <div>
+              <h3 class="card-title" style="font-size:19px; margin-bottom:2px;">相似三角形与比例线段专题</h3>
+              <div style="font-size:12px; color:var(--subtext);">经典初二/初三几何中考必考母题三部曲</div>
+            </div>
+          </div>
+          <span class="status-tag ready">🟢 核心专题 (首发实装第 7 题)</span>
+        </div>
+
+        <p class="card-desc">
+          相似三角形是初中几何的分水岭，也是联结几何与代数比例方程的核心桥梁。本专题精选三道最具代表性的梯度母题：从<strong>内接正方形的高线比例</strong>，到<strong>平行线成比例与四边形面积</strong>，再到<strong>平行截割线的等积/等周长分割</strong>。
+        </p>
+
+        <!-- 卡片 1 下的 3 个题目 -->
+        <div class="problem-sublist">
+          <!-- 题目 7 (已实装) -->
+          <div class="problem-item highlight">
+            <div class="problem-item-head">
+              <span class="problem-name">📌 题目 7：三角形内接正方形与高线比例模型</span>
+              <span class="problem-badge active-badge">已实装 · 互动实验室</span>
+            </div>
+            <div class="problem-desc-snippet">
+              正方形 <em>DEFG</em> 的边 <em>EF</em> 在 △<em>ABC</em> 边 <em>BC</em> 上，顶点 <em>D</em>, <em>G</em> 分别在 <em>AB</em>, <em>AC</em> 上，高 <em>AH</em> = 40cm，<em>BC</em> = 60cm，求正方形边长。
+            </div>
+            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag highlight">A字型相似</span>
+              <span class="tag highlight">高线比等于相似比</span>
+              <span class="tag highlight">“积除以和”秒杀公式</span>
+            </div>
+          </div>
+
+          <!-- 题目 8 (题目已收录) -->
+          <div class="problem-item">
+            <div class="problem-item-head">
+              <span class="problem-name">🔒 题目 8：平行线分线段成比例与四边形面积模型</span>
+              <span class="problem-badge wait-badge">第二阶段上线</span>
+            </div>
+            <div class="problem-desc-snippet">
+              点 <em>D</em> 在 <em>BC</em> 上，<em>DE</em> // <em>AB</em>，且 <em>AF/FB</em> = <em>CE/AE</em>。证明 <em>DF</em> // <em>AC</em>；若 <em>BD:DC</em> = 1:2，<em>S</em><sub>△ABC</sub> = 18cm²，求四边形 <em>AEDF</em> 面积。
+            </div>
+            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag">平行线分线段</span>
+              <span class="tag">平行四边形性质</span>
+              <span class="tag">面积比等于相似比平方</span>
+            </div>
+          </div>
+
+          <!-- 题目 9 (题目已收录) -->
+          <div class="problem-item">
+            <div class="problem-item-head">
+              <span class="problem-name">🔒 题目 9：平行截割线与等面积/等周长分割模型</span>
+              <span class="problem-badge wait-badge">第三阶段上线</span>
+            </div>
+            <div class="problem-desc-snippet">
+              △<em>ABC</em> 中 <em>AB</em> = 5, <em>BC</em> = 6, <em>AC</em> = 7，<em>DE</em> // <em>BC</em>。若 △<em>ABC</em> 面积（或△<em>ADE</em>）与梯形 <em>BCED</em> 面积相同，求 <em>DE</em>；若周长相同，求 <em>DE</em>。
+            </div>
+            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
+              <span class="tag">面积二等分点</span>
+              <span class="tag">等周长方程</span>
+              <span class="tag">方程思想求解</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a href="geometry-inscribed-square.html" class="card-btn primary-btn">
+        <span>🚀</span> 开启第 7 题动态几何实验室 (实装体验) →
+      </a>
+    </div>
+
+    <!-- 卡片 2：代数与函数图象实验室 (规划中) -->
+    <div class="topic-card locked">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">📈</div>
+          <span class="status-tag locked-tag">🔒 规划开发中</span>
+        </div>
+        <h3 class="card-title">函数图象与数形结合工坊</h3>
+        <p class="card-desc">
+          二次函数顶点、对称轴与判别式动态游标；动点问题中的几何图象与最值探索，直观感受几何与代数的交相辉映。
+        </p>
+        <div class="tag-row">
+          <span class="tag">二次函数</span>
+          <span class="tag">动点最值</span>
+          <span class="tag">数形结合</span>
+        </div>
+      </div>
+      <a class="card-btn disabled-btn">即将上线</a>
+    </div>
+
+    <!-- 卡片 3：经典几何八大模型大赏 (规划中) -->
+    <div class="topic-card locked">
+      <div>
+        <div class="card-head">
+          <div class="card-icon">🧩</div>
+          <span class="status-tag locked-tag">🔒 规划开发中</span>
+        </div>
+        <h3 class="card-title">初中几何压轴模型库</h3>
+        <p class="card-desc">
+          K字模型（一线三等角）、手拉手全等旋转模型、角平分线对称轴模型、隐形圆与阿氏圆解题秘籍。
+        </p>
+        <div class="tag-row">
+          <span class="tag">一线三等角</span>
+          <span class="tag">手拉手旋转</span>
+          <span class="tag">辅助线口诀</span>
+        </div>
+      </div>
+      <a class="card-btn disabled-btn">即将上线</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

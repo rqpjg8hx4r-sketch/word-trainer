@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>内接正方形与高线比例模型 · Alex Math Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+      --emerald: #059669;
+      --emerald-dark: #047857;
+      --emerald-light: #ECFDF5;
+      --emerald-border: #A7F3D0;
+      --indigo: #4F46E5;
+      --indigo-light: #EEF2FF;
+      --indigo-border: #C7D2FE;
+      --amber: #D97706;
+      --amber-light: #FEF3C7;
+      --amber-border: #FDE68A;
+      --rose: #E11D48;
+      --rose-light: #FFE4E6;
+      --text: #1E293B;
+      --subtext: #64748B;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(16px + env(safe-area-inset-top)) 16px calc(32px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    /* 顶部导航 */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .breadcrumb a {
+      color: var(--emerald);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .breadcrumb .sep {
+      color: #94A3B8;
+    }
+    .breadcrumb .current {
+      color: #0F172A;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { background: #F1F5F9; }
+
+    /* 题目题干卡片 */
+    .problem-header {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      position: relative;
+    }
+    .problem-tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .tag-badge {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      border: 1px solid var(--emerald-border);
+    }
+    .orig-photo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .orig-photo-btn:hover {
+      background: #EEF2FF;
+      border-color: #A5B4FC;
+      color: var(--indigo);
+    }
+    .problem-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 10px 0;
+      line-height: 1.4;
+    }
+    .problem-text {
+      font-size: 14.5px;
+      color: #334155;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .highlight-math {
+      font-weight: 800;
+      color: #0F172A;
+      background: #FEF3C7;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* 主画板网格：左侧画布，右侧控制与数据 */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 860px) {
+      .lab-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 几何画板区 */
+    .canvas-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      overflow: hidden;
+    }
+    .canvas-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .canvas-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .svg-container {
+      width: 100%;
+      background: radial-gradient(circle, #F1F5F9 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-color: #FAFAFA;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      position: relative;
+      touch-action: none;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+    }
+
+    /* 控制面板 */
+    .control-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .card-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .box-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 滑块控制项 */
+    .slider-item {
+      margin-bottom: 14px;
+    }
+    .slider-item:last-child {
+      margin-bottom: 0;
+    }
+    .slider-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    .slider-val {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: var(--emerald-dark);
+      background: var(--emerald-light);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .range-input {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #E2E8F0;
+      outline: none;
+      -webkit-appearance: none;
+      accent-color: var(--emerald);
+    }
+
+    /* 预设快捷按钮 */
+    .preset-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .preset-btn {
+      padding: 6px 8px;
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover {
+      background: var(--emerald-light);
+      border-color: var(--emerald-border);
+      color: var(--emerald-dark);
+    }
+
+    /* 实时数值指标 */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .metric-item {
+      background: #F8FAFC;
+      border: 1px solid #F1F5F9;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .metric-item.accent {
+      background: #F0FDF4;
+      border-color: var(--emerald-border);
+    }
+    .metric-name {
+      font-size: 11px;
+      color: var(--subtext);
+      margin-bottom: 3px;
+    }
+    .metric-val {
+      font-size: 16px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #0F172A;
+    }
+    .metric-item.accent .metric-val {
+      color: var(--emerald);
+      font-size: 18px;
+    }
+
+    /* 核心推导步骤 (交互式高亮) */
+    .proof-section {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .proof-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .proof-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proof-steps-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .step-tab {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      background: #F8FAFC;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .step-tab.active {
+      background: var(--emerald);
+      color: #FFFFFF;
+      border-color: var(--emerald);
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+    }
+
+    .step-content-box {
+      border: 1px solid var(--emerald-border);
+      background: var(--emerald-light);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+    .step-heading {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--emerald-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .step-body {
+      font-size: 13.5px;
+      color: #1E293B;
+    }
+    .math-block {
+      font-family: var(--font-mono);
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin: 8px 0;
+      display: inline-block;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    /* 公式总结卡片 */
+    .formula-banner {
+      background: linear-gradient(135deg, #065F46, #047857);
+      color: #FFFFFF;
+      border-radius: 14px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .formula-left h4 {
+      margin: 0 0 6px 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: #A7F3D0;
+    }
+    .formula-left p {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .formula-formula {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 900;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 10px 18px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    /* 举一反三·即时闯关 */
+    .quiz-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .quiz-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .quiz-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .quiz-body {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .quiz-question {
+      font-size: 14.5px;
+      color: #1E293B;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .quiz-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .quiz-input {
+      width: 140px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .quiz-input:focus {
+      border-color: var(--emerald);
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+    }
+    .quiz-submit-btn {
+      padding: 9px 18px;
+      background: var(--emerald);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-submit-btn:hover { background: var(--emerald-dark); }
+    .quiz-refresh-btn {
+      padding: 9px 14px;
+      background: #FFFFFF;
+      color: #475569;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-refresh-btn:hover { background: #F1F5F9; }
+    .quiz-feedback {
+      margin-top: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+    .quiz-feedback.success {
+      display: block;
+      background: #DCFCE7;
+      color: #166534;
+      border: 1px solid #86EFAC;
+    }
+    .quiz-feedback.wrong {
+      display: block;
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FCA5A5;
+    }
+
+    /* 弹窗 Modal: 原题真迹 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-box {
+      background: #FFFFFF;
+      border-radius: 18px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+      overflow: hidden;
+      animation: modalSlide 0.25s ease-out;
+    }
+    @keyframes modalSlide {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-header h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .modal-close-btn {
+      border: none;
+      background: #F1F5F9;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748B;
+    }
+    .modal-close-btn:hover { background: #E2E8F0; color: #0F172A; }
+    .modal-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      text-align: center;
+    }
+    .modal-body img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      border: 1px solid #CBD5E1;
+    }
+
+    /* SVG 几何样式 */
+    .geo-tri {
+      fill: #F8FAFC;
+      stroke: #334155;
+      stroke-width: 2.5;
+      stroke-linejoin: round;
+    }
+    .geo-tri-sub {
+      fill: rgba(16, 185, 129, 0.12);
+      stroke: #059669;
+      stroke-width: 2;
+      stroke-dasharray: 4, 3;
+      transition: all 0.3s;
+    }
+    .geo-square {
+      fill: rgba(79, 70, 229, 0.12);
+      stroke: #4F46E5;
+      stroke-width: 2.5;
+      stroke-linejoin: round;
+      transition: all 0.3s;
+    }
+    .geo-altitude {
+      stroke: #E11D48;
+      stroke-width: 2;
+      stroke-dasharray: 5, 4;
+      transition: all 0.3s;
+    }
+    .geo-altitude-top {
+      stroke: #E11D48;
+      stroke-width: 3;
+      transition: all 0.3s;
+    }
+    .geo-right-angle {
+      fill: none;
+      stroke: #64748B;
+      stroke-width: 1.5;
+    }
+    .geo-point {
+      fill: #0F172A;
+      stroke: #FFFFFF;
+      stroke-width: 2;
+    }
+    .geo-label {
+      font-size: 13px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      fill: #0F172A;
+    }
+    .geo-dim-label {
+      font-size: 11px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+    }
+    .highlight-glow {
+      filter: drop-shadow(0 0 6px rgba(5, 150, 105, 0.7));
+    }
+    .highlight-glow-indigo {
+      filter: drop-shadow(0 0 6px rgba(79, 70, 229, 0.7));
+    }
+    .highlight-glow-rose {
+      filter: drop-shadow(0 0 6px rgba(225, 29, 72, 0.7));
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="index.html"><span>📐</span> 数学思维</a>
+      <span class="sep">/</span>
+      <span class="current">题目 7：内接正方形与高线比例</span>
+    </div>
+    <div class="nav-actions">
+      <a href="../games/" class="nav-btn"><span>🎮</span> 游戏</a>
+      <a href="../coding/" class="nav-btn"><span>💻</span> 编程</a>
+      <a href="../index.html" class="nav-btn"><span>📚</span> 英语</a>
+    </div>
+  </div>
+
+  <!-- 题目题干卡片 -->
+  <div class="problem-header">
+    <div class="problem-tag-row">
+      <span class="tag-badge">📌 初中中考·几何经典母题</span>
+      <button class="orig-photo-btn" onclick="openModal()">
+        <span>📷</span> 查看试卷原题真迹
+      </button>
+    </div>
+    <h2 class="problem-title">题目 7：三角形内接正方形边长求解</h2>
+    <p class="problem-text">
+      如图，在 △<em>ABC</em> 中，高 <em>AH</em> = <span class="highlight-math">40 cm</span>，底边 <em>BC</em> = <span class="highlight-math">60 cm</span>。
+      内接正方形 <em>DEFG</em> 的边 <em>EF</em> 在 <em>BC</em> 上，顶点 <em>D</em>, <em>G</em> 分别在 <em>AB</em>, <em>AC</em> 上。
+      求正方形 <em>DEFG</em> 的边长 <em>x</em>。
+    </p>
+  </div>
+
+  <!-- 主几何实验室网格 -->
+  <div class="lab-grid">
+    <!-- 左侧：动态几何画布 -->
+    <div class="canvas-card">
+      <div class="canvas-title-bar">
+        <div class="canvas-title">
+          <span>🎨</span> 动态几何画板（支持参数实时变形）
+        </div>
+        <div style="font-size:12px; color:var(--subtext);">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10B981; margin-right:4px;"></span>
+          真实几何约束联动
+        </div>
+      </div>
+
+      <div class="svg-container">
+        <svg id="geoSvg" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748B"/>
+            </marker>
+          </defs>
+
+          <!-- 辅助网格/基线 -->
+          <line x1="20" y1="340" x2="620" y2="340" stroke="#E2E8F0" stroke-width="1"/>
+
+          <!-- 相似子三角形 ADG 背景填充高亮层 -->
+          <polygon id="polyADG" class="geo-tri-sub" points="0,0 0,0 0,0"/>
+
+          <!-- 大三角形 ABC -->
+          <polygon id="polyABC" class="geo-tri" points="0,0 0,0 0,0"/>
+
+          <!-- 内接正方形 DEFG -->
+          <polygon id="polyDEFG" class="geo-square" points="0,0 0,0 0,0 0,0"/>
+
+          <!-- 高线 AH 虚线 -->
+          <line id="lineAH" class="geo-altitude" x1="0" y1="0" x2="0" y2="0"/>
+          <!-- 高线 AP 部分 (AH - x) -->
+          <line id="lineAP" class="geo-altitude-top" x1="0" y1="0" x2="0" y2="0"/>
+
+          <!-- 垂足 H 直角标记 -->
+          <polyline id="rightAngleH" class="geo-right-angle" points="0,0 0,0 0,0"/>
+          <!-- 垂足 P 直角标记 -->
+          <polyline id="rightAngleP" class="geo-right-angle" points="0,0 0,0 0,0"/>
+
+          <!-- 关键线段高亮指示 (步骤高亮用) -->
+          <line id="hlDG" stroke="#059669" stroke-width="3.5" x1="0" y1="0" x2="0" y2="0" opacity="0"/>
+          <line id="hlBC" stroke="#059669" stroke-width="3.5" x1="0" y1="0" x2="0" y2="0" opacity="0"/>
+
+          <!-- 各关键点 -->
+          <circle id="ptA" class="geo-point" r="4.5" cx="0" cy="0"/>
+          <circle id="ptB" class="geo-point" r="4.5" cx="0" cy="0"/>
+          <circle id="ptC" class="geo-point" r="4.5" cx="0" cy="0"/>
+          <circle id="ptD" class="geo-point" r="4" cx="0" cy="0" fill="#4F46E5"/>
+          <circle id="ptG" class="geo-point" r="4" cx="0" cy="0" fill="#4F46E5"/>
+          <circle id="ptE" class="geo-point" r="4" cx="0" cy="0" fill="#4F46E5"/>
+          <circle id="ptF" class="geo-point" r="4" cx="0" cy="0" fill="#4F46E5"/>
+          <circle id="ptH" class="geo-point" r="4" cx="0" cy="0" fill="#E11D48"/>
+          <circle id="ptP" class="geo-point" r="4" cx="0" cy="0" fill="#E11D48"/>
+
+          <!-- 字母标注 -->
+          <text id="lblA" class="geo-label" text-anchor="middle" x="0" y="0">A</text>
+          <text id="lblB" class="geo-label" text-anchor="end" x="0" y="0">B</text>
+          <text id="lblC" class="geo-label" text-anchor="start" x="0" y="0">C</text>
+          <text id="lblD" class="geo-label" text-anchor="end" x="0" y="0">D</text>
+          <text id="lblG" class="geo-label" text-anchor="start" x="0" y="0">G</text>
+          <text id="lblE" class="geo-label" text-anchor="middle" x="0" y="0">E</text>
+          <text id="lblF" class="geo-label" text-anchor="middle" x="0" y="0">F</text>
+          <text id="lblH" class="geo-label" text-anchor="middle" x="0" y="0" fill="#E11D48">H</text>
+          <text id="lblP" class="geo-label" text-anchor="start" x="0" y="0" fill="#E11D48">P</text>
+
+          <!-- 尺寸动态标注 -->
+          <text id="dimBC" class="geo-dim-label" text-anchor="middle" fill="#475569" x="0" y="0">BC = 60</text>
+          <text id="dimAH" class="geo-dim-label" text-anchor="end" fill="#E11D48" x="0" y="0">AH = 40</text>
+          <text id="dimDG" class="geo-dim-label" text-anchor="middle" fill="#4F46E5" x="0" y="0">x = 24</text>
+          <text id="dimAP" class="geo-dim-label" text-anchor="start" fill="#E11D48" x="0" y="0">40 - x = 16</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 右侧：控制面板与实时参数 -->
+    <div class="control-card">
+      <!-- 参数调节器 -->
+      <div class="card-box">
+        <div class="box-title">
+          <span>⚙️</span> 题目参数自由调节
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>底边 <em>BC</em> 长度</span>
+            <span class="slider-val" id="valBC">60 cm</span>
+          </div>
+          <input type="range" id="inputBC" class="range-input" min="30" max="100" value="60" step="1">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>高线 <em>AH</em> 长度</span>
+            <span class="slider-val" id="valAH">40 cm</span>
+          </div>
+          <input type="range" id="inputAH" class="range-input" min="20" max="80" value="40" step="1">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>顶点 <em>A</em> 左右倾斜 (验证通用性)</span>
+            <span class="slider-val" id="valSkew">居中</span>
+          </div>
+          <input type="range" id="inputSkew" class="range-input" min="-25" max="25" value="0" step="1">
+        </div>
+
+        <div class="preset-btns">
+          <button class="preset-btn" onclick="setPreset(60, 40, 0)">原题经典 (60, 40)</button>
+          <button class="preset-btn" onclick="setPreset(40, 40, 0)">等腰直角 (40, 40)</button>
+          <button class="preset-btn" onclick="setPreset(60, 30, 15)">斜角钝感 (60, 30)</button>
+          <button class="preset-btn" onclick="setPreset(80, 20, -10)">宽扁底角 (80, 20)</button>
+        </div>
+      </div>
+
+      <!-- 实时计算结果 -->
+      <div class="card-box">
+        <div class="box-title">
+          <span>📊</span> 几何数值实时联动
+        </div>
+        <div class="metric-grid">
+          <div class="metric-item accent">
+            <div class="metric-name">正方形边长 x</div>
+            <div class="metric-val" id="dispX">24.00 cm</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-name">小高线 AP (h - x)</div>
+            <div class="metric-val" id="dispAP">16.00 cm</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-name">相似比 (k = x / a)</div>
+            <div class="metric-val" id="dispRatio">0.400 (2/5)</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-name">正方形面积</div>
+            <div class="metric-val" id="dispSquareArea">576 cm²</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分步推导教学与交互高亮 -->
+  <div class="proof-section">
+    <div class="proof-head">
+      <div class="proof-title">
+        <span>💡</span> 交互式解题思维链（点击分步点亮图形）
+      </div>
+      <div class="proof-steps-tabs">
+        <button class="step-tab active" onclick="switchStep(1)">步骤 1: 发现相似</button>
+        <button class="step-tab" onclick="switchStep(2)">步骤 2: 高线比性质</button>
+        <button class="step-tab" onclick="switchStep(3)">步骤 3: 列方程求解</button>
+        <button class="step-tab" onclick="switchStep(4)">步骤 4: 秒杀口诀</button>
+      </div>
+    </div>
+
+    <!-- 步骤 1 -->
+    <div id="stepBox1" class="step-content-box">
+      <div class="step-heading">
+        <span>🔹 步骤 1：判定相似三角形（A 字型经典模型）</span>
+      </div>
+      <div class="step-body">
+        因为四边形 <em>DEFG</em> 是正方形，所以对边平行：<span class="math-block">DG // BC</span>。<br>
+        平行于三角形一边的直线截其它两边，所截得的三角形与原三角形相似：
+        <div style="margin-top:6px;">
+          👉 故可得：<span class="math-block" style="color:var(--emerald); background:#ECFDF5; border-color:var(--emerald-border);">△ADG ∽ △ABC</span>
+        </div>
+        <div style="font-size:12px; color:var(--subtext); margin-top:4px;">
+          （已在画板中用绿色高亮虚线框出顶部的小三角形 △ADG，它与大三角形 △ABC 完全同构）
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤 2 -->
+    <div id="stepBox2" class="step-content-box" style="display:none;">
+      <div class="step-heading">
+        <span>🔹 步骤 2：相似三角形核心性质（对应高之比等于相似比）</span>
+      </div>
+      <div class="step-body">
+        高线 <em>AH</em> 与 <em>DG</em> 交于点 <em>P</em>。因为 <em>DG // BC</em> 且 <em>AH ⊥ BC</em>，所以 <em>AP ⊥ DG</em>，即 <strong>AP 是 △ADG 的高线</strong>。<br>
+        根据相似三角形定理：“<strong>相似三角形对应高的比等于相似比，等于对应底边的比</strong>”：
+        <div style="margin-top:6px;">
+          👉 <span class="math-block">AP / AH = DG / BC</span>
+        </div>
+        <div style="font-size:12px; color:var(--subtext); margin-top:4px;">
+          （已在画板中将高线 AP 与底边 DG、全高 AH 与全底 BC 分别高亮标记）
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤 3 -->
+    <div id="stepBox3" class="step-content-box" style="display:none;">
+      <div class="step-heading">
+        <span>🔹 步骤 3：设未知数并代入已知量列出一元一次方程</span>
+      </div>
+      <div class="step-body">
+        设正方形的边长为 <span class="math-block">x</span>，则：
+        <em>DG = x</em>，<em>PH = DE = x</em>，因此上半部分小高线为：<span class="math-block">AP = AH - x = 40 - x</span>。<br>
+        代入步骤 2 的比例式：
+        <div style="margin: 6px 0;">
+          <span class="math-block">(40 - x) / 40 = x / 60</span>
+        </div>
+        两边同乘两底的公倍数（或交叉相乘）：
+        <div style="margin: 4px 0;">
+          60 · (40 - x) = 40 · x <br>
+          2400 - 60x = 40x <br>
+          100x = 2400 <br>
+          👉 <strong>x = 24 cm</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- 步骤 4 -->
+    <div id="stepBox4" class="step-content-box" style="display:none;">
+      <div class="step-heading">
+        <span>🔹 步骤 4：提炼母题通用解法与中考秒杀口诀</span>
+      </div>
+      <div class="step-body">
+        若设任意三角形底边为 <strong>a</strong>，高为 <strong>h</strong>，内接正方形边长为 <strong>x</strong>：<br>
+        由 <span class="math-block">(h - x) / h = x / a</span>，去分母得 <span class="math-block">a · (h - x) = h · x  ⟹  a·h - a·x = h·x  ⟹  (a + h)·x = a·h</span>。<br>
+        由此解得通用公式：
+        <div style="margin: 8px 0; font-size:15px; font-weight:800; color:var(--emerald);">
+          🌟 x = (a · h) / (a + h)
+        </div>
+        两边同除以 a·h·x，还可以得到极具美感的调和倒数形式：<span class="math-block">1/x = 1/a + 1/h</span>。
+      </div>
+    </div>
+
+    <!-- 底部横幅总结 -->
+    <div class="formula-banner">
+      <div class="formula-left">
+        <h4>⚡️ 中考培优秒杀口诀：底高之积除以底高之和</h4>
+        <p>凡是三角形内接正方形（或长宽比固定的矩形），只要知道对应底和高，不用重画辅助线，直接带入公式：</p>
+      </div>
+      <div class="formula-formula">
+        x = (底 × 高) ÷ (底 + 高)
+      </div>
+    </div>
+  </div>
+
+  <!-- 举一反三·即时闯关模块 -->
+  <div class="quiz-card">
+    <div class="quiz-title-row">
+      <div class="quiz-title">
+        <span>🎯</span> 举一反三 · 秒杀闯关挑战
+      </div>
+      <span style="font-size:12px; color:var(--subtext);">用刚学到的口诀快速通关吧！</span>
+    </div>
+
+    <div class="quiz-body">
+      <div class="quiz-question" id="quizPrompt">
+        正在出题中...
+      </div>
+      <div class="quiz-input-row">
+        <label for="quizAns" style="font-size:13.5px; font-weight:700;">正方形边长 x =</label>
+        <input type="number" id="quizAns" class="quiz-input" placeholder="输入数值" step="any">
+        <span style="font-size:13.5px; font-weight:700;">cm</span>
+        <button class="quiz-submit-btn" onclick="checkQuiz()">提交验证</button>
+        <button class="quiz-refresh-btn" onclick="nextQuiz()">换一题 🎲</button>
+      </div>
+      <div id="quizFeedback" class="quiz-feedback"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 弹窗：试卷原题真迹 -->
+<div id="origModal" class="modal-overlay" onclick="closeModalOnBackdrop(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>📷 试卷原题真迹拍照</h3>
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <img src="assets/problem7.png" alt="题目7 原题手拍试卷" loading="lazy">
+      <p style="font-size:12px; color:#64748B; margin-top:10px;">
+        拍摄原题：第 7 题（如在 △ABC 中，高 AH=40cm，BC=60cm，内接正方形 DEFG...）
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 核心几何状态
+  let state = {
+    a: 60,       // 底边 BC
+    h: 40,       // 高线 AH
+    skew: 0,     // 顶点 A 偏角/偏移
+    activeStep: 1
+  };
+
+  // SVG 元素缓存
+  const el = {
+    polyABC: document.getElementById('polyABC'),
+    polyADG: document.getElementById('polyADG'),
+    polyDEFG: document.getElementById('polyDEFG'),
+    lineAH: document.getElementById('lineAH'),
+    lineAP: document.getElementById('lineAP'),
+    rightAngleH: document.getElementById('rightAngleH'),
+    rightAngleP: document.getElementById('rightAngleP'),
+    hlDG: document.getElementById('hlDG'),
+    hlBC: document.getElementById('hlBC'),
+    // 点
+    ptA: document.getElementById('ptA'),
+    ptB: document.getElementById('ptB'),
+    ptC: document.getElementById('ptC'),
+    ptD: document.getElementById('ptD'),
+    ptG: document.getElementById('ptG'),
+    ptE: document.getElementById('ptE'),
+    ptF: document.getElementById('ptF'),
+    ptH: document.getElementById('ptH'),
+    ptP: document.getElementById('ptP'),
+    // 标签
+    lblA: document.getElementById('lblA'),
+    lblB: document.getElementById('lblB'),
+    lblC: document.getElementById('lblC'),
+    lblD: document.getElementById('lblD'),
+    lblG: document.getElementById('lblG'),
+    lblE: document.getElementById('lblE'),
+    lblF: document.getElementById('lblF'),
+    lblH: document.getElementById('lblH'),
+    lblP: document.getElementById('lblP'),
+    // 标注
+    dimBC: document.getElementById('dimBC'),
+    dimAH: document.getElementById('dimAH'),
+    dimDG: document.getElementById('dimDG'),
+    dimAP: document.getElementById('dimAP'),
+    // 控制器数值显示
+    valBC: document.getElementById('valBC'),
+    valAH: document.getElementById('valAH'),
+    valSkew: document.getElementById('valSkew'),
+    // 统计面板
+    dispX: document.getElementById('dispX'),
+    dispAP: document.getElementById('dispAP'),
+    dispRatio: document.getElementById('dispRatio'),
+    dispSquareArea: document.getElementById('dispSquareArea')
+  };
+
+  // 几何计算并重绘 SVG
+  function updateGeometry() {
+    const a = state.a;
+    const h = state.h;
+    const skew = state.skew;
+
+    // 计算内接正方形边长: x = (a * h) / (a + h)
+    const x = (a * h) / (a + h);
+    const ap = h - x;
+    const ratio = x / a; // 等于 ap / h
+
+    // 更新界面数值
+    el.valBC.textContent = a + ' cm';
+    el.valAH.textContent = h + ' cm';
+    el.valSkew.textContent = skew === 0 ? '居中 (等腰)' : (skew > 0 ? `右偏 ${skew}` : `左偏 ${Math.abs(skew)}`);
+
+    el.dispX.textContent = x.toFixed(2) + ' cm';
+    el.dispAP.textContent = ap.toFixed(2) + ' cm';
+    el.dispRatio.textContent = `${ratio.toFixed(3)} (${ratioFraction(x, a)})`;
+    el.dispSquareArea.textContent = (x * x).toFixed(1) + ' cm²';
+
+    // 坐标系映射到 SVG (viewBox 0 0 640 400)
+    // 基准底边 yBase = 330
+    const yBase = 330;
+    const xCenter = 320;
+    // 动态比例尺：确保底边和高均能在画布内完美呈现
+    const scale = Math.min(480 / Math.max(a, 60), 240 / Math.max(h, 40));
+
+    const pixA = a * scale;
+    const pixH = h * scale;
+    const pixX = x * scale;
+    const pixSkew = skew * scale * 1.5;
+
+    // 点 B, C
+    const xB = xCenter - pixA / 2;
+    const yB = yBase;
+    const xC = xCenter + pixA / 2;
+    const yC = yBase;
+
+    // 顶点 A 与垂足 H
+    const xH = xCenter + pixSkew;
+    const yH = yBase;
+    const xA = xH;
+    const yA = yH - pixH;
+
+    // 内接正方形 D, G 在边 AB, AC 上，且 DG 距离 BC 为 pixX
+    // yD = yG = yBase - pixX
+    // 从 A 到 B 的线性插值：
+    // t = (y - yA) / (yB - yA) = (pixH - pixX) / pixH = ap / h
+    const t = ap / h;
+    const xD = xA + t * (xB - xA);
+    const yD = yBase - pixX;
+
+    const xG = xA + t * (xC - xA);
+    const yG = yBase - pixX;
+
+    // E, F 在 BC 上
+    const xE = xD;
+    const yE = yBase;
+    const xF = xG;
+    const yF = yBase;
+
+    // P 是 AH 与 DG 的交点
+    const xP = xA;
+    const yP = yD;
+
+    // 赋值到 SVG 元素
+    el.polyABC.setAttribute('points', `${xA},${yA} ${xB},${yB} ${xC},${yC}`);
+    el.polyADG.setAttribute('points', `${xA},${yA} ${xD},${yD} ${xG},${yG}`);
+    el.polyDEFG.setAttribute('points', `${xD},${yD} ${xG},${yG} ${xF},${yF} ${xE},${yE}`);
+
+    el.lineAH.setAttribute('x1', xA);
+    el.lineAH.setAttribute('y1', yA);
+    el.lineAH.setAttribute('x2', xH);
+    el.lineAH.setAttribute('y2', yH);
+
+    el.lineAP.setAttribute('x1', xA);
+    el.lineAP.setAttribute('y1', yA);
+    el.lineAP.setAttribute('x2', xP);
+    el.lineAP.setAttribute('y2', yP);
+
+    // 直角符号 (边长 10px)
+    const ra = 9;
+    // H 点直角
+    const hDir = xH > xCenter ? -1 : 1;
+    el.rightAngleH.setAttribute('points', `${xH + hDir*ra},${yH} ${xH + hDir*ra},${yH - ra} ${xH},${yH - ra}`);
+    // P 点直角
+    el.rightAngleP.setAttribute('points', `${xP + hDir*ra},${yP} ${xP + hDir*ra},${yP - ra} ${xP},${yP - ra}`);
+
+    // 重点线段高亮指示
+    el.hlDG.setAttribute('x1', xD);
+    el.hlDG.setAttribute('y1', yD);
+    el.hlDG.setAttribute('x2', xG);
+    el.hlDG.setAttribute('y2', yG);
+
+    el.hlBC.setAttribute('x1', xB);
+    el.hlBC.setAttribute('y1', yB);
+    el.hlBC.setAttribute('x2', xC);
+    el.hlBC.setAttribute('y2', yC);
+
+    // 点圆心
+    setPt(el.ptA, xA, yA);
+    setPt(el.ptB, xB, yB);
+    setPt(el.ptC, xC, yC);
+    setPt(el.ptD, xD, yD);
+    setPt(el.ptG, xG, yG);
+    setPt(el.ptE, xE, yE);
+    setPt(el.ptF, xF, yF);
+    setPt(el.ptH, xH, yH);
+    setPt(el.ptP, xP, yP);
+
+    // 文字标签坐标
+    setLbl(el.lblA, xA, yA - 10);
+    setLbl(el.lblB, xB - 10, yB + 16);
+    setLbl(el.lblC, xC + 10, yC + 16);
+    setLbl(el.lblD, xD - 10, yD - 4);
+    setLbl(el.lblG, xG + 10, yG - 4);
+    setLbl(el.lblE, xE, yE + 16);
+    setLbl(el.lblF, xF, yF + 16);
+    setLbl(el.lblH, xH, yH + 16);
+    setLbl(el.lblP, xP + 8, yP + 12);
+
+    // 尺寸标注
+    setLbl(el.dimBC, xCenter, yBase + 34);
+    el.dimBC.textContent = `BC = ${a}`;
+
+    setLbl(el.dimAH, xH - 12, yA + pixH * 0.5);
+    el.dimAH.textContent = `AH = ${h}`;
+
+    setLbl(el.dimDG, (xD + xG)/2, yD - 8);
+    el.dimDG.textContent = `x = ${x.toFixed(1)}`;
+
+    setLbl(el.dimAP, xP + 10, (yA + yP)/2);
+    el.dimAP.textContent = `AP = ${ap.toFixed(1)}`;
+
+    // 重新应用当前步骤的高亮模式
+    applyStepHighlights(state.activeStep);
+  }
+
+  function setPt(elem, cx, cy) {
+    elem.setAttribute('cx', cx);
+    elem.setAttribute('cy', cy);
+  }
+
+  function setLbl(elem, x, y) {
+    elem.setAttribute('x', x);
+    elem.setAttribute('y', y);
+  }
+
+  // 找简单的约分比例表示
+  function ratioFraction(x, a) {
+    const r = x / a;
+    for (let d = 2; d <= 20; d++) {
+      const n = Math.round(r * d);
+      if (Math.abs(n / d - r) < 0.002) {
+        return `${n}/${d}`;
+      }
+    }
+    return r.toFixed(2);
+  }
+
+  // 步骤切换与对应 SVG 高亮机制
+  function switchStep(step) {
+    state.activeStep = step;
+    document.querySelectorAll('.step-tab').forEach((tab, idx) => {
+      tab.classList.toggle('active', idx + 1 === step);
+    });
+
+    for (let i = 1; i <= 4; i++) {
+      const box = document.getElementById('stepBox' + i);
+      if (box) box.style.display = (i === step) ? 'block' : 'none';
+    }
+
+    applyStepHighlights(step);
+  }
+
+  function applyStepHighlights(step) {
+    // 重置所有高亮状态
+    el.polyADG.style.fill = 'rgba(16, 185, 129, 0.12)';
+    el.polyADG.style.stroke = '#059669';
+    el.polyADG.classList.remove('highlight-glow');
+
+    el.polyDEFG.style.fill = 'rgba(79, 70, 229, 0.12)';
+    el.polyDEFG.style.stroke = '#4F46E5';
+    el.polyDEFG.classList.remove('highlight-glow-indigo');
+
+    el.lineAP.classList.remove('highlight-glow-rose');
+    el.lineAH.classList.remove('highlight-glow-rose');
+    el.hlDG.setAttribute('opacity', '0');
+    el.hlBC.setAttribute('opacity', '0');
+
+    if (step === 1) {
+      // 高亮相似三角形 △ADG 和大三角形
+      el.polyADG.style.fill = 'rgba(16, 185, 129, 0.35)';
+      el.polyADG.style.stroke = '#059669';
+      el.polyADG.style.strokeWidth = '3';
+      el.polyADG.classList.add('highlight-glow');
+      el.hlDG.setAttribute('opacity', '1');
+      el.hlBC.setAttribute('opacity', '1');
+    } else if (step === 2) {
+      // 高亮高线 AP/AH 和底边 DG/BC
+      el.lineAP.classList.add('highlight-glow-rose');
+      el.lineAP.style.strokeWidth = '4';
+      el.hlDG.setAttribute('opacity', '1');
+      el.hlBC.setAttribute('opacity', '1');
+    } else if (step === 3) {
+      // 高亮正方形与代数方程未知量 x
+      el.polyDEFG.style.fill = 'rgba(79, 70, 229, 0.35)';
+      el.polyDEFG.classList.add('highlight-glow-indigo');
+      el.polyDEFG.style.strokeWidth = '3.5';
+    } else if (step === 4) {
+      // 全局和谐展现
+      el.polyADG.style.fill = 'rgba(16, 185, 129, 0.2)';
+      el.polyDEFG.style.fill = 'rgba(79, 70, 229, 0.2)';
+    }
+  }
+
+  // 预设参数切换
+  function setPreset(a, h, skew) {
+    state.a = a;
+    state.h = h;
+    state.skew = skew;
+    document.getElementById('inputBC').value = a;
+    document.getElementById('inputAH').value = h;
+    document.getElementById('inputSkew').value = skew;
+    updateGeometry();
+  }
+
+  // 滑块事件绑定
+  document.getElementById('inputBC').addEventListener('input', (e) => {
+    state.a = parseFloat(e.target.value);
+    updateGeometry();
+  });
+  document.getElementById('inputAH').addEventListener('input', (e) => {
+    state.h = parseFloat(e.target.value);
+    updateGeometry();
+  });
+  document.getElementById('inputSkew').addEventListener('input', (e) => {
+    state.skew = parseFloat(e.target.value);
+    updateGeometry();
+  });
+
+  // 弹窗控制
+  function openModal() {
+    document.getElementById('origModal').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('origModal').classList.remove('open');
+  }
+  function closeModalOnBackdrop(e) {
+    if (e.target.id === 'origModal') {
+      closeModal();
+    }
+  }
+
+  // 举一反三·即时闯关机制
+  let currentQuiz = null;
+
+  // 预置一些容易心算的漂亮整数组合 (a*h / (a+h) 为整数或一位小数)
+  const quizBank = [
+    { a: 30, h: 20, ans: 12 },    // 600 / 50 = 12
+    { a: 40, h: 10, ans: 8 },     // 400 / 50 = 8
+    { a: 12, h: 6, ans: 4 },      // 72 / 18 = 4
+    { a: 20, h: 20, ans: 10 },    // 400 / 40 = 10
+    { a: 45, h: 30, ans: 18 },    // 1350 / 75 = 18
+    { a: 70, h: 30, ans: 21 },    // 2100 / 100 = 21
+    { a: 15, h: 10, ans: 6 },     // 150 / 25 = 6
+    { a: 80, h: 20, ans: 16 },    // 1600 / 100 = 16
+    { a: 60, h: 40, ans: 24 }     // 原题复现
+  ];
+
+  function nextQuiz() {
+    // 随机选一题，避免与上题重复
+    let next;
+    do {
+      next = quizBank[Math.floor(Math.random() * quizBank.length)];
+    } while (currentQuiz && next.a === currentQuiz.a && next.h === currentQuiz.h);
+
+    currentQuiz = next;
+    document.getElementById('quizPrompt').innerHTML = 
+      `在 △ABC 中，已知底边 <strong>BC = ${currentQuiz.a} cm</strong>，高 <strong>AH = ${currentQuiz.h} cm</strong>。它的内接正方形边长 <em>x</em> 是多少？`;
+    const ansInput = document.getElementById('quizAns');
+    ansInput.value = '';
+    ansInput.focus();
+    const fb = document.getElementById('quizFeedback');
+    fb.className = 'quiz-feedback';
+    fb.style.display = 'none';
+  }
+
+  function checkQuiz() {
+    if (!currentQuiz) return;
+    const inputVal = parseFloat(document.getElementById('quizAns').value.trim());
+    const fb = document.getElementById('quizFeedback');
+
+    if (isNaN(inputVal)) {
+      fb.className = 'quiz-feedback wrong';
+      fb.textContent = '请输入你的答案数值哦！';
+      return;
+    }
+
+    if (Math.abs(inputVal - currentQuiz.ans) < 0.01) {
+      fb.className = 'quiz-feedback success';
+      fb.innerHTML = `🎉 <strong>恭喜秒杀成功！回答完全正确！</strong><br>
+        计算过程：x = (底 × 高) ÷ (底 + 高) = (${currentQuiz.a} × ${currentQuiz.h}) ÷ (${currentQuiz.a} + ${currentQuiz.h}) = ${currentQuiz.a * currentQuiz.h} ÷ ${currentQuiz.a + currentQuiz.h} = <strong>${currentQuiz.ans} cm</strong>！`;
+    } else {
+      fb.className = 'quiz-feedback wrong';
+      fb.innerHTML = `💡 <strong>差一点点，再思考一下！</strong><br>
+        口诀提示：边长 x = (底 × 高) ÷ (底 + 高)。这里是 (${currentQuiz.a} × ${currentQuiz.h}) ÷ (${currentQuiz.a} + ${currentQuiz.h})，快算算看！`;
+    }
+  }
+
+  // 绑定回车提交闯关
+  document.getElementById('quizAns').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') checkQuiz();
+  });
+
+  // 初始化
+  window.addEventListener('DOMContentLoaded', () => {
+    updateGeometry();
+    nextQuiz();
+  });
+</script>
+
+</body>
+</html>
