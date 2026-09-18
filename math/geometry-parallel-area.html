@@ -977,7 +977,7 @@
         </div>
 
         <div class="anim-step-pills">
-          <button class="anim-pill active" onclick="gotoAnimStep(1)">1. 原始大蛋糕 (18)</button>
+          <button class="anim-pill active" onclick="gotoAnimStep(1)">1. 验证平行四边形 (DF // AC)</button>
           <button class="anim-pill" onclick="gotoAnimStep(2)">2. 连 AD 切两块 (6 与 12)</button>
           <button class="anim-pill" onclick="gotoAnimStep(3)">3. 平行线切出半块 (4)</button>
           <button class="anim-pill" onclick="gotoAnimStep(4)">4. 镜像对称另一半 (4)</button>
@@ -999,6 +999,21 @@
         <div class="puzzle-step-card">
           <div class="puzzle-step-head">
             <span class="puzzle-step-badge">1</span>
+            <span>看刻度比例，先证 DF // AC</span>
+          </div>
+          <div class="puzzle-step-text">
+            题目已知 <em>DE // AB</em>，由平行线分线段成比例可知斜边 <em>CE : EA = CD : DB = 2 : 1</em>。<br>
+            题目给出神奇等式：<em>AF / FB = CE / AE = 2 / 1</em>，从底端向上看即 <em>BF : FA = 1 : 2</em>！<br>
+            从角 <em>B</em> 出发的两条边：<em>BD : DC = BF : FA = 1 : 2</em>，比例完全相同！<br>
+            <div style="margin-top:4px; font-weight:800; color:#047857;">
+              👉 连结 <em>DF</em> 必定严格平行于 <em>AC</em>（<em>DF // AC</em>）！两组对边均平行，<strong>AEDF 是标准的平行四边形</strong>！对角线 <em>AD</em> 将它对半分成完全相等的两半！
+            </div>
+          </div>
+        </div>
+
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge">2</span>
             <span>连结 AD，把蛋糕切成两块</span>
           </div>
           <div class="puzzle-step-text">
@@ -1012,12 +1027,11 @@
 
         <div class="puzzle-step-card">
           <div class="puzzle-step-head">
-            <span class="puzzle-step-badge">2</span>
-            <span>平行线切斜边：1 份对 2 份</span>
+            <span class="puzzle-step-badge">3</span>
+            <span>平行线切斜边：切出右半块 △ADE</span>
           </div>
           <div class="puzzle-step-text">
-            因为 <em>DE // AB</em>，底边是 1:2，斜边 <em>AC</em> 也是 <em>AE : EC = 1 : 2</em>！
-            右边面积为 12 的蛋糕，再分成 3 份（每份是 4）：
+            在右边面积为 12 的大蛋糕里，因为 <em>AE : EC = 1 : 2</em>（高相同），再分成 3 份（每份是 4）：
             <div style="margin-top:4px; font-weight:800; color:#B45309;">
               👉 △<em>ADE</em> 占 1 份，面积 = 12 ÷ 3 = <strong>4 cm²</strong>！
             </div>
@@ -1026,28 +1040,31 @@
 
         <div class="puzzle-step-card">
           <div class="puzzle-step-head">
-            <span class="puzzle-step-badge">3</span>
-            <span>平行四边形两边一模一样</span>
+            <span class="puzzle-step-badge">4</span>
+            <span>由平行四边形对称，直接得左半块</span>
           </div>
           <div class="puzzle-step-text">
-            四边形 <em>AEDF</em> 是平行四边形，对角线 <em>AD</em> 把它对半分开成两个完全一样的三角形：
+            因为第 1 步已经严谨证明 <em>AEDF</em> 是平行四边形，对角线 <em>AD</em> 把它对半分开成两个完全全等的三角形：
             <div style="margin-top:4px; font-weight:800; color:#059669;">
-              👉 另一半 △<em>ADF</em> 的面积也必定是 <strong>4 cm²</strong>！
+              👉 另一半 △<em>ADF</em> 的面积必定也是 <strong>4 cm²</strong>！
             </div>
           </div>
         </div>
 
         <div class="puzzle-step-card">
           <div class="puzzle-step-head">
-            <span class="puzzle-step-badge">4</span>
-            <span>两半合体，口算一步秒出</span>
+            <span class="puzzle-step-badge">5</span>
+            <span>两半合体，口算一步秒杀！</span>
           </div>
           <div class="puzzle-step-text">
             平行四边形 <em>AEDF</em> 的总面积就是两块小三角形相加：
             <div style="margin:6px 0; font-size:15px; font-weight:900; color:#B45309;">
               S = 4 + 4 = 8 cm²！
             </div>
-            不用算平方，四年级小朋友口算就能秒杀！
+            四年级口算一步秒杀：
+            <div style="font-size:12.5px; color:#64748B; margin-top:2px;">
+              18 × (2/3) × (1/3) × 2 = <strong>8 cm²</strong>！
+            </div>
           </div>
         </div>
       </div>
@@ -1057,11 +1074,11 @@
         <div>
           <h4 style="margin:0 0 4px 0; font-size:15px; color:#B45309;">🌟 Alex 的切蛋糕口诀：</h4>
           <p style="margin:0; font-size:13px; color:#475569;">
-            高同底比定面积，连线切大再切小！对角线分平行四边形，对半分合算得巧！
+            两边等比证平行，对角线分两半星！连线切大再切小，左右合体算得巧！
           </p>
         </div>
         <div style="font-family:var(--font-mono); font-size:18px; font-weight:900; color:#B45309; background:#FEF3C7; padding:8px 16px; border-radius:10px;">
-          S = 18 × 1/3 × 2/3 × 2 = 8 cm²
+          S = 18 × 2/3 × 1/3 × 2 = 8 cm²
         </div>
       </div>
     </div>
@@ -1382,34 +1399,67 @@
 
     if (step === 1) {
       el.animCaptionText.innerHTML = 
-        `<strong>【第 1 步 · 原始大蛋糕】</strong>：△ABC 就像一个大蛋糕，总面积为 <strong>${totalS} cm²</strong>。底边有 <strong>BD:DC = 1:${r}</strong>。`;
+        `<strong>【第 1 步 · 看比例先证平行】</strong>：DE // AB 推出 CE:EA = ${r}:1；已知条件 AF:FB = CE:AE 推出 BF:FA = 1:${r}。两边从角 B 出发刻度都是 1:${r}，所以 <strong>DF // AC</strong>！两组对边均平行 ⟹ <strong>AEDF 是标准的平行四边形</strong>！`;
       g.innerHTML = `
         <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#334155" stroke-width="2.5" stroke-linejoin="round"/>
-        <circle cx="${xD}" cy="${yD}" r="4" fill="#E11D48"/>
+        
+        <!-- DE 平行线 (与 AB 平行) -->
+        <line x1="${xD}" y1="${yD}" x2="${xE}" y2="${yE}" stroke="#4F46E5" stroke-width="2.5" stroke-dasharray="5,3"/>
+        
+        <!-- DF 平行线 (与 AC 平行，翡翠绿高亮) -->
+        <line x1="${xD}" y1="${yD}" x2="${xF}" y2="${yF}" stroke="#059669" stroke-width="3"/>
+        <line x1="${xA}" y1="${yA}" x2="${xC}" y2="${yC}" stroke="#059669" stroke-width="2.5" stroke-dasharray="4,3"/>
+
+        <!-- 关键点标记 -->
+        <circle cx="${xD}" cy="${yD}" r="4.5" fill="#E11D48"/>
+        <circle cx="${xE}" cy="${yE}" r="4.5" fill="#4F46E5"/>
+        <circle cx="${xF}" cy="${yF}" r="4.5" fill="#059669"/>
+
+        <!-- 顶点与线段字母 -->
         <text x="${xA}" y="${yA - 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
         <text x="${xB - 8}" y="${yB + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
         <text x="${xC + 8}" y="${yC + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
-        <text x="${xD}" y="${yD + 16}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">D</text>
-        <text x="340" y="140" font-size="18" font-weight="900" fill="#475569" text-anchor="middle">总面积 S = ${totalS} cm²</text>
-        <text x="${(xB+xD)/2}" y="${yB+26}" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">1 份</text>
-        <text x="${(xD+xC)/2}" y="${yB+26}" font-size="11" font-weight="bold" fill="#0284C7" text-anchor="middle">${r} 份</text>
+        <text x="${xD}" y="${yD + 18}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">D</text>
+        <text x="${xE + 10}" y="${yE - 2}" font-size="12" font-weight="bold" fill="#4F46E5">E</text>
+        <text x="${xF - 10}" y="${yF - 2}" font-size="12" font-weight="bold" fill="#059669" text-anchor="end">F</text>
+
+        <!-- 刻度比例标注 -->
+        <text x="${(xB+xD)/2}" y="${yB+22}" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">BD (1份)</text>
+        <text x="${(xD+xC)/2}" y="${yB+22}" font-size="11" font-weight="bold" fill="#0284C7" text-anchor="middle">DC (${r}份)</text>
+        <text x="${(xB+xF)/2 - 12}" y="${(yB+yF)/2}" font-size="11" font-weight="bold" fill="#B45309" text-anchor="end">BF (1份)</text>
+        <text x="${(xF+xA)/2 - 12}" y="${(yF+yA)/2}" font-size="11" font-weight="bold" fill="#0284C7" text-anchor="end">FA (${r}份)</text>
+
+        <!-- 核心结论提示卡 -->
+        <g transform="translate(340, 118)">
+          <rect x="-165" y="-24" width="330" height="48" fill="#FFFFFF" stroke="#059669" stroke-width="2" rx="10" filter="drop-shadow(0 4px 10px rgba(5,150,105,0.12))"/>
+          <text x="0" y="-3" font-size="13" font-weight="900" fill="#047857" text-anchor="middle">
+            BF:FA = BD:DC = 1:${r} ⟹ DF // AC
+          </text>
+          <text x="0" y="15" font-size="11.5" font-weight="bold" fill="#475569" text-anchor="middle">
+            两组对边均平行 ⟹ AEDF 为平行四边形！
+          </text>
+        </g>
       `;
     } else if (step === 2) {
       el.animCaptionText.innerHTML = 
-        `<strong>【第 2 步 · 连 AD 切两块】</strong>：连结 AD 切一刀！底边 1:${r}，高相同，面积就是 1:${r}！左边是 <strong>${sABD.toFixed(1)}</strong>，右边是 <strong>${sADC.toFixed(1)}</strong>。`;
+        `<strong>【第 2 步 · 连 AD 切两块】</strong>：连结 AD 切一刀！底边 1:${r}，高相同，面积就是 1:${r}！左边 △ABD = <strong>${sABD.toFixed(1)} cm²</strong>，右边 △ADC = <strong>${sADC.toFixed(1)} cm²</strong>。`;
       g.innerHTML = `
         <!-- 左蛋糕 -->
         <polygon points="${xA},${yA} ${xB},${yB} ${xD},${yD}" fill="rgba(245, 158, 11, 0.28)" stroke="#D97706" stroke-width="2"/>
         <!-- 右蛋糕 -->
         <polygon points="${xA},${yA} ${xD},${yD} ${xC},${yC}" fill="rgba(2, 132, 199, 0.22)" stroke="#0284C7" stroke-width="2"/>
         <line x1="${xA}" y1="${yA}" x2="${xD}" y2="${yD}" stroke="#E11D48" stroke-width="2.5" stroke-dasharray="4,3"/>
+        <circle cx="${xD}" cy="${yD}" r="4" fill="#E11D48"/>
         <text x="${(xA+xB+xD)/3}" y="${(yA+yB+yD)/3 + 5}" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">左: ${sABD.toFixed(1)} cm²</text>
         <text x="${(xA+xD+xC)/3}" y="${(yA+yD+yC)/3 + 5}" font-size="14" font-weight="900" fill="#0284C7" text-anchor="middle">右: ${sADC.toFixed(1)} cm²</text>
         <text x="${xD}" y="${yD + 18}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">D (1 : ${r})</text>
+        <text x="${xA}" y="${yA - 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+        <text x="${xB - 8}" y="${yB + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
+        <text x="${xC + 8}" y="${yC + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
       `;
     } else if (step === 3) {
       el.animCaptionText.innerHTML = 
-        `<strong>【第 3 步 · 平行线切出半块】</strong>：DE // AB，斜边 AC 也是 1:${r}！在右边 ${sADC.toFixed(1)} cm² 里切出 △ADE = <strong>${sADE.toFixed(1)} cm²</strong>！`;
+        `<strong>【第 3 步 · 切出右半块 △ADE】</strong>：在右边 ${sADC.toFixed(1)} cm² 蛋糕中，AE:EC = 1:${r}，高相同，切出 △ADE = <strong>${sADE.toFixed(1)} cm²</strong>！`;
       g.innerHTML = `
         <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
         <line x1="${xA}" y1="${yA}" x2="${xD}" y2="${yD}" stroke="#E11D48" stroke-width="2" stroke-dasharray="3,3"/>
@@ -1417,13 +1467,17 @@
         
         <!-- 高亮半块 △ADE -->
         <polygon points="${xA},${yA} ${xE},${yE} ${xD},${yD}" fill="rgba(79, 70, 229, 0.35)" stroke="#4F46E5" stroke-width="2.5"/>
+        <circle cx="${xD}" cy="${yD}" r="4" fill="#E11D48"/>
+        <circle cx="${xE}" cy="${yE}" r="4" fill="#4F46E5"/>
         <text x="${(xA+xE+xD)/3}" y="${(yA+yE+yD)/3 + 4}" font-size="14" font-weight="900" fill="#3730A3" text-anchor="middle">△ADE = ${sADE.toFixed(1)}</text>
         <text x="${xE + 10}" y="${yE}" font-size="12" font-weight="bold" fill="#4F46E5">E (1 份)</text>
         <text x="${(xE+xC)/2 + 10}" y="${(yE+yC)/2}" font-size="11" font-weight="bold" fill="#64748B">${r} 份</text>
+        <text x="${xA}" y="${yA - 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+        <text x="${xD}" y="${yD + 18}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">D</text>
       `;
     } else if (step === 4) {
       el.animCaptionText.innerHTML = 
-        `<strong>【第 4 步 · 镜像对称另一半】</strong>：AEDF 是平行四边形，对角线 AD 把它对半分开，左边的 △ADF 也必定是 <strong>${sADE.toFixed(1)} cm²</strong>！`;
+        `<strong>【第 4 步 · 平行四边形对称得另一半】</strong>：第 1 步已证明 AEDF 是平行四边形，对角线 AD 将它对半分开成完全一样的两半，左边 △ADF 也是 <strong>${sADE.toFixed(1)} cm²</strong>！`;
       g.innerHTML = `
         <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
         <line x1="${xA}" y1="${yA}" x2="${xD}" y2="${yD}" stroke="#E11D48" stroke-width="2" stroke-dasharray="3,3"/>
@@ -1431,19 +1485,36 @@
         <!-- 两半三角形同时高亮 -->
         <polygon points="${xA},${yA} ${xE},${yE} ${xD},${yD}" fill="rgba(79, 70, 229, 0.25)" stroke="#4F46E5" stroke-width="2"/>
         <polygon points="${xA},${yA} ${xF},${yF} ${xD},${yD}" fill="rgba(16, 185, 129, 0.25)" stroke="#059669" stroke-width="2"/>
+        <circle cx="${xD}" cy="${yD}" r="4" fill="#E11D48"/>
+        <circle cx="${xE}" cy="${yE}" r="4" fill="#4F46E5"/>
+        <circle cx="${xF}" cy="${yF}" r="4" fill="#059669"/>
         <text x="${(xA+xE+xD)/3}" y="${(yA+yE+yD)/3 + 4}" font-size="13" font-weight="900" fill="#3730A3" text-anchor="middle">${sADE.toFixed(1)}</text>
         <text x="${(xA+xF+xD)/3}" y="${(yA+yF+yD)/3 + 4}" font-size="13" font-weight="900" fill="#047857" text-anchor="middle">${sADE.toFixed(1)}</text>
-        <text x="340" y="245" font-size="13" font-weight="bold" fill="#0F172A" text-anchor="middle">对称双子星：两块面积完全相等</text>
+        <text x="${xA}" y="${yA - 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+        <text x="${xD}" y="${yD + 18}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">D</text>
+        <text x="${xE + 10}" y="${yE}" font-size="12" font-weight="bold" fill="#4F46E5">E</text>
+        <text x="${xF - 10}" y="${yF}" font-size="12" font-weight="bold" fill="#059669" text-anchor="end">F</text>
+        <text x="340" y="245" font-size="13" font-weight="bold" fill="#0F172A" text-anchor="middle">平行四边形对称：两块全等，面积完全相等！</text>
       `;
     } else if (step === 5) {
       el.animCaptionText.innerHTML = 
-        `<strong>【第 5 步 · 合体口算秒杀】</strong>：两半小蛋糕合体！四边形 AEDF 总面积 = <strong>${sADE.toFixed(1)} + ${sADE.toFixed(1)} = ${sAEDF.toFixed(1)} cm²</strong>！`;
+        `<strong>【第 5 步 · 两半合体口算秒杀】</strong>：两半小蛋糕合体！四边形 AEDF 总面积 = <strong>${sADE.toFixed(1)} + ${sADE.toFixed(1)} = ${sAEDF.toFixed(1)} cm²</strong>！`;
       g.innerHTML = `
         <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
         <!-- 完整平行四边形高光呈现 -->
         <polygon points="${xA},${yA} ${xE},${yE} ${xD},${yD} ${xF},${yF}" fill="rgba(79, 70, 229, 0.35)" stroke="#4F46E5" stroke-width="3" stroke-linejoin="round"/>
         <line x1="${xA}" y1="${yA}" x2="${xD}" y2="${yD}" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="3,3"/>
         
+        <circle cx="${xD}" cy="${yD}" r="4" fill="#E11D48"/>
+        <circle cx="${xE}" cy="${yE}" r="4" fill="#4F46E5"/>
+        <circle cx="${xF}" cy="${yF}" r="4" fill="#059669"/>
+        <text x="${xA}" y="${yA - 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+        <text x="${xB - 8}" y="${yB + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
+        <text x="${xC + 8}" y="${yC + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
+        <text x="${xD}" y="${yD + 18}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">D</text>
+        <text x="${xE + 10}" y="${yE}" font-size="12" font-weight="bold" fill="#4F46E5">E</text>
+        <text x="${xF - 10}" y="${yF}" font-size="12" font-weight="bold" fill="#059669" text-anchor="end">F</text>
+
         <g transform="translate(340, 130)">
           <rect x="-140" y="-20" width="280" height="40" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2" rx="10" filter="drop-shadow(0 4px 10px rgba(79,70,229,0.15))"/>
           <text x="0" y="6" font-size="16" font-weight="900" fill="#4F46E5" text-anchor="middle">
