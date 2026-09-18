@@ -23,7 +23,7 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0;
-      padding: calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+      padding: calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
       background-color: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -34,33 +34,35 @@
     }
     .container {
       width: 100%;
-      max-width: 920px;
+      max-width: 960px;
     }
     .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 12px;
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     .brand-icon {
-      font-size: 26px;
+      font-size: 24px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
       background: var(--emerald-light);
       border: 1px solid var(--emerald-border);
     }
     .brand-text h1 {
       margin: 0;
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 800;
       color: #0F172A;
     }
@@ -74,238 +76,222 @@
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
-      justify-content: flex-end;
     }
     .nav-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      border-radius: 10px;
+      gap: 5px;
+      padding: 7px 12px;
+      border-radius: 9px;
       border: 1px solid var(--card-border);
       background: #FFFFFF;
       color: #334155;
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 700;
       text-decoration: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
       transition: all 0.2s;
     }
     .nav-btn:hover {
       background: #F1F5F9;
       color: var(--emerald);
-      border-color: var(--emerald-border);
     }
-    .hero {
+
+    /* 精简通栏横幅 */
+    .hero-compact {
       background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 100%);
       border: 1px solid var(--emerald-border);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 24px;
-      box-shadow: 0 4px 20px rgba(5, 150, 105, 0.06);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.04);
+    }
+    .hero-left h2 {
+      margin: 0 0 4px 0;
+      font-size: 17px;
+      font-weight: 800;
+      color: #064E3B;
+    }
+    .hero-left p {
+      margin: 0;
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.5;
     }
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       background: #D1FAE5;
       color: #065F46;
       border: 1px solid #A7F3D0;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 800;
-      margin-bottom: 12px;
-    }
-    .hero h2 {
-      margin: 0 0 8px 0;
-      font-size: 22px;
-      font-weight: 800;
-      color: #064E3B;
-    }
-    .hero p {
-      margin: 0;
-      font-size: 14px;
-      color: #334155;
-      line-height: 1.6;
+      white-space: nowrap;
     }
 
+    /* 紧凑分类网格 */
     .section-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: #0F172A;
-      margin: 28px 0 14px 0;
+      margin: 0 0 12px 0;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .grid {
+    .grid-compact {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
     }
 
-    .topic-card {
+    /* 紧凑主题卡片 */
+    .compact-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 18px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       position: relative;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
       transition: all 0.2s;
     }
-    .topic-card.active-card {
+    .compact-card.active-card {
       border-color: var(--emerald-border);
     }
-    .topic-card.active-card:hover {
-      transform: translateY(-3px);
+    .compact-card.active-card:hover {
       border-color: var(--emerald);
-      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.12);
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.08);
+      transform: translateY(-2px);
     }
-    .topic-card.locked {
-      opacity: 0.75;
+    .compact-card.locked {
       background: #F8FAFC;
       border-style: dashed;
+      opacity: 0.75;
     }
 
-    .card-head {
+    .card-top {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-    .card-icon {
-      font-size: 36px;
+    .card-top-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .status-tag {
+    .card-icon-small {
+      font-size: 22px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #F1F5F9;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .active-card .card-icon-small {
+      background: var(--emerald-light);
+    }
+    .card-title-text {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0;
+    }
+    .status-pill {
       font-size: 11px;
       font-weight: 800;
-      padding: 4px 8px;
-      border-radius: 8px;
+      padding: 3px 8px;
+      border-radius: 6px;
     }
-    .status-tag.ready {
+    .status-pill.ready {
       background: var(--emerald-light);
       color: #065F46;
       border: 1px solid var(--emerald-border);
     }
-    .status-tag.locked-tag {
+    .status-pill.locked {
       background: #F1F5F9;
       color: var(--subtext);
     }
 
-    .card-title {
-      font-size: 17px;
-      font-weight: 800;
-      margin: 0 0 6px 0;
-      color: #0F172A;
-    }
-    .card-desc {
-      font-size: 13px;
+    .card-desc-compact {
+      font-size: 12.5px;
       color: var(--subtext);
       line-height: 1.5;
-      margin: 0 0 14px 0;
-      flex: 1;
+      margin: 0 0 12px 0;
     }
 
-    /* 题目精选列表容器 (卡片1 下面的 3 个题目) */
-    .problem-sublist {
+    /* 卡片内部紧凑子题目列表 (可直接点击进入) */
+    .sub-problems-box {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-bottom: 16px;
+      gap: 7px;
+      margin-bottom: 12px;
     }
-    .problem-item {
+    .sub-prob-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
       background: #F8FAFC;
       border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 12px;
+      border-radius: 10px;
+      padding: 8px 12px;
+      text-decoration: none;
+      color: #1E293B;
       transition: all 0.15s;
     }
-    .problem-item.highlight {
+    .sub-prob-link:hover {
       background: #F0FDF4;
       border-color: var(--emerald-border);
-      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.05);
+      transform: translateX(2px);
     }
-    .problem-item-head {
+    .sub-prob-title {
+      font-size: 12.5px;
+      font-weight: 700;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      gap: 6px;
     }
-    .problem-badge {
-      font-size: 11px;
+    .sub-prob-tag {
+      font-size: 10.5px;
       font-weight: 800;
-      padding: 2px 7px;
-      border-radius: 6px;
+      color: var(--emerald);
+      background: #DCFCE7;
+      padding: 1px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
     }
-    .problem-badge.active-badge {
-      background: #059669;
-      color: #FFFFFF;
-    }
-    .problem-badge.wait-badge {
-      background: #E2E8F0;
-      color: #64748B;
-    }
-    .problem-name {
-      font-size: 13.5px;
-      font-weight: 800;
-      color: #0F172A;
-    }
-    .problem-desc-snippet {
+    .sub-prob-arrow {
+      color: #94A3B8;
       font-size: 12px;
-      color: var(--subtext);
-      line-height: 1.45;
     }
 
-    .tag-row {
+    .mini-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 16px;
+      gap: 5px;
     }
-    .tag {
-      font-size: 11px;
+    .mini-tag {
+      font-size: 10.5px;
       font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
+      padding: 2px 7px;
+      border-radius: 5px;
       background: #F1F5F9;
       color: #475569;
-    }
-    .tag.highlight {
-      background: var(--emerald-light);
-      color: var(--emerald);
-      border: 1px solid var(--emerald-border);
-    }
-
-    .card-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      font-size: 14px;
-      font-weight: 800;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .card-btn.primary-btn {
-      background: linear-gradient(135deg, #059669, #047857);
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
-    }
-    .card-btn.primary-btn:hover {
-      background: #047857;
-    }
-    .card-btn.disabled-btn {
-      background: #E2E8F0;
-      color: #94A3B8;
-      cursor: not-allowed;
     }
   </style>
 </head>
@@ -318,7 +304,7 @@
       <div class="brand-icon">📐</div>
       <div class="brand-text">
         <h1>Alex 数学思维探索营 · Math Lab</h1>
-        <div class="sub">几何可视化动态画板 · 图形奥秘探索 · 启发式数学思维</div>
+        <div class="sub">几何可视化动态画板 · 拼图割补直观法 · 启发式数学思维</div>
       </div>
     </div>
     <div class="nav-actions">
@@ -328,134 +314,136 @@
     </div>
   </div>
 
-  <!-- 头部横幅 -->
-  <div class="hero">
-    <div class="hero-badge">✨ 动态几何 · 模型化思维 · 直观可视化</div>
-    <h2>从直观图形到严谨代数，洞察几何本质</h2>
-    <p>
-      几何不是死记硬背辅助线，而是发现图形运动中的不变规律！利用可交互动态几何画板，自由拖动顶点与滑块，亲手验证图形规律；通过面积翻倍拼图与动态演示，让解题思维自然生发。
-    </p>
+  <!-- 精简通栏横幅 -->
+  <div class="hero-compact">
+    <div class="hero-left">
+      <h2>从直观拼图到数学本质，洞察图形奥秘</h2>
+      <p>不画死记硬背的复杂辅助线！用四年级最拿手的“切蛋糕”、“面积翻倍”和“天平称重”，看图形怎样神奇变身。</p>
+    </div>
+    <div class="hero-badge">
+      <span>✨</span> 纯几何直观 · 动态交互
+    </div>
   </div>
 
-  <!-- 专题卡片网格 -->
+  <!-- 专题卡片网格 (紧凑多列布局，容纳未来无限分类) -->
   <div class="section-title">
-    <span>📚</span> 趣味几何探究与思维实验室
+    <span>📚</span> 精选数学探索专题
   </div>
 
-  <div class="grid">
-    <!-- 卡片 1：相似三角形与比例线段 (首发核心卡片，包含 3 道经典母题) -->
-    <div class="topic-card active-card" style="grid-column: 1 / -1;">
+  <div class="grid-compact">
+    <!-- 专题 1：图形拼图与比例线段 (含 3 道题目直达) -->
+    <div class="compact-card active-card">
       <div>
-        <div class="card-head">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <div class="card-icon">📐</div>
-            <div>
-              <h3 class="card-title" style="font-size:19px; margin-bottom:2px;">图形拼图与比例线段专题</h3>
-              <div style="font-size:12px; color:var(--subtext);">经典几何图形思维挑战三部曲</div>
-            </div>
+        <div class="card-top">
+          <div class="card-top-left">
+            <div class="card-icon-small">📐</div>
+            <h3 class="card-title-text">图形拼图与比例线段</h3>
           </div>
-          <span class="status-tag ready">🟢 核心专题 (首发实装第 7 题)</span>
+          <span class="status-pill ready">3 题已全部实装</span>
         </div>
-
-        <p class="card-desc">
-          图形的变化充满奇妙的规律！本专题精选三道充满智慧的经典几何挑战题：从<strong>内接正方形的面积翻倍与比例</strong>，到<strong>平行线与多边形面积</strong>，再到<strong>趣味等面积分割</strong>，带你领略几何的对称与平衡之美。
+        <p class="card-desc-compact">
+          探索高线比例、切蛋糕等积变形、平行投影与等周长分割三大经典母题。
         </p>
 
-        <!-- 卡片 1 下的 3 个题目 -->
-        <div class="problem-sublist">
-          <!-- 题目 7 (已实装) -->
-          <div class="problem-item highlight">
-            <div class="problem-item-head">
-              <span class="problem-name">📌 题目 7：三角形内接正方形与高线比例模型</span>
-              <span class="problem-badge active-badge">已实装 · 互动实验室</span>
-            </div>
-            <div class="problem-desc-snippet">
-              正方形 <em>DEFG</em> 的边 <em>EF</em> 在 △<em>ABC</em> 边 <em>BC</em> 上，顶点 <em>D</em>, <em>G</em> 分别在 <em>AB</em>, <em>AC</em> 上，高 <em>AH</em> = 40cm，<em>BC</em> = 60cm，求正方形边长。
-            </div>
-            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
-              <span class="tag highlight">A字型相似</span>
-              <span class="tag highlight">高线比等于相似比</span>
-              <span class="tag highlight">“积除以和”秒杀公式</span>
-            </div>
-          </div>
+        <!-- 3 道子题目快捷直达列表 -->
+        <div class="sub-problems-box">
+          <!-- 题目 7 -->
+          <a href="geometry-inscribed-square.html" class="sub-prob-link">
+            <span class="sub-prob-title">
+              <span>📌</span> 题目 7：内接正方形与高线比例
+            </span>
+            <span class="sub-prob-tag">面积翻倍拼图</span>
+            <span class="sub-prob-arrow">→</span>
+          </a>
 
-          <!-- 题目 8 (题目已收录) -->
-          <div class="problem-item">
-            <div class="problem-item-head">
-              <span class="problem-name">🔒 题目 8：平行线分线段成比例与四边形面积模型</span>
-              <span class="problem-badge wait-badge">第二阶段上线</span>
-            </div>
-            <div class="problem-desc-snippet">
-              点 <em>D</em> 在 <em>BC</em> 上，<em>DE</em> // <em>AB</em>，且 <em>AF/FB</em> = <em>CE/AE</em>。证明 <em>DF</em> // <em>AC</em>；若 <em>BD:DC</em> = 1:2，<em>S</em><sub>△ABC</sub> = 18cm²，求四边形 <em>AEDF</em> 面积。
-            </div>
-            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
-              <span class="tag">平行线分线段</span>
-              <span class="tag">平行四边形性质</span>
-              <span class="tag">面积比等于相似比平方</span>
-            </div>
-          </div>
+          <!-- 题目 8 -->
+          <a href="geometry-parallel-area.html" class="sub-prob-link">
+            <span class="sub-prob-title">
+              <span>📌</span> 题目 8：平行线与四边形面积
+            </span>
+            <span class="sub-prob-tag">切蛋糕分份法</span>
+            <span class="sub-prob-arrow">→</span>
+          </a>
 
-          <!-- 题目 9 (题目已收录) -->
-          <div class="problem-item">
-            <div class="problem-item-head">
-              <span class="problem-name">🔒 题目 9：平行截割线与等面积/等周长分割模型</span>
-              <span class="problem-badge wait-badge">第三阶段上线</span>
-            </div>
-            <div class="problem-desc-snippet">
-              △<em>ABC</em> 中 <em>AB</em> = 5, <em>BC</em> = 6, <em>AC</em> = 7，<em>DE</em> // <em>BC</em>。若 △<em>ABC</em> 面积（或△<em>ADE</em>）与梯形 <em>BCED</em> 面积相同，求 <em>DE</em>；若周长相同，求 <em>DE</em>。
-            </div>
-            <div style="margin-top:6px; display:flex; gap:6px; flex-wrap:wrap;">
-              <span class="tag">面积二等分点</span>
-              <span class="tag">等周长方程</span>
-              <span class="tag">方程思想求解</span>
-            </div>
-          </div>
+          <!-- 题目 9 -->
+          <a href="geometry-parallel-slice.html" class="sub-prob-link">
+            <span class="sub-prob-title">
+              <span>📌</span> 题目 9：平行截割与等积/等周长
+            </span>
+            <span class="sub-prob-tag">拉绳子比较法</span>
+            <span class="sub-prob-arrow">→</span>
+          </a>
         </div>
       </div>
 
-      <a href="geometry-inscribed-square.html" class="card-btn primary-btn">
-        <span>🚀</span> 开启第 7 题动态几何实验室 (实装体验) →
-      </a>
+      <div class="mini-tags">
+        <span class="mini-tag">A字型模型</span>
+        <span class="mini-tag">乘法分配律</span>
+        <span class="mini-tag">等高底比</span>
+      </div>
     </div>
 
-    <!-- 卡片 2：代数与函数图象实验室 (规划中) -->
-    <div class="topic-card locked">
+    <!-- 专题 2：函数图象与数形结合工坊 (规划中) -->
+    <div class="compact-card locked">
       <div>
-        <div class="card-head">
-          <div class="card-icon">📈</div>
-          <span class="status-tag locked-tag">🔒 规划开发中</span>
+        <div class="card-top">
+          <div class="card-top-left">
+            <div class="card-icon-small">📈</div>
+            <h3 class="card-title-text">函数图象与数形结合</h3>
+          </div>
+          <span class="status-pill locked">探索中</span>
         </div>
-        <h3 class="card-title">函数图象与数形结合工坊</h3>
-        <p class="card-desc">
-          二次函数顶点、对称轴与判别式动态游标；动点问题中的几何图象与最值探索，直观感受几何与代数的交相辉映。
+        <p class="card-desc-compact">
+          动态游标直观感受代数变量如何拉伸、平移图象，动点问题中的几何面积变化轨迹。
         </p>
-        <div class="tag-row">
-          <span class="tag">二次函数</span>
-          <span class="tag">动点最值</span>
-          <span class="tag">数形结合</span>
-        </div>
       </div>
-      <a class="card-btn disabled-btn">即将上线</a>
+      <div class="mini-tags">
+        <span class="mini-tag">坐标系</span>
+        <span class="mini-tag">动点最值</span>
+        <span class="mini-tag">数形结合</span>
+      </div>
     </div>
 
-    <!-- 卡片 3：经典几何八大模型大赏 (规划中) -->
-    <div class="topic-card locked">
+    <!-- 专题 3：几何经典模型百宝箱 (规划中) -->
+    <div class="compact-card locked">
       <div>
-        <div class="card-head">
-          <div class="card-icon">🧩</div>
-          <span class="status-tag locked-tag">🔒 规划开发中</span>
+        <div class="card-top">
+          <div class="card-top-left">
+            <div class="card-icon-small">🧩</div>
+            <h3 class="card-title-text">几何经典模型百宝箱</h3>
+          </div>
+          <span class="status-pill locked">探索中</span>
         </div>
-        <h3 class="card-title">几何经典模型百宝箱</h3>
-        <p class="card-desc">
-          K字模型（一线三等角）、手拉手全等旋转模型、角平分线对称轴模型、隐形圆与阿氏圆解题秘籍。
+        <p class="card-desc-compact">
+          一线三等角（K字模型）、手拉手全等旋转、对称折叠与最值将军饮马问题。
         </p>
-        <div class="tag-row">
-          <span class="tag">一线三等角</span>
-          <span class="tag">手拉手旋转</span>
-          <span class="tag">辅助线口诀</span>
-        </div>
       </div>
-      <a class="card-btn disabled-btn">即将上线</a>
+      <div class="mini-tags">
+        <span class="mini-tag">旋转全等</span>
+        <span class="mini-tag">对称折叠</span>
+        <span class="mini-tag">将军饮马</span>
+      </div>
+    </div>
+
+    <!-- 专题 4：数论与趣味巧算奥秘 (规划中) -->
+    <div class="compact-card locked">
+      <div>
+        <div class="card-top">
+          <div class="card-top-left">
+            <div class="card-icon-small">🔢</div>
+            <h3 class="card-title-text">数论探秘与速算思维</h3>
+          </div>
+          <span class="status-pill locked">探索中</span>
+        </div>
+        <p class="card-desc-compact">
+          质数与整除密码、鸡兔同笼天平称重法、找规律与斐波那契数列螺旋图形。
+        </p>
+      </div>
+      <div class="mini-tags">
+        <span class="mini-tag">整除特征</span>
+        <span class="mini-tag">数表规律</span>
+        <span class="mini-tag">黄金螺旋</span>
+      </div>
     </div>
   </div>
 </div>

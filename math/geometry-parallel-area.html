@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>平行线与四边形面积模型 · Alex Math Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+      --emerald: #059669;
+      --emerald-dark: #047857;
+      --emerald-light: #ECFDF5;
+      --emerald-border: #A7F3D0;
+      --indigo: #4F46E5;
+      --indigo-light: #EEF2FF;
+      --indigo-border: #C7D2FE;
+      --amber: #D97706;
+      --amber-dark: #B45309;
+      --amber-light: #FEF3C7;
+      --amber-border: #FDE68A;
+      --rose: #E11D48;
+      --rose-light: #FFE4E6;
+      --rose-border: #FECDD3;
+      --cyan: #0284C7;
+      --cyan-light: #F0F9FF;
+      --cyan-border: #BAE6FD;
+      --text: #1E293B;
+      --subtext: #64748B;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(16px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 980px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .breadcrumb a {
+      color: var(--emerald);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+    .breadcrumb .sep {
+      color: #94A3B8;
+    }
+    .breadcrumb .current {
+      color: #0F172A;
+    }
+    .nav-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { background: #F1F5F9; }
+
+    .problem-header {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      position: relative;
+    }
+    .problem-tag-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .tag-badges-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tag-badge {
+      font-size: 12px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      border: 1px solid var(--emerald-border);
+    }
+    .tag-badge.kid {
+      background: #FEF3C7;
+      color: #B45309;
+      border-color: #FDE68A;
+    }
+    .orig-photo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .orig-photo-btn:hover {
+      background: #EEF2FF;
+      border-color: #A5B4FC;
+      color: var(--indigo);
+    }
+    .problem-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 10px 0;
+      line-height: 1.4;
+    }
+    .problem-text {
+      font-size: 15px;
+      color: #334155;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .highlight-math {
+      font-weight: 800;
+      color: #0F172A;
+      background: #FEF3C7;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* 两种解法切换大卡片 */
+    .method-switch-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 6px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    @media (max-width: 640px) {
+      .method-switch-card {
+        grid-template-columns: 1fr;
+      }
+    }
+    .method-tab-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 2px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    .method-tab-btn .icon {
+      font-size: 26px;
+    }
+    .method-tab-btn .title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #334155;
+    }
+    .method-tab-btn .subtitle {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
+    .method-tab-btn.active.kid-tab {
+      background: #FFFBEB;
+      border-color: #F59E0B;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+    }
+    .method-tab-btn.active.kid-tab .title {
+      color: #B45309;
+    }
+    .method-tab-btn.active.middle-tab {
+      background: #ECFDF5;
+      border-color: #10B981;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+    .method-tab-btn.active.middle-tab .title {
+      color: #047857;
+    }
+
+    /* 画板网格 */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 860px) {
+      .lab-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .canvas-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+      overflow: hidden;
+    }
+    .canvas-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #F1F5F9;
+    }
+    .canvas-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .svg-container {
+      width: 100%;
+      background: radial-gradient(circle, #F1F5F9 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-color: #FAFAFA;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      overflow: hidden;
+      position: relative;
+      touch-action: none;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+    }
+
+    .control-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .card-box {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .box-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0F172A;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slider-item {
+      margin-bottom: 14px;
+    }
+    .slider-item:last-child {
+      margin-bottom: 0;
+    }
+    .slider-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    .slider-val {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: var(--emerald-dark);
+      background: var(--emerald-light);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .range-input {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #E2E8F0;
+      outline: none;
+      -webkit-appearance: none;
+      accent-color: var(--emerald);
+    }
+
+    .preset-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .preset-btn {
+      padding: 6px 8px;
+      background: #F8FAFC;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover {
+      background: var(--emerald-light);
+      border-color: var(--emerald-border);
+      color: var(--emerald-dark);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .metric-item {
+      background: #F8FAFC;
+      border: 1px solid #F1F5F9;
+      border-radius: 10px;
+      padding: 10px;
+    }
+    .metric-item.accent {
+      background: #F0FDF4;
+      border-color: var(--emerald-border);
+    }
+    .metric-name {
+      font-size: 11px;
+      color: var(--subtext);
+      margin-bottom: 3px;
+    }
+    .metric-val {
+      font-size: 16px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: #0F172A;
+    }
+    .metric-item.accent .metric-val {
+      color: var(--emerald);
+      font-size: 18px;
+    }
+
+    /* 动画播放馆 */
+    .anim-player-box {
+      background: #FFFDF7;
+      border: 1px solid #FDE68A;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.06);
+    }
+    .anim-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #FDE68A;
+    }
+    .anim-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #92400E;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .anim-controls-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .anim-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 12px;
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .anim-btn:hover {
+      background: #FEF3C7;
+      border-color: #F59E0B;
+      color: #B45309;
+    }
+    .anim-btn.primary {
+      background: #F59E0B;
+      color: #FFFFFF;
+      border-color: #F59E0B;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+    }
+    .anim-step-pills {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .anim-pill {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #E2E8F0;
+      background: #FFFFFF;
+      color: #64748B;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .anim-pill.active {
+      background: #B45309;
+      color: #FFFFFF;
+      border-color: #B45309;
+    }
+    .anim-canvas-wrapper {
+      background: #FFFFFF;
+      border: 1px solid #FDE68A;
+      border-radius: 12px;
+      padding: 10px;
+      min-height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .anim-caption-banner {
+      margin-top: 10px;
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      color: #78350F;
+      font-weight: 700;
+      line-height: 1.6;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kid-expl-card {
+      background: #FFFFFF;
+      border: 2px solid #FDE68A;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.08);
+      position: relative;
+    }
+    .kid-expl-card .badge-top {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FEF3C7;
+      color: #B45309;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .puzzle-steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .puzzle-step-card {
+      background: #FFFDF7;
+      border: 1px solid #FDE68A;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s;
+    }
+    .puzzle-step-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #B45309;
+      margin-bottom: 8px;
+    }
+    .puzzle-step-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #F59E0B;
+      color: #FFFFFF;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .puzzle-step-text {
+      font-size: 13.5px;
+      color: #475569;
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .proof-section {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .proof-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .proof-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .proof-steps-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .step-tab {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      background: #F8FAFC;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .step-tab.active {
+      background: var(--emerald);
+      color: #FFFFFF;
+      border-color: var(--emerald);
+    }
+    .step-content-box {
+      border: 1px solid var(--emerald-border);
+      background: var(--emerald-light);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+    .step-heading {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--emerald-dark);
+      margin-bottom: 8px;
+    }
+    .step-body {
+      font-size: 13.5px;
+      color: #1E293B;
+    }
+    .math-block {
+      font-family: var(--font-mono);
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin: 6px 0;
+      display: inline-block;
+      font-weight: 700;
+      color: #0F172A;
+    }
+
+    /* 闯关挑战 */
+    .quiz-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      margin-top: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .quiz-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .quiz-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .quiz-body {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .quiz-question {
+      font-size: 14.5px;
+      color: #1E293B;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .quiz-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .quiz-input {
+      width: 140px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      outline: none;
+    }
+    .quiz-submit-btn {
+      padding: 9px 18px;
+      background: var(--emerald);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .quiz-refresh-btn {
+      padding: 9px 14px;
+      background: #FFFFFF;
+      color: #475569;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .quiz-feedback {
+      margin-top: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+    }
+    .quiz-feedback.success {
+      display: block;
+      background: #DCFCE7;
+      color: #166534;
+      border: 1px solid #86EFAC;
+    }
+    .quiz-feedback.wrong {
+      display: block;
+      background: #FEE2E2;
+      color: #991B1B;
+      border: 1px solid #FCA5A5;
+    }
+
+    /* 弹窗 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: #FFFFFF;
+      border-radius: 18px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-close-btn {
+      border: none;
+      background: #F1F5F9;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .modal-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      text-align: center;
+    }
+    .modal-body img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid #CBD5E1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="index.html"><span>📐</span> 数学思维</a>
+      <span class="sep">/</span>
+      <span class="current">题目 8：平行线与四边形面积</span>
+    </div>
+    <div class="nav-actions">
+      <a href="../games/" class="nav-btn"><span>🎮</span> 游戏</a>
+      <a href="../coding/" class="nav-btn"><span>💻</span> 编程</a>
+      <a href="../index.html" class="nav-btn"><span>📚</span> 英语</a>
+    </div>
+  </div>
+
+  <div class="problem-header">
+    <div class="problem-tag-row">
+      <div class="tag-badges-group">
+        <span class="tag-badge kid">🌟 切蛋糕分份法 · 口算秒杀</span>
+        <span class="tag-badge">📐 平行四边形面积模型</span>
+      </div>
+      <button class="orig-photo-btn" onclick="openModal()">
+        <span>📷</span> 查看试卷原题真迹
+      </button>
+    </div>
+    <h2 class="problem-title">题目 8：平行线分线段成比例与四边形面积</h2>
+    <p class="problem-text">
+      如图，在 △<em>ABC</em> 中，点 <em>D</em> 在 <em>BC</em> 上，<em>DE // AB</em> 交 <em>AC</em> 于点 <em>E</em>。
+      已知 <em>AF / FB = CE / AE</em>。<br>
+      (1) 求证：<em>DF // AC</em>（由此 <em>AEDF</em> 为平行四边形）；<br>
+      (2) 若 <span class="highlight-math">BD : DC = 1 : 2</span>，且 △<em>ABC</em> 总面积 <span class="highlight-math">S = 18 cm²</span>，求四边形 <em>AEDF</em> 的面积。
+    </p>
+  </div>
+
+  <!-- 解题模式切换 -->
+  <div class="method-switch-card">
+    <button id="tabKid" class="method-tab-btn active kid-tab" onclick="setMethodMode('kid')">
+      <span class="icon">🧒</span>
+      <div>
+        <div class="title">直观法：切蛋糕分份法（推荐）</div>
+        <div class="subtitle">无需相似比平方，用小学“等高底比等于面积比”切蛋糕口算</div>
+      </div>
+    </button>
+    <button id="tabMiddle" class="method-tab-btn middle-tab" onclick="setMethodMode('middle')">
+      <span class="icon">🎓</span>
+      <div>
+        <div class="title">进阶探索法：相似比平方与大减小</div>
+        <div class="subtitle">通过小三角形与大三角形相似比的平方求各块面积</div>
+      </div>
+    </button>
+  </div>
+
+  <!-- 主几何实验室网格 -->
+  <div class="lab-grid">
+    <div class="canvas-card">
+      <div class="canvas-title-bar">
+        <div class="canvas-title">
+          <span>🎨</span> 几何动态画板（支持拖动比例滑块）
+        </div>
+        <div id="modeStatusTag" style="font-size:12px; font-weight:700; color:#B45309; background:#FEF3C7; padding:3px 8px; border-radius:6px;">
+          当前：切蛋糕分份视界
+        </div>
+      </div>
+
+      <div class="svg-container">
+        <svg id="geoSvg" viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet">
+          <!-- 背景网格基线 -->
+          <line x1="20" y1="340" x2="620" y2="340" stroke="#E2E8F0" stroke-width="1"/>
+
+          <!-- 大三角形 ABC -->
+          <polygon id="polyABC" points="0,0 0,0 0,0" fill="#F8FAFC" stroke="#334155" stroke-width="2.5" stroke-linejoin="round"/>
+
+          <!-- 平行四边形 AEDF -->
+          <polygon id="polyAEDF" points="0,0 0,0 0,0 0,0" fill="rgba(79, 70, 229, 0.2)" stroke="#4F46E5" stroke-width="2.5" stroke-linejoin="round"/>
+
+          <!-- 辅助连线 AD (中线/切线) -->
+          <line id="lineAD" x1="0" y1="0" x2="0" y2="0" stroke="#E11D48" stroke-width="2" stroke-dasharray="4,3"/>
+
+          <!-- 各关键点 -->
+          <circle id="ptA" r="4.5" cx="0" cy="0" fill="#0F172A" stroke="#FFFFFF" stroke-width="2"/>
+          <circle id="ptB" r="4.5" cx="0" cy="0" fill="#0F172A" stroke="#FFFFFF" stroke-width="2"/>
+          <circle id="ptC" r="4.5" cx="0" cy="0" fill="#0F172A" stroke="#FFFFFF" stroke-width="2"/>
+          <circle id="ptD" r="4" cx="0" cy="0" fill="#E11D48" stroke="#FFFFFF" stroke-width="2"/>
+          <circle id="ptE" r="4" cx="0" cy="0" fill="#4F46E5" stroke="#FFFFFF" stroke-width="2"/>
+          <circle id="ptF" r="4" cx="0" cy="0" fill="#4F46E5" stroke="#FFFFFF" stroke-width="2"/>
+
+          <!-- 字母标注 -->
+          <text id="lblA" font-size="14" font-weight="900" fill="#0F172A" text-anchor="middle" x="0" y="0">A</text>
+          <text id="lblB" font-size="14" font-weight="900" fill="#0F172A" text-anchor="end" x="0" y="0">B</text>
+          <text id="lblC" font-size="14" font-weight="900" fill="#0F172A" text-anchor="start" x="0" y="0">C</text>
+          <text id="lblD" font-size="13" font-weight="900" fill="#E11D48" text-anchor="middle" x="0" y="0">D</text>
+          <text id="lblE" font-size="13" font-weight="900" fill="#4F46E5" text-anchor="start" x="0" y="0">E</text>
+          <text id="lblF" font-size="13" font-weight="900" fill="#4F46E5" text-anchor="end" x="0" y="0">F</text>
+
+          <!-- 动态面积数值贴纸 -->
+          <text id="txtAreaAEDF" font-size="14" font-weight="900" fill="#4F46E5" text-anchor="middle" x="0" y="0">S = 8 cm²</text>
+          <text id="txtRatioBD" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle" x="0" y="0">BD: 1份</text>
+          <text id="txtRatioDC" font-size="11" font-weight="bold" fill="#0284C7" text-anchor="middle" x="0" y="0">DC: 2份</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="control-card">
+      <div class="card-box">
+        <div class="box-title">
+          <span>⚙️</span> 题目参数自由调节
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>底边比例 <em>BD : DC</em></span>
+            <span class="slider-val" id="valRatio">1 : 2</span>
+          </div>
+          <input type="range" id="inputRatio" class="range-input" min="1" max="4" value="2" step="1">
+        </div>
+
+        <div class="slider-item">
+          <div class="slider-label-row">
+            <span>△<em>ABC</em> 总面积</span>
+            <span class="slider-val" id="valArea">18 cm²</span>
+          </div>
+          <input type="range" id="inputArea" class="range-input" min="12" max="36" value="18" step="6">
+        </div>
+
+        <div class="preset-btns">
+          <button class="preset-btn" onclick="setPreset(2, 18)">原题经典 (1:2, 18)</button>
+          <button class="preset-btn" onclick="setPreset(1, 18)">中点对半 (1:1, 18)</button>
+          <button class="preset-btn" onclick="setPreset(3, 24)">三分比例 (1:3, 24)</button>
+          <button class="preset-btn" onclick="setPreset(2, 36)">大双倍 (1:2, 36)</button>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div class="box-title">
+          <span>📊</span> 实时面积数值联动
+        </div>
+        <div class="metric-grid">
+          <div class="metric-item accent">
+            <div class="metric-name">四边形 AEDF 面积</div>
+            <div class="metric-val" id="dispAEDF">8.00 cm²</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-name">左半蛋糕 △ABD</div>
+            <div class="metric-val" id="dispABD">6.00 cm²</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-name">右半蛋糕 △ADC</div>
+            <div class="metric-val" id="dispADC">12.00 cm²</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-name">半个平行四边形 △ADE</div>
+            <div class="metric-val" id="dispADE">4.00 cm²</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 解题推导专区 -->
+  <div class="explanation-container">
+    <div id="kidSection" class="kid-expl-card">
+      <div class="badge-top">
+        <span>✨</span> Alex 专属切蛋糕思维 · 等高底比面积模型
+      </div>
+
+      <!-- 动画演示馆 -->
+      <div class="anim-player-box">
+        <div class="anim-toolbar">
+          <div class="anim-title">
+            <span>🎬</span> <strong>切蛋糕分份动画馆</strong>：看图形怎样切出面积 8！
+          </div>
+          <div class="anim-controls-group">
+            <button id="btnAnimAuto" class="anim-btn primary" onclick="toggleAnimAuto()">
+              <span id="animAutoIcon">▶</span> <span id="animAutoText">自动播放演示</span>
+            </button>
+            <button class="anim-btn" onclick="prevAnimStep()">◀ 上一步</button>
+            <button class="anim-btn" onclick="nextAnimStep()">下一步 ▶</button>
+            <button class="anim-btn" onclick="resetAnimStep()">↺ 重新演示</button>
+          </div>
+        </div>
+
+        <div class="anim-step-pills">
+          <button class="anim-pill active" onclick="gotoAnimStep(1)">1. 原始大蛋糕 (18)</button>
+          <button class="anim-pill" onclick="gotoAnimStep(2)">2. 连 AD 切两块 (6 与 12)</button>
+          <button class="anim-pill" onclick="gotoAnimStep(3)">3. 平行线切出半块 (4)</button>
+          <button class="anim-pill" onclick="gotoAnimStep(4)">4. 镜像对称另一半 (4)</button>
+          <button class="anim-pill" onclick="gotoAnimStep(5)">5. 合体口算秒杀 (8)</button>
+        </div>
+
+        <div class="anim-canvas-wrapper">
+          <svg id="animSvg" viewBox="0 0 680 260" width="100%" height="260" preserveAspectRatio="xMidYMid meet">
+            <g id="animStageGroup"></g>
+          </svg>
+        </div>
+
+        <div class="anim-caption-banner">
+          <span>💡</span> <span id="animCaptionText">正在载入演示...</span>
+        </div>
+      </div>
+
+      <div class="puzzle-steps-grid">
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge">1</span>
+            <span>连结 AD，把蛋糕切成两块</span>
+          </div>
+          <div class="puzzle-step-text">
+            底边 <em>BD : DC = 1 : 2</em>，高完全相同！总面积 18 分成 3 份（每份是 6）：
+            <ul style="margin:4px 0; padding-left:18px;">
+              <li>左边蛋糕 △<em>ABD</em> = <strong>6 cm²</strong></li>
+              <li>右边蛋糕 △<em>ADC</em> = <strong>12 cm²</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge">2</span>
+            <span>平行线切斜边：1 份对 2 份</span>
+          </div>
+          <div class="puzzle-step-text">
+            因为 <em>DE // AB</em>，底边是 1:2，斜边 <em>AC</em> 也是 <em>AE : EC = 1 : 2</em>！
+            右边面积为 12 的蛋糕，再分成 3 份（每份是 4）：
+            <div style="margin-top:4px; font-weight:800; color:#B45309;">
+              👉 △<em>ADE</em> 占 1 份，面积 = 12 ÷ 3 = <strong>4 cm²</strong>！
+            </div>
+          </div>
+        </div>
+
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge">3</span>
+            <span>平行四边形两边一模一样</span>
+          </div>
+          <div class="puzzle-step-text">
+            四边形 <em>AEDF</em> 是平行四边形，对角线 <em>AD</em> 把它对半分开成两个完全一样的三角形：
+            <div style="margin-top:4px; font-weight:800; color:#059669;">
+              👉 另一半 △<em>ADF</em> 的面积也必定是 <strong>4 cm²</strong>！
+            </div>
+          </div>
+        </div>
+
+        <div class="puzzle-step-card">
+          <div class="puzzle-step-head">
+            <span class="puzzle-step-badge">4</span>
+            <span>两半合体，口算一步秒出</span>
+          </div>
+          <div class="puzzle-step-text">
+            平行四边形 <em>AEDF</em> 的总面积就是两块小三角形相加：
+            <div style="margin:6px 0; font-size:15px; font-weight:900; color:#B45309;">
+              S = 4 + 4 = 8 cm²！
+            </div>
+            不用算平方，四年级小朋友口算就能秒杀！
+          </div>
+        </div>
+      </div>
+
+      <!-- 总结口诀 -->
+      <div style="background: #FFFFFF; border: 2px solid #F59E0B; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+        <div>
+          <h4 style="margin:0 0 4px 0; font-size:15px; color:#B45309;">🌟 Alex 的切蛋糕口诀：</h4>
+          <p style="margin:0; font-size:13px; color:#475569;">
+            高同底比定面积，连线切大再切小！对角线分平行四边形，对半分合算得巧！
+          </p>
+        </div>
+        <div style="font-family:var(--font-mono); font-size:18px; font-weight:900; color:#B45309; background:#FEF3C7; padding:8px 16px; border-radius:10px;">
+          S = 18 × 1/3 × 2/3 × 2 = 8 cm²
+        </div>
+      </div>
+    </div>
+
+    <!-- 进阶探索法 -->
+    <div id="middleSection" class="proof-section" style="display:none;">
+      <div class="proof-head">
+        <div class="proof-title">
+          <span>💡</span> 进阶比例线段与相似推导
+        </div>
+        <div class="proof-steps-tabs">
+          <button class="step-tab active" onclick="switchStep(1)">第 (1) 问: 证明平行</button>
+          <button class="step-tab" onclick="switchStep(2)">第 (2) 问: 面积平方比</button>
+        </div>
+      </div>
+
+      <div id="stepBox1" class="step-content-box">
+        <div class="step-heading">🔹 第 (1) 问：证明 DF // AC</div>
+        <div class="step-body">
+          因为 <em>DE // AB</em>，由平行线分线段成比例定理：<span class="math-block">CE / AE = CD / DB</span>。<br>
+          已知条件：<span class="math-block">AF / FB = CE / AE</span>。<br>
+          等量代换得：<span class="math-block">AF / FB = CD / DB  ⟹  BF / FA = BD / DC</span>。<br>
+          由平行线分线段成比例定理的逆定理，可证：<span class="math-block" style="color:var(--emerald);">DF // AC</span>。<br>
+          两组对边分别平行，故四边形 <em>AEDF</em> 是平行四边形。
+        </div>
+      </div>
+
+      <div id="stepBox2" class="step-content-box" style="display:none;">
+        <div class="step-heading">🔹 第 (2) 问：相似三角形面积比等于相似比平方</div>
+        <div class="step-body">
+          因为 <em>DE // AB</em>，所以 △<em>CDE ∽ △CBA</em>，相似比为 <em>CD / CB = 2 / 3</em>：<br>
+          <span class="math-block">S<sub>△CDE</sub> = (2/3)² · S<sub>△ABC</sub> = (4/9) · 18 = 8 cm²</span>。<br>
+          同理 <em>DF // AC</em>，△<em>BDF ∽ △BCA</em>，相似比为 <em>BD / BC = 1 / 3</em>：<br>
+          <span class="math-block">S<sub>△BDF</sub> = (1/3)² · S<sub>△ABC</sub> = (1/9) · 18 = 2 cm²</span>。<br>
+          大三角形减去两个角上的小三角形：<br>
+          <span class="math-block" style="color:var(--emerald); font-weight:900;">S<sub>AEDF</sub> = 18 - 8 - 2 = 8 cm²</span>！
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 举一反三闯关 -->
+  <div class="quiz-card">
+    <div class="quiz-title-row">
+      <div class="quiz-title">
+        <span>🎯</span> 举一反三 · 秒杀闯关挑战
+      </div>
+      <span style="font-size:12px; color:var(--subtext);">用刚学会的“切蛋糕”方法口算吧！</span>
+    </div>
+
+    <div class="quiz-body">
+      <div class="quiz-question" id="quizPrompt">
+        正在出题中...
+      </div>
+      <div class="quiz-input-row">
+        <label for="quizAns" style="font-size:13.5px; font-weight:700;">四边形 AEDF 面积 =</label>
+        <input type="number" id="quizAns" class="quiz-input" placeholder="输入数值" step="any">
+        <span style="font-size:13.5px; font-weight:700;">cm²</span>
+        <button class="quiz-submit-btn" onclick="checkQuiz()">提交验证</button>
+        <button class="quiz-refresh-btn" onclick="nextQuiz()">换一题 🎲</button>
+      </div>
+      <div id="quizFeedback" class="quiz-feedback"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 试卷原题真迹弹窗 -->
+<div id="origModal" class="modal-overlay" onclick="closeModalOnBackdrop(event)">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>📷 试卷原题真迹拍照</h3>
+      <button class="modal-close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <img src="assets/problem8.png" alt="题目8 原题拍照" loading="lazy">
+      <p style="font-size:12px; color:#64748B; margin-top:10px;">
+        拍摄原题：第 8 题（在 △ABC 中，DE//AB，AF/FB = CE/AE...）
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  let state = {
+    ratioD: 2, // BD:DC = 1:ratioD (例如 1:2)
+    area: 18,
+    methodMode: 'kid',
+    activeStep: 1,
+    animStep: 1,
+    animTimer: null
+  };
+
+  const el = {
+    polyABC: document.getElementById('polyABC'),
+    polyAEDF: document.getElementById('polyAEDF'),
+    lineAD: document.getElementById('lineAD'),
+    ptA: document.getElementById('ptA'),
+    ptB: document.getElementById('ptB'),
+    ptC: document.getElementById('ptC'),
+    ptD: document.getElementById('ptD'),
+    ptE: document.getElementById('ptE'),
+    ptF: document.getElementById('ptF'),
+    lblA: document.getElementById('lblA'),
+    lblB: document.getElementById('lblB'),
+    lblC: document.getElementById('lblC'),
+    lblD: document.getElementById('lblD'),
+    lblE: document.getElementById('lblE'),
+    lblF: document.getElementById('lblF'),
+    txtAreaAEDF: document.getElementById('txtAreaAEDF'),
+    txtRatioBD: document.getElementById('txtRatioBD'),
+    txtRatioDC: document.getElementById('txtRatioDC'),
+    valRatio: document.getElementById('valRatio'),
+    valArea: document.getElementById('valArea'),
+    dispAEDF: document.getElementById('dispAEDF'),
+    dispABD: document.getElementById('dispABD'),
+    dispADC: document.getElementById('dispADC'),
+    dispADE: document.getElementById('dispADE'),
+    modeStatusTag: document.getElementById('modeStatusTag'),
+    animStageGroup: document.getElementById('animStageGroup'),
+    animCaptionText: document.getElementById('animCaptionText'),
+    btnAnimAuto: document.getElementById('btnAnimAuto'),
+    animAutoIcon: document.getElementById('animAutoIcon'),
+    animAutoText: document.getElementById('animAutoText')
+  };
+
+  function setMethodMode(mode) {
+    state.methodMode = mode;
+    document.getElementById('tabKid').classList.toggle('active', mode === 'kid');
+    document.getElementById('tabMiddle').classList.toggle('active', mode === 'middle');
+    document.getElementById('kidSection').style.display = mode === 'kid' ? 'block' : 'none';
+    document.getElementById('middleSection').style.display = mode === 'middle' ? 'block' : 'none';
+    el.modeStatusTag.textContent = mode === 'kid' ? '当前：切蛋糕分份视界' : '当前：进阶比例面积视界';
+    el.modeStatusTag.style.color = mode === 'kid' ? '#B45309' : '#047857';
+    el.modeStatusTag.style.background = mode === 'kid' ? '#FEF3C7' : '#ECFDF5';
+    updateGeometry();
+    renderAnimStage(state.animStep);
+  }
+
+  function updateGeometry() {
+    const r = state.ratioD; // 1 : r
+    const totalS = state.area;
+    const t = 1 / (1 + r); // BD / BC
+    const tC = r / (1 + r); // DC / BC
+
+    // 面积拆解
+    const areaABD = totalS * t;
+    const areaADC = totalS * tC;
+    // 在 △ADC 中，AE:EC = 1:r，故 S(ADE) = areaADC * (1/(1+r))
+    const areaADE = areaADC * t;
+    // S(AEDF) = 2 * S(ADE)
+    const areaAEDF = 2 * areaADE;
+
+    el.valRatio.textContent = `1 : ${r}`;
+    el.valArea.textContent = `${totalS} cm²`;
+
+    el.dispAEDF.textContent = areaAEDF.toFixed(2) + ' cm²';
+    el.dispABD.textContent = areaABD.toFixed(2) + ' cm²';
+    el.dispADC.textContent = areaADC.toFixed(2) + ' cm²';
+    el.dispADE.textContent = areaADE.toFixed(2) + ' cm²';
+
+    // 画布坐标
+    const xA = 320, yA = 70;
+    const xB = 160, yB = 320;
+    const xC = 500, yC = 320;
+
+    // D 在 BC 上
+    const xD = xB + t * (xC - xB);
+    const yD = yB;
+
+    // E 在 AC 上: CE:EA = r:1 => AE:AC = 1:(r+1) = t
+    const xE = xA + t * (xC - xA);
+    const yE = yA + t * (yC - yA);
+
+    // F 在 AB 上: AF:FB = r:1 => BF:BA = 1:(r+1) = t
+    const xF = xB + (1 - t) * (xA - xB);
+    const yF = yB + (1 - t) * (yA - yB);
+
+    el.polyABC.setAttribute('points', `${xA},${yA} ${xB},${yB} ${xC},${yC}`);
+    el.polyAEDF.setAttribute('points', `${xA},${yA} ${xE},${yE} ${xD},${yD} ${xF},${yF}`);
+    el.lineAD.setAttribute('x1', xA);
+    el.lineAD.setAttribute('y1', yA);
+    el.lineAD.setAttribute('x2', xD);
+    el.lineAD.setAttribute('y2', yD);
+
+    setPt(el.ptA, xA, yA);
+    setPt(el.ptB, xB, yB);
+    setPt(el.ptC, xC, yC);
+    setPt(el.ptD, xD, yD);
+    setPt(el.ptE, xE, yE);
+    setPt(el.ptF, xF, yF);
+
+    setLbl(el.lblA, xA, yA - 10);
+    setLbl(el.lblB, xB - 10, yB + 16);
+    setLbl(el.lblC, xC + 10, yC + 16);
+    setLbl(el.lblD, xD, yD + 18);
+    setLbl(el.lblE, xE + 12, yE + 4);
+    setLbl(el.lblF, xF - 12, yF + 4);
+
+    const centerP = { x: (xA + xE + xD + xF)/4, y: (yA + yE + yD + yF)/4 };
+    setLbl(el.txtAreaAEDF, centerP.x, centerP.y + 4);
+    el.txtAreaAEDF.textContent = `S = ${areaAEDF.toFixed(1)} cm²`;
+
+    setLbl(el.txtRatioBD, (xB + xD)/2, yB + 30);
+    el.txtRatioBD.textContent = `BD: 1份`;
+
+    setLbl(el.txtRatioDC, (xD + xC)/2, yB + 30);
+    el.txtRatioDC.textContent = `DC: ${r}份`;
+
+    renderAnimStage(state.animStep);
+  }
+
+  function setPt(elem, cx, cy) {
+    elem.setAttribute('cx', cx);
+    elem.setAttribute('cy', cy);
+  }
+  function setLbl(elem, x, y) {
+    elem.setAttribute('x', x);
+    elem.setAttribute('y', y);
+  }
+
+  function setPreset(r, area) {
+    state.ratioD = r;
+    state.area = area;
+    document.getElementById('inputRatio').value = r;
+    document.getElementById('inputArea').value = area;
+    updateGeometry();
+  }
+
+  document.getElementById('inputRatio').addEventListener('input', (e) => {
+    state.ratioD = parseInt(e.target.value);
+    updateGeometry();
+  });
+  document.getElementById('inputArea').addEventListener('input', (e) => {
+    state.area = parseInt(e.target.value);
+    updateGeometry();
+  });
+
+  // 进阶步骤切换
+  function switchStep(step) {
+    state.activeStep = step;
+    document.querySelectorAll('#middleSection .step-tab').forEach((tab, idx) => {
+      tab.classList.toggle('active', idx + 1 === step);
+    });
+    document.getElementById('stepBox1').style.display = step === 1 ? 'block' : 'none';
+    document.getElementById('stepBox2').style.display = step === 2 ? 'block' : 'none';
+  }
+
+  // ==================== 🎬 切蛋糕动画引擎 ====================
+  function gotoAnimStep(step) {
+    state.animStep = step;
+    document.querySelectorAll('.anim-pill').forEach((pill, idx) => {
+      pill.classList.toggle('active', idx + 1 === step);
+    });
+    renderAnimStage(step);
+  }
+
+  function nextAnimStep() {
+    let next = state.animStep + 1;
+    if (next > 5) next = 1;
+    gotoAnimStep(next);
+  }
+  function prevAnimStep() {
+    let prev = state.animStep - 1;
+    if (prev < 1) prev = 5;
+    gotoAnimStep(prev);
+  }
+  function resetAnimStep() {
+    stopAnimAuto();
+    gotoAnimStep(1);
+  }
+
+  function toggleAnimAuto() {
+    if (state.animTimer) stopAnimAuto();
+    else startAnimAuto();
+  }
+  function startAnimAuto() {
+    el.btnAnimAuto.classList.add('primary');
+    el.animAutoIcon.textContent = '⏸';
+    el.animAutoText.textContent = '暂停演示';
+    state.animTimer = setInterval(() => {
+      let next = state.animStep + 1;
+      if (next > 5) next = 1;
+      gotoAnimStep(next);
+    }, 2800);
+  }
+  function stopAnimAuto() {
+    if (state.animTimer) {
+      clearInterval(state.animTimer);
+      state.animTimer = null;
+    }
+    el.btnAnimAuto.classList.remove('primary');
+    el.animAutoIcon.textContent = '▶';
+    el.animAutoText.textContent = '自动播放演示';
+  }
+
+  function renderAnimStage(step) {
+    const r = state.ratioD;
+    const totalS = state.area;
+    const t = 1 / (1 + r);
+    const tC = r / (1 + r);
+    const sABD = totalS * t;
+    const sADC = totalS * tC;
+    const sADE = sADC * t;
+    const sAEDF = 2 * sADE;
+
+    const g = el.animStageGroup;
+    g.innerHTML = '';
+
+    const xA = 340, yA = 35;
+    const xB = 200, yB = 215;
+    const xC = 500, yC = 215;
+    const xD = xB + t * (xC - xB);
+    const yD = yB;
+    const xE = xA + t * (xC - xA);
+    const yE = yA + t * (yC - yA);
+    const xF = xB + (1 - t) * (xA - xB);
+    const yF = yB + (1 - t) * (yA - yB);
+
+    if (step === 1) {
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 1 步 · 原始大蛋糕】</strong>：△ABC 就像一个大蛋糕，总面积为 <strong>${totalS} cm²</strong>。底边有 <strong>BD:DC = 1:${r}</strong>。`;
+      g.innerHTML = `
+        <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#334155" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="${xD}" cy="${yD}" r="4" fill="#E11D48"/>
+        <text x="${xA}" y="${yA - 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="middle">A</text>
+        <text x="${xB - 8}" y="${yB + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="end">B</text>
+        <text x="${xC + 8}" y="${yC + 8}" font-size="13" font-weight="900" fill="#0F172A" text-anchor="start">C</text>
+        <text x="${xD}" y="${yD + 16}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">D</text>
+        <text x="340" y="140" font-size="18" font-weight="900" fill="#475569" text-anchor="middle">总面积 S = ${totalS} cm²</text>
+        <text x="${(xB+xD)/2}" y="${yB+26}" font-size="11" font-weight="bold" fill="#B45309" text-anchor="middle">1 份</text>
+        <text x="${(xD+xC)/2}" y="${yB+26}" font-size="11" font-weight="bold" fill="#0284C7" text-anchor="middle">${r} 份</text>
+      `;
+    } else if (step === 2) {
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 2 步 · 连 AD 切两块】</strong>：连结 AD 切一刀！底边 1:${r}，高相同，面积就是 1:${r}！左边是 <strong>${sABD.toFixed(1)}</strong>，右边是 <strong>${sADC.toFixed(1)}</strong>。`;
+      g.innerHTML = `
+        <!-- 左蛋糕 -->
+        <polygon points="${xA},${yA} ${xB},${yB} ${xD},${yD}" fill="rgba(245, 158, 11, 0.28)" stroke="#D97706" stroke-width="2"/>
+        <!-- 右蛋糕 -->
+        <polygon points="${xA},${yA} ${xD},${yD} ${xC},${yC}" fill="rgba(2, 132, 199, 0.22)" stroke="#0284C7" stroke-width="2"/>
+        <line x1="${xA}" y1="${yA}" x2="${xD}" y2="${yD}" stroke="#E11D48" stroke-width="2.5" stroke-dasharray="4,3"/>
+        <text x="${(xA+xB+xD)/3}" y="${(yA+yB+yD)/3 + 5}" font-size="13" font-weight="900" fill="#B45309" text-anchor="middle">左: ${sABD.toFixed(1)} cm²</text>
+        <text x="${(xA+xD+xC)/3}" y="${(yA+yD+yC)/3 + 5}" font-size="14" font-weight="900" fill="#0284C7" text-anchor="middle">右: ${sADC.toFixed(1)} cm²</text>
+        <text x="${xD}" y="${yD + 18}" font-size="12" font-weight="bold" fill="#E11D48" text-anchor="middle">D (1 : ${r})</text>
+      `;
+    } else if (step === 3) {
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 3 步 · 平行线切出半块】</strong>：DE // AB，斜边 AC 也是 1:${r}！在右边 ${sADC.toFixed(1)} cm² 里切出 △ADE = <strong>${sADE.toFixed(1)} cm²</strong>！`;
+      g.innerHTML = `
+        <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
+        <line x1="${xA}" y1="${yA}" x2="${xD}" y2="${yD}" stroke="#E11D48" stroke-width="2" stroke-dasharray="3,3"/>
+        <line x1="${xD}" y1="${yD}" x2="${xE}" y2="${yE}" stroke="#4F46E5" stroke-width="2.5"/>
+        
+        <!-- 高亮半块 △ADE -->
+        <polygon points="${xA},${yA} ${xE},${yE} ${xD},${yD}" fill="rgba(79, 70, 229, 0.35)" stroke="#4F46E5" stroke-width="2.5"/>
+        <text x="${(xA+xE+xD)/3}" y="${(yA+yE+yD)/3 + 4}" font-size="14" font-weight="900" fill="#3730A3" text-anchor="middle">△ADE = ${sADE.toFixed(1)}</text>
+        <text x="${xE + 10}" y="${yE}" font-size="12" font-weight="bold" fill="#4F46E5">E (1 份)</text>
+        <text x="${(xE+xC)/2 + 10}" y="${(yE+yC)/2}" font-size="11" font-weight="bold" fill="#64748B">${r} 份</text>
+      `;
+    } else if (step === 4) {
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 4 步 · 镜像对称另一半】</strong>：AEDF 是平行四边形，对角线 AD 把它对半分开，左边的 △ADF 也必定是 <strong>${sADE.toFixed(1)} cm²</strong>！`;
+      g.innerHTML = `
+        <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
+        <line x1="${xA}" y1="${yA}" x2="${xD}" y2="${yD}" stroke="#E11D48" stroke-width="2" stroke-dasharray="3,3"/>
+        
+        <!-- 两半三角形同时高亮 -->
+        <polygon points="${xA},${yA} ${xE},${yE} ${xD},${yD}" fill="rgba(79, 70, 229, 0.25)" stroke="#4F46E5" stroke-width="2"/>
+        <polygon points="${xA},${yA} ${xF},${yF} ${xD},${yD}" fill="rgba(16, 185, 129, 0.25)" stroke="#059669" stroke-width="2"/>
+        <text x="${(xA+xE+xD)/3}" y="${(yA+yE+yD)/3 + 4}" font-size="13" font-weight="900" fill="#3730A3" text-anchor="middle">${sADE.toFixed(1)}</text>
+        <text x="${(xA+xF+xD)/3}" y="${(yA+yF+yD)/3 + 4}" font-size="13" font-weight="900" fill="#047857" text-anchor="middle">${sADE.toFixed(1)}</text>
+        <text x="340" y="245" font-size="13" font-weight="bold" fill="#0F172A" text-anchor="middle">对称双子星：两块面积完全相等</text>
+      `;
+    } else if (step === 5) {
+      el.animCaptionText.innerHTML = 
+        `<strong>【第 5 步 · 合体口算秒杀】</strong>：两半小蛋糕合体！四边形 AEDF 总面积 = <strong>${sADE.toFixed(1)} + ${sADE.toFixed(1)} = ${sAEDF.toFixed(1)} cm²</strong>！`;
+      g.innerHTML = `
+        <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+        <!-- 完整平行四边形高光呈现 -->
+        <polygon points="${xA},${yA} ${xE},${yE} ${xD},${yD} ${xF},${yF}" fill="rgba(79, 70, 229, 0.35)" stroke="#4F46E5" stroke-width="3" stroke-linejoin="round"/>
+        <line x1="${xA}" y1="${yA}" x2="${xD}" y2="${yD}" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="3,3"/>
+        
+        <g transform="translate(340, 130)">
+          <rect x="-140" y="-20" width="280" height="40" fill="#FFFFFF" stroke="#4F46E5" stroke-width="2" rx="10" filter="drop-shadow(0 4px 10px rgba(79,70,229,0.15))"/>
+          <text x="0" y="6" font-size="16" font-weight="900" fill="#4F46E5" text-anchor="middle">
+            四边形 AEDF = ${sAEDF.toFixed(1)} cm²
+          </text>
+        </g>
+        <text x="340" y="245" font-size="14" font-weight="900" fill="#059669" text-anchor="middle">
+          🎉 一步秒杀：${sADE.toFixed(1)} + ${sADE.toFixed(1)} = ${sAEDF.toFixed(1)} cm²！
+        </text>
+      `;
+    }
+  }
+
+  // 举一反三出题器
+  let currentQuiz = null;
+  const quizBank = [
+    { r: 2, s: 18, ans: 8 },  // 18 * 1/3 * 2/3 * 2 = 8
+    { r: 1, s: 16, ans: 8 },  // 16 * 1/2 * 1/2 * 2 = 8
+    { r: 3, s: 24, ans: 9 },  // 24 * 1/4 * 3/4 * 2 = 9
+    { r: 2, s: 36, ans: 16 }, // 36 * 1/3 * 2/3 * 2 = 16
+    { r: 1, s: 24, ans: 12 }, // 24 * 1/2 * 1/2 * 2 = 12
+    { r: 3, s: 32, ans: 12 }, // 32 * 1/4 * 3/4 * 2 = 12
+    { r: 2, s: 27, ans: 12 }  // 27 * 1/3 * 2/3 * 2 = 12
+  ];
+
+  function nextQuiz() {
+    let next;
+    do {
+      next = quizBank[Math.floor(Math.random() * quizBank.length)];
+    } while (currentQuiz && next.s === currentQuiz.s && next.r === currentQuiz.r);
+    currentQuiz = next;
+    document.getElementById('quizPrompt').innerHTML = 
+      `在 △ABC 中，已知底边 <strong>BD : DC = 1 : ${currentQuiz.r}</strong>，△ABC 的总面积为 <strong>${currentQuiz.s} cm²</strong>。四边形 <em>AEDF</em> 的面积是多少？`;
+    const ansInput = document.getElementById('quizAns');
+    ansInput.value = '';
+    ansInput.focus();
+    const fb = document.getElementById('quizFeedback');
+    fb.style.display = 'none';
+  }
+
+  function checkQuiz() {
+    if (!currentQuiz) return;
+    const val = parseFloat(document.getElementById('quizAns').value.trim());
+    const fb = document.getElementById('quizFeedback');
+    if (isNaN(val)) {
+      fb.className = 'quiz-feedback wrong';
+      fb.textContent = '请输入数值！';
+      return;
+    }
+    if (Math.abs(val - currentQuiz.ans) < 0.01) {
+      fb.className = 'quiz-feedback success';
+      const halfCake = currentQuiz.s * (currentQuiz.r / (1 + currentQuiz.r));
+      const quarter = halfCake * (1 / (1 + currentQuiz.r));
+      fb.innerHTML = `🎉 <strong>太棒了！口算完全正确！</strong><br>
+        切蛋糕算式：右边大块 = ${currentQuiz.s} × ${currentQuiz.r}/(1+${currentQuiz.r}) = ${halfCake.toFixed(1)}；切下小块 △ADE = ${quarter.toFixed(1)}；平行四边形 = ${quarter.toFixed(1)} × 2 = <strong>${currentQuiz.ans} cm²</strong>！`;
+    } else {
+      fb.className = 'quiz-feedback wrong';
+      fb.innerHTML = `💡 <strong>差一点点，再思考一下！</strong><br>
+        口诀提示：总面积 ${currentQuiz.s} 先分成 ${1+currentQuiz.r} 份，再乘以比例，算算半个平行四边形是多少，然后乘 2 试试！`;
+    }
+  }
+
+  document.getElementById('quizAns').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') checkQuiz();
+  });
+
+  function openModal() { document.getElementById('origModal').classList.add('open'); }
+  function closeModal() { document.getElementById('origModal').classList.remove('open'); }
+  function closeModalOnBackdrop(e) { if (e.target.id === 'origModal') closeModal(); }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    setMethodMode('kid');
+    updateGeometry();
+    nextQuiz();
+  });
+</script>
+
+</body>
+</html>
