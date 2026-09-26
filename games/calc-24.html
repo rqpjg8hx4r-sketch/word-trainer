@@ -8,7 +8,7 @@
   <style>
     /* 扑克与 24 点专属酷炫风格 */
     :root {
-      --card-red: #E11D48;
+      --card-red: #DC2626;
       --card-black: #0F172A;
       --card-gold: #F59E0B;
       --card-emerald: #10B981;
@@ -95,32 +95,29 @@
       font-size: 15px;
     }
 
-    /* 扑克牌发牌区 */
+    /* 真实仿真扑克牌发牌区 */
     .poker-stage {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 8px;
       margin-bottom: 16px;
     }
     .poker-card {
       background: #FFFFFF;
-      border-radius: 14px;
-      aspect-ratio: 5/7;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 8px 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-      border: 2px solid #E2E8F0;
-      cursor: pointer;
+      border-radius: 12px;
+      aspect-ratio: 5 / 7.2;
       position: relative;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      border: 1.5px solid #CBD5E1;
+      cursor: pointer;
       user-select: none;
-      transition: transform 0.15s ease, box-shadow 0.15s, opacity 0.2;
+      transition: transform 0.15s ease, box-shadow 0.15s, opacity 0.2, border-color 0.15s;
+      overflow: hidden;
     }
     .poker-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(99, 102, 241, 0.3);
-      border-color: #A5B4FC;
+      box-shadow: 0 12px 26px rgba(99, 102, 241, 0.35);
+      border-color: #818CF8;
     }
     .poker-card:active {
       transform: scale(0.95);
@@ -132,47 +129,78 @@
       color: var(--card-black);
     }
     .poker-card.used {
-      opacity: 0.32;
+      opacity: 0.35;
       filter: grayscale(0.85);
-      transform: scale(0.94);
+      transform: scale(0.95);
       border-color: #64748B;
     }
-    .poker-card .corner {
+
+    /* 扑克角标 (Corner Index: 左上角与右下角) */
+    .card-corner {
+      position: absolute;
       display: flex;
       flex-direction: column;
       align-items: center;
       line-height: 1;
-      font-weight: 900;
-      font-size: 18px;
+      pointer-events: none;
     }
-    .poker-card .corner .suit-small {
-      font-size: 12px;
-      margin-top: 2px;
+    .card-corner.top-left {
+      top: 6px;
+      left: 7px;
     }
-    .poker-card .center-suit {
-      font-size: 38px;
-      text-align: center;
-      line-height: 1;
-      transform: translateY(-2px);
-    }
-    .poker-card .corner-br {
+    .card-corner.bottom-right {
+      bottom: 6px;
+      right: 7px;
       transform: rotate(180deg);
     }
+    .corner-rank {
+      font-family: "Georgia", "Times New Roman", -apple-system, serif;
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+    .corner-suit {
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    /* 扑克牌中央真实花色点阵 (Central Pip Grid: 如7个红桃/方块按真实扑克排列) */
+    .card-pips-area {
+      position: absolute;
+      top: 8px;
+      bottom: 8px;
+      left: 16px;
+      right: 16px;
+      pointer-events: none;
+    }
+    .pip-symbol {
+      position: absolute;
+      line-height: 1;
+      text-align: center;
+      user-select: none;
+      transform: translate(-50%, -50%);
+    }
+    .pip-symbol.pip-flipped {
+      transform: translate(-50%, -50%) rotate(180deg);
+    }
+
+    /* 已使用卡牌居中对勾遮罩 */
     .card-used-mark {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.9);
       color: #10B981;
       font-size: 22px;
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: none;
       align-items: center;
       justify-content: center;
       border: 2px solid #10B981;
+      z-index: 10;
     }
     .poker-card.used .card-used-mark {
       display: flex;
@@ -183,8 +211,8 @@
       background: #0B1120;
       border: 1.5px solid var(--party-border);
       border-radius: 14px;
-      padding: 14px;
-      margin-bottom: 14px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -261,20 +289,20 @@
       color: #94A3B8;
     }
 
-    /* 符号操作键盘 */
+    /* 符号操作键盘 - 优化布局，加入整体加括号 */
     .keypad-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .key-btn {
       background: #1E293B;
       border: 1px solid #334155;
       color: #F8FAFC;
       border-radius: 12px;
-      padding: 13px 4px;
-      font-size: 20px;
+      padding: 12px 4px;
+      font-size: 19px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
@@ -303,11 +331,29 @@
     }
     .key-btn.fn-key {
       background: #334155;
-      font-size: 15px;
+      font-size: 14px;
       color: #CBD5E1;
     }
     .key-btn.fn-key.clear {
       color: #FCA5A5;
+    }
+
+    /* 整体括起专属按键 (解决例如 10*10-4 后需整体除以4的痛点) */
+    .key-btn.wrap-btn {
+      grid-column: span 2;
+      background: linear-gradient(135deg, #3730A3, #4338CA);
+      border-color: #6366F1;
+      color: #E0E7FF;
+      font-size: 14px;
+      display: flex;
+      gap: 6px;
+    }
+    .key-btn.wrap-btn:hover {
+      background: #4F46E5;
+      border-color: #818CF8;
+    }
+    .key-btn.span-2 {
+      grid-column: span 2;
     }
 
     /* 动作按钮栏 */
@@ -458,7 +504,7 @@
       transition: width 0.1s linear, background-color 0.3s;
     }
 
-    /* 求解器模式专属 */
+    /* 求解器模式专属 (严格 1~10，无 JQK) */
     .solver-container {
       display: none;
       flex-direction: column;
@@ -467,54 +513,58 @@
     .solver-pick-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 8px;
     }
     .solver-slot {
-      background: #1E293B;
+      background: #FFFFFF;
       border: 2px dashed #6366F1;
       border-radius: 12px;
-      aspect-ratio: 5/7;
+      aspect-ratio: 5 / 7.2;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+      transition: all 0.15s;
+      overflow: hidden;
+    }
+    .solver-slot.empty-slot {
+      background: #1E293B;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
       font-size: 26px;
       font-weight: 900;
       color: #A5B4FC;
-      transition: all 0.15s;
-    }
-    .solver-slot.filled {
-      border-style: solid;
-      background: #FFFFFF;
-      color: var(--card-black);
     }
     .solver-slot.active-pick {
       border-color: #F59E0B;
-      box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+      border-style: solid;
     }
     .picker-number-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
       background: #1E293B;
       border-radius: 12px;
-      padding: 10px;
-      justify-content: center;
+      padding: 12px;
     }
     .pick-num-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
+      height: 42px;
+      border-radius: 10px;
       border: 1px solid #475569;
       background: #0F172A;
       color: #F8FAFC;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 800;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
     }
     .pick-num-btn:active {
       background: #6366F1;
+      transform: scale(0.95);
     }
     .solution-list-box {
       background: #0B1120;
@@ -617,7 +667,7 @@
       <div class="party-brand-icon">🎴</div>
       <div class="party-brand-text">
         <h1>24点神算王 · 亲子对决</h1>
-        <div class="sub">四则运算 × 逆向思维 × 亲子益智竞技</div>
+        <div class="sub">四则运算 × 逆向思维 × 真实扑克数感竞技 (1~10)</div>
       </div>
     </div>
     <div style="display:flex; gap:6px;">
@@ -690,16 +740,16 @@
     </div>
   </div>
 
-  <!-- 3. 求解器模式选牌栏 -->
+  <!-- 3. 求解器模式选牌栏 (严格 1~10，无 JQK) -->
   <div id="solver-wrap" class="solver-container">
     <div style="font-size:13px; color:#CBD5E1; text-align:center;">
-      点击下方卡槽，再点选数字，设置任意 4 张牌，即可毫秒级计算所有解法：
+      点击下方卡槽，再点选数字，设置任意 4 张牌 (A~10)，即可毫秒级计算所有解法：
     </div>
     <div class="solver-pick-grid">
-      <div class="solver-slot active-pick" id="slot-0" onclick="selectSolverSlot(0)">?</div>
-      <div class="solver-slot" id="slot-1" onclick="selectSolverSlot(1)">?</div>
-      <div class="solver-slot" id="slot-2" onclick="selectSolverSlot(2)">?</div>
-      <div class="solver-slot" id="slot-3" onclick="selectSolverSlot(3)">?</div>
+      <div class="solver-slot empty-slot active-pick" id="slot-0" onclick="selectSolverSlot(0)">?</div>
+      <div class="solver-slot empty-slot" id="slot-1" onclick="selectSolverSlot(1)">?</div>
+      <div class="solver-slot empty-slot" id="slot-2" onclick="selectSolverSlot(2)">?</div>
+      <div class="solver-slot empty-slot" id="slot-3" onclick="selectSolverSlot(3)">?</div>
     </div>
     <div class="picker-number-bar">
       <button class="pick-num-btn" onclick="setSlotNum(1)">A (1)</button>
@@ -712,9 +762,6 @@
       <button class="pick-num-btn" onclick="setSlotNum(8)">8</button>
       <button class="pick-num-btn" onclick="setSlotNum(9)">9</button>
       <button class="pick-num-btn" onclick="setSlotNum(10)">10</button>
-      <button class="pick-num-btn" onclick="setSlotNum(11)">J (11)</button>
-      <button class="pick-num-btn" onclick="setSlotNum(12)">Q (12)</button>
-      <button class="pick-num-btn" onclick="setSlotNum(13)">K (13)</button>
     </div>
     <div style="display:flex; gap:8px;">
       <button class="action-btn btn-deal" onclick="runSolver()">🚀 开始智能求解</button>
@@ -729,11 +776,11 @@
     </div>
   </div>
 
-  <!-- 主游戏区域 (闯关与对决共用扑克与按键) -->
+  <!-- 主游戏区域 (扑克发牌、算式拼接与按键) -->
   <div id="play-area" class="party-card">
-    <!-- 4 张扑克牌发牌舞台 -->
+    <!-- 4 张真实仿真扑克牌发牌舞台 -->
     <div class="poker-stage" id="poker-stage">
-      <!-- 动态生成 4 张卡牌 -->
+      <!-- 动态生成 4 张真实扑克卡牌 (1~10) -->
     </div>
 
     <!-- 算式监视器 -->
@@ -747,16 +794,24 @@
       </div>
     </div>
 
-    <!-- 运算符与按键键盘 -->
+    <!-- 运算符与按键键盘 (重点强化：新增整体括起键) -->
     <div class="keypad-grid" id="keypad-area">
+      <!-- 第 1 排：括号与整体加括号 -->
       <button class="key-btn op-key" onclick="appendToken('(')">(</button>
       <button class="key-btn op-key" onclick="appendToken(')')">)</button>
+      <button class="key-btn wrap-btn" onclick="wrapInParens()" title="为当前算式整体加上小括号，以便后续乘除">
+        <span>( ... )</span> 整体括起
+      </button>
+
+      <!-- 第 2 排：四则运算大按键 -->
       <button class="key-btn op-key" onclick="appendToken('+')">+</button>
       <button class="key-btn op-key" onclick="appendToken('-')">-</button>
       <button class="key-btn op-key" onclick="appendToken('×')">×</button>
       <button class="key-btn op-key" onclick="appendToken('÷')">÷</button>
-      <button class="key-btn fn-key" onclick="popToken()">⌫ 退格</button>
-      <button class="key-btn fn-key clear" onclick="resetFormula()">↺ 清空</button>
+
+      <!-- 第 3 排：退格与清空 -->
+      <button class="key-btn fn-key span-2" onclick="popToken()">⌫ 退格</button>
+      <button class="key-btn fn-key clear span-2" onclick="resetFormula()">↺ 全部清空</button>
     </div>
 
     <!-- 操作动作栏 -->
@@ -795,10 +850,11 @@
       <span>📖</span> Alex 的 24 点核心数感秘籍
     </div>
     <div style="font-size:12.5px; color:#CBD5E1; line-height:1.6; display:flex; flex-direction:column; gap:6px;">
-      <div>• <strong>因数密码法</strong>：看到 <strong>8</strong> 找 <strong>3</strong>（$3 	imes 8 = 24$），看到 <strong>6</strong> 找 <strong>4</strong>（$4 	imes 6 = 24$），看到 <strong>12</strong> 找 <strong>2</strong>（$2 	imes 12 = 24$）。</div>
-      <div>• <strong>加减法凑整</strong>：例如 $12 + 12 = 24$、$18 + 6 = 24$、$20 + 4 = 24$、$28 - 4 = 24$。</div>
+      <div>• <strong>整体加括号秘技</strong>：例如算到 <code style="color:#FDE68A;">10 × 10 - 4</code> 后想除以 4，直接点 <strong>「( ... ) 整体括起」</strong>（或直接点 <code style="color:#FDE68A;">(</code>），即可自动变为 <code style="color:#A7F3D0;">(10 × 10 - 4)</code>，紧接着点 <code style="color:#A7F3D0;">÷ 4</code> 即可通关！无需全删重来！</div>
+      <div>• <strong>真实扑克点阵</strong>：每张扑克牌（A~10）均按真实纸牌花色排列（如 7 包含 7 个花色图案，右上角与左下角标准对称）。</div>
+      <div>• <strong>因数密码法</strong>：看到 <strong>8</strong> 找 <strong>3</strong>（$3 	imes 8 = 24$），看到 <strong>6</strong> 找 <strong>4</strong>（$4 	imes 6 = 24$）。</div>
       <div>• <strong>神仙分数逆袭</strong>：遇到只有 3 和 8 且凑不出 24 时，试试 $8 div (3 - 8/3) = 24$；遇到 1 和 5 时，试试 $5 	imes (5 - 1/5) = 24$！</div>
-      <div style="color:#94A3B8; font-size:11.5px; margin-top:4px;">💻 电脑端也支持实体键盘输入：数字、+、-、*、/、(、)、退格键(Backspace)与ESC清空。</div>
+      <div style="color:#94A3B8; font-size:11.5px; margin-top:4px;">💻 电脑端也支持实体键盘输入：数字键、+、-、*、/、(、)、退格键(Backspace)与ESC清空。</div>
     </div>
   </div>
 </div>
@@ -939,7 +995,88 @@ function solve24(nums) {
 }
 
 /* ============================================================
-   2. 题库预置与智能发牌
+   2. 真实扑克点阵 (Pips Layout) 坐标引擎 (严格 1 ~ 10)
+   ============================================================ */
+function getPokerPipLayout(num) {
+  const pips = [];
+  if (num === 1) {
+    pips.push({ x: 50, y: 50, size: 44 });
+  } else if (num === 2) {
+    pips.push({ x: 50, y: 22, size: 19 }, { x: 50, y: 78, size: 19, flip: true });
+  } else if (num === 3) {
+    pips.push({ x: 50, y: 22, size: 19 }, { x: 50, y: 50, size: 19 }, { x: 50, y: 78, size: 19, flip: true });
+  } else if (num === 4) {
+    pips.push({ x: 26, y: 22, size: 18 }, { x: 74, y: 22, size: 18 },
+              { x: 26, y: 78, size: 18, flip: true }, { x: 74, y: 78, size: 18, flip: true });
+  } else if (num === 5) {
+    pips.push({ x: 26, y: 22, size: 18 }, { x: 74, y: 22, size: 18 },
+              { x: 50, y: 50, size: 18 },
+              { x: 26, y: 78, size: 18, flip: true }, { x: 74, y: 78, size: 18, flip: true });
+  } else if (num === 6) {
+    pips.push({ x: 26, y: 22, size: 17 }, { x: 74, y: 22, size: 17 },
+              { x: 26, y: 50, size: 17 }, { x: 74, y: 50, size: 17 },
+              { x: 26, y: 78, size: 17, flip: true }, { x: 74, y: 78, size: 17, flip: true });
+  } else if (num === 7) {
+    // 经典真实 7 点扑克：2列共6个 + 上中插空1个 (正好 7 个钻石/黑桃)
+    pips.push({ x: 26, y: 22, size: 16 }, { x: 74, y: 22, size: 16 },
+              { x: 50, y: 36, size: 16 },
+              { x: 26, y: 50, size: 16 }, { x: 74, y: 50, size: 16 },
+              { x: 26, y: 78, size: 16, flip: true }, { x: 74, y: 78, size: 16, flip: true });
+  } else if (num === 8) {
+    pips.push({ x: 26, y: 22, size: 16 }, { x: 74, y: 22, size: 16 },
+              { x: 50, y: 35, size: 16 },
+              { x: 26, y: 50, size: 16 }, { x: 74, y: 50, size: 16 },
+              { x: 50, y: 65, size: 16, flip: true },
+              { x: 26, y: 78, size: 16, flip: true }, { x: 74, y: 78, size: 16, flip: true });
+  } else if (num === 9) {
+    pips.push({ x: 26, y: 20, size: 15 }, { x: 74, y: 20, size: 15 },
+              { x: 26, y: 40, size: 15 }, { x: 74, y: 40, size: 15 },
+              { x: 50, y: 50, size: 15 },
+              { x: 26, y: 60, size: 15, flip: true }, { x: 74, y: 60, size: 15, flip: true },
+              { x: 26, y: 80, size: 15, flip: true }, { x: 74, y: 80, size: 15, flip: true });
+  } else if (num === 10) {
+    pips.push({ x: 26, y: 19, size: 15 }, { x: 74, y: 19, size: 15 },
+              { x: 50, y: 31, size: 15 },
+              { x: 26, y: 39, size: 15 }, { x: 74, y: 39, size: 15 },
+              { x: 26, y: 61, size: 15, flip: true }, { x: 74, y: 61, size: 15, flip: true },
+              { x: 50, y: 69, size: 15, flip: true },
+              { x: 26, y: 81, size: 15, flip: true }, { x: 74, y: 81, size: 15, flip: true });
+  }
+  return pips;
+}
+
+function buildCardInnerHtml(num, suit) {
+  const displayNum = num === 1 ? 'A' : String(num);
+
+  const pips = getPokerPipLayout(num);
+  const centerHtml = '<div class="card-pips-area">' + pips.map(p => {
+    const flipClass = p.flip ? ' pip-flipped' : '';
+    return `<div class="pip-symbol${flipClass}" style="left:${p.x}%; top:${p.y}%; font-size:${p.size}px;">${suit}</div>`;
+  }).join('') + '</div>';
+
+  return `
+    <!-- 左上角标 -->
+    <div class="card-corner top-left">
+      <span class="corner-rank">${displayNum}</span>
+      <span class="corner-suit">${suit}</span>
+    </div>
+
+    <!-- 真实中央花色点阵 (1~10 钻石/黑桃/红心/梅花) -->
+    ${centerHtml}
+
+    <!-- 右下倒置角标 -->
+    <div class="card-corner bottom-right">
+      <span class="corner-rank">${displayNum}</span>
+      <span class="corner-suit">${suit}</span>
+    </div>
+
+    <!-- 已使用打勾徽章 -->
+    <div class="card-used-mark">✓</div>
+  `;
+}
+
+/* ============================================================
+   3. 题库预置与智能发牌 (严格 1~10，无 JQK)
    ============================================================ */
 // 经典萌新口诀题库 (3*8, 4*6, 2*12 直观解)
 const EASY_HANDS = [
@@ -952,12 +1089,12 @@ const EASY_HANDS = [
 // 经典进阶混合题库 (多重小括号调整优先级)
 const MEDIUM_HANDS = [
   [1, 2, 7, 7], [2, 5, 7, 8], [1, 4, 5, 6], [3, 5, 7, 9],
-  [2, 4, 10, 10], [1, 6, 6, 8], [2, 3, 9, 10], [4, 5, 7, 8],
+  [4, 4, 10, 10], [1, 6, 6, 8], [2, 3, 9, 10], [4, 5, 7, 8],
   [3, 5, 8, 9], [2, 6, 7, 9], [1, 7, 8, 9], [4, 4, 7, 7],
   [2, 5, 5, 10], [3, 6, 7, 8], [1, 3, 7, 9], [2, 8, 8, 9]
 ];
 
-// 经典烧脑神仙题库 (含倒数/分数巧除)
+// 经典烧脑神仙题库 (含倒数/分数巧除，严格 1~10)
 const HARD_HANDS = [
   [3, 3, 8, 8], // 8 / (3 - 8/3)
   [1, 5, 5, 5], // (5 - 1/5) * 5
@@ -977,7 +1114,7 @@ const SUITS = [
 ];
 
 /* ============================================================
-   3. 状态管理
+   4. 状态管理
    ============================================================ */
 const state = {
   mode: 'challenge', // 'challenge' | 'duel' | 'solver'
@@ -997,7 +1134,7 @@ const state = {
   duelTimer: null,
   duelTimeLeft: 20, // 秒
 
-  // 求解器自选状态
+  // 求解器自选状态 (1~10)
   solverSlots: [null, null, null, null],
   activeSlotIndex: 0
 };
@@ -1017,7 +1154,7 @@ function playSound(type) {
 }
 
 /* ============================================================
-   4. 模式切换
+   5. 模式切换
    ============================================================ */
 function switchGameMode(mode) {
   state.mode = mode;
@@ -1073,7 +1210,7 @@ function setKeypadLocked(locked) {
 }
 
 /* ============================================================
-   5. 发牌逻辑与卡牌渲染
+   6. 发牌逻辑与卡牌渲染 (严格 1~10)
    ============================================================ */
 function dealNewHand(resetHint = true) {
   playSound('peek');
@@ -1139,21 +1276,7 @@ function renderPokerCards() {
     const cardEl = document.createElement('div');
     cardEl.className = `poker-card ${c.isRed ? 'is-red' : 'is-black'} ${c.used ? 'used' : ''}`;
     cardEl.onclick = () => onCardClicked(c.id);
-
-    const displayNum = c.num === 1 ? 'A' : (c.num === 11 ? 'J' : (c.num === 12 ? 'Q' : (c.num === 13 ? 'K' : c.num)));
-
-    cardEl.innerHTML = `
-      <div class="corner">
-        <span>${displayNum}</span>
-        <span class="suit-small">${c.suit}</span>
-      </div>
-      <div class="center-suit">${c.suit}</div>
-      <div class="corner corner-br">
-        <span>${displayNum}</span>
-        <span class="suit-small">${c.suit}</span>
-      </div>
-      <div class="card-used-mark">✓</div>
-    `;
+    cardEl.innerHTML = buildCardInnerHtml(c.num, c.suit);
     stage.appendChild(cardEl);
   });
 }
@@ -1194,13 +1317,57 @@ function onCardClicked(cardId) {
 }
 
 /* ============================================================
-   6. 算式构建与实时数学求值
+   7. 算式组装与核心「整体括起」特性 (解决用户痛点)
    ============================================================ */
+function wrapInParens() {
+  if (state.mode === 'duel' && state.duelActivePlayer === null) {
+    playSound('suspense');
+    return;
+  }
+  if (state.formulaTokens.length === 0) return;
+
+  playSound('tap');
+
+  // 检查是否已经整体被最外层一对括号包住
+  let isFullyWrapped = false;
+  if (state.formulaTokens[0].val === '(' && state.formulaTokens[state.formulaTokens.length - 1].val === ')') {
+    let depth = 0;
+    let brokeEarly = false;
+    for (let i = 0; i < state.formulaTokens.length - 1; i++) {
+      if (state.formulaTokens[i].val === '(') depth++;
+      if (state.formulaTokens[i].val === ')') depth--;
+      if (depth === 0) {
+        brokeEarly = true;
+        break;
+      }
+    }
+    if (!brokeEarly) isFullyWrapped = true;
+  }
+
+  // 若尚未完全包住，则在最前添加 (，在最后添加 )
+  if (!isFullyWrapped) {
+    state.formulaTokens.unshift({ type: 'paren', val: '(' });
+    state.formulaTokens.push({ type: 'paren', val: ')' });
+  }
+
+  updateFormulaView();
+}
+
 function appendToken(val) {
   if (state.mode === 'duel' && state.duelActivePlayer === null) {
     playSound('suspense');
     return;
   }
+
+  // 💡 智能识别：若算式已有计算内容且末尾是数字或右括号，用户点击左括号 '('，意图通常是把现有算式整体括起！
+  if (val === '(' && state.formulaTokens.length > 0) {
+    const lastTok = state.formulaTokens[state.formulaTokens.length - 1];
+    if (lastTok.type === 'card' || lastTok.val === ')') {
+      wrapInParens();
+      return;
+    }
+  }
+
   playSound('tap');
   state.formulaTokens.push({
     type: (val === '(' || val === ')') ? 'paren' : 'op',
@@ -1314,7 +1481,7 @@ function updateFormulaView() {
 }
 
 /* ============================================================
-   7. 成功通关与结算逻辑
+   8. 成功通关与结算逻辑
    ============================================================ */
 function onSuccessSolve() {
   playSound('victory');
@@ -1361,7 +1528,7 @@ function closeModalAndNext() {
 }
 
 /* ============================================================
-   8. 启发式思维脚手架提示 (阶梯式不剧透)
+   9. 启发式思维脚手架提示 (阶梯式不剧透)
    ============================================================ */
 function toggleHint() {
   playSound('tap');
@@ -1396,7 +1563,7 @@ function generateHints() {
   } else if (bestSol.includes('+ 12') || bestSol.includes('12 +')) {
     hint1 = '💡 核心思路：尝试将两对牌分别算出 12，再做加法 (12 + 12 = 24)！';
   } else if (bestSol.includes('÷')) {
-    hint1 = '💡 核心思路：常规乘法可能被卡住了，大胆尝试除法或括号调整顺序！';
+    hint1 = '💡 核心思路：常规乘法可能被卡住了，大胆尝试除法或整体括起调整顺序！';
   } else {
     hint1 = '💡 核心思路：两两组合，先算两个小结果，再相乘或相加！';
   }
@@ -1433,7 +1600,7 @@ function advanceHint() {
 }
 
 /* ============================================================
-   9. 双人对决模式专属逻辑 (抢答蜂鸣与倒计时)
+   10. 双人对决模式专属逻辑 (抢答蜂鸣与倒计时)
    ============================================================ */
 function resetDuelBuzzer() {
   stopDuelTimer();
@@ -1523,12 +1690,12 @@ function onDuelTimeout() {
 }
 
 /* ============================================================
-   10. 万能求解器模式专属逻辑
+   11. 万能求解器模式专属逻辑 (严格 1~10，支持真实扑克渲染)
    ============================================================ */
 function initSolverUI() {
   if (state.solverSlots[0] === null) {
-    // 默认填入经典题目 [3, 3, 8, 8]
-    state.solverSlots = [3, 3, 8, 8];
+    // 默认填入经典题目 [10, 10, 4, 4]
+    state.solverSlots = [10, 10, 4, 4];
   }
   updateSolverSlotsUI();
 }
@@ -1547,15 +1714,18 @@ function setSlotNum(num) {
 }
 
 function updateSolverSlotsUI() {
+  const suits = ['♠', '♥', '♣', '♦'];
   state.solverSlots.forEach((val, idx) => {
     const el = document.getElementById('slot-' + idx);
+    const isCur = idx === state.activeSlotIndex;
     if (val !== null) {
-      el.className = 'solver-slot filled' + (idx === state.activeSlotIndex ? ' active-pick' : '');
-      const displayVal = val === 1 ? 'A' : (val === 11 ? 'J' : (val === 12 ? 'Q' : (val === 13 ? 'K' : val)));
-      el.textContent = displayVal;
+      const s = suits[idx % suits.length];
+      const isRed = s === '♥' || s === '♦';
+      el.className = `solver-slot ${isRed ? 'is-red' : 'is-black'} ${isCur ? 'active-pick' : ''}`;
+      el.innerHTML = buildCardInnerHtml(val, s);
     } else {
-      el.className = 'solver-slot' + (idx === state.activeSlotIndex ? ' active-pick' : '');
-      el.textContent = '?';
+      el.className = 'solver-slot empty-slot' + (isCur ? ' active-pick' : '');
+      el.innerHTML = '?';
     }
   });
 }
@@ -1616,13 +1786,17 @@ function runSolver() {
 }
 
 /* ============================================================
-   11. 实体键盘快捷键支持 (PC/Mac/笔记本)
+   12. 实体键盘快捷键支持 (PC/Mac/笔记本，严格 1~10)
    ============================================================ */
 window.addEventListener('keydown', (e) => {
   if (state.mode === 'solver') return;
   const key = e.key;
 
-  if (key === '+' || key === '-' || key === '(' || key === ')') {
+  if (key === '(') {
+    appendToken('(');
+  } else if (key === ')') {
+    appendToken(')');
+  } else if (key === '+' || key === '-') {
     appendToken(key);
   } else if (key === '*') {
     appendToken('×');
@@ -1636,7 +1810,9 @@ window.addEventListener('keydown', (e) => {
     resetFormula();
   } else if (/^[0-9]$/.test(key)) {
     const num = parseInt(key, 10);
-    const card = state.currentCards.find(c => c.num === num && !c.used);
+    // 0 键对应 10
+    const targetNum = num === 0 ? 10 : num;
+    const card = state.currentCards.find(c => c.num === targetNum && !c.used);
     if (card) {
       onCardClicked(card.id);
     }
@@ -1644,7 +1820,7 @@ window.addEventListener('keydown', (e) => {
 });
 
 /* ============================================================
-   12. 胜利礼花 Canvas 动效 (免外部依赖)
+   13. 胜利礼花 Canvas 动效 (免外部依赖)
    ============================================================ */
 function launchConfetti() {
   const canvas = document.getElementById('confetti-canvas');
