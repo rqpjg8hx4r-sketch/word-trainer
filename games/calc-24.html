@@ -102,108 +102,29 @@
       gap: 8px;
       margin-bottom: 16px;
     }
-    .poker-card {
-      background: #FFFFFF;
-      border-radius: 12px;
+    .poker-card-wrap {
       aspect-ratio: 5 / 7.2;
-      position: relative;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-      border: 1.5px solid #CBD5E1;
       cursor: pointer;
       user-select: none;
-      transition: transform 0.15s ease, box-shadow 0.15s, opacity 0.2, border-color 0.15s;
-      overflow: hidden;
+      transition: transform 0.15s ease, filter 0.15s;
+      position: relative;
     }
-    .poker-card:hover {
+    .poker-card-wrap:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 26px rgba(99, 102, 241, 0.35);
-      border-color: #818CF8;
     }
-    .poker-card:active {
+    .poker-card-wrap:active {
       transform: scale(0.95);
     }
-    .poker-card.is-red {
-      color: var(--card-red);
-    }
-    .poker-card.is-black {
-      color: var(--card-black);
-    }
-    .poker-card.used {
-      opacity: 0.35;
+    .poker-card-wrap.used {
+      opacity: 0.38;
       filter: grayscale(0.85);
       transform: scale(0.95);
-      border-color: #64748B;
     }
-
-    /* 扑克角标 (Corner Index: 左上角与右下角) */
-    .card-corner {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      line-height: 1;
-      pointer-events: none;
-    }
-    .card-corner.top-left {
-      top: 6px;
-      left: 7px;
-    }
-    .card-corner.bottom-right {
-      bottom: 6px;
-      right: 7px;
-      transform: rotate(180deg);
-    }
-    .corner-rank {
-      font-family: "Georgia", "Times New Roman", -apple-system, serif;
-      font-size: 16px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-    }
-    .corner-suit {
-      font-size: 12px;
-      margin-top: 1px;
-    }
-
-    /* 扑克牌中央真实花色点阵 (Central Pip Grid: 如7个红桃/方块按真实扑克排列) */
-    .card-pips-area {
-      position: absolute;
-      top: 8px;
-      bottom: 8px;
-      left: 16px;
-      right: 16px;
-      pointer-events: none;
-    }
-    .pip-symbol {
-      position: absolute;
-      line-height: 1;
-      text-align: center;
-      user-select: none;
-      transform: translate(-50%, -50%);
-    }
-    .pip-symbol.pip-flipped {
-      transform: translate(-50%, -50%) rotate(180deg);
-    }
-
-    /* 已使用卡牌居中对勾遮罩 */
-    .card-used-mark {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(15, 23, 42, 0.9);
-      color: #10B981;
-      font-size: 22px;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid #10B981;
-      z-index: 10;
-    }
-    .poker-card.used .card-used-mark {
-      display: flex;
+    .poker-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.4));
     }
 
     /* 算式组装与监视器 */
@@ -338,7 +259,7 @@
       color: #FCA5A5;
     }
 
-    /* 整体括起专属按键 (解决例如 10*10-4 后需整体除以4的痛点) */
+    /* 整体括起专属按键 */
     .key-btn.wrap-btn {
       grid-column: span 2;
       background: linear-gradient(135deg, #3730A3, #4338CA);
@@ -504,7 +425,7 @@
       transition: width 0.1s linear, background-color 0.3s;
     }
 
-    /* 求解器模式专属 (严格 1~10，无 JQK) */
+    /* 求解器模式专属 */
     .solver-container {
       display: none;
       flex-direction: column;
@@ -516,18 +437,15 @@
       gap: 8px;
     }
     .solver-slot {
-      background: #FFFFFF;
-      border: 2px dashed #6366F1;
-      border-radius: 12px;
       aspect-ratio: 5 / 7.2;
       position: relative;
       cursor: pointer;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
       transition: all 0.15s;
-      overflow: hidden;
     }
     .solver-slot.empty-slot {
       background: #1E293B;
+      border: 2px dashed #6366F1;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -536,9 +454,9 @@
       color: #A5B4FC;
     }
     .solver-slot.active-pick {
-      border-color: #F59E0B;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
-      border-style: solid;
+      outline: 3px solid #F59E0B;
+      outline-offset: 2px;
+      border-radius: 12px;
     }
     .picker-number-bar {
       display: grid;
@@ -667,7 +585,7 @@
       <div class="party-brand-icon">🎴</div>
       <div class="party-brand-text">
         <h1>24点神算王 · 亲子对决</h1>
-        <div class="sub">四则运算 × 逆向思维 × 真实扑克数感竞技 (1~10)</div>
+        <div class="sub">四则运算 × 逆向思维 × 真实纸牌几何还原 (1~10)</div>
       </div>
     </div>
     <div style="display:flex; gap:6px;">
@@ -851,7 +769,7 @@
     </div>
     <div style="font-size:12.5px; color:#CBD5E1; line-height:1.6; display:flex; flex-direction:column; gap:6px;">
       <div>• <strong>整体加括号秘技</strong>：例如算到 <code style="color:#FDE68A;">10 × 10 - 4</code> 后想除以 4，直接点 <strong>「( ... ) 整体括起」</strong>（或直接点 <code style="color:#FDE68A;">(</code>），即可自动变为 <code style="color:#A7F3D0;">(10 × 10 - 4)</code>，紧接着点 <code style="color:#A7F3D0;">÷ 4</code> 即可通关！无需全删重来！</div>
-      <div>• <strong>真实扑克点阵</strong>：每张扑克牌（A~10）均按真实纸牌花色排列（如 7 包含 7 个花色图案，右上角与左下角标准对称）。</div>
+      <div>• <strong>真实扑克几何还原</strong>：100% 还原实体扑克纸牌！黑桃、红心、梅花、方块标准几何点阵（7包含7个花色，两侧各3个，上中插空1个，下半部花色倒置对称）。</div>
       <div>• <strong>因数密码法</strong>：看到 <strong>8</strong> 找 <strong>3</strong>（$3 	imes 8 = 24$），看到 <strong>6</strong> 找 <strong>4</strong>（$4 	imes 6 = 24$）。</div>
       <div>• <strong>神仙分数逆袭</strong>：遇到只有 3 和 8 且凑不出 24 时，试试 $8 div (3 - 8/3) = 24$；遇到 1 和 5 时，试试 $5 	imes (5 - 1/5) = 24$！</div>
       <div style="color:#94A3B8; font-size:11.5px; margin-top:4px;">💻 电脑端也支持实体键盘输入：数字键、+、-、*、/、(、)、退格键(Backspace)与ESC清空。</div>
@@ -995,83 +913,150 @@ function solve24(nums) {
 }
 
 /* ============================================================
-   2. 真实扑克点阵 (Pips Layout) 坐标引擎 (严格 1 ~ 10)
+   2. 真实扑克 SVG 矢量几何引擎 (对照实体扑克 100% 还原)
    ============================================================ */
-function getPokerPipLayout(num) {
+const SUIT_DEFS = {
+  heart: {
+    name: 'heart',
+    sym: '♥',
+    color: '#DC2626',
+    isRed: true,
+    // 经典饱满爱心轮廓 (基准 100x100，中心在 50,50)
+    d: 'M 50,88 C 28,68 14,50 14,33 C 14,18 27,12 38,12 C 45,12 49,16 50,19 C 51,16 55,12 62,12 C 73,12 86,18 86,33 C 86,50 72,68 50,88 Z'
+  },
+  spade: {
+    name: 'spade',
+    sym: '♠',
+    color: '#0F172A',
+    isRed: false,
+    // 经典黑桃尖与喇叭底座
+    d: 'M 50,14 C 35,39 16,52 16,68 C 16,84 30,90 44,87 C 43,94 38,103 32,108 L 68,108 C 62,103 57,94 56,87 C 70,90 84,84 84,68 C 84,52 65,39 50,14 Z'
+  },
+  club: {
+    name: 'club',
+    sym: '♣',
+    color: '#0F172A',
+    isRed: false,
+    // 经典三叶草梅花
+    d: 'M 50,14 C 41,14 34,21 34,30 C 34,37 38,42 42,45 C 33,40 19,46 19,58 C 19,70 31,77 42,72 C 38,76 36,81 38,85 C 41,92 44,99 34,108 L 66,108 C 56,99 59,92 62,85 C 64,81 62,76 58,72 C 69,77 81,70 81,58 C 81,46 67,40 58,45 C 62,42 66,37 66,30 C 66,21 59,14 50,14 Z'
+  },
+  diamond: {
+    name: 'diamond',
+    sym: '♦',
+    color: '#DC2626',
+    isRed: true,
+    // 经典四角锐利方块
+    d: 'M 50,12 L 84,50 L 50,88 L 16,50 Z'
+  }
+};
+
+// 实体牌花色点阵排版 (坐标体系：0~100 x 0~140)
+function getExactPipLayout(num) {
   const pips = [];
   if (num === 1) {
-    pips.push({ x: 50, y: 50, size: 44 });
+    pips.push({ x: 50, y: 70, s: 0.28 });
   } else if (num === 2) {
-    pips.push({ x: 50, y: 22, size: 19 }, { x: 50, y: 78, size: 19, flip: true });
+    pips.push({ x: 50, y: 34, s: 0.17 }, { x: 50, y: 106, s: 0.17, flip: true });
   } else if (num === 3) {
-    pips.push({ x: 50, y: 22, size: 19 }, { x: 50, y: 50, size: 19 }, { x: 50, y: 78, size: 19, flip: true });
+    pips.push({ x: 50, y: 34, s: 0.17 }, { x: 50, y: 70, s: 0.17 }, { x: 50, y: 106, s: 0.17, flip: true });
   } else if (num === 4) {
-    pips.push({ x: 26, y: 22, size: 18 }, { x: 74, y: 22, size: 18 },
-              { x: 26, y: 78, size: 18, flip: true }, { x: 74, y: 78, size: 18, flip: true });
+    pips.push({ x: 30, y: 34, s: 0.17 }, { x: 70, y: 34, s: 0.17 },
+              { x: 30, y: 106, s: 0.17, flip: true }, { x: 70, y: 106, s: 0.17, flip: true });
   } else if (num === 5) {
-    pips.push({ x: 26, y: 22, size: 18 }, { x: 74, y: 22, size: 18 },
-              { x: 50, y: 50, size: 18 },
-              { x: 26, y: 78, size: 18, flip: true }, { x: 74, y: 78, size: 18, flip: true });
+    pips.push({ x: 30, y: 34, s: 0.17 }, { x: 70, y: 34, s: 0.17 },
+              { x: 50, y: 70, s: 0.17 },
+              { x: 30, y: 106, s: 0.17, flip: true }, { x: 70, y: 106, s: 0.17, flip: true });
   } else if (num === 6) {
-    pips.push({ x: 26, y: 22, size: 17 }, { x: 74, y: 22, size: 17 },
-              { x: 26, y: 50, size: 17 }, { x: 74, y: 50, size: 17 },
-              { x: 26, y: 78, size: 17, flip: true }, { x: 74, y: 78, size: 17, flip: true });
+    pips.push({ x: 30, y: 34, s: 0.16 }, { x: 70, y: 34, s: 0.16 },
+              { x: 30, y: 70, s: 0.16 }, { x: 70, y: 70, s: 0.16 },
+              { x: 30, y: 106, s: 0.16, flip: true }, { x: 70, y: 106, s: 0.16, flip: true });
   } else if (num === 7) {
-    // 经典真实 7 点扑克：2列共6个 + 上中插空1个 (正好 7 个钻石/黑桃)
-    pips.push({ x: 26, y: 22, size: 16 }, { x: 74, y: 22, size: 16 },
-              { x: 50, y: 36, size: 16 },
-              { x: 26, y: 50, size: 16 }, { x: 74, y: 50, size: 16 },
-              { x: 26, y: 78, size: 16, flip: true }, { x: 74, y: 78, size: 16, flip: true });
+    // 实体牌：上部 2 个，中间偏上 1 个，中部 2 个，下部 2 个(翻转)
+    pips.push({ x: 30, y: 34, s: 0.15 }, { x: 70, y: 34, s: 0.15 },
+              { x: 50, y: 52, s: 0.15 },
+              { x: 30, y: 70, s: 0.15 }, { x: 70, y: 70, s: 0.15 },
+              { x: 30, y: 106, s: 0.15, flip: true }, { x: 70, y: 106, s: 0.15, flip: true });
   } else if (num === 8) {
-    pips.push({ x: 26, y: 22, size: 16 }, { x: 74, y: 22, size: 16 },
-              { x: 50, y: 35, size: 16 },
-              { x: 26, y: 50, size: 16 }, { x: 74, y: 50, size: 16 },
-              { x: 50, y: 65, size: 16, flip: true },
-              { x: 26, y: 78, size: 16, flip: true }, { x: 74, y: 78, size: 16, flip: true });
+    // 实体牌：上 2，上中 1，中 2，下中 1(翻转)，下 2(翻转)
+    pips.push({ x: 30, y: 34, s: 0.15 }, { x: 70, y: 34, s: 0.15 },
+              { x: 50, y: 50, s: 0.15 },
+              { x: 30, y: 70, s: 0.15 }, { x: 70, y: 70, s: 0.15 },
+              { x: 50, y: 90, s: 0.15, flip: true },
+              { x: 30, y: 106, s: 0.15, flip: true }, { x: 70, y: 106, s: 0.15, flip: true });
   } else if (num === 9) {
-    pips.push({ x: 26, y: 20, size: 15 }, { x: 74, y: 20, size: 15 },
-              { x: 26, y: 40, size: 15 }, { x: 74, y: 40, size: 15 },
-              { x: 50, y: 50, size: 15 },
-              { x: 26, y: 60, size: 15, flip: true }, { x: 74, y: 60, size: 15, flip: true },
-              { x: 26, y: 80, size: 15, flip: true }, { x: 74, y: 80, size: 15, flip: true });
+    // 实体牌：两列各 4 个，正中间 1 个
+    pips.push({ x: 30, y: 30, s: 0.14 }, { x: 70, y: 30, s: 0.14 },
+              { x: 30, y: 56, s: 0.14 }, { x: 70, y: 56, s: 0.14 },
+              { x: 50, y: 70, s: 0.14 },
+              { x: 30, y: 84, s: 0.14, flip: true }, { x: 70, y: 84, s: 0.14, flip: true },
+              { x: 30, y: 110, s: 0.14, flip: true }, { x: 70, y: 110, s: 0.14, flip: true });
   } else if (num === 10) {
-    pips.push({ x: 26, y: 19, size: 15 }, { x: 74, y: 19, size: 15 },
-              { x: 50, y: 31, size: 15 },
-              { x: 26, y: 39, size: 15 }, { x: 74, y: 39, size: 15 },
-              { x: 26, y: 61, size: 15, flip: true }, { x: 74, y: 61, size: 15, flip: true },
-              { x: 50, y: 69, size: 15, flip: true },
-              { x: 26, y: 81, size: 15, flip: true }, { x: 74, y: 81, size: 15, flip: true });
+    // 实体牌：两列各 4 个，中轴线 2 个(一正一反)
+    pips.push({ x: 30, y: 30, s: 0.14 }, { x: 70, y: 30, s: 0.14 },
+              { x: 50, y: 43, s: 0.14 },
+              { x: 30, y: 56, s: 0.14 }, { x: 70, y: 56, s: 0.14 },
+              { x: 30, y: 84, s: 0.14, flip: true }, { x: 70, y: 84, s: 0.14, flip: true },
+              { x: 50, y: 97, s: 0.14, flip: true },
+              { x: 30, y: 110, s: 0.14, flip: true }, { x: 70, y: 110, s: 0.14, flip: true });
   }
   return pips;
 }
 
-function buildCardInnerHtml(num, suit) {
-  const displayNum = num === 1 ? 'A' : String(num);
+// 生成整张扑克牌的矢量 SVG 标记
+function generatePokerSvg(num, suitKey, used = false) {
+  const suit = SUIT_DEFS[suitKey] || SUIT_DEFS.spade;
+  const displayRank = num === 1 ? 'A' : String(num);
 
-  const pips = getPokerPipLayout(num);
-  const centerHtml = '<div class="card-pips-area">' + pips.map(p => {
-    const flipClass = p.flip ? ' pip-flipped' : '';
-    return `<div class="pip-symbol${flipClass}" style="left:${p.x}%; top:${p.y}%; font-size:${p.size}px;">${suit}</div>`;
-  }).join('') + '</div>';
+  const pips = getExactPipLayout(num);
+  const pipsSvg = pips.map(p => {
+    const rot = p.flip ? 'rotate(180)' : '';
+    const offsetX = -50 * p.s;
+    const offsetY = -50 * p.s;
+    return `<g transform="translate(${p.x}, ${p.y}) ${rot}">
+      <path d="${suit.d}" transform="translate(${offsetX}, ${offsetY}) scale(${p.s})" fill="${suit.color}" />
+    </g>`;
+  }).join('');
+
+  // 已使用状态时的遮罩
+  let usedOverlay = '';
+  if (used) {
+    usedOverlay = `
+      <rect width="100" height="140" rx="8" fill="rgba(15, 23, 42, 0.65)" />
+      <g transform="translate(50, 70)">
+        <circle cx="0" cy="0" r="16" fill="#0F172A" stroke="#10B981" stroke-width="2.5" />
+        <path d="M -7 0 L -2 5 L 7 -5" fill="none" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </g>
+    `;
+  }
+
+  // 10 居中微调
+  const textX = num === 10 ? '5.5' : '7.5';
 
   return `
-    <!-- 左上角标 -->
-    <div class="card-corner top-left">
-      <span class="corner-rank">${displayNum}</span>
-      <span class="corner-suit">${suit}</span>
-    </div>
+    <svg viewBox="0 0 100 140" class="poker-svg" xmlns="http://www.w3.org/2000/svg">
+      <!-- 纸牌底板与边框 -->
+      <rect width="100" height="140" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
 
-    <!-- 真实中央花色点阵 (1~10 钻石/黑桃/红心/梅花) -->
-    ${centerHtml}
+      <!-- 左上角标 (数字 + 小花色) -->
+      <text x="${textX}" y="17" font-size="14" font-weight="900" fill="${suit.color}" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" letter-spacing="-0.5">${displayRank}</text>
+      <g transform="translate(4, 20)">
+        <path d="${suit.d}" transform="scale(0.1)" fill="${suit.color}" />
+      </g>
 
-    <!-- 右下倒置角标 -->
-    <div class="card-corner bottom-right">
-      <span class="corner-rank">${displayNum}</span>
-      <span class="corner-suit">${suit}</span>
-    </div>
+      <!-- 纸牌中央点阵 (完全依照实体纸牌排版) -->
+      ${pipsSvg}
 
-    <!-- 已使用打勾徽章 -->
-    <div class="card-used-mark">✓</div>
+      <!-- 右下角标 (旋转 180 度对称) -->
+      <g transform="translate(100, 140) rotate(180)">
+        <text x="${textX}" y="17" font-size="14" font-weight="900" fill="${suit.color}" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" letter-spacing="-0.5">${displayRank}</text>
+        <g transform="translate(4, 20)">
+          <path d="${suit.d}" transform="scale(0.1)" fill="${suit.color}" />
+        </g>
+      </g>
+
+      <!-- 使用遮罩 -->
+      ${usedOverlay}
+    </svg>
   `;
 }
 
@@ -1106,12 +1091,7 @@ const HARD_HANDS = [
   [4, 7, 8, 8]
 ];
 
-const SUITS = [
-  { sym: '♠', color: 'black' },
-  { sym: '♥', color: 'red' },
-  { sym: '♣', color: 'black' },
-  { sym: '♦', color: 'red' }
-];
+const SUIT_KEYS = ['spade', 'heart', 'club', 'diamond'];
 
 /* ============================================================
    4. 状态管理
@@ -1122,7 +1102,7 @@ const state = {
   streak: 0,
   level: 1,
   sound: true,
-  currentCards: [], // [{ id, num, suit, isRed, used }]
+  currentCards: [], // [{ id, num, suitKey, used }]
   formulaTokens: [], // [{ type: 'card'|'op'|'paren', val, cardId }]
   currentSolutions: [],
   hintLevel: 1,
@@ -1229,12 +1209,11 @@ function dealNewHand(resetHint = true) {
   nums.sort(() => Math.random() - 0.5);
 
   state.currentCards = nums.map((n, idx) => {
-    const s = SUITS[Math.floor(Math.random() * SUITS.length)];
+    const sk = SUIT_KEYS[Math.floor(Math.random() * SUIT_KEYS.length)];
     return {
       id: idx,
       num: n,
-      suit: s.sym,
-      isRed: s.color === 'red',
+      suitKey: sk,
       used: false
     };
   });
@@ -1273,11 +1252,11 @@ function renderPokerCards() {
   stage.innerHTML = '';
 
   state.currentCards.forEach(c => {
-    const cardEl = document.createElement('div');
-    cardEl.className = `poker-card ${c.isRed ? 'is-red' : 'is-black'} ${c.used ? 'used' : ''}`;
-    cardEl.onclick = () => onCardClicked(c.id);
-    cardEl.innerHTML = buildCardInnerHtml(c.num, c.suit);
-    stage.appendChild(cardEl);
+    const wrap = document.createElement('div');
+    wrap.className = `poker-card-wrap ${c.used ? 'used' : ''}`;
+    wrap.onclick = () => onCardClicked(c.id);
+    wrap.innerHTML = generatePokerSvg(c.num, c.suitKey, c.used);
+    stage.appendChild(wrap);
   });
 }
 
@@ -1714,15 +1693,13 @@ function setSlotNum(num) {
 }
 
 function updateSolverSlotsUI() {
-  const suits = ['♠', '♥', '♣', '♦'];
   state.solverSlots.forEach((val, idx) => {
     const el = document.getElementById('slot-' + idx);
     const isCur = idx === state.activeSlotIndex;
     if (val !== null) {
-      const s = suits[idx % suits.length];
-      const isRed = s === '♥' || s === '♦';
-      el.className = `solver-slot ${isRed ? 'is-red' : 'is-black'} ${isCur ? 'active-pick' : ''}`;
-      el.innerHTML = buildCardInnerHtml(val, s);
+      const sk = SUIT_KEYS[idx % SUIT_KEYS.length];
+      el.className = 'solver-slot' + (isCur ? ' active-pick' : '');
+      el.innerHTML = generatePokerSvg(val, sk, false);
     } else {
       el.className = 'solver-slot empty-slot' + (isCur ? ' active-pick' : '');
       el.innerHTML = '?';
