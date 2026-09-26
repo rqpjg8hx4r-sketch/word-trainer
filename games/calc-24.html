@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>24点神算王 · 亲子思维对决与闯关</title>
+  <link rel="stylesheet" href="lib/party-common.css">
+  <style>
+    /* 扑克与 24 点专属酷炫风格 */
+    :root {
+      --card-red: #E11D48;
+      --card-black: #0F172A;
+      --card-gold: #F59E0B;
+      --card-emerald: #10B981;
+      --card-blue: #3B82F6;
+      --card-purple: #8B5CF6;
+    }
+
+    /* 顶部模式切换选项卡 */
+    .tab-nav {
+      display: flex;
+      background: #1E293B;
+      border: 1px solid var(--party-border);
+      border-radius: 14px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 12px;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--party-subtext);
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #6366F1, #4F46E5);
+      color: #FFFFFF;
+      box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
+    }
+
+    /* 难度控制条 */
+    .level-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid var(--party-border);
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .diff-group {
+      display: flex;
+      gap: 6px;
+    }
+    .diff-btn {
+      padding: 5px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--party-border);
+      background: #0F172A;
+      color: var(--party-subtext);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .diff-btn.active {
+      background: #FEF3C7;
+      color: #B45309;
+      border-color: #FDE68A;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2);
+    }
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #F8FAFC;
+    }
+    .stat-val {
+      color: var(--party-gold);
+      font-size: 15px;
+    }
+
+    /* 扑克牌发牌区 */
+    .poker-stage {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .poker-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      aspect-ratio: 5/7;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 8px 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+      border: 2px solid #E2E8F0;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      transition: transform 0.15s ease, box-shadow 0.15s, opacity 0.2;
+    }
+    .poker-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(99, 102, 241, 0.3);
+      border-color: #A5B4FC;
+    }
+    .poker-card:active {
+      transform: scale(0.95);
+    }
+    .poker-card.is-red {
+      color: var(--card-red);
+    }
+    .poker-card.is-black {
+      color: var(--card-black);
+    }
+    .poker-card.used {
+      opacity: 0.32;
+      filter: grayscale(0.85);
+      transform: scale(0.94);
+      border-color: #64748B;
+    }
+    .poker-card .corner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1;
+      font-weight: 900;
+      font-size: 18px;
+    }
+    .poker-card .corner .suit-small {
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    .poker-card .center-suit {
+      font-size: 38px;
+      text-align: center;
+      line-height: 1;
+      transform: translateY(-2px);
+    }
+    .poker-card .corner-br {
+      transform: rotate(180deg);
+    }
+    .card-used-mark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(15, 23, 42, 0.85);
+      color: #10B981;
+      font-size: 22px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #10B981;
+    }
+    .poker-card.used .card-used-mark {
+      display: flex;
+    }
+
+    /* 算式组装与监视器 */
+    .formula-monitor {
+      background: #0B1120;
+      border: 1.5px solid var(--party-border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 84px;
+      justify-content: center;
+    }
+    .formula-expression {
+      font-family: "Courier New", Consolas, monospace;
+      font-size: 21px;
+      font-weight: 800;
+      color: #F8FAFC;
+      letter-spacing: 1px;
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .formula-empty {
+      color: #64748B;
+      font-size: 13.5px;
+      font-family: -apple-system, sans-serif;
+      font-weight: normal;
+    }
+    .formula-token {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #1E293B;
+      border: 1px solid #334155;
+      font-size: 18px;
+      font-weight: 800;
+    }
+    .formula-token.tok-num {
+      background: #312E81;
+      color: #C7D2FE;
+      border-color: #4F46E5;
+    }
+    .formula-token.tok-op {
+      background: #78350F;
+      color: #FDE68A;
+      border-color: #D97706;
+    }
+    .formula-token.tok-paren {
+      background: #1E293B;
+      color: #94A3B8;
+    }
+
+    .formula-result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 6px;
+    }
+    .calc-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+    }
+    .calc-status.correct {
+      color: #34D399;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .calc-status.wrong {
+      color: #F87171;
+    }
+    .calc-status.pending {
+      color: #94A3B8;
+    }
+
+    /* 符号操作键盘 */
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .key-btn {
+      background: #1E293B;
+      border: 1px solid #334155;
+      color: #F8FAFC;
+      border-radius: 12px;
+      padding: 13px 4px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.12s;
+    }
+    .key-btn:hover {
+      background: #334155;
+      border-color: #64748B;
+    }
+    .key-btn:active {
+      transform: scale(0.94);
+      background: #4F46E5;
+      color: #FFFFFF;
+    }
+    .key-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+    .key-btn.op-key {
+      background: linear-gradient(145deg, #2A2F45, #1F2438);
+      color: #FDE68A;
+      border-color: #4338CA;
+    }
+    .key-btn.fn-key {
+      background: #334155;
+      font-size: 15px;
+      color: #CBD5E1;
+    }
+    .key-btn.fn-key.clear {
+      color: #FCA5A5;
+    }
+
+    /* 动作按钮栏 */
+    .action-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .action-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .action-btn.btn-deal {
+      background: linear-gradient(135deg, #6366F1, #4F46E5);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    .action-btn.btn-hint {
+      background: #334155;
+      color: #FDE68A;
+      border: 1px solid #D97706;
+    }
+
+    /* 启发提示阶梯卡片 */
+    .hint-box {
+      background: #182234;
+      border: 1px dashed #F59E0B;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hint-step-item {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      border-left: 3px solid #F59E0B;
+    }
+    .hint-step-title {
+      font-weight: 800;
+      color: #FDE68A;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 双人对决模式专属样式 */
+    .duel-container {
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .duel-scores {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .player-card {
+      flex: 1;
+      background: #1E293B;
+      border-radius: 14px;
+      padding: 12px;
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      position: relative;
+    }
+    .player-card.p1 {
+      border-color: #3B82F6;
+    }
+    .player-card.p2 {
+      border-color: #EF4444;
+    }
+    .player-card.has-turn {
+      background: #2E1065;
+      box-shadow: 0 0 16px rgba(168, 85, 247, 0.5);
+      border-color: #C084FC !important;
+    }
+    .player-name {
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .player-score {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--party-gold);
+    }
+    .buzzer-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      color: #FFFFFF;
+      transition: all 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .buzzer-btn.p1 {
+      background: linear-gradient(135deg, #2563EB, #1D4ED8);
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+    .buzzer-btn.p2 {
+      background: linear-gradient(135deg, #DC2626, #B91C1C);
+      box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    }
+    .buzzer-btn:active {
+      transform: scale(0.96);
+    }
+    .buzzer-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .timer-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: #334155;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .timer-bar {
+      height: 100%;
+      background: #10B981;
+      width: 100%;
+      transition: width 0.1s linear, background-color 0.3s;
+    }
+
+    /* 求解器模式专属 */
+    .solver-container {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .solver-pick-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .solver-slot {
+      background: #1E293B;
+      border: 2px dashed #6366F1;
+      border-radius: 12px;
+      aspect-ratio: 5/7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 26px;
+      font-weight: 900;
+      color: #A5B4FC;
+      transition: all 0.15s;
+    }
+    .solver-slot.filled {
+      border-style: solid;
+      background: #FFFFFF;
+      color: var(--card-black);
+    }
+    .solver-slot.active-pick {
+      border-color: #F59E0B;
+      box-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+    }
+    .picker-number-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: #1E293B;
+      border-radius: 12px;
+      padding: 10px;
+      justify-content: center;
+    }
+    .pick-num-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0F172A;
+      color: #F8FAFC;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .pick-num-btn:active {
+      background: #6366F1;
+    }
+    .solution-list-box {
+      background: #0B1120;
+      border: 1px solid var(--party-border);
+      border-radius: 12px;
+      padding: 14px;
+      max-height: 280px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .solution-item {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: #1E293B;
+      color: #FDE68A;
+      font-family: "Courier New", monospace;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .solution-tag {
+      font-size: 10.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #312E81;
+      color: #C7D2FE;
+    }
+
+    /* 烟花全屏 Canvas */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* 弹窗模态框 */
+    .party-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-card {
+      background: #1E293B;
+      border: 2px solid #F59E0B;
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-trophy {
+      font-size: 56px;
+      margin-bottom: 10px;
+    }
+    .modal-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: #F8FAFC;
+      margin-bottom: 6px;
+    }
+    .modal-desc {
+      font-size: 14px;
+      color: #CBD5E1;
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="party-container">
+  <!-- 顶部导航栏 -->
+  <div class="party-topbar">
+    <div class="party-brand">
+      <div class="party-brand-icon">🎴</div>
+      <div class="party-brand-text">
+        <h1>24点神算王 · 亲子对决</h1>
+        <div class="sub">四则运算 × 逆向思维 × 亲子益智竞技</div>
+      </div>
+    </div>
+    <div style="display:flex; gap:6px;">
+      <button id="sound-btn" class="party-nav-btn" onclick="toggleSound()" title="开关音效">🔊 音效: 开</button>
+      <a href="index.html" class="party-nav-btn">🎮 游戏大厅</a>
+      <a href="../math/" class="party-nav-btn" style="background:#065F46; color:#A7F3D0; border-color:#059669;">📐 数学</a>
+    </div>
+  </div>
+
+  <!-- 模式切换选项卡 -->
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tab-challenge" onclick="switchGameMode('challenge')">
+      <span>🌟</span> 全家闯关挑战
+    </button>
+    <button class="tab-btn" id="tab-duel" onclick="switchGameMode('duel')">
+      <span>⚔️</span> 亲子同屏抢答
+    </button>
+    <button class="tab-btn" id="tab-solver" onclick="switchGameMode('solver')">
+      <span>💡</span> 万能求解器
+    </button>
+  </div>
+
+  <!-- 1. 闯关模式控制条 -->
+  <div id="challenge-ctrl-bar" class="level-bar">
+    <div class="diff-group">
+      <button class="diff-btn active" id="diff-easy" onclick="setDifficulty('easy', this)">🌱 萌新口诀</button>
+      <button class="diff-btn" id="diff-medium" onclick="setDifficulty('medium', this)">🔥 进阶混合</button>
+      <button class="diff-btn" id="diff-hard" onclick="setDifficulty('hard', this)">👑 烧脑神仙</button>
+    </div>
+    <div class="stat-badge">
+      <span>连胜:</span>
+      <span class="stat-val" id="streak-count">0 🔥</span>
+      <span style="margin-left:8px;">关卡:</span>
+      <span class="stat-val" id="level-count">1</span>
+    </div>
+  </div>
+
+  <!-- 2. 双人对决模式专属比分与抢答栏 -->
+  <div id="duel-wrap" class="duel-container">
+    <div class="duel-scores">
+      <div class="player-card p1" id="p1-card">
+        <div class="player-name">👦 Alex (蓝方)</div>
+        <div class="player-score" id="p1-score">0</div>
+        <div style="font-size:11px; color:#94A3B8;" id="p1-status">先按按键抢答</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+        <span style="font-size:20px; font-weight:900; color:#F59E0B;">VS</span>
+        <span style="font-size:11px; color:#64748B;">先到30分胜</span>
+      </div>
+      <div class="player-card p2" id="p2-card">
+        <div class="player-name">👨 爸爸/妈妈 (红方)</div>
+        <div class="player-score" id="p2-score">0</div>
+        <div style="font-size:11px; color:#94A3B8;" id="p2-status">先按按键抢答</div>
+      </div>
+    </div>
+
+    <!-- 抢答按键 -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <button id="buzz-p1-btn" class="buzzer-btn p1" onclick="playerBuzzer(1)">
+        <span>⚡</span> 蓝方抢答 (Alex)
+      </button>
+      <button id="buzz-p2-btn" class="buzzer-btn p2" onclick="playerBuzzer(2)">
+        <span>⚡</span> 红方抢答 (家长)
+      </button>
+    </div>
+
+    <!-- 抢答作答倒计时条 -->
+    <div id="duel-timer-wrap" class="timer-bar-wrap" style="display:none;">
+      <div id="duel-timer-bar" class="timer-bar"></div>
+    </div>
+  </div>
+
+  <!-- 3. 求解器模式选牌栏 -->
+  <div id="solver-wrap" class="solver-container">
+    <div style="font-size:13px; color:#CBD5E1; text-align:center;">
+      点击下方卡槽，再点选数字，设置任意 4 张牌，即可毫秒级计算所有解法：
+    </div>
+    <div class="solver-pick-grid">
+      <div class="solver-slot active-pick" id="slot-0" onclick="selectSolverSlot(0)">?</div>
+      <div class="solver-slot" id="slot-1" onclick="selectSolverSlot(1)">?</div>
+      <div class="solver-slot" id="slot-2" onclick="selectSolverSlot(2)">?</div>
+      <div class="solver-slot" id="slot-3" onclick="selectSolverSlot(3)">?</div>
+    </div>
+    <div class="picker-number-bar">
+      <button class="pick-num-btn" onclick="setSlotNum(1)">A (1)</button>
+      <button class="pick-num-btn" onclick="setSlotNum(2)">2</button>
+      <button class="pick-num-btn" onclick="setSlotNum(3)">3</button>
+      <button class="pick-num-btn" onclick="setSlotNum(4)">4</button>
+      <button class="pick-num-btn" onclick="setSlotNum(5)">5</button>
+      <button class="pick-num-btn" onclick="setSlotNum(6)">6</button>
+      <button class="pick-num-btn" onclick="setSlotNum(7)">7</button>
+      <button class="pick-num-btn" onclick="setSlotNum(8)">8</button>
+      <button class="pick-num-btn" onclick="setSlotNum(9)">9</button>
+      <button class="pick-num-btn" onclick="setSlotNum(10)">10</button>
+      <button class="pick-num-btn" onclick="setSlotNum(11)">J (11)</button>
+      <button class="pick-num-btn" onclick="setSlotNum(12)">Q (12)</button>
+      <button class="pick-num-btn" onclick="setSlotNum(13)">K (13)</button>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="action-btn btn-deal" onclick="runSolver()">🚀 开始智能求解</button>
+      <button class="action-btn btn-hint" onclick="fillRandomSolver()">🎲 随机来一组</button>
+    </div>
+    <div id="solution-container" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <span style="font-size:13px; font-weight:800; color:#FDE68A;" id="solution-count-text">共找到 0 种解法</span>
+        <span style="font-size:11px; color:#94A3B8;">已剔除重复算式</span>
+      </div>
+      <div class="solution-list-box" id="solution-list"></div>
+    </div>
+  </div>
+
+  <!-- 主游戏区域 (闯关与对决共用扑克与按键) -->
+  <div id="play-area" class="party-card">
+    <!-- 4 张扑克牌发牌舞台 -->
+    <div class="poker-stage" id="poker-stage">
+      <!-- 动态生成 4 张卡牌 -->
+    </div>
+
+    <!-- 算式监视器 -->
+    <div class="formula-monitor">
+      <div class="formula-expression" id="formula-view">
+        <span class="formula-empty">👇 点击上方卡牌与下方运算符号组装算式...</span>
+      </div>
+      <div class="formula-result-row">
+        <span class="calc-status pending" id="calc-status">等待输入完整算式</span>
+        <span style="font-size:12px; color:#94A3B8;" id="cards-usage-info">已选 0 / 4 张牌</span>
+      </div>
+    </div>
+
+    <!-- 运算符与按键键盘 -->
+    <div class="keypad-grid" id="keypad-area">
+      <button class="key-btn op-key" onclick="appendToken('(')">(</button>
+      <button class="key-btn op-key" onclick="appendToken(')')">)</button>
+      <button class="key-btn op-key" onclick="appendToken('+')">+</button>
+      <button class="key-btn op-key" onclick="appendToken('-')">-</button>
+      <button class="key-btn op-key" onclick="appendToken('×')">×</button>
+      <button class="key-btn op-key" onclick="appendToken('÷')">÷</button>
+      <button class="key-btn fn-key" onclick="popToken()">⌫ 退格</button>
+      <button class="key-btn fn-key clear" onclick="resetFormula()">↺ 清空</button>
+    </div>
+
+    <!-- 操作动作栏 -->
+    <div class="action-row">
+      <button class="action-btn btn-hint" id="hint-toggle-btn" onclick="toggleHint()">
+        <span>💡</span> 思维提示 (<span id="hint-level-text">第1阶</span>)
+      </button>
+      <button class="action-btn btn-deal" onclick="dealNewHand(true)">
+        <span>🎴</span> 换一组新牌
+      </button>
+    </div>
+
+    <!-- 阶梯式启发提示区 -->
+    <div class="hint-box" id="hint-box">
+      <div class="hint-step-item" id="hint-step-1">
+        <div class="hint-step-title"><span>🔑</span> 阶梯 1 · 寻找目标因数</div>
+        <div id="hint-text-1">正在分析题目思路...</div>
+      </div>
+      <div class="hint-step-item" id="hint-step-2" style="display:none; border-left-color:#38BDF8;">
+        <div class="hint-step-title" style="color:#38BDF8;"><span>🎯</span> 阶梯 2 · 迈出第一步</div>
+        <div id="hint-text-2">...</div>
+      </div>
+      <div class="hint-step-item" id="hint-step-3" style="display:none; border-left-color:#34D399;">
+        <div class="hint-step-title" style="color:#34D399;"><span>✨</span> 阶梯 3 · 完整参考算式</div>
+        <div id="hint-text-3" style="font-family:'Courier New', monospace; font-size:15px; color:#A7F3D0;">...</div>
+      </div>
+      <button id="advance-hint-btn" class="party-btn secondary" style="padding:6px; font-size:12px; margin-top:2px;" onclick="advanceHint()">
+        👉 看下一阶提示
+      </button>
+    </div>
+  </div>
+
+  <!-- 玩法规则与数感秘籍折叠卡片 -->
+  <div class="party-card" style="padding:14px;">
+    <div style="font-size:14px; font-weight:800; color:#FDE68A; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
+      <span>📖</span> Alex 的 24 点核心数感秘籍
+    </div>
+    <div style="font-size:12.5px; color:#CBD5E1; line-height:1.6; display:flex; flex-direction:column; gap:6px;">
+      <div>• <strong>因数密码法</strong>：看到 <strong>8</strong> 找 <strong>3</strong>（$3 	imes 8 = 24$），看到 <strong>6</strong> 找 <strong>4</strong>（$4 	imes 6 = 24$），看到 <strong>12</strong> 找 <strong>2</strong>（$2 	imes 12 = 24$）。</div>
+      <div>• <strong>加减法凑整</strong>：例如 $12 + 12 = 24$、$18 + 6 = 24$、$20 + 4 = 24$、$28 - 4 = 24$。</div>
+      <div>• <strong>神仙分数逆袭</strong>：遇到只有 3 和 8 且凑不出 24 时，试试 $8 div (3 - 8/3) = 24$；遇到 1 和 5 时，试试 $5 	imes (5 - 1/5) = 24$！</div>
+      <div style="color:#94A3B8; font-size:11.5px; margin-top:4px;">💻 电脑端也支持实体键盘输入：数字、+、-、*、/、(、)、退格键(Backspace)与ESC清空。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 胜利或游戏结束弹窗 -->
+<div class="party-modal" id="win-modal">
+  <div class="modal-card">
+    <div class="modal-trophy" id="modal-trophy">🏆</div>
+    <div class="modal-title" id="modal-title">太棒了！解题成功！</div>
+    <div class="modal-desc" id="modal-desc">算式完全正确，数感爆棚！</div>
+    <button class="party-btn primary" onclick="closeModalAndNext()">下一题挑战 →</button>
+  </div>
+</div>
+
+<script src="lib/game-audio.js"></script>
+<script>
+/* ============================================================
+   1. 高精度分数计算引擎 (Fraction Class) 与 24 点求解器
+   ============================================================ */
+class Frac {
+  constructor(n, d = 1) {
+    if (d === 0) throw new Error('div 0');
+    if (d < 0) { n = -n; d = -d; }
+    const g = Frac.gcd(Math.abs(n), d);
+    this.n = n / g;
+    this.d = d / g;
+  }
+  static gcd(a, b) { return b === 0 ? a : Frac.gcd(b, a % b); }
+  add(o) { return new Frac(this.n * o.d + o.n * this.d, this.d * o.d); }
+  sub(o) { return new Frac(this.n * o.d - o.n * this.d, this.d * o.d); }
+  mul(o) { return new Frac(this.n * o.n, this.d * o.d); }
+  div(o) { if (o.n === 0) return null; return new Frac(this.n * o.d, this.d * o.n); }
+  equals(val) { return this.d === 1 && this.n === val; }
+  toNumber() { return this.n / this.d; }
+}
+
+const OPS = [
+  { sym: '+', fn: (a, b) => a.add(b) },
+  { sym: '-', fn: (a, b) => a.sub(b) },
+  { sym: '×', fn: (a, b) => a.mul(b) },
+  { sym: '÷', fn: (a, b) => a.div(b) }
+];
+
+function permute(arr) {
+  if (arr.length <= 1) return [arr];
+  const res = [];
+  for (let i = 0; i < arr.length; i++) {
+    const cur = arr[i];
+    const rest = [...arr.slice(0, i), ...arr.slice(i + 1)];
+    for (const p of permute(rest)) {
+      res.push([cur, ...p]);
+    }
+  }
+  return res;
+}
+
+// 求解 24 点并返回所有不重复算式
+function solve24(nums) {
+  const perms = permute(nums.map(n => ({ val: new Frac(n), str: String(n) })));
+  const solutions = new Set();
+
+  for (const [a, b, c, d] of perms) {
+    for (const op1 of OPS) {
+      for (const op2 of OPS) {
+        for (const op3 of OPS) {
+          // 形态 1: ((a op1 b) op2 c) op3 d
+          try {
+            const r1 = op1.fn(a.val, b.val);
+            if (r1) {
+              const r2 = op2.fn(r1, c.val);
+              if (r2) {
+                const r3 = op3.fn(r2, d.val);
+                if (r3 && r3.equals(24)) {
+                  solutions.add(`((${a.str} ${op1.sym} ${b.str}) ${op2.sym} ${c.str}) ${op3.sym} ${d.str}`);
+                }
+              }
+            }
+          } catch(e) {}
+
+          // 形态 2: (a op1 (b op2 c)) op3 d
+          try {
+            const r1 = op2.fn(b.val, c.val);
+            if (r1) {
+              const r2 = op1.fn(a.val, r1);
+              if (r2) {
+                const r3 = op3.fn(r2, d.val);
+                if (r3 && r3.equals(24)) {
+                  solutions.add(`(${a.str} ${op1.sym} (${b.str} ${op2.sym} ${c.str})) ${op3.sym} ${d.str}`);
+                }
+              }
+            }
+          } catch(e) {}
+
+          // 形态 3: a op1 ((b op2 c) op3 d)
+          try {
+            const r1 = op2.fn(b.val, c.val);
+            if (r1) {
+              const r2 = op3.fn(r1, d.val);
+              if (r2) {
+                const r3 = op1.fn(a.val, r2);
+                if (r3 && r3.equals(24)) {
+                  solutions.add(`${a.str} ${op1.sym} ((${b.str} ${op2.sym} ${c.str}) ${op3.sym} ${d.str})`);
+                }
+              }
+            }
+          } catch(e) {}
+
+          // 形态 4: a op1 (b op2 (c op3 d))
+          try {
+            const r1 = op3.fn(c.val, d.val);
+            if (r1) {
+              const r2 = op2.fn(b.val, r1);
+              if (r2) {
+                const r3 = op1.fn(a.val, r2);
+                if (r3 && r3.equals(24)) {
+                  solutions.add(`${a.str} ${op1.sym} (${b.str} ${op2.sym} (${c.str} ${op3.sym} ${d.str}))`);
+                }
+              }
+            }
+          } catch(e) {}
+
+          // 形态 5: (a op1 b) op3 (c op2 d)
+          try {
+            const r1 = op1.fn(a.val, b.val);
+            const r2 = op2.fn(c.val, d.val);
+            if (r1 && r2) {
+              const r3 = op3.fn(r1, r2);
+              if (r3 && r3.equals(24)) {
+                solutions.add(`(${a.str} ${op1.sym} ${b.str}) ${op3.sym} (${c.str} ${op2.sym} ${d.str})`);
+              }
+            }
+          } catch(e) {}
+        }
+      }
+    }
+  }
+  return Array.from(solutions);
+}
+
+/* ============================================================
+   2. 题库预置与智能发牌
+   ============================================================ */
+// 经典萌新口诀题库 (3*8, 4*6, 2*12 直观解)
+const EASY_HANDS = [
+  [3, 3, 6, 8], [2, 3, 4, 4], [1, 2, 3, 4], [2, 4, 6, 8],
+  [1, 3, 4, 6], [2, 3, 5, 8], [3, 4, 5, 6], [1, 4, 6, 9],
+  [2, 3, 7, 8], [3, 4, 7, 8], [2, 6, 6, 8], [1, 5, 6, 8],
+  [2, 4, 5, 6], [3, 3, 4, 6], [2, 2, 6, 8], [1, 2, 8, 9]
+];
+
+// 经典进阶混合题库 (多重小括号调整优先级)
+const MEDIUM_HANDS = [
+  [1, 2, 7, 7], [2, 5, 7, 8], [1, 4, 5, 6], [3, 5, 7, 9],
+  [2, 4, 10, 10], [1, 6, 6, 8], [2, 3, 9, 10], [4, 5, 7, 8],
+  [3, 5, 8, 9], [2, 6, 7, 9], [1, 7, 8, 9], [4, 4, 7, 7],
+  [2, 5, 5, 10], [3, 6, 7, 8], [1, 3, 7, 9], [2, 8, 8, 9]
+];
+
+// 经典烧脑神仙题库 (含倒数/分数巧除)
+const HARD_HANDS = [
+  [3, 3, 8, 8], // 8 / (3 - 8/3)
+  [1, 5, 5, 5], // (5 - 1/5) * 5
+  [4, 4, 10, 10], // (10 * 10 - 4) / 4
+  [1, 4, 5, 6], // 6 / (5/4 - 1)
+  [2, 7, 7, 10], // (2 + 10/7) * 7
+  [3, 3, 7, 7], // (3 + 3/7) * 7
+  [1, 3, 4, 6], // 6 / (1 - 3/4)
+  [4, 7, 8, 8]
+];
+
+const SUITS = [
+  { sym: '♠', color: 'black' },
+  { sym: '♥', color: 'red' },
+  { sym: '♣', color: 'black' },
+  { sym: '♦', color: 'red' }
+];
+
+/* ============================================================
+   3. 状态管理
+   ============================================================ */
+const state = {
+  mode: 'challenge', // 'challenge' | 'duel' | 'solver'
+  difficulty: 'easy',
+  streak: 0,
+  level: 1,
+  sound: true,
+  currentCards: [], // [{ id, num, suit, isRed, used }]
+  formulaTokens: [], // [{ type: 'card'|'op'|'paren', val, cardId }]
+  currentSolutions: [],
+  hintLevel: 1,
+
+  // 双人对决状态
+  p1Score: 0,
+  p2Score: 0,
+  duelActivePlayer: null, // 1 | 2
+  duelTimer: null,
+  duelTimeLeft: 20, // 秒
+
+  // 求解器自选状态
+  solverSlots: [null, null, null, null],
+  activeSlotIndex: 0
+};
+
+const audio = new GameAudio();
+
+function toggleSound() {
+  state.sound = !state.sound;
+  const btn = document.getElementById('sound-btn');
+  btn.textContent = state.sound ? '🔊 音效: 开' : '🔈 音效: 关';
+}
+
+function playSound(type) {
+  if (state.sound) {
+    audio.play(type);
+  }
+}
+
+/* ============================================================
+   4. 模式切换
+   ============================================================ */
+function switchGameMode(mode) {
+  state.mode = mode;
+  playSound('tap');
+
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + mode).classList.add('active');
+
+  const challengeBar = document.getElementById('challenge-ctrl-bar');
+  const duelWrap = document.getElementById('duel-wrap');
+  const solverWrap = document.getElementById('solver-wrap');
+  const playArea = document.getElementById('play-area');
+
+  if (mode === 'challenge') {
+    challengeBar.style.display = 'flex';
+    duelWrap.style.display = 'none';
+    solverWrap.style.display = 'none';
+    playArea.style.display = 'block';
+    setKeypadLocked(false);
+    dealNewHand();
+  } else if (mode === 'duel') {
+    challengeBar.style.display = 'none';
+    duelWrap.style.display = 'flex';
+    solverWrap.style.display = 'none';
+    playArea.style.display = 'block';
+    resetDuelBuzzer();
+    dealNewHand();
+  } else if (mode === 'solver') {
+    challengeBar.style.display = 'none';
+    duelWrap.style.display = 'none';
+    solverWrap.style.display = 'flex';
+    playArea.style.display = 'none';
+    initSolverUI();
+  }
+}
+
+function setDifficulty(diff, btn) {
+  state.difficulty = diff;
+  playSound('tap');
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const el = document.getElementById('diff-' + diff);
+    if (el) el.classList.add('active');
+  }
+  dealNewHand(true);
+}
+
+function setKeypadLocked(locked) {
+  const btns = document.querySelectorAll('#keypad-area button');
+  btns.forEach(b => b.disabled = locked);
+}
+
+/* ============================================================
+   5. 发牌逻辑与卡牌渲染
+   ============================================================ */
+function dealNewHand(resetHint = true) {
+  playSound('peek');
+  resetFormula();
+
+  let nums = [];
+  if (state.difficulty === 'easy') {
+    nums = [...EASY_HANDS[Math.floor(Math.random() * EASY_HANDS.length)]];
+  } else if (state.difficulty === 'medium') {
+    nums = [...MEDIUM_HANDS[Math.floor(Math.random() * MEDIUM_HANDS.length)]];
+  } else {
+    nums = [...HARD_HANDS[Math.floor(Math.random() * HARD_HANDS.length)]];
+  }
+
+  // 洗牌打乱数字顺序
+  nums.sort(() => Math.random() - 0.5);
+
+  state.currentCards = nums.map((n, idx) => {
+    const s = SUITS[Math.floor(Math.random() * SUITS.length)];
+    return {
+      id: idx,
+      num: n,
+      suit: s.sym,
+      isRed: s.color === 'red',
+      used: false
+    };
+  });
+
+  // 计算当前题目的所有解法备用
+  state.currentSolutions = solve24(state.currentCards.map(c => c.num));
+
+  // 保证发出的牌一定有解
+  if (state.currentSolutions.length === 0) {
+    dealNewHand(resetHint);
+    return;
+  }
+
+  renderPokerCards();
+
+  if (resetHint) {
+    state.hintLevel = 1;
+    document.getElementById('hint-level-text').textContent = '第1阶';
+    document.getElementById('hint-box').style.display = 'none';
+    document.getElementById('hint-step-2').style.display = 'none';
+    document.getElementById('hint-step-3').style.display = 'none';
+    const advBtn = document.getElementById('advance-hint-btn');
+    if (advBtn) {
+      advBtn.disabled = false;
+      advBtn.textContent = '👉 看下一阶提示';
+    }
+  }
+
+  if (state.mode === 'duel') {
+    resetDuelBuzzer();
+  }
+}
+
+function renderPokerCards() {
+  const stage = document.getElementById('poker-stage');
+  stage.innerHTML = '';
+
+  state.currentCards.forEach(c => {
+    const cardEl = document.createElement('div');
+    cardEl.className = `poker-card ${c.isRed ? 'is-red' : 'is-black'} ${c.used ? 'used' : ''}`;
+    cardEl.onclick = () => onCardClicked(c.id);
+
+    const displayNum = c.num === 1 ? 'A' : (c.num === 11 ? 'J' : (c.num === 12 ? 'Q' : (c.num === 13 ? 'K' : c.num)));
+
+    cardEl.innerHTML = `
+      <div class="corner">
+        <span>${displayNum}</span>
+        <span class="suit-small">${c.suit}</span>
+      </div>
+      <div class="center-suit">${c.suit}</div>
+      <div class="corner corner-br">
+        <span>${displayNum}</span>
+        <span class="suit-small">${c.suit}</span>
+      </div>
+      <div class="card-used-mark">✓</div>
+    `;
+    stage.appendChild(cardEl);
+  });
+}
+
+function onCardClicked(cardId) {
+  // 对决模式且无人抢答时不能出牌
+  if (state.mode === 'duel' && state.duelActivePlayer === null) {
+    playSound('suspense');
+    return;
+  }
+
+  const card = state.currentCards.find(c => c.id === cardId);
+  if (!card) return;
+
+  if (card.used) {
+    // 已经使用了：点击则从算式末尾撤回该卡牌
+    const lastTokIdx = state.formulaTokens.map(t => t.cardId).lastIndexOf(cardId);
+    if (lastTokIdx !== -1) {
+      playSound('tap');
+      state.formulaTokens.splice(lastTokIdx, 1);
+      card.used = false;
+      renderPokerCards();
+      updateFormulaView();
+    }
+    return;
+  }
+
+  // 未使用：加入算式
+  playSound('tap');
+  card.used = true;
+  state.formulaTokens.push({
+    type: 'card',
+    val: card.num,
+    cardId: card.id
+  });
+  renderPokerCards();
+  updateFormulaView();
+}
+
+/* ============================================================
+   6. 算式构建与实时数学求值
+   ============================================================ */
+function appendToken(val) {
+  if (state.mode === 'duel' && state.duelActivePlayer === null) {
+    playSound('suspense');
+    return;
+  }
+  playSound('tap');
+  state.formulaTokens.push({
+    type: (val === '(' || val === ')') ? 'paren' : 'op',
+    val: val
+  });
+  updateFormulaView();
+}
+
+function popToken() {
+  if (state.formulaTokens.length === 0) return;
+  playSound('tap');
+  const lastTok = state.formulaTokens.pop();
+  if (lastTok.type === 'card') {
+    const card = state.currentCards.find(c => c.id === lastTok.cardId);
+    if (card) card.used = false;
+    renderPokerCards();
+  }
+  updateFormulaView();
+}
+
+function resetFormula() {
+  playSound('suspense');
+  state.formulaTokens = [];
+  state.currentCards.forEach(c => c.used = false);
+  renderPokerCards();
+  updateFormulaView();
+}
+
+// 实时监视器与表达式求值
+function updateFormulaView() {
+  const view = document.getElementById('formula-view');
+  const statusEl = document.getElementById('calc-status');
+  const usageInfo = document.getElementById('cards-usage-info');
+
+  const usedCount = state.currentCards.filter(c => c.used).length;
+  usageInfo.textContent = `已选 ${usedCount} / 4 张牌`;
+
+  if (state.formulaTokens.length === 0) {
+    if (state.mode === 'duel' && state.duelActivePlayer === null) {
+      view.innerHTML = '<span class="formula-empty" style="color:#F59E0B;">⚡ 等待抢答：请先按抢答键获得 20 秒答题权！</span>';
+      statusEl.className = 'calc-status pending';
+      statusEl.textContent = '等待抢答';
+    } else {
+      view.innerHTML = '<span class="formula-empty">👇 点击上方卡牌与下方运算符号组装算式...</span>';
+      statusEl.className = 'calc-status pending';
+      statusEl.textContent = '等待输入完整算式';
+    }
+    return;
+  }
+
+  view.innerHTML = '';
+  state.formulaTokens.forEach(tok => {
+    const span = document.createElement('span');
+    span.className = `formula-token tok-${tok.type}`;
+    span.textContent = tok.val;
+    view.appendChild(span);
+  });
+
+  // 尝试安全求值
+  const exprStr = state.formulaTokens.map(t => {
+    if (t.val === '×') return '*';
+    if (t.val === '÷') return '/';
+    return t.val;
+  }).join(' ');
+
+  try {
+    // 括号匹配检查
+    let openCount = 0;
+    for (const t of state.formulaTokens) {
+      if (t.val === '(') openCount++;
+      if (t.val === ')') openCount--;
+      if (openCount < 0) throw new Error('括号顺序错误');
+    }
+
+    if (openCount !== 0) {
+      statusEl.className = 'calc-status wrong';
+      statusEl.textContent = `括号未闭合 (差 ${Math.abs(openCount)} 个括号)`;
+      return;
+    }
+
+    // 只能包含合法数字与符号
+    if (!/^[0-9+\-*\/() .]+$/.test(exprStr)) {
+      throw new Error('非法字符');
+    }
+
+    const res = Function(`"use strict"; return (${exprStr});`)();
+
+    if (typeof res === 'number' && !isNaN(res) && isFinite(res)) {
+      const rounded = Math.round(res * 1000) / 1000;
+      if (Math.abs(rounded - 24) < 1e-5) {
+        if (usedCount === 4) {
+          statusEl.className = 'calc-status correct';
+          statusEl.innerHTML = `🎯 结果等于 24！(正好用完 4 张牌)`;
+          onSuccessSolve();
+        } else {
+          statusEl.className = 'calc-status wrong';
+          statusEl.textContent = `当前为 24，但还需使用 ${4 - usedCount} 张牌哦！`;
+        }
+      } else {
+        statusEl.className = 'calc-status pending';
+        statusEl.textContent = `当前计算结果 = ${rounded}`;
+      }
+    } else {
+      statusEl.className = 'calc-status pending';
+      statusEl.textContent = '算式输入中...';
+    }
+  } catch(e) {
+    statusEl.className = 'calc-status pending';
+    statusEl.textContent = '算式输入中...';
+  }
+}
+
+/* ============================================================
+   7. 成功通关与结算逻辑
+   ============================================================ */
+function onSuccessSolve() {
+  playSound('victory');
+  launchConfetti();
+
+  if (state.mode === 'challenge') {
+    state.streak++;
+    state.level++;
+    document.getElementById('streak-count').textContent = state.streak + ' 🔥';
+    document.getElementById('level-count').textContent = state.level;
+
+    setTimeout(() => {
+      showModal('🎉 恭喜通关！', `太厉害了！连续答对 ${state.streak} 题！数感超棒，继续下一关吧！`, '🏆');
+    }, 600);
+  } else if (state.mode === 'duel') {
+    if (state.duelActivePlayer === 1) {
+      state.p1Score += 10;
+      document.getElementById('p1-score').textContent = state.p1Score;
+      stopDuelTimer();
+      setTimeout(() => {
+        showModal('👦 Alex 抢答成功！', `蓝方率先算出 24 点，获得 10 分！当前总分：${state.p1Score} 分`, '🌟');
+      }, 600);
+    } else if (state.duelActivePlayer === 2) {
+      state.p2Score += 10;
+      document.getElementById('p2-score').textContent = state.p2Score;
+      stopDuelTimer();
+      setTimeout(() => {
+        showModal('👨 家长抢答成功！', `红方率先算出 24 点，获得 10 分！当前总分：${state.p2Score} 分`, '🌟');
+      }, 600);
+    }
+  }
+}
+
+function showModal(title, desc, trophy) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-desc').textContent = desc;
+  document.getElementById('modal-trophy').textContent = trophy;
+  document.getElementById('win-modal').style.display = 'flex';
+}
+
+function closeModalAndNext() {
+  document.getElementById('win-modal').style.display = 'none';
+  dealNewHand(true);
+}
+
+/* ============================================================
+   8. 启发式思维脚手架提示 (阶梯式不剧透)
+   ============================================================ */
+function toggleHint() {
+  playSound('tap');
+  const box = document.getElementById('hint-box');
+  if (box.style.display === 'flex') {
+    box.style.display = 'none';
+    return;
+  }
+
+  box.style.display = 'flex';
+  generateHints();
+}
+
+function generateHints() {
+  if (!state.currentSolutions || state.currentSolutions.length === 0) {
+    document.getElementById('hint-text-1').textContent = '这道题非常烧脑，试试分数或倒数！';
+    return;
+  }
+
+  const bestSol = state.currentSolutions[0];
+
+  // 阶梯 1: 寻找因数钥匙
+  let hint1 = '💡 思考方向：';
+  if (bestSol.includes('× 8') || bestSol.includes('8 ×')) {
+    hint1 = '💡 核心思路：看看能否用另外三张牌凑出 3，然后和 8 相乘 (3 × 8 = 24)！';
+  } else if (bestSol.includes('× 6') || bestSol.includes('6 ×')) {
+    hint1 = '💡 核心思路：看看能否用另外三张牌凑出 4，然后和 6 相乘 (4 × 6 = 24)！';
+  } else if (bestSol.includes('× 4') || bestSol.includes('4 ×')) {
+    hint1 = '💡 核心思路：看看能否用另外三张牌凑出 6，然后和 4 相乘 (6 × 4 = 24)！';
+  } else if (bestSol.includes('× 3') || bestSol.includes('3 ×')) {
+    hint1 = '💡 核心思路：看看能否用另外三张牌凑出 8，然后和 3 相乘 (8 × 3 = 24)！';
+  } else if (bestSol.includes('+ 12') || bestSol.includes('12 +')) {
+    hint1 = '💡 核心思路：尝试将两对牌分别算出 12，再做加法 (12 + 12 = 24)！';
+  } else if (bestSol.includes('÷')) {
+    hint1 = '💡 核心思路：常规乘法可能被卡住了，大胆尝试除法或括号调整顺序！';
+  } else {
+    hint1 = '💡 核心思路：两两组合，先算两个小结果，再相乘或相加！';
+  }
+  document.getElementById('hint-text-1').textContent = hint1;
+
+  // 阶梯 2: 第一步启发
+  const match = bestSol.match(/\(([0-9]+ [+\-×÷] [0-9]+)\)/);
+  if (match) {
+    document.getElementById('hint-text-2').textContent = `可以尝试先计算其中的小积木：${match[1]}`;
+  } else {
+    document.getElementById('hint-text-2').textContent = '试试先用其中两个数做减法凑出关键因数！';
+  }
+
+  // 阶梯 3: 揭晓优雅算式
+  document.getElementById('hint-text-3').textContent = `${bestSol} = 24`;
+}
+
+function advanceHint() {
+  playSound('tap');
+  const advBtn = document.getElementById('advance-hint-btn');
+  if (state.hintLevel === 1) {
+    state.hintLevel = 2;
+    document.getElementById('hint-step-2').style.display = 'block';
+    document.getElementById('hint-level-text').textContent = '第2阶';
+  } else if (state.hintLevel === 2) {
+    state.hintLevel = 3;
+    document.getElementById('hint-step-3').style.display = 'block';
+    document.getElementById('hint-level-text').textContent = '第3阶';
+    if (advBtn) {
+      advBtn.disabled = true;
+      advBtn.textContent = '已揭晓全部提示';
+    }
+  }
+}
+
+/* ============================================================
+   9. 双人对决模式专属逻辑 (抢答蜂鸣与倒计时)
+   ============================================================ */
+function resetDuelBuzzer() {
+  stopDuelTimer();
+  state.duelActivePlayer = null;
+  document.getElementById('buzz-p1-btn').disabled = false;
+  document.getElementById('buzz-p2-btn').disabled = false;
+  document.getElementById('p1-card').classList.remove('has-turn');
+  document.getElementById('p2-card').classList.remove('has-turn');
+  document.getElementById('p1-status').textContent = '先按按键抢答';
+  document.getElementById('p2-status').textContent = '先按按键抢答';
+  document.getElementById('duel-timer-wrap').style.display = 'none';
+  setKeypadLocked(true);
+  updateFormulaView();
+}
+
+function playerBuzzer(playerNum) {
+  if (state.duelActivePlayer !== null) return;
+  playSound('buzz');
+  audio.vibrate([80, 50, 80]);
+
+  state.duelActivePlayer = playerNum;
+  document.getElementById('buzz-p1-btn').disabled = true;
+  document.getElementById('buzz-p2-btn').disabled = true;
+  setKeypadLocked(false);
+
+  if (playerNum === 1) {
+    document.getElementById('p1-card').classList.add('has-turn');
+    document.getElementById('p1-status').textContent = '答题中(20s)...';
+    document.getElementById('p2-status').textContent = '等待对方';
+  } else {
+    document.getElementById('p2-card').classList.add('has-turn');
+    document.getElementById('p2-status').textContent = '答题中(20s)...';
+    document.getElementById('p1-status').textContent = '等待对方';
+  }
+
+  updateFormulaView();
+
+  // 启动 20 秒倒计时
+  state.duelTimeLeft = 20;
+  document.getElementById('duel-timer-wrap').style.display = 'block';
+  updateTimerBar();
+
+  state.duelTimer = setInterval(() => {
+    state.duelTimeLeft -= 0.1;
+    updateTimerBar();
+    if (state.duelTimeLeft <= 0) {
+      stopDuelTimer();
+      onDuelTimeout();
+    }
+  }, 100);
+}
+
+function updateTimerBar() {
+  const bar = document.getElementById('duel-timer-bar');
+  const pct = Math.max(0, (state.duelTimeLeft / 20) * 100);
+  bar.style.width = pct + '%';
+  if (pct < 30) {
+    bar.style.backgroundColor = '#EF4444';
+  } else if (pct < 60) {
+    bar.style.backgroundColor = '#F59E0B';
+  } else {
+    bar.style.backgroundColor = '#10B981';
+  }
+}
+
+function stopDuelTimer() {
+  if (state.duelTimer) {
+    clearInterval(state.duelTimer);
+    state.duelTimer = null;
+  }
+}
+
+function onDuelTimeout() {
+  playSound('suspense');
+  const timeoutPlayer = state.duelActivePlayer;
+  const oppPlayer = timeoutPlayer === 1 ? 2 : 1;
+
+  if (oppPlayer === 1) {
+    state.p1Score += 5;
+    document.getElementById('p1-score').textContent = state.p1Score;
+  } else {
+    state.p2Score += 5;
+    document.getElementById('p2-score').textContent = state.p2Score;
+  }
+
+  showModal('⏰ 抢答超时！', `${timeoutPlayer === 1 ? 'Alex' : '家长'} 20秒未答出，对方得 5 分！`, '⏳');
+}
+
+/* ============================================================
+   10. 万能求解器模式专属逻辑
+   ============================================================ */
+function initSolverUI() {
+  if (state.solverSlots[0] === null) {
+    // 默认填入经典题目 [3, 3, 8, 8]
+    state.solverSlots = [3, 3, 8, 8];
+  }
+  updateSolverSlotsUI();
+}
+
+function selectSolverSlot(index) {
+  playSound('tap');
+  state.activeSlotIndex = index;
+  updateSolverSlotsUI();
+}
+
+function setSlotNum(num) {
+  playSound('tap');
+  state.solverSlots[state.activeSlotIndex] = num;
+  state.activeSlotIndex = (state.activeSlotIndex + 1) % 4;
+  updateSolverSlotsUI();
+}
+
+function updateSolverSlotsUI() {
+  state.solverSlots.forEach((val, idx) => {
+    const el = document.getElementById('slot-' + idx);
+    if (val !== null) {
+      el.className = 'solver-slot filled' + (idx === state.activeSlotIndex ? ' active-pick' : '');
+      const displayVal = val === 1 ? 'A' : (val === 11 ? 'J' : (val === 12 ? 'Q' : (val === 13 ? 'K' : val)));
+      el.textContent = displayVal;
+    } else {
+      el.className = 'solver-slot' + (idx === state.activeSlotIndex ? ' active-pick' : '');
+      el.textContent = '?';
+    }
+  });
+}
+
+function fillRandomSolver() {
+  playSound('tap');
+  state.solverSlots = [
+    Math.floor(Math.random() * 10) + 1,
+    Math.floor(Math.random() * 10) + 1,
+    Math.floor(Math.random() * 10) + 1,
+    Math.floor(Math.random() * 10) + 1
+  ];
+  updateSolverSlotsUI();
+  runSolver();
+}
+
+function runSolver() {
+  playSound('peek');
+  const nums = state.solverSlots;
+  if (nums.some(n => n === null)) {
+    alert('请先选满 4 张牌哦！');
+    return;
+  }
+
+  const container = document.getElementById('solution-container');
+  const listEl = document.getElementById('solution-list');
+  const countText = document.getElementById('solution-count-text');
+
+  container.style.display = 'block';
+  listEl.innerHTML = '';
+
+  const solutions = solve24(nums);
+  if (solutions.length === 0) {
+    countText.textContent = '未找到解法 (加减乘除无解)';
+    listEl.innerHTML = '<div style="color:#94A3B8; font-size:13px; padding:10px; text-align:center;">这组牌在四则运算规则下无法算出 24 点哦，换一组试试吧~</div>';
+    return;
+  }
+
+  countText.textContent = `🎉 共找到 ${solutions.length} 种解法`;
+
+  solutions.forEach((sol) => {
+    const item = document.createElement('div');
+    item.className = 'solution-item';
+
+    let tagText = '混合运算';
+    if (sol.includes('× 8') || sol.includes('× 6') || sol.includes('× 4') || sol.includes('× 3')) {
+      tagText = '口诀凑整';
+    } else if (sol.includes('÷') && !sol.includes('÷ 1') && !sol.includes('÷ 2')) {
+      tagText = '分数/除法';
+    }
+
+    item.innerHTML = `
+      <span>${sol} = 24</span>
+      <span class="solution-tag">${tagText}</span>
+    `;
+    listEl.appendChild(item);
+  });
+}
+
+/* ============================================================
+   11. 实体键盘快捷键支持 (PC/Mac/笔记本)
+   ============================================================ */
+window.addEventListener('keydown', (e) => {
+  if (state.mode === 'solver') return;
+  const key = e.key;
+
+  if (key === '+' || key === '-' || key === '(' || key === ')') {
+    appendToken(key);
+  } else if (key === '*') {
+    appendToken('×');
+  } else if (key === '/') {
+    e.preventDefault();
+    appendToken('÷');
+  } else if (key === 'Backspace') {
+    e.preventDefault();
+    popToken();
+  } else if (key === 'Escape') {
+    resetFormula();
+  } else if (/^[0-9]$/.test(key)) {
+    const num = parseInt(key, 10);
+    const card = state.currentCards.find(c => c.num === num && !c.used);
+    if (card) {
+      onCardClicked(card.id);
+    }
+  }
+});
+
+/* ============================================================
+   12. 胜利礼花 Canvas 动效 (免外部依赖)
+   ============================================================ */
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = [];
+  const colors = ['#F59E0B', '#10B981', '#6366F1', '#EC4899', '#3B82F6', '#E11D48'];
+
+  for (let i = 0; i < 70; i++) {
+    particles.push({
+      x: canvas.width / 2,
+      y: canvas.height * 0.45,
+      vx: (Math.random() - 0.5) * 14,
+      vy: (Math.random() - 0.8) * 16,
+      size: Math.random() * 8 + 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: 1,
+      decay: Math.random() * 0.02 + 0.015,
+      rot: Math.random() * 360,
+      vrot: (Math.random() - 0.5) * 10
+    });
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.35; // gravity
+      p.alpha -= p.decay;
+      p.rot += p.vrot;
+
+      if (p.alpha > 0) {
+        alive = true;
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rot * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        ctx.restore();
+      }
+    });
+
+    if (alive) {
+      requestAnimationFrame(frame);
+    } else {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+// 页面加载完毕初始化
+window.addEventListener('DOMContentLoaded', () => {
+  dealNewHand();
+});
+</script>
+</body>
+</html>
