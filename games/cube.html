@@ -266,10 +266,10 @@
       max-width: 76px;
     }
 
-    /* 3D 舞台区域 (上下布局上方，全宽居中，彻底消除裁切) */
+    /* 3D 舞台区域 (上下布局上方，全宽居中，加高魔方视野) */
     .cube-stage {
       width: 100%;
-      height: 380px;
+      height: 480px;
       position: relative;
       background: radial-gradient(circle at center, #1E293B 0%, #090D16 85%);
       border: 1px solid var(--card-border);
@@ -330,15 +330,15 @@
       pointer-events: none;
     }
 
-    /* 伴学练习操作主板 (上下布局下方) */
+    /* 伴学练习操作主板 (上下布局下方，紧凑排版) */
     .trainer-card {
       background: var(--panel-bg);
       border: 1px solid var(--card-border);
       border-radius: 18px;
-      padding: 20px;
+      padding: 16px 20px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
     }
 
     /* 顶部标题与多解切换 */
@@ -347,28 +347,15 @@
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding-bottom: 14px;
+      padding-bottom: 10px;
     }
     .case-title-box h2 {
-      margin: 0 0 4px 0;
+      margin: 0;
       font-size: 20px;
       font-weight: 800;
       color: #FFFFFF;
-    }
-    .case-meta {
-      display: flex;
-      gap: 6px;
-    }
-    .meta-badge {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--subtext);
-      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     /* 多解方案 Tabs */
@@ -401,48 +388,53 @@
       color: var(--accent);
     }
 
-    /* 核心亮点：公式单行流畅发光提词器 */
+    /* 核心亮点：公式单行流畅发光提词器 (极致紧凑) */
     .teleprompter-card {
       background: rgba(10, 14, 26, 0.6);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .prompter-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--subtext);
+      border-radius: 12px;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
     }
     /* 单行横向连续展示，支持平滑横向滚动 */
     .tokens-stream {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 8px;
-      min-height: 52px;
+      min-height: 44px;
       overflow-x: auto;
       flex-wrap: nowrap;
       white-space: nowrap;
-      padding: 6px 4px;
+      padding: 2px 2px;
       scrollbar-width: thin;
       scrollbar-color: var(--card-border) transparent;
+      flex: 1;
+    }
+    .step-counter {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--subtext);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 5px 11px;
+      border-radius: 8px;
+      white-space: nowrap;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
     }
     .token-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-width: 44px;
-      height: 44px;
-      padding: 0 12px;
-      border-radius: 10px;
+      min-width: 40px;
+      height: 40px;
+      padding: 0 10px;
+      border-radius: 9px;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
       background: var(--card-bg);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -464,37 +456,39 @@
       z-index: 2;
     }
 
-    /* 播放控制栏 */
+    /* 播放控制栏：整合成统一单行 (Play一行展示) */
     .controls-card {
       background: rgba(10, 14, 26, 0.6);
       border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      border-radius: 12px;
+      padding: 8px 12px;
     }
-    .main-controls-row {
+    .unified-play-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
     }
+    .unified-play-row::-webkit-scrollbar { display: none; }
     .ctrl-btn {
       flex: 1;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 13.5px;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: 9px;
+      font-size: 13px;
       font-weight: 800;
       border: 1px solid var(--card-border);
       background: var(--card-bg);
       color: var(--text);
       cursor: pointer;
       transition: all 0.15s;
+      white-space: nowrap;
     }
     .ctrl-btn:hover {
       background: var(--card-hover);
@@ -515,41 +509,33 @@
       border-color: var(--accent);
       color: var(--accent);
     }
-
-    /* 速度调节栏 */
-    .speed-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: 10px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .speed-label {
-      font-size: 12px;
-      color: var(--subtext);
-      font-weight: 700;
-    }
-    .speed-group {
-      display: flex;
-      gap: 6px;
+    .ctrl-divider {
+      width: 1px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 0 4px;
+      flex-shrink: 0;
     }
     .speed-btn {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 11.5px;
-      font-weight: 700;
+      padding: 7px 11px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 800;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid transparent;
       color: var(--subtext);
       cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .speed-btn:hover {
+      color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.1);
     }
     .speed-btn.active {
       background: var(--cyan-light);
       border-color: var(--cyan);
       color: var(--cyan);
-      font-weight: 800;
     }
 
     /* 手持实体魔方出题 Setup 条 */
@@ -684,10 +670,6 @@
       <div class="case-header-row">
         <div class="case-title-box">
           <h2 id="caseTitleDisplay">加载中...</h2>
-          <div class="case-meta">
-            <span class="meta-badge" id="categoryBadge">分类</span>
-            <span class="meta-badge" id="probBadge">概率</span>
-          </div>
         </div>
         <!-- 多解方案 Tabs -->
         <div class="algs-tabs-bar" id="algsTabsBar"></div>
@@ -695,30 +677,23 @@
 
       <!-- 核心亮点：公式单行流畅发光提词器 -->
       <div class="teleprompter-card">
-        <div class="prompter-label">
-          <span>🔤 动作发光提词器 (跟随 3D 动作跳动)</span>
-          <span id="stepCounterDisplay">0 / 0</span>
-        </div>
         <div class="tokens-stream" id="tokensStream"></div>
+        <div class="step-counter" id="stepCounterDisplay">0 / 0</div>
       </div>
 
-      <!-- 播放控制器 -->
+      <!-- 播放控制器：单行呈现 -->
       <div class="controls-card">
-        <div class="main-controls-row">
+        <div class="unified-play-row">
           <button class="ctrl-btn" onclick="handleReset()">⏮ 重置</button>
-          <button class="ctrl-btn" onclick="handleStepBackward()">❮ 上一步</button>
+          <button class="ctrl-btn" onclick="handleStepBackward()">❮</button>
           <button class="ctrl-btn primary" id="btnPlayPause" onclick="handleTogglePlay()">▶️ 播放</button>
-          <button class="ctrl-btn" onclick="handleStepForward()">下一步 ❯</button>
+          <button class="ctrl-btn" onclick="handleStepForward()">❯</button>
           <button class="ctrl-btn" id="btnLoop" onclick="handleToggleLoop()">🔁 循环</button>
-        </div>
-        <div class="speed-row">
-          <span class="speed-label">指法播放速度</span>
-          <div class="speed-group">
-            <button class="speed-btn" onclick="setSpeed(0.5, this)">0.5x 慢速拆解</button>
-            <button class="speed-btn" onclick="setSpeed(0.8, this)">0.8x 跟练</button>
-            <button class="speed-btn active" onclick="setSpeed(1.0, this)">1.0x 标准</button>
-            <button class="speed-btn" onclick="setSpeed(1.5, this)">1.5x 竞速</button>
-          </div>
+          <div class="ctrl-divider"></div>
+          <button class="speed-btn" onclick="setSpeed(0.5, this)">0.5x</button>
+          <button class="speed-btn" onclick="setSpeed(0.8, this)">0.8x</button>
+          <button class="speed-btn active" onclick="setSpeed(1.0, this)">1.0x</button>
+          <button class="speed-btn" onclick="setSpeed(1.5, this)">1.5x</button>
         </div>
       </div>
 
@@ -731,7 +706,6 @@
           <button class="setup-play-btn" onclick="playSetupAnimation()">▶️ 演示出题动画</button>
         </div>
         <div class="setup-exp" id="setupExpDisplay">--</div>
-        <div class="setup-note" id="setupNoteDisplay">拿着复原好的真实魔方做这串逆公式，魔方立刻变为当前形态。</div>
       </div>
 
       <!-- 记忆联想口诀与实战心得卡片 -->
@@ -911,13 +885,16 @@
 
       // 更新标题与元数据
       document.getElementById('caseTitleDisplay').textContent = `${c.id} · ${c.name}`;
-      document.getElementById('categoryBadge').textContent = c.category;
-      document.getElementById('probBadge').textContent = c.prob ? `概率: ${c.prob}` : '基础型';
+      const catBadge = document.getElementById('categoryBadge');
+      if (catBadge) catBadge.textContent = c.category;
+      const probBadge = document.getElementById('probBadge');
+      if (probBadge) probBadge.textContent = c.prob ? `概率: ${c.prob}` : '基础型';
 
       // 手持魔方出题 Setup
       const setupExp = c.setup || cubeEngine.invertFormula(c.algs[0].exp);
       document.getElementById('setupExpDisplay').textContent = setupExp;
-      document.getElementById('setupNoteDisplay').textContent = c.setupRelation || '拿着复原好的真实魔方做这串逆公式，魔方立刻变为当前形态。';
+      const setupNote = document.getElementById('setupNoteDisplay');
+      if (setupNote) setupNote.textContent = c.setupRelation || '拿着复原好的真实魔方做这串逆公式，魔方立刻变为当前形态。';
 
       // 联想笔记
       document.getElementById('notesDisplay').textContent = c.note || '暂无实战笔记。';
