@@ -37,6 +37,7 @@
       this.currentStep = 0;
       this.loop = false;
       this.stripMode = null; // 'OLL', 'PLL', 'F2L' or custom
+      this.fullColor = options.fullColor !== undefined ? options.fullColor : true; // 默认全彩实战显示所有面
       this.isPlaying = false;
       this.baseDuration = 220; // ms per 90 degree turn at 1.0x
 
@@ -98,12 +99,12 @@
 
     setCameraView(type) {
       if (type === 'top') {
-        this.camera.position.set(0, 11, 0.01);
+        this.camera.position.set(0, 10.5, 0.01);
       } else if (type === 'front') {
-        this.camera.position.set(0, 0, 11);
+        this.camera.position.set(0, 0, 10.5);
       } else {
-        // default 3D isometric CFOP view: see U, F, R clearly
-        this.camera.position.set(6.5, 7.5, 8.5);
+        // default 3D isometric CFOP view: see U (Yellow), F (Green), R (Red) clearly
+        this.camera.position.set(5.8, 6.2, 7.5);
       }
       this.camera.lookAt(0, 0, 0);
       if (this.controls) this.controls.target.set(0, 0, 0);
@@ -215,33 +216,34 @@
 
       let rDim = false, lDim = false, uDim = false, dDim = false, fDim = false, bDim = false;
 
-      if (stripMode === 'OLL') {
-        // OLL Strip: Only Yellow (+Y) stickers stand out! Sides and bottom are stripped.
-        rDim = true;
-        lDim = true;
-        dDim = true;
-        fDim = true;
-        bDim = true;
-        uDim = false;
-      } else if (stripMode === 'PLL') {
-        // PLL Strip: Top layer (y > 0) has full colors, bottom layers (F2L) dimmed
-        if (!isUp) {
+      // 全彩实战模式（默认）：展示所有面的真实颜色（绿、红、蓝、橙、白、黄），全面训练空间感！
+      // 只有在明确关闭 fullColor 时才将部分面置灰
+      if (!this.fullColor) {
+        if (stripMode === 'OLL') {
           rDim = true;
           lDim = true;
           dDim = true;
           fDim = true;
           bDim = true;
-          uDim = true;
-        }
-      } else if (stripMode === 'F2L') {
-        // F2L Strip: Dim back and left slots, highlight front-right target slot and top layer
-        if (item.iy < 0 && (item.ix < 0 || item.iz < 0)) {
-          rDim = true;
-          lDim = true;
-          dDim = true;
-          fDim = true;
-          bDim = true;
-          uDim = true;
+          uDim = false;
+        } else if (stripMode === 'PLL') {
+          if (!isUp) {
+            rDim = true;
+            lDim = true;
+            dDim = true;
+            fDim = true;
+            bDim = true;
+            uDim = true;
+          }
+        } else if (stripMode === 'F2L') {
+          if (item.iy < 0 && (item.ix < 0 || item.iz < 0)) {
+            rDim = true;
+            lDim = true;
+            dDim = true;
+            fDim = true;
+            bDim = true;
+            uDim = true;
+          }
         }
       }
 
@@ -266,6 +268,14 @@
 
     setStripMode(mode) {
       this.stripMode = mode;
+      this.cubelets.forEach(mesh => {
+        const item = mesh.userData.initial;
+        mesh.material = this._getCubeletMaterials(item, this.stripMode);
+      });
+    }
+
+    setFullColor(enabled) {
+      this.fullColor = !!enabled;
       this.cubelets.forEach(mesh => {
         const item = mesh.userData.initial;
         mesh.material = this._getCubeletMaterials(item, this.stripMode);
