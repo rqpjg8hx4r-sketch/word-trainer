@@ -52,7 +52,7 @@
 
       this.scene = new THREE.Scene();
 
-      this.camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 100);
+      this.camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
       this.setCameraView('default');
 
       this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -99,12 +99,12 @@
 
     setCameraView(type) {
       if (type === 'top') {
-        this.camera.position.set(0, 10.5, 0.01);
+        this.camera.position.set(0, 9.5, 0.01);
       } else if (type === 'front') {
-        this.camera.position.set(0, 0, 10.5);
+        this.camera.position.set(0, 0, 9.5);
       } else {
         // default 3D isometric CFOP view: see U (Yellow), F (Green), R (Red) clearly
-        this.camera.position.set(5.8, 6.2, 7.5);
+        this.camera.position.set(5.2, 5.8, 6.8);
       }
       this.camera.lookAt(0, 0, 0);
       if (this.controls) this.controls.target.set(0, 0, 0);
