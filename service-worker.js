@@ -58,7 +58,7 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
 
   if (request.mode === 'navigate') {
-    if (url.pathname.includes('/coding/')) {
+    if (url.pathname.includes('/coding/') || url.pathname.includes('/games/') || url.pathname.includes('/math/')) {
       event.respondWith(fetch(request));
       return;
     }

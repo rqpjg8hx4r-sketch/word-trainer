@@ -1,0 +1,1949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0F172A">
+  <title>跳一跳 · 家庭联机大作战 · Alex Family Party</title>
+  <link rel="stylesheet" href="lib/party-common.css">
+  <style>
+    /* ================= 游戏专属定制样式 ================= */
+    :root {
+      --game-bg: #0B1120;
+      --game-card: #1E293B;
+      --game-border: #334155;
+      --game-accent: #6366F1;
+      --game-gold: #F59E0B;
+      --game-emerald: #10B981;
+      --game-rose: #F43F5E;
+      --game-cyan: #06B6D4;
+    }
+
+    body {
+      background: var(--game-bg);
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      overflow: hidden;
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 游戏主舞台 Canvas 容器 */
+    #stageContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 顶部悬浮 HUD (分数、排行榜、房间信息) */
+    .game-hud {
+      position: absolute;
+      top: calc(10px + env(safe-area-inset-top));
+      left: 14px;
+      right: 14px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+    }
+
+    .hud-btn {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #F8FAFC;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: all 0.15s;
+    }
+    .hud-btn:active {
+      transform: scale(0.94);
+      background: rgba(30, 41, 59, 0.95);
+    }
+
+    /* 计分板与连击气泡 */
+    .score-board {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .score-num {
+      font-size: 44px;
+      font-weight: 900;
+      color: #FFFFFF;
+      text-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 20px rgba(99, 102, 241, 0.35);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .combo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #F59E0B, #EF4444);
+      color: #FFF;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+      animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* 联机状态栏 */
+    .multi-tracker {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.75);
+      padding: 8px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      min-width: 130px;
+      pointer-events: auto;
+    }
+
+    .multi-player-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .multi-player-row.is-me {
+      color: #FBBF24;
+    }
+
+    /* 底部操作轻提示 */
+    .bottom-hint {
+      position: absolute;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      pointer-events: none;
+      font-size: 13px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.75);
+      background: rgba(15, 23, 42, 0.65);
+      padding: 6px 16px;
+      border-radius: 999px;
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: opacity 0.2s;
+    }
+
+    /* 快捷表情浮动条 (联机时) */
+    .quick-emojis {
+      position: absolute;
+      right: 14px;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .emoji-pill-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.15s;
+    }
+    .emoji-pill-btn:active {
+      transform: scale(1.2);
+    }
+
+    /* 模态框与弹窗样式 */
+    .game-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      background: rgba(11, 17, 32, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--game-card);
+      border: 1px solid var(--game-border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .avatar-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 4px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid transparent;
+      color: #FFF;
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+    .avatar-btn .icon {
+      font-size: 28px;
+    }
+    .avatar-btn.selected {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--game-accent);
+      color: #A5B4FC;
+    }
+
+    .mode-tab-group {
+      display: flex;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px;
+      border-radius: 12px;
+      gap: 4px;
+    }
+    .mode-tab {
+      flex: 1;
+      padding: 9px 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--party-subtext);
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.15s;
+    }
+    .mode-tab.active {
+      background: var(--game-accent);
+      color: #FFF;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* 接力模式提示横幅 */
+    .relay-banner {
+      position: absolute;
+      top: calc(75px + env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #FFF;
+      padding: 8px 20px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 14px;
+      box-shadow: 0 4px 16px rgba(217, 119, 6, 0.4);
+      display: none;
+      animation: popIn 0.25s ease;
+      white-space: nowrap;
+    }
+
+    /* 掉落/火箭结算面板 */
+    .result-sheet {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .result-icon {
+      font-size: 54px;
+      line-height: 1;
+      animation: bounce 0.6s infinite alternate ease-in-out;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-8px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== 1. 游戏 Canvas 渲染主视口 ==================== -->
+  <div id="stageContainer">
+    <canvas id="gameCanvas"></canvas>
+  </div>
+
+  <!-- ==================== 2. 悬浮 HUD 操作层 ==================== -->
+  <div class="game-hud">
+    <!-- 左侧快捷功能 -->
+    <div style="display:flex; gap:8px;">
+      <a href="index.html" class="hud-btn" id="btnBack">
+        <span>🏠</span> 退出
+      </a>
+      <button class="hud-btn" onclick="openModeSelectModal()" id="btnMultiplayer">
+        <span id="roomStatusIcon">👥</span> <span id="roomStatusText">联机大厅</span>
+      </button>
+    </div>
+
+    <!-- 中间计分 -->
+    <div class="score-board">
+      <div class="score-num" id="uiScore">0</div>
+      <div class="combo-badge" id="uiComboBadge" style="display:none;">
+        <span>🔥</span> PERFECT ×<span id="uiComboNum">2</span>
+      </div>
+    </div>
+
+    <!-- 右侧联机实时排行 (联机时展示) -->
+    <div class="multi-tracker" id="uiMultiTracker" style="display:none;">
+      <div style="font-size:10px; color:#94A3B8; margin-bottom:2px; font-weight:800;">🏆 赛道对决实时步数</div>
+      <div id="multiPlayerList"></div>
+    </div>
+  </div>
+
+  <!-- 接力模式专属提示条 -->
+  <div class="relay-banner" id="relayTurnBanner">
+    ⚡ 轮到 Alex 蓄力起跳！
+  </div>
+
+  <!-- 底部操作提示 -->
+  <div class="bottom-hint" id="uiBottomHint">按住屏幕蓄力 · 瞄准下一块高亮落点</div>
+
+  <!-- 联机快捷互动气泡按键 -->
+  <div class="quick-emojis" id="uiQuickEmojis" style="display:none;">
+    <button class="emoji-pill-btn" onclick="sendQuickEmoji('😂')">😂</button>
+    <button class="emoji-pill-btn" onclick="sendQuickEmoji('😱')">😱</button>
+    <button class="emoji-pill-btn" onclick="sendQuickEmoji('🚀')">🚀</button>
+    <button class="emoji-pill-btn" onclick="sendQuickEmoji('👏')">👏</button>
+  </div>
+
+  <!-- ==================== 3. 模式选择与角色设置模态框 ==================== -->
+  <div class="game-modal" id="modalSetup" style="display:none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0; font-size:19px; font-weight:800; color:#FFF;">🎮 游戏设置与联机</h3>
+        <button onclick="closeSetupModal()" style="background:transparent; border:none; color:#94A3B8; font-size:22px; cursor:pointer;">✕</button>
+      </div>
+
+      <!-- 模式切换 Tabs -->
+      <div class="mode-tab-group">
+        <button class="mode-tab active" id="tabSingle" onclick="switchModalTab('single')">单人畅玩</button>
+        <button class="mode-tab" id="tabMulti" onclick="switchModalTab('multi')">2~3人联机对战</button>
+      </div>
+
+      <!-- 角色形象快捷选择 -->
+      <div>
+        <div style="font-size:12px; font-weight:800; color:#94A3B8; margin-bottom:8px;">选择你的家庭出战角色：</div>
+        <div class="avatar-grid">
+          <div class="avatar-btn selected" id="av_alex" onclick="selectRole('alex', '⚡', 'Alex')">
+            <span class="icon">⚡</span>
+            <span>Alex</span>
+          </div>
+          <div class="avatar-btn" id="av_dad" onclick="selectRole('dad', '🦁', '爸爸')">
+            <span class="icon">🦁</span>
+            <span>爸爸</span>
+          </div>
+          <div class="avatar-btn" id="av_mom" onclick="selectRole('mom', '🐰', '妈妈')">
+            <span class="icon">🐰</span>
+            <span>妈妈</span>
+          </div>
+          <div class="avatar-btn" id="av_guest" onclick="selectRole('guest', '🌟', '嘉宾')">
+            <span class="icon">🌟</span>
+            <span>嘉宾</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 联机面板区域 -->
+      <div id="multiPanelArea" style="display:none; flex-direction:column; gap:12px;">
+        <div style="background:rgba(0,0,0,0.25); border-radius:12px; padding:12px; font-size:12px; color:#CBD5E1; line-height:1.5;">
+          ⚡ <strong>WebRTC 局域网极速直连</strong>：一人创建房间，其他人输入 4 位房间码即可同屏鬼影竞技！
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div style="font-size:12px; font-weight:800; color:#94A3B8;">联机玩法：</div>
+          <div style="display:flex; gap:8px;">
+            <button class="party-btn secondary" id="btnSubModeRace" style="flex:1; padding:8px; border-color:var(--game-accent); font-size:12px;" onclick="setMultiSubMode('race')">🏁 鬼影极速竞赛</button>
+            <button class="party-btn secondary" id="btnSubModeRelay" style="flex:1; padding:8px; font-size:12px;" onclick="setMultiSubMode('relay')">🤝 默契全家接力</button>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:4px;">
+          <button class="party-btn primary" style="flex:1; padding:12px;" onclick="hostCreateRoom()">
+            <span>👑</span> 创建新房间
+          </button>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <input id="inputRoomCode" type="number" pattern="[0-9]*" placeholder="输入 4 位房间码" style="flex:1; padding:11px; border-radius:10px; border:1px solid var(--game-border); background:#0F172A; color:#FFF; font-size:15px; font-weight:800; text-align:center; letter-spacing:2px;">
+          <button class="party-btn success" style="width:auto; padding:11px 18px;" onclick="joinRoomByCode()">
+            加入
+          </button>
+        </div>
+      </div>
+
+      <!-- 单人开始按钮 -->
+      <div id="singlePanelArea">
+        <button class="party-btn primary" style="width:100%; padding:13px; font-size:15px;" onclick="startSingleGame()">
+          <span>🚀</span> 开始单人练习
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 4. 房主等待加入模态框 (显示房间码与二维码) ==================== -->
+  <div class="game-modal" id="modalHostWait" style="display:none;">
+    <div class="modal-card" style="text-align:center;">
+      <h3 style="margin:0; font-size:20px; font-weight:900;">👑 房间已创建</h3>
+      <div style="color:#94A3B8; font-size:13px;">请其他人打开游戏输入 4 位房间码：</div>
+      <div style="font-size:44px; font-weight:900; letter-spacing:6px; color:#F59E0B; margin:8px 0;" id="displayRoomCode">8848</div>
+      
+      <div id="qrcodeBox" style="display:flex; justify-content:center; padding:10px; background:#FFF; border-radius:14px; width:fit-content; margin:0 auto;"></div>
+
+      <div style="font-size:13px; font-weight:700; color:#A5B4FC; margin-top:6px;" id="hostWaitPlayersCount">已就绪玩家：1 / 3</div>
+
+      <div style="display:flex; gap:10px; margin-top:8px;">
+        <button class="party-btn secondary" style="flex:1;" onclick="cancelRoom()">取消</button>
+        <button class="party-btn primary" style="flex:1;" onclick="hostLaunchMatch()">立即开局 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 5. 结算与搞笑飞天彩蛋弹窗 ==================== -->
+  <div class="game-modal" id="modalGameOver" style="display:none;">
+    <div class="modal-card">
+      <div class="result-sheet">
+        <div class="result-icon" id="resIcon">💥</div>
+        <h2 style="margin:0; font-size:24px; font-weight:900; color:#FFF;" id="resTitle">真遗憾，摔倒啦！</h2>
+        <div style="font-size:14px; color:#CBD5E1; line-height:1.5;" id="resSub">差一点就踩中了方块边缘！</div>
+        
+        <div style="display:flex; gap:16px; margin:12px 0;">
+          <div style="background:rgba(255,255,255,0.06); padding:10px 20px; border-radius:14px; text-align:center;">
+            <div style="font-size:11px; color:#94A3B8; font-weight:700;">本次得分</div>
+            <div style="font-size:28px; font-weight:900; color:#F59E0B;" id="resFinalScore">0</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.06); padding:10px 20px; border-radius:14px; text-align:center;">
+            <div style="font-size:11px; color:#94A3B8; font-weight:700;">最高纪录</div>
+            <div style="font-size:28px; font-weight:900; color:#10B981;" id="resHighScore">0</div>
+          </div>
+        </div>
+
+        <button class="party-btn primary" style="width:100%; padding:14px; font-size:16px;" onclick="restartGame()">
+          <span>🔄</span> 再跳一次！
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 引入依赖脚本 -->
+  <script src="lib/peerjs.min.js"></script>
+  <script src="lib/qrcode.min.js"></script>
+  <script src="lib/game-audio.js"></script>
+  <script src="lib/p2p-room.js"></script>
+
+  <script>
+  /* ==========================================================================
+     跳一跳 · 家庭联机大作战核心引擎 (高精 2.5D 轴测投影 + Q 弹果冻物理)
+     ========================================================================== */
+
+  // 全局音频与网络实例
+  const audio = new GameAudio();
+  let p2p = null;
+  let isMultiplayer = false;
+  let multiSubMode = 'race'; // 'race' (鬼影竞速) | 'relay' (亲子接力)
+  let myRole = { id: 'alex', icon: '⚡', name: 'Alex' };
+  let remotePlayers = new Map(); // peerId -> { role, u, v, y, scaleX, scaleY, stepIndex, state }
+  let relayTurnIndex = 0;
+  let relayPlayerOrder = [];
+
+  // 本地最高分持久化
+  let highScore = parseInt(localStorage.getItem('alex_jump_highscore') || '0', 10);
+
+  // 手机触觉振动辅助
+  function triggerHaptic(type) {
+    if (!navigator.vibrate) return;
+    try {
+      if (type === 'tick') navigator.vibrate(10);
+      else if (type === 'charge') navigator.vibrate(15);
+      else if (type === 'land') navigator.vibrate(25);
+      else if (type === 'perfect') navigator.vibrate([30, 40, 50]);
+      else if (type === 'rocket') navigator.vibrate([80, 50, 120]);
+    } catch(e){}
+  }
+
+  /* ==================== 1. 正交 2.5D 轴测投影 (斜向向上进阶) ==================== */
+  const ISO_ANGLE = Math.atan(0.5); // ~26.565度
+  const COS_A = Math.cos(ISO_ANGLE); // ~0.8944
+  const SIN_A = Math.sin(ISO_ANGLE); // ~0.4472
+
+  // 坐标转换：
+  // +u 朝向屏幕【斜右上】 (进深方向)
+  // +v 朝向屏幕【斜左上】 (进深方向)
+  // +y 垂直高度 (朝向天空)
+  function toScreen(u, v, y = 0) {
+    const sx = (u - v) * COS_A;
+    const sy = -(u + v) * SIN_A - y;
+    return { sx, sy };
+  }
+
+  // 调色盘：柔和高级的马卡龙与科技渐变色彩
+  const BLOCK_THEMES = [
+    { top: '#F87171', left: '#EF4444', right: '#DC2626', type: 'standard' }, // 珊瑚红
+    { top: '#60A5FA', left: '#3B82F6', right: '#2563EB', type: 'standard' }, // 晴空蓝
+    { top: '#34D399', left: '#10B981', right: '#059669', type: 'standard' }, // 薄荷绿
+    { top: '#FBBF24', left: '#F59E0B', right: '#D97706', type: 'standard' }, // 暖光橙
+    { top: '#A78BFA', left: '#8B5CF6', right: '#7C3AED', type: 'standard' }, // 幻彩紫
+    { top: '#F472B6', left: '#EC4899', right: '#DB2777', type: 'standard' }, // 甜心粉
+    { top: '#38BDF8', left: '#0EA5E9', right: '#0284C7', type: 'cube' },     // 3D 魔方彩蛋台
+    { top: '#4ADE80', left: '#22C55E', right: '#16A34A', type: 'trampoline' }, // 超级蹦床台
+    { top: '#FDE047', left: '#EAB308', right: '#CA8A04', type: 'dictionary' }  // 英文词典台
+  ];
+
+  /* ==================== 2. 核心状态与物理参数 ==================== */
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+
+  // 摄像机镜头平移偏移
+  let camera = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+  // 方块队列管理
+  let blocks = [];
+  let blockIndexCounter = 0;
+
+  // 玩家实体对象
+  let player = {
+    u: 0,
+    v: 0,
+    y: 65,
+    vu: 0,
+    vv: 0,
+    vy: 0,
+    scaleX: 1,
+    scaleY: 1,
+    targetScaleX: 1,
+    targetScaleY: 1,
+    rotation: 0,
+    facing: 'right', // 'right' (斜右上) | 'left' (斜左上)
+    state: 'idle', // 'idle' | 'charging' | 'jumping' | 'landing' | 'wobbling' | 'rocket' | 'dead'
+    currentBlockIdx: 0,
+    stepCount: 0,
+    score: 0,
+    combo: 0,
+    chargeStartTime: 0,
+    chargeRatio: 0,
+    wobblePhase: 0
+  };
+
+  // 粒子系统
+  let particles = [];
+  let floatingTexts = [];
+
+  // 常量配置
+  const BLOCK_HEIGHT = 65; // 方块厚度
+  const GRAVITY = 2100;    // 重力加速度 (px/s^2)
+  const MAX_CHARGE_TIME = 2.3; // 蓄力上限秒数 (超过则触发火箭彩蛋)
+  const CHARGE_RATE = 1.0 / 1.25; // 满蓄力耗时约 1.25s
+  const MAX_JUMP_DIST = 340; // 满蓄力水平位移上限
+
+  /* ==================== 3. 游戏初始化与方块生成 ==================== */
+  function initGame() {
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    blocks = [];
+    blockIndexCounter = 0;
+    particles = [];
+    floatingTexts = [];
+
+    // 创建初始方块 (站在原点 u=0, v=0)
+    const b0 = createBlock(0, 0, BLOCK_THEMES[3]);
+    blocks.push(b0);
+
+    // 生成接下来的 5 个前方方块 (向右上或左上延伸)
+    for (let i = 0; i < 5; i++) {
+      spawnNextBlock();
+    }
+
+    // 重置角色状态：稳稳踩在首个方块顶面 (u=0, v=0, y=BLOCK_HEIGHT)
+    player.u = 0;
+    player.v = 0;
+    player.y = b0.height;
+    player.vu = 0;
+    player.vv = 0;
+    player.vy = 0;
+    player.scaleX = 1;
+    player.scaleY = 1;
+    player.targetScaleX = 1;
+    player.targetScaleY = 1;
+    player.rotation = 0;
+    player.state = 'idle';
+    player.currentBlockIdx = 0;
+    player.stepCount = 0;
+    player.score = 0;
+    player.combo = 0;
+    player.chargeRatio = 0;
+
+    // 确定初始面朝方向 (朝向第一个目标方块)
+    const nextB = blocks[1];
+    player.facing = (nextB.u > nextB.v) ? 'right' : 'left';
+
+    // 摄像机镜头定格：使玩家处于屏幕中下方偏居中
+    const scr = toScreen(player.u, player.v, player.y);
+    camera.x = scr.sx;
+    camera.y = scr.sy + height * 0.12;
+    camera.targetX = camera.x;
+    camera.targetY = camera.y;
+
+    updateHUD();
+    document.getElementById('modalGameOver').style.display = 'none';
+  }
+
+  function resizeCanvas() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    canvas.width = width * window.devicePixelRatio;
+    canvas.height = height * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+
+  // 创建单个等距方块
+  function createBlock(u, v, theme) {
+    const size = Math.floor(80 + Math.random() * 15); // 80~95px
+    return {
+      id: blockIndexCounter++,
+      u, v,
+      size,
+      height: BLOCK_HEIGHT,
+      theme: theme || BLOCK_THEMES[Math.floor(Math.random() * BLOCK_THEMES.length)],
+      landScaleY: 1 // 落地受力下压弹性
+    };
+  }
+
+  // 随机在【斜右上】(+u) 或【斜左上】(+v) 方向生成下一个方块
+  function spawnNextBlock() {
+    const last = blocks[blocks.length - 1];
+    // 随机距离 180 ~ 285px
+    const dist = 180 + Math.random() * 105;
+    const isRight = Math.random() < 0.5;
+
+    let du = 0, dv = 0;
+    if (isRight) {
+      du = dist; // 斜右上
+    } else {
+      dv = dist; // 斜左上
+    }
+
+    // 随机彩蛋方块
+    let theme = BLOCK_THEMES[Math.floor(Math.random() * 6)];
+    const roll = Math.random();
+    if (roll < 0.14) theme = BLOCK_THEMES[6]; // 3D魔方
+    else if (roll < 0.26) theme = BLOCK_THEMES[7]; // 蹦床
+    else if (roll < 0.38) theme = BLOCK_THEMES[8]; // 英语词典
+
+    const next = createBlock(last.u + du, last.v + dv, theme);
+    blocks.push(next);
+  }
+
+  /* ==================== 4. 用户交互：按压蓄力与松开跳跃 ==================== */
+  let isPointerDown = false;
+
+  function handlePointerDown(e) {
+    if (player.state !== 'idle') return;
+    if (e.target.closest('.game-hud') || e.target.closest('.game-modal') || e.target.closest('.quick-emojis')) return;
+
+    // 接力模式检查回合
+    if (isMultiplayer && multiSubMode === 'relay') {
+      const curTurnPeerId = relayPlayerOrder[relayTurnIndex % Math.max(1, relayPlayerOrder.length)];
+      if (curTurnPeerId && curTurnPeerId !== 'host' && curTurnPeerId !== p2p?.peer?.id) {
+        return; // 还没轮到自己
+      }
+    }
+
+    isPointerDown = true;
+    player.state = 'charging';
+    player.chargeStartTime = performance.now();
+    player.chargeRatio = 0;
+
+    triggerHaptic('charge');
+
+    // 广播蓄力状态给联机队友
+    if (isMultiplayer && p2p) {
+      p2p.sendToAll({ type: 'PLAYER_CHARGE_START', role: myRole });
+    }
+  }
+
+  function handlePointerUp() {
+    if (!isPointerDown || player.state !== 'charging') return;
+    isPointerDown = false;
+
+    const holdTime = (performance.now() - player.chargeStartTime) / 1000;
+
+    // 1. 蓄力严重超载：触发【火箭冲天飞走】搞笑彩蛋
+    if (holdTime > MAX_CHARGE_TIME) {
+      launchRocketEasterEgg();
+      return;
+    }
+
+    // 2. 正常跳跃执行
+    executeJump(holdTime);
+  }
+
+  // 绑定全局鼠标与触屏事件
+  window.addEventListener('pointerdown', handlePointerDown);
+  window.addEventListener('pointerup', handlePointerUp);
+  window.addEventListener('pointercancel', handlePointerUp);
+
+  /* ==================== 5. 核心跳跃抛物线物理 ==================== */
+  function executeJump(holdSec) {
+    player.state = 'jumping';
+
+    const currentBlock = blocks[player.currentBlockIdx];
+    const targetBlock = blocks[player.currentBlockIdx + 1];
+    if (!targetBlock) return;
+
+    // 蓄力比例 0.0 ~ 1.0 (带微平方缓动，兼顾微调与长冲刺)
+    const rawRatio = Math.min(1.0, holdSec * CHARGE_RATE);
+    player.chargeRatio = rawRatio;
+
+    // 目标朝向向量
+    const du = targetBlock.u - currentBlock.u;
+    const dv = targetBlock.v - currentBlock.v;
+    const distToTarget = Math.hypot(du, dv);
+
+    // 角色面朝向：斜右上还是斜左上
+    player.facing = (du > dv) ? 'right' : 'left';
+
+    // 固定飞行弧线周期 (约 0.52 秒)，确保跳跃节奏舒适
+    const FLIGHT_TIME = 0.52;
+    const jumpDist = rawRatio * MAX_JUMP_DIST;
+
+    // 水平速度分量
+    const speedH = jumpDist / FLIGHT_TIME;
+    player.vu = (du / distToTarget) * speedH;
+    player.vv = (dv / distToTarget) * speedH;
+
+    // 垂直起跳速度：蹦床提供超高弹跳
+    const isTrampoline = (currentBlock.theme.type === 'trampoline');
+    player.vy = isTrampoline ? 760 : (GRAVITY * FLIGHT_TIME * 0.5 + 40);
+
+    // 释放音效 (清脆上行音)
+    playChirpAudio(300 + rawRatio * 420);
+
+    // 释放瞬间果冻纵向拉伸
+    player.scaleY = 1.38;
+    player.scaleX = 0.82;
+
+    // 广播跳跃
+    if (isMultiplayer && p2p) {
+      p2p.sendToAll({
+        type: 'PLAYER_JUMP_FLY',
+        role: myRole,
+        vu: player.vu,
+        vv: player.vv,
+        vy: player.vy,
+        u: player.u,
+        v: player.v,
+        y: player.y
+      });
+    }
+  }
+
+  /* ==================== 6. 判定落地与 Perfect 连击 ==================== */
+  function handleLanding() {
+    const targetBlock = blocks[player.currentBlockIdx + 1];
+    const currentBlock = blocks[player.currentBlockIdx];
+
+    // 检测落点相对 targetBlock 中心的水平平面偏移
+    const offsetTarget = Math.hypot(player.u - targetBlock.u, player.v - targetBlock.v);
+    const halfSize = targetBlock.size / 2;
+
+    // 是否落在原地 (按压极短原地落下)
+    const offsetCurrent = Math.hypot(player.u - currentBlock.u, player.v - currentBlock.v);
+    if (offsetCurrent <= currentBlock.size / 2) {
+      player.u = currentBlock.u;
+      player.v = currentBlock.v;
+      player.y = currentBlock.height;
+      player.state = 'idle';
+      player.scaleY = 0.76;
+      createDustPuff(player.u, player.v, player.y);
+      return;
+    }
+
+    // 1. 成功落在目标方块顶面上
+    if (offsetTarget <= halfSize) {
+      player.currentBlockIdx++;
+      player.stepCount++;
+      player.u = targetBlock.u;
+      player.v = targetBlock.v;
+      player.y = targetBlock.height;
+      targetBlock.landScaleY = 0.88; // 方块受击下陷弹性
+      player.scaleY = 0.65; // 身体果冻受力压扁
+      createDustPuff(player.u, player.v, player.y);
+      triggerHaptic('land');
+
+      // 更新下一个目标的方向
+      const nextTarget = blocks[player.currentBlockIdx + 1];
+      if (nextTarget) {
+        player.facing = (nextTarget.u - targetBlock.u > nextTarget.v - targetBlock.v) ? 'right' : 'left';
+      }
+
+      // 判定是否为 Perfect 核心靶心 (半径 16px 内部)
+      const isPerfect = offsetTarget < 16;
+
+      if (isPerfect) {
+        player.combo++;
+        const gain = player.combo * 2;
+        player.score += gain;
+        audio.play('victory');
+        triggerHaptic('perfect');
+        createPerfectSparks(player.u, player.v, player.y);
+        addFloatingText(`PERFECT! +${gain}`, '#F59E0B');
+
+        // 主题方块专属彩蛋加分
+        if (targetBlock.theme.type === 'cube') {
+          player.score += 5;
+          addFloatingText('🧊 3D魔方 +5分!', '#38BDF8');
+        } else if (targetBlock.theme.type === 'dictionary') {
+          addFloatingText('📖 Oxford: Awesome!', '#FDE047');
+        }
+      } else {
+        player.combo = 0;
+        player.score += 1;
+        playSoftThump();
+        addFloatingText('+1', '#FFF');
+      }
+
+      // 险象环生：踩在边缘时触发「悬崖勒马失衡摇晃」动画
+      if (offsetTarget > halfSize - 12) {
+        player.state = 'wobbling';
+        player.wobblePhase = 0;
+        addFloatingText('好险！💦', '#38BDF8');
+      } else {
+        player.state = 'idle';
+      }
+
+      // 生成前方方块，确保赛道无穷无尽
+      spawnNextBlock();
+      updateHUD();
+
+      // 联机广播
+      if (isMultiplayer && p2p) {
+        p2p.sendToAll({
+          type: 'PLAYER_LANDED',
+          role: myRole,
+          stepCount: player.stepCount,
+          score: player.score,
+          combo: player.combo,
+          isPerfect
+        });
+
+        if (multiSubMode === 'relay') {
+          relayTurnIndex++;
+          updateRelayTurnBanner();
+        }
+      }
+    }
+    // 2. 踩空跌落深渊
+    else {
+      player.state = 'dead';
+      playFallAudio();
+      triggerHaptic('rocket');
+      addFloatingText('哎呀！💥', '#F43F5E');
+
+      setTimeout(() => {
+        showGameOverModal('真遗憾，摔倒啦！', '差一点点就踏上安全方块了！');
+      }, 700);
+
+      if (isMultiplayer && p2p) {
+        p2p.sendToAll({ type: 'PLAYER_DEAD', role: myRole, stepCount: player.stepCount });
+      }
+    }
+  }
+
+  /* ==================== 7. 彩蛋：蓄力过度化身火箭升空 ==================== */
+  function launchRocketEasterEgg() {
+    player.state = 'rocket';
+    player.vy = 1800; // 直冲云霄
+    triggerHaptic('rocket');
+    audio.play('buzz');
+
+    addFloatingText('🚀 蓄力过猛！化身火箭！', '#EF4444');
+
+    // 火箭喷射尾迹粒子
+    for (let i = 0; i < 40; i++) {
+      particles.push({
+        u: player.u + (Math.random() - 0.5) * 20,
+        v: player.v + (Math.random() - 0.5) * 20,
+        y: player.y,
+        vu: (Math.random() - 0.5) * 60,
+        vv: (Math.random() - 0.5) * 60,
+        vy: -Math.random() * 260,
+        size: Math.random() * 8 + 4,
+        color: ['#F59E0B', '#EF4444', '#FBBF24'][Math.floor(Math.random() * 3)],
+        alpha: 1,
+        life: 0.8
+      });
+    }
+
+    setTimeout(() => {
+      showGameOverModal('🚀 人体火箭达成！', '恭喜你解锁搞笑成就：【冲出地球走向宇宙】！');
+    }, 1100);
+
+    if (isMultiplayer && p2p) {
+      p2p.sendToAll({ type: 'PLAYER_ROCKET', role: myRole, stepCount: player.stepCount });
+    }
+  }
+
+  /* ==================== 8. 逐帧物理与动画 Loop ==================== */
+  let lastFrameTime = performance.now();
+
+  function gameLoop(now) {
+    const dt = Math.min((now - lastFrameTime) / 1000, 0.05);
+    lastFrameTime = now;
+
+    update(dt);
+    render();
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  function update(dt) {
+    // 1. 蓄力状态：保体积果冻压缩，蓄力条在头顶实时更新
+    if (player.state === 'charging') {
+      const holdTime = (performance.now() - player.chargeStartTime) / 1000;
+      const progress = Math.min(1.0, holdTime * CHARGE_RATE);
+      player.chargeRatio = progress;
+
+      // 身体下压同时横向向外膨胀 (Squash & Stretch)
+      player.targetScaleY = Math.max(0.52, 1.0 - progress * 0.48);
+      player.targetScaleX = 1.0 / Math.sqrt(player.targetScaleY);
+
+      // 蓄力到 80% 以上时的剧烈能量颤抖
+      if (progress > 0.8) {
+        player.u += (Math.random() - 0.5) * 2.2;
+      }
+    }
+
+    // 2. 抛物线跳跃腾空
+    else if (player.state === 'jumping') {
+      player.u += player.vu * dt;
+      player.v += player.vv * dt;
+      player.y += player.vy * dt;
+      player.vy -= GRAVITY * dt;
+
+      // 翻滚角速度
+      const flipDir = (player.facing === 'right') ? 1 : -1;
+      player.rotation += dt * Math.PI * 3.6 * flipDir;
+
+      // 跳跃拖尾金星
+      if (Math.random() < 0.6) {
+        particles.push({
+          u: player.u,
+          v: player.v,
+          y: player.y + 10,
+          vu: -player.vu * 0.2 + (Math.random() - 0.5) * 20,
+          vv: -player.vv * 0.2 + (Math.random() - 0.5) * 20,
+          vy: (Math.random() - 0.5) * 25,
+          size: Math.random() * 5 + 2,
+          color: '#FBBF24',
+          alpha: 0.9,
+          life: 0.35
+        });
+      }
+
+      // 接触方块顶面高度 (BLOCK_HEIGHT = 65) 判定着陆
+      if (player.y <= BLOCK_HEIGHT && player.vy <= 0) {
+        player.rotation = 0;
+        handleLanding();
+      }
+    }
+
+    // 3. 悬崖勒马失衡摇晃
+    else if (player.state === 'wobbling') {
+      player.wobblePhase += dt * 14;
+      player.rotation = Math.sin(player.wobblePhase) * 0.26 * Math.exp(-player.wobblePhase * 0.24);
+      if (player.wobblePhase > Math.PI * 4) {
+        player.rotation = 0;
+        player.state = 'idle';
+      }
+    }
+
+    // 4. 火箭升空状态
+    else if (player.state === 'rocket') {
+      player.y += player.vy * dt;
+      player.vy += 800 * dt;
+      // 尾部烈火
+      particles.push({
+        u: player.u + (Math.random() - 0.5) * 10,
+        v: player.v + (Math.random() - 0.5) * 10,
+        y: player.y - 15,
+        vu: (Math.random() - 0.5) * 30,
+        vv: (Math.random() - 0.5) * 30,
+        vy: -350,
+        size: Math.random() * 9 + 4,
+        color: ['#EF4444', '#F59E0B'][Math.floor(Math.random() * 2)],
+        alpha: 1,
+        life: 0.4
+      });
+    }
+
+    // 5. 果冻形变平滑阻尼回弹 (Spring Damping)
+    if (player.state !== 'charging') {
+      player.targetScaleX = 1;
+      player.targetScaleY = 1;
+    }
+    player.scaleX += (player.targetScaleX - player.scaleX) * dt * 14;
+    player.scaleY += (player.targetScaleY - player.scaleY) * dt * 14;
+
+    // 6. 方块下陷回弹恢复
+    blocks.forEach(b => {
+      b.landScaleY += (1 - b.landScaleY) * dt * 10;
+    });
+
+    // 7. 摄像机跟随：锁定玩家与下一个目标方块的中点，并平滑缓动
+    const nextB = blocks[player.currentBlockIdx + 1];
+    const focusU = nextB ? (player.u * 0.65 + nextB.u * 0.35) : player.u;
+    const focusV = nextB ? (player.v * 0.65 + nextB.v * 0.35) : player.v;
+    const camTarget = toScreen(focusU, focusV, player.y);
+
+    camera.targetX = camTarget.sx;
+    camera.targetY = camTarget.sy + height * 0.12;
+
+    camera.x += (camera.targetX - camera.x) * dt * 6.0;
+    camera.y += (camera.targetY - camera.y) * dt * 6.0;
+
+    // 8. 粒子寿命衰减
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.u += (p.vu || 0) * dt;
+      p.v += (p.vv || 0) * dt;
+      p.y += (p.vy || 0) * dt;
+      p.alpha -= dt / p.life;
+      if (p.alpha <= 0) particles.splice(i, 1);
+    }
+
+    // 9. 浮动文字飘升
+    for (let i = floatingTexts.length - 1; i >= 0; i--) {
+      const ft = floatingTexts[i];
+      ft.y += dt * 48;
+      ft.alpha -= dt * 1.2;
+      if (ft.alpha <= 0) floatingTexts.splice(i, 1);
+    }
+  }
+
+  /* ==================== 9. 精致 2.5D Canvas 深度渲染 ==================== */
+  function render() {
+    ctx.clearRect(0, 0, width, height);
+
+    // 深空科技渐变背景
+    const bgGrad = ctx.createRadialGradient(width / 2, height * 0.45, 40, width / 2, height * 0.5, width * 0.85);
+    bgGrad.addColorStop(0, '#1E293B');
+    bgGrad.addColorStop(1, '#0B1120');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.save();
+    // 摄像机居中平移
+    ctx.translate(width / 2 - camera.x, height / 2 - camera.y);
+
+    // 深度排序 (Painter's Algorithm)：(u + v) 越大的(越远)先画，越小的(越近)后画
+    const renderItems = [];
+
+    // 收集所有方块
+    blocks.forEach((b, idx) => {
+      const isTarget = (idx === player.currentBlockIdx + 1);
+      const isCurrent = (idx === player.currentBlockIdx);
+      const depth = (b.u + b.v);
+      renderItems.push({
+        type: 'block',
+        depth: depth,
+        block: b,
+        isTarget,
+        isCurrent
+      });
+    });
+
+    // 收集远程玩家鬼影 (depth 略减 0.05，确保画在所在方块之上)
+    remotePlayers.forEach((rp) => {
+      const u = rp.u || 0;
+      const v = rp.v || 0;
+      renderItems.push({
+        type: 'character',
+        depth: (u + v) - 0.05,
+        u: u,
+        v: v,
+        y: rp.y || BLOCK_HEIGHT,
+        scaleX: rp.scaleX || 1,
+        scaleY: rp.scaleY || 1,
+        rot: rp.rotation || 0,
+        role: rp.role,
+        isGhost: true,
+        isMe: false,
+        facing: 'right'
+      });
+    });
+
+    // 收集主角 (depth 略减 0.05，确保稳稳立在方块顶面之上，绝不被方块遮挡！)
+    renderItems.push({
+      type: 'character',
+      depth: (player.u + player.v) - 0.05,
+      u: player.u,
+      v: player.v,
+      y: player.y,
+      scaleX: player.scaleX,
+      scaleY: player.scaleY,
+      rot: player.rotation,
+      role: myRole,
+      isGhost: false,
+      isMe: true,
+      facing: player.facing
+    });
+
+    // 由远及近排序 (depth 大的在远处先画，depth 小的在近处后画覆盖)
+    renderItems.sort((a, b) => b.depth - a.depth);
+
+    renderItems.forEach(item => {
+      if (item.type === 'block') {
+        renderBlock(item.block, item.isTarget, item.isCurrent);
+      } else if (item.type === 'character') {
+        renderCharacter(item.u, item.v, item.y, item.scaleX, item.scaleY, item.rot, item.role, item.isGhost, item.isMe, item.facing);
+      }
+    });
+
+    // 绘制粒子
+    renderParticles();
+
+    // 绘制连击/飘字
+    renderFloatingTexts();
+
+    ctx.restore();
+  }
+
+  // 渲染单个 3D 等距方块 (包含落点高亮动画)
+  function renderBlock(b, isTarget, isCurrent) {
+    const s = b.size;
+    const h = b.height * b.landScaleY;
+
+    // 方块顶面中心在屏幕上的像素坐标
+    const { sx, sy } = toScreen(b.u, b.v, h);
+
+    const halfW = s * COS_A;
+    const halfH = s * SIN_A;
+
+    // A. 底部柔和阴影
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.beginPath();
+    ctx.ellipse(sx, sy + h, halfW * 1.08, halfH * 1.08, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // B. 左侧面 (背光暗面)
+    ctx.fillStyle = b.theme.left;
+    ctx.beginPath();
+    ctx.moveTo(sx - halfW, sy);
+    ctx.lineTo(sx, sy + halfH);
+    ctx.lineTo(sx, sy + halfH + h);
+    ctx.lineTo(sx - halfW, sy + h);
+    ctx.closePath();
+    ctx.fill();
+
+    // C. 右侧面 (侧光次亮面)
+    ctx.fillStyle = b.theme.right;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy + halfH);
+    ctx.lineTo(sx + halfW, sy);
+    ctx.lineTo(sx + halfW, sy + h);
+    ctx.lineTo(sx, sy + halfH + h);
+    ctx.closePath();
+    ctx.fill();
+
+    // D. 顶面 (菱形受光最亮面)
+    ctx.fillStyle = b.theme.top;
+    ctx.beginPath();
+    ctx.moveTo(sx, sy - halfH);
+    ctx.lineTo(sx + halfW, sy);
+    ctx.lineTo(sx, sy + halfH);
+    ctx.lineTo(sx - halfW, sy);
+    ctx.closePath();
+    ctx.fill();
+
+    // 顶面晶莹微光描边
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // E. 彩蛋方块纹理
+    if (b.theme.type === 'cube') {
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = 'bold 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('🧊 魔方 +5', sx, sy + 4);
+    } else if (b.theme.type === 'trampoline') {
+      ctx.fillStyle = '#065F46';
+      ctx.font = 'bold 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('⚡ 蹦床大跳', sx, sy + 4);
+    } else if (b.theme.type === 'dictionary') {
+      ctx.fillStyle = '#78350F';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('📖 Oxford', sx, sy + 4);
+    }
+
+    // F. 【落点高亮】：为目标方块渲染炫酷呼吸光环与中心信标靶心
+    if (isTarget) {
+      const now = performance.now();
+      const pulse = 1 + 0.16 * Math.sin(now * 0.006);
+
+      ctx.save();
+      // 外层动态呼吸金色扩散环
+      ctx.strokeStyle = '#F59E0B';
+      ctx.lineWidth = 2.8;
+      ctx.shadowColor = '#F59E0B';
+      ctx.shadowBlur = 14;
+      ctx.beginPath();
+      ctx.ellipse(sx, sy, 24 * pulse, 12 * pulse, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 内层中心高亮靶心圆点
+      ctx.fillStyle = '#FFFFFF';
+      ctx.shadowColor = '#FDE047';
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.ellipse(sx, sy, 6.5, 3.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 顶部悬浮呼吸小箭头 ⬇
+      const arrowBounce = Math.sin(now * 0.008) * 5;
+      ctx.fillStyle = '#F59E0B';
+      ctx.font = '900 16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('▼', sx, sy - halfH - 12 + arrowBounce);
+      ctx.restore();
+    } else {
+      // 普通方块中心小微点
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.beginPath();
+      ctx.ellipse(sx, sy, 4.5, 2.2, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // 渲染萌系 Q 弹角色 (大幅放大体型、增加高反差描边、绝不被遮挡)
+  function renderCharacter(u, v, y, scaleX, scaleY, rot, role, isGhost, isMe, facing) {
+    const { sx, sy } = toScreen(u, v, y);
+
+    ctx.save();
+    ctx.translate(sx, sy);
+    ctx.rotate(rot);
+    ctx.scale(scaleX, scaleY);
+
+    if (isGhost) {
+      ctx.globalAlpha = 0.55; // 联机队友半透明鬼影
+    }
+
+    // 1. 脚底接触面阴影 (紧贴方块顶面)
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.32)';
+    ctx.beginPath();
+    ctx.ellipse(0, 2, 18 * scaleX, 8 * scaleX, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 2. 两个可爱小脚丫 (立足脚掌，强化与方块顶面的贴合实感)
+    ctx.fillStyle = '#1E293B';
+    ctx.beginPath();
+    ctx.ellipse(-7, 0, 5, 3, 0, 0, Math.PI * 2);
+    ctx.ellipse(7, 0, 5, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. 角色体型大幅加粗加大 (高度从 36 提升至 52，宽度从 14 提升至 22)
+    const bodyHeight = 52;
+    const bodyWidth = 22;
+
+    // 高反差发光外轮廓 (即使在同色方块上也清晰分明)
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+    ctx.shadowBlur = 8;
+    ctx.strokeStyle = '#FFFFFF';
+    ctx.lineWidth = 3.0;
+
+    const charGrad = ctx.createLinearGradient(-bodyWidth, -bodyHeight, bodyWidth, 0);
+    if (role.id === 'alex') {
+      charGrad.addColorStop(0, '#FEF08A');
+      charGrad.addColorStop(0.5, '#FBBF24');
+      charGrad.addColorStop(1, '#D97706'); // 闪电金
+    } else if (role.id === 'dad') {
+      charGrad.addColorStop(0, '#FED7AA');
+      charGrad.addColorStop(0.5, '#FB923C');
+      charGrad.addColorStop(1, '#C2410C'); // 狮王暖橙
+    } else if (role.id === 'mom') {
+      charGrad.addColorStop(0, '#FBCFE8');
+      charGrad.addColorStop(0.5, '#F472B6');
+      charGrad.addColorStop(1, '#BE185D'); // 软萌粉兔
+    } else {
+      charGrad.addColorStop(0, '#BAE6FD');
+      charGrad.addColorStop(0.5, '#38BDF8');
+      charGrad.addColorStop(1, '#0369A1'); // 晴空科技蓝
+    }
+
+    ctx.fillStyle = charGrad;
+    ctx.beginPath();
+    ctx.ellipse(0, -bodyHeight * 0.5, bodyWidth, bodyHeight * 0.5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    // 4. 角色胸前专属徽标
+    if (role.id === 'alex') {
+      // ⚡ Alex: 胸前亮黄闪电
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '900 13px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('⚡', 0, -bodyHeight * 0.28);
+    } else if (role.id === 'mom') {
+      // 🐰 妈妈：粉白小爱心
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '900 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('❤', 0, -bodyHeight * 0.28);
+    }
+
+    // 5. 角色专属头部配件 (加大比例)
+    if (role.id === 'alex') {
+      // ⚡ Alex: 科技发带天线球
+      ctx.fillStyle = '#38BDF8';
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 1.5;
+      const antOffset = (facing === 'right') ? 3 : -3;
+      ctx.beginPath();
+      ctx.arc(antOffset, -bodyHeight - 6, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    } else if (role.id === 'mom') {
+      // 🐰 妈妈：软萌白长兔耳
+      ctx.fillStyle = '#FFFFFF';
+      ctx.strokeStyle = '#F472B6';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.ellipse(-8, -bodyHeight - 10, 4.5, 12, -0.2, 0, Math.PI * 2);
+      ctx.ellipse(8, -bodyHeight - 10, 4.5, 12, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // 内耳粉色
+      ctx.fillStyle = '#F472B6';
+      ctx.beginPath();
+      ctx.ellipse(-8, -bodyHeight - 10, 2.5, 7, -0.2, 0, Math.PI * 2);
+      ctx.ellipse(8, -bodyHeight - 10, 2.5, 7, 0.2, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (role.id === 'dad') {
+      // 🦁 爸爸：大号闪耀金色皇冠
+      ctx.fillStyle = '#F59E0B';
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(-10, -bodyHeight - 2);
+      ctx.lineTo(-6, -bodyHeight - 12);
+      ctx.lineTo(0, -bodyHeight - 6);
+      ctx.lineTo(6, -bodyHeight - 12);
+      ctx.lineTo(10, -bodyHeight - 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    // 6. 灵动大眼睛表情系统 (眼球比例放大，视线朝向目标方块)
+    const eyeY = -bodyHeight * 0.62;
+    const eyeSpacing = 7;
+    const eyeOffsetDir = (facing === 'right') ? 3 : -3;
+
+    if (player.state === 'charging' && isMe) {
+      // 蓄力紧绷：眯眯眼弧线 (^ ^)
+      ctx.strokeStyle = '#0F172A';
+      ctx.lineWidth = 2.8;
+      ctx.beginPath();
+      ctx.arc(-eyeSpacing + eyeOffsetDir, eyeY, 4, Math.PI, 0, false);
+      ctx.arc(eyeSpacing + eyeOffsetDir, eyeY, 4, Math.PI, 0, false);
+      ctx.stroke();
+
+      // 腮红
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.65)';
+      ctx.beginPath();
+      ctx.arc(-eyeSpacing + eyeOffsetDir - 3, eyeY + 6, 3.5, 0, Math.PI * 2);
+      ctx.arc(eyeSpacing + eyeOffsetDir + 3, eyeY + 6, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    } else if (player.state === 'wobbling' && isMe) {
+      // 悬崖失衡：慌张十字眼 (> <)
+      ctx.strokeStyle = '#0F172A';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(-eyeSpacing - 3, eyeY - 3); ctx.lineTo(-eyeSpacing + 3, eyeY); ctx.lineTo(-eyeSpacing - 3, eyeY + 3);
+      ctx.moveTo(eyeSpacing + 3, eyeY - 3); ctx.lineTo(eyeSpacing - 3, eyeY); ctx.lineTo(eyeSpacing + 3, eyeY + 3);
+      ctx.stroke();
+    } else {
+      // 平常：大号水灵萌系大眼
+      ctx.fillStyle = '#FFFFFF';
+      ctx.strokeStyle = '#0F172A';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(-eyeSpacing + eyeOffsetDir, eyeY, 5.5, 0, Math.PI * 2);
+      ctx.arc(eyeSpacing + eyeOffsetDir, eyeY, 5.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // 黑色眼珠朝向目标方块
+      ctx.fillStyle = '#0F172A';
+      ctx.beginPath();
+      ctx.arc(-eyeSpacing + eyeOffsetDir + (facing === 'right' ? 2 : -2), eyeY, 3.2, 0, Math.PI * 2);
+      ctx.arc(eyeSpacing + eyeOffsetDir + (facing === 'right' ? 2 : -2), eyeY, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // 白色高光点
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(-eyeSpacing + eyeOffsetDir + (facing === 'right' ? 2.8 : -1.2), eyeY - 1.2, 1.4, 0, Math.PI * 2);
+      ctx.arc(eyeSpacing + eyeOffsetDir + (facing === 'right' ? 2.8 : -1.2), eyeY - 1.2, 1.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.restore(); // 退出角色的果冻形变缩放
+
+    // 7. 头顶 UI：头像姓名胶囊 + 【头顶蓄力条】
+    ctx.save();
+    ctx.translate(sx, sy);
+
+    // A. 头像姓名胶囊 (清晰醒目)
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    const tagText = `${role.icon} ${role.name}`;
+    const tagW = ctx.measureText(tagText).width + 16;
+
+    ctx.fillStyle = isGhost ? 'rgba(30, 41, 59, 0.85)' : 'rgba(15, 23, 42, 0.9)';
+    ctx.strokeStyle = isGhost ? 'rgba(255, 255, 255, 0.2)' : 'rgba(251, 191, 36, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.roundRect(-tagW / 2, -bodyHeight - 30, tagW, 20, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = isGhost ? '#94A3B8' : '#FBBF24';
+    ctx.fillText(tagText, 0, -bodyHeight - 16);
+
+    // B. 【蓄力条在人顶】：按压时在头顶正上方展示醒目能量胶囊条
+    if (isMe && player.state === 'charging') {
+      const barY = -bodyHeight - 52;
+      const barW = 68;
+      const barH = 10;
+      const fillW = Math.max(4, barW * player.chargeRatio);
+
+      // 外框底槽
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(-barW / 2, barY, barW, barH, 5);
+      ctx.fill();
+      ctx.stroke();
+
+      // 动态颜色渐变：绿 -> 黄 -> 炽热红
+      let fillColor = '#10B981';
+      if (player.chargeRatio > 0.82) {
+        fillColor = '#EF4444';
+        ctx.shadowColor = '#EF4444';
+        ctx.shadowBlur = 12;
+      } else if (player.chargeRatio > 0.52) {
+        fillColor = '#F59E0B';
+        ctx.shadowColor = '#F59E0B';
+        ctx.shadowBlur = 8;
+      }
+
+      ctx.fillStyle = fillColor;
+      ctx.beginPath();
+      ctx.roundRect(-barW / 2 + 1.5, barY + 1.5, fillW - 3, barH - 3, 3.5);
+      ctx.fill();
+
+      // 蓄力提示
+      if (player.chargeRatio > 0.88) {
+        ctx.fillStyle = '#EF4444';
+        ctx.font = '900 11px sans-serif';
+        ctx.fillText('🔥 即将飞天！', 0, barY - 5);
+      }
+    }
+
+    ctx.restore();
+  }
+
+  // 绘制粒子
+  function renderParticles() {
+    particles.forEach(p => {
+      const { sx, sy } = toScreen(p.u, p.v, p.y);
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.alpha);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(sx, sy, p.size, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  // 绘制浮动文字
+  function renderFloatingTexts() {
+    floatingTexts.forEach(ft => {
+      const { sx, sy } = toScreen(ft.u, ft.v, ft.y);
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, ft.alpha);
+      ctx.font = '900 16px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = ft.color;
+      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur = 6;
+      ctx.fillText(ft.text, sx, sy);
+      ctx.restore();
+    });
+  }
+
+  // 落地烟雾环
+  function createDustPuff(u, v, y) {
+    for (let i = 0; i < 14; i++) {
+      const ang = (i / 14) * Math.PI * 2;
+      const spd = 40 + Math.random() * 30;
+      particles.push({
+        u, v, y,
+        vu: Math.cos(ang) * spd,
+        vv: Math.sin(ang) * spd,
+        vy: 10 + Math.random() * 20,
+        size: Math.random() * 5 + 3,
+        color: 'rgba(255, 255, 255, 0.8)',
+        alpha: 0.8,
+        life: 0.4
+      });
+    }
+  }
+
+  // Perfect 漫天金色星芒
+  function createPerfectSparks(u, v, y) {
+    for (let i = 0; i < 28; i++) {
+      particles.push({
+        u, v, y: y + 10,
+        vu: (Math.random() - 0.5) * 140,
+        vv: (Math.random() - 0.5) * 140,
+        vy: 80 + Math.random() * 120,
+        size: Math.random() * 6 + 3,
+        color: ['#F59E0B', '#FDE047', '#FFF', '#F43F5E'][Math.floor(Math.random() * 4)],
+        alpha: 1,
+        life: 0.6
+      });
+    }
+  }
+
+  function addFloatingText(text, color = '#FFF') {
+    floatingTexts.push({
+      u: player.u,
+      v: player.v,
+      y: player.y + 40,
+      text,
+      color,
+      alpha: 1
+    });
+  }
+
+  /* ==================== 10. 音效合成器调用 ==================== */
+  function playChirpAudio(freq) {
+    try {
+      audio.ensureCtx();
+      const now = audio.ctx.currentTime;
+      const osc = audio.ctx.createOscillator();
+      const gain = audio.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(audio.ctx.destination);
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq * 0.7, now);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + 0.12);
+
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } catch(e){}
+  }
+
+  function playSoftThump() {
+    try {
+      audio.ensureCtx();
+      const now = audio.ctx.currentTime;
+      const osc = audio.ctx.createOscillator();
+      const gain = audio.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(audio.ctx.destination);
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(50, now + 0.08);
+
+      gain.gain.setValueAtTime(0.18, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+
+      osc.start(now);
+      osc.stop(now + 0.1);
+    } catch(e){}
+  }
+
+  function playFallAudio() {
+    try {
+      audio.ensureCtx();
+      const now = audio.ctx.currentTime;
+      const osc = audio.ctx.createOscillator();
+      const gain = audio.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(audio.ctx.destination);
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(70, now + 0.35);
+
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+
+      osc.start(now);
+      osc.stop(now + 0.4);
+    } catch(e){}
+  }
+
+  /* ==================== 11. HUD 状态与模态框控制 ==================== */
+  function updateHUD() {
+    document.getElementById('uiScore').textContent = player.score;
+
+    const comboBadge = document.getElementById('uiComboBadge');
+    if (player.combo > 1) {
+      comboBadge.style.display = 'inline-flex';
+      document.getElementById('uiComboNum').textContent = player.combo;
+    } else {
+      comboBadge.style.display = 'none';
+    }
+
+    if (player.score > highScore) {
+      highScore = player.score;
+      localStorage.setItem('alex_jump_highscore', String(highScore));
+    }
+
+    if (isMultiplayer) {
+      updateMultiPlayerList();
+    }
+  }
+
+  function showGameOverModal(title, subtitle) {
+    document.getElementById('resTitle').textContent = title;
+    document.getElementById('resSub').textContent = subtitle;
+    document.getElementById('resFinalScore').textContent = player.score;
+    document.getElementById('resHighScore').textContent = highScore;
+    document.getElementById('modalGameOver').style.display = 'flex';
+  }
+
+  function restartGame() {
+    initGame();
+  }
+
+  function openModeSelectModal() {
+    document.getElementById('modalSetup').style.display = 'flex';
+  }
+
+  function closeSetupModal() {
+    document.getElementById('modalSetup').style.display = 'none';
+  }
+
+  function switchModalTab(tab) {
+    const isTabMulti = (tab === 'multi');
+    document.getElementById('tabSingle').classList.toggle('active', !isTabMulti);
+    document.getElementById('tabMulti').classList.toggle('active', isTabMulti);
+    document.getElementById('singlePanelArea').style.display = isTabMulti ? 'none' : 'block';
+    document.getElementById('multiPanelArea').style.display = isTabMulti ? 'flex' : 'none';
+  }
+
+  function selectRole(id, icon, name) {
+    myRole = { id, icon, name };
+    ['alex', 'dad', 'mom', 'guest'].forEach(r => {
+      document.getElementById(`av_${r}`).classList.toggle('selected', r === id);
+    });
+  }
+
+  function setMultiSubMode(mode) {
+    multiSubMode = mode;
+    document.getElementById('btnSubModeRace').style.borderColor = (mode === 'race') ? 'var(--game-accent)' : 'transparent';
+    document.getElementById('btnSubModeRelay').style.borderColor = (mode === 'relay') ? 'var(--game-accent)' : 'transparent';
+  }
+
+  function startSingleGame() {
+    isMultiplayer = false;
+    document.getElementById('uiMultiTracker').style.display = 'none';
+    document.getElementById('uiQuickEmojis').style.display = 'none';
+    document.getElementById('relayTurnBanner').style.display = 'none';
+    document.getElementById('roomStatusIcon').textContent = '👥';
+    document.getElementById('roomStatusText').textContent = '联机对战';
+    closeSetupModal();
+    initGame();
+  }
+
+  /* ==================== 12. WebRTC P2P 联机核心模块 ==================== */
+  function hostCreateRoom() {
+    audio.play('tap');
+    const randomCode = Math.floor(1000 + Math.random() * 9000);
+
+    p2p = new P2PRoom({ prefix: 'study4alex-jump-' });
+    document.getElementById('displayRoomCode').textContent = randomCode;
+
+    const qrcodeBox = document.getElementById('qrcodeBox');
+    qrcodeBox.innerHTML = '';
+    const joinUrl = `${window.location.origin}${window.location.pathname}?room=${randomCode}`;
+    if (window.QRCode) {
+      new QRCode(qrcodeBox, { text: joinUrl, width: 140, height: 140 });
+    }
+
+    p2p.createHost(randomCode, myRole).then(() => {
+      document.getElementById('modalSetup').style.display = 'none';
+      document.getElementById('modalHostWait').style.display = 'flex';
+      setupP2PListeners();
+    }).catch(err => {
+      alert('创建房间失败，可能是房间码冲突，请重试');
+    });
+  }
+
+  function joinRoomByCode() {
+    const code = document.getElementById('inputRoomCode').value.trim();
+    if (!code || code.length !== 4) {
+      alert('请输入正确的 4 位房间码！');
+      return;
+    }
+    p2p = new P2PRoom({ prefix: 'study4alex-jump-' });
+    p2p.joinRoom(code, myRole).then(() => {
+      document.getElementById('modalSetup').style.display = 'none';
+      setupP2PListeners();
+      enterMultiplayerMode();
+    }).catch(err => {
+      alert('加入房间失败，请确认房主已创建！');
+    });
+  }
+
+  function cancelRoom() {
+    if (p2p) p2p.destroy();
+    document.getElementById('modalHostWait').style.display = 'none';
+  }
+
+  function hostLaunchMatch() {
+    document.getElementById('modalHostWait').style.display = 'none';
+    enterMultiplayerMode();
+
+    relayPlayerOrder = ['host'];
+    remotePlayers.forEach((_, peerId) => relayPlayerOrder.push(peerId));
+
+    p2p.sendToAll({
+      type: 'START_MATCH',
+      subMode: multiSubMode,
+      relayOrder: relayPlayerOrder
+    });
+  }
+
+  function enterMultiplayerMode() {
+    isMultiplayer = true;
+    document.getElementById('uiMultiTracker').style.display = 'flex';
+    document.getElementById('uiQuickEmojis').style.display = 'flex';
+    document.getElementById('roomStatusIcon').textContent = '🟢';
+    document.getElementById('roomStatusText').textContent = `房间 ${p2p.roomCode}`;
+
+    if (multiSubMode === 'relay') {
+      updateRelayTurnBanner();
+    }
+    initGame();
+  }
+
+  function setupP2PListeners() {
+    p2p.on('playerJoined', (data) => {
+      remotePlayers.set(data.peerId, { role: data.playerInfo, u: 0, v: 0, y: BLOCK_HEIGHT, stepCount: 0, score: 0 });
+      const countEl = document.getElementById('hostWaitPlayersCount');
+      if (countEl) countEl.textContent = `已就绪玩家：${remotePlayers.size + 1} / 3`;
+      updateMultiPlayerList();
+    });
+
+    p2p.on('playerDisconnected', (peerId) => {
+      remotePlayers.delete(peerId);
+      updateMultiPlayerList();
+    });
+
+    p2p.on('message', ({ peerId, data }) => {
+      handleRemoteMessage(peerId, data);
+    });
+  }
+
+  function handleRemoteMessage(peerId, msg) {
+    if (!msg || !msg.type) return;
+
+    if (msg.type === 'START_MATCH') {
+      multiSubMode = msg.subMode;
+      relayPlayerOrder = msg.relayOrder || [];
+      enterMultiplayerMode();
+    } else if (msg.type === 'PLAYER_CHARGE_START') {
+      const rp = remotePlayers.get(peerId);
+      if (rp) {
+        rp.scaleY = 0.6;
+        rp.scaleX = 1.3;
+      }
+    } else if (msg.type === 'PLAYER_JUMP_FLY') {
+      const rp = remotePlayers.get(peerId);
+      if (rp) {
+        rp.scaleY = 1.25;
+        rp.scaleX = 0.85;
+      }
+    } else if (msg.type === 'PLAYER_LANDED') {
+      const rp = remotePlayers.get(peerId);
+      if (rp) {
+        rp.stepCount = msg.stepCount;
+        rp.score = msg.score;
+        createDustPuff(rp.u || 0, rp.v || 0, rp.y || BLOCK_HEIGHT);
+      }
+      updateMultiPlayerList();
+      if (multiSubMode === 'relay') {
+        relayTurnIndex++;
+        updateRelayTurnBanner();
+      }
+    } else if (msg.type === 'QUICK_EMOJI') {
+      const rp = remotePlayers.get(peerId);
+      if (rp) {
+        addFloatingText(`${rp.role.icon} ${msg.emoji}`, '#FFF');
+        audio.play('peek');
+      }
+    } else if (msg.type === 'PLAYER_ROCKET') {
+      const rp = remotePlayers.get(peerId);
+      if (rp) {
+        addFloatingText(`${rp.role.name} 化身火箭！🚀`, '#EF4444');
+      }
+    }
+  }
+
+  function sendQuickEmoji(emoji) {
+    addFloatingText(`${myRole.icon} ${emoji}`, '#FFF');
+    triggerHaptic('tick');
+    if (isMultiplayer && p2p) {
+      p2p.sendToAll({ type: 'QUICK_EMOJI', emoji });
+    }
+  }
+
+  function updateMultiPlayerList() {
+    const listEl = document.getElementById('multiPlayerList');
+    if (!listEl) return;
+    listEl.innerHTML = '';
+
+    const all = [{ name: myRole.name, icon: myRole.icon, step: player.stepCount, isMe: true }];
+    remotePlayers.forEach(rp => {
+      all.push({ name: rp.role.name, icon: rp.role.icon, step: rp.stepCount || 0, isMe: false });
+    });
+    all.sort((a, b) => b.step - a.step);
+
+    all.forEach(p => {
+      const row = document.createElement('div');
+      row.className = `multi-player-row ${p.isMe ? 'is-me' : ''}`;
+      row.innerHTML = `<span>${p.icon} ${p.name}</span><span style="font-weight:900;">${p.step} 步</span>`;
+      listEl.appendChild(row);
+    });
+  }
+
+  function updateRelayTurnBanner() {
+    const banner = document.getElementById('relayTurnBanner');
+    if (!banner || !isMultiplayer || multiSubMode !== 'relay') {
+      banner.style.display = 'none';
+      return;
+    }
+    banner.style.display = 'block';
+    const curPeer = relayPlayerOrder[relayTurnIndex % Math.max(1, relayPlayerOrder.length)];
+    if (curPeer === 'host' && p2p?.isHost) {
+      banner.textContent = `⚡ 轮到你 (${myRole.name}) 蓄力起跳！`;
+      banner.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+    } else if (curPeer === p2p?.peer?.id) {
+      banner.textContent = `⚡ 轮到你 (${myRole.name}) 蓄力起跳！`;
+      banner.style.background = 'linear-gradient(135deg, #10B981, #059669)';
+    } else {
+      const activeRP = remotePlayers.get(curPeer);
+      const name = activeRP ? `${activeRP.role.icon} ${activeRP.role.name}` : '队友';
+      banner.textContent = `⏳ 全家屏息！正在围观 ${name} 起跳...`;
+      banner.style.background = 'linear-gradient(135deg, #F59E0B, #D97706)';
+    }
+  }
+
+  // 检查 URL 扫码直入参数
+  window.addEventListener('DOMContentLoaded', () => {
+    initGame();
+    requestAnimationFrame(gameLoop);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomParam = urlParams.get('room');
+    if (roomParam) {
+      document.getElementById('inputRoomCode').value = roomParam;
+      openModeSelectModal();
+      switchModalTab('multi');
+    }
+  });
+  </script>
+</body>
+</html>

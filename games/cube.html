@@ -745,6 +745,7 @@
         speed: 1.0,
         fullColor: true,
         onStepChange: updateTeleprompterState,
+        onPlayStateChange: updatePlayBtnState,
         onFinish: onAlgFinish
       });
 
@@ -995,15 +996,17 @@
     }
 
     function handleReset() {
-      cubeEngine.reInitCase();
+      cubeEngine.reInitCase(false);
       updatePlayBtnState(false);
     }
 
     function handleStepForward() {
+      cubeEngine.pause();
       cubeEngine.stepForward();
     }
 
     function handleStepBackward() {
+      cubeEngine.pause();
       cubeEngine.stepBackward();
     }
 
@@ -1012,6 +1015,11 @@
       cubeEngine.setLoop(isLooping);
       const btn = document.getElementById('btnLoop');
       btn.classList.toggle('active', isLooping);
+
+      // 若当前刚好播放完毕停留在终点，点开循环时自动从头循环播放
+      if (isLooping && !cubeEngine.isPlaying && cubeEngine.currentStep >= cubeEngine.actions.length) {
+        handleTogglePlay();
+      }
     }
 
     function setSpeed(speed, btn) {

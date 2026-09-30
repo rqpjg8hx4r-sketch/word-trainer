@@ -23,6 +23,7 @@
       this.order = options.order || 3; // 2 or 3
       this.onStepChange = options.onStepChange || null;
       this.onFinish = options.onFinish || null;
+      this.onPlayStateChange = options.onPlayStateChange || null;
       this.speedMultiplier = options.speed || 1.0;
 
       this.scene = null;
@@ -36,6 +37,8 @@
       this.actions = [];
       this.currentStep = 0;
       this.loop = false;
+      this.loopTimer = null;
+      this.currentSetupFormula = null;
       this.stripMode = null; // 'OLL', 'PLL', 'F2L' or custom
       this.fullColor = options.fullColor !== undefined ? options.fullColor : true; // 默认全彩实战显示所有面
       this.isPlaying = false;
@@ -342,6 +345,7 @@
 
     setAlgorithm(formula, setupFormula = null) {
       this.reset();
+      this.currentSetupFormula = setupFormula;
       this.actions = this.parseFormula(formula);
       this.currentStep = 0;
 
@@ -622,21 +626,30 @@
     play() {
       if (this.isPlaying) return;
       this.isPlaying = true;
+      if (this.loopTimer) {
+        clearTimeout(this.loopTimer);
+        this.loopTimer = null;
+      }
+      if (this.onPlayStateChange) this.onPlayStateChange(true);
 
       const runNext = () => {
         if (!this.isPlaying) return;
 
         if (this.currentStep >= this.actions.length) {
           if (this.loop) {
-            setTimeout(() => {
+            // 完成一轮复原后，先停留 800ms 展示已复原成果
+            this.loopTimer = setTimeout(() => {
               if (!this.isPlaying) return;
-              this.reInitCase();
-              setTimeout(() => {
+              // 重新打乱至题目形态，keepPlaying = true 保持播放状态
+              this.reInitCase(true);
+              // 打乱完成后停顿 350ms 供视觉确认初始形态，随后自动开跑下一轮
+              this.loopTimer = setTimeout(() => {
                 if (this.isPlaying) runNext();
-              }, 400);
-            }, 900);
+              }, 350);
+            }, 800);
           } else {
             this.isPlaying = false;
+            if (this.onPlayStateChange) this.onPlayStateChange(false);
             if (this.onFinish) this.onFinish();
           }
           return;
@@ -655,32 +668,46 @@
     }
 
     pause() {
+      if (!this.isPlaying && !this.loopTimer) return;
       this.isPlaying = false;
+      if (this.loopTimer) {
+        clearTimeout(this.loopTimer);
+        this.loopTimer = null;
+      }
+      if (this.onPlayStateChange) this.onPlayStateChange(false);
     }
 
     togglePlay() {
-      if (this.isPlaying) {
+      if (this.isPlaying || this.loopTimer) {
         this.pause();
       } else {
         if (this.currentStep >= this.actions.length) {
-          this.reInitCase();
-          setTimeout(() => this.play(), 250);
-        } else {
-          this.play();
+          this.reInitCase(false);
         }
+        this.play();
       }
     }
 
-    reInitCase() {
-      this.pause();
+    reInitCase(keepPlaying = false) {
+      if (!keepPlaying) {
+        this.pause();
+      }
+      if (this.loopTimer) {
+        clearTimeout(this.loopTimer);
+        this.loopTimer = null;
+      }
       this.animating = false;
       this.currentStep = 0;
       this._buildCube(this.order);
 
-      const fullExp = this.actions.map(a => a.raw).join(' ');
-      if (fullExp) {
-        const inv = this.invertFormula(fullExp);
-        this.executeInstant(inv);
+      if (this.currentSetupFormula) {
+        this.executeInstant(this.currentSetupFormula);
+      } else {
+        const fullExp = this.actions.map(a => a.raw).join(' ');
+        if (fullExp) {
+          const inv = this.invertFormula(fullExp);
+          this.executeInstant(inv);
+        }
       }
       if (this.onStepChange) this.onStepChange(0);
     }
@@ -690,7 +717,7 @@
     }
 
     setLoop(enabled) {
-      this.loop = enabled;
+      this.loop = !!enabled;
     }
 
     _startRenderLoop() {
@@ -706,6 +733,10 @@
 
     destroy() {
       this.pause();
+      if (this.loopTimer) {
+        clearTimeout(this.loopTimer);
+        this.loopTimer = null;
+      }
       window.removeEventListener('resize', this._onResize);
       if (this.renderer && this.renderer.domElement && this.renderer.domElement.parentNode) {
         this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
