@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0F172A">
+  <title>3D 魔方宝典 · CFOP & 二阶极速伴练</title>
+  <link rel="stylesheet" href="lib/party-common.css">
+  <style>
+    :root {
+      --bg: #090D16;
+      --panel-bg: #131B2E;
+      --card-bg: #1A243B;
+      --card-hover: #22304E;
+      --card-border: #2A3859;
+      --accent: #F59E0B;
+      --accent-light: rgba(245, 158, 11, 0.15);
+      --accent-border: #D97706;
+      --cyan: #38BDF8;
+      --cyan-light: rgba(56, 189, 248, 0.15);
+      --success: #10B981;
+      --success-light: rgba(16, 185, 129, 0.15);
+      --text: #F1F5F9;
+      --subtext: #94A3B8;
+      --glow: rgba(245, 158, 11, 0.35);
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* 顶部导航 */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      background: rgba(19, 27, 46, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--subtext);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFFFFF;
+    }
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-tag {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: var(--accent-light);
+      color: var(--accent);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      font-weight: 800;
+    }
+
+    /* 大模式切换：3阶 vs 2阶 */
+    .mode-switcher {
+      display: flex;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+    .mode-btn {
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      border: none;
+      background: transparent;
+      color: var(--subtext);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: var(--accent);
+      color: #000000;
+      box-shadow: 0 2px 10px var(--glow);
+    }
+
+    /* 二级阶段导航 */
+    .stage-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background: var(--panel-bg);
+      border-bottom: 1px solid var(--card-border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .stage-bar::-webkit-scrollbar { display: none; }
+    .stage-tab {
+      padding: 7px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--subtext);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .stage-tab:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+    .stage-tab.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* 三级分类筛选条 */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: rgba(19, 27, 46, 0.6);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filter-bar::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--subtext);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .filter-chip:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #FFFFFF;
+    }
+    .filter-chip.active {
+      background: var(--cyan-light);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    /* 形态水平卡片栏 / 抽屉 */
+    .cases-scroll-wrap {
+      padding: 10px 20px;
+      background: rgba(10, 14, 26, 0.7);
+      border-bottom: 1px solid var(--card-border);
+      overflow-x: auto;
+      display: flex;
+      gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--card-border) transparent;
+    }
+    .case-card {
+      min-width: 90px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .case-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-2px);
+    }
+    .case-card.active {
+      border-color: var(--accent);
+      background: rgba(245, 158, 11, 0.12);
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
+    }
+    .case-card-id {
+      font-size: 13px;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin-bottom: 2px;
+    }
+    .case-card-sub {
+      font-size: 11px;
+      color: var(--subtext);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80px;
+    }
+
+    /* 主界面双栏布局 */
+    .main-workspace {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+    @media (max-width: 900px) {
+      .main-workspace {
+        flex-direction: column;
+        overflow-y: auto;
+      }
+    }
+
+    /* 左侧：3D 魔方视口 */
+    .cube-stage {
+      flex: 1.1;
+      position: relative;
+      background: radial-gradient(circle at center, #1E293B 0%, #090D16 80%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      border-right: 1px solid var(--card-border);
+      overflow: hidden;
+    }
+    #cubeCanvasContainer {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      cursor: grab;
+    }
+    #cubeCanvasContainer:active {
+      cursor: grabbing;
+    }
+    .viewport-tools {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+    .tool-btn {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(19, 27, 46, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tool-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent);
+    }
+    .stage-hint {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      font-size: 12px;
+      color: var(--subtext);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px 10px;
+      border-radius: 8px;
+      pointer-events: none;
+    }
+
+    /* 右侧：操作与提词器工作台 */
+    .trainer-panel {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: var(--bg);
+    }
+
+    /* 形态标题与标签 */
+    .case-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .case-title {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFFFFF;
+    }
+    .case-meta {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .meta-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--subtext);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* 手持魔方出题 Setup 卡片 */
+    .setup-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(245, 158, 11, 0.05));
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 14px;
+      padding: 14px 16px;
+      position: relative;
+    }
+    .setup-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .setup-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .setup-exp {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 15px;
+      font-weight: 800;
+      color: #FBBF24;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px dashed rgba(245, 158, 11, 0.4);
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+    .setup-note {
+      font-size: 12px;
+      color: var(--subtext);
+      line-height: 1.4;
+    }
+    .setup-play-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      background: var(--accent);
+      color: #000000;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .setup-play-btn:hover {
+      background: #FBBF24;
+      box-shadow: 0 2px 8px var(--glow);
+    }
+
+    /* 多解预置 Tabs */
+    .algs-tabs-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+    .alg-tab {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--subtext);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .alg-tab:hover {
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .alg-tab.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* 动态发光提词器 */
+    .teleprompter-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      position: relative;
+    }
+    .prompter-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--subtext);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tokens-stream {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 48px;
+      align-items: center;
+    }
+    .token-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      height: 38px;
+      padding: 0 10px;
+      border-radius: 8px;
+      font-family: ui-monospace, monospace;
+      font-size: 17px;
+      font-weight: 800;
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #E2E8F0;
+      transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .token-badge.passed {
+      opacity: 0.45;
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--subtext);
+    }
+    .token-badge.active {
+      transform: scale(1.18);
+      background: linear-gradient(135deg, #F59E0B, #EA580C);
+      color: #FFFFFF;
+      border-color: #FDE68A;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
+      z-index: 2;
+    }
+
+    /* 播放控制条 */
+    .controls-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .main-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .ctrl-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 800;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .ctrl-btn:hover {
+      background: var(--card-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .ctrl-btn.primary {
+      flex: 1.4;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #000000;
+      border: none;
+      box-shadow: 0 2px 10px var(--glow);
+    }
+    .ctrl-btn.primary:hover {
+      background: #FBBF24;
+    }
+    .ctrl-btn.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* 速度调节栏 */
+    .speed-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 10px;
+    }
+    .speed-label {
+      font-size: 12px;
+      color: var(--subtext);
+      font-weight: 700;
+    }
+    .speed-group {
+      display: flex;
+      gap: 6px;
+    }
+    .speed-btn {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid transparent;
+      color: var(--subtext);
+      cursor: pointer;
+    }
+    .speed-btn.active {
+      background: var(--cyan-light);
+      border-color: var(--cyan);
+      color: var(--cyan);
+      font-weight: 800;
+    }
+
+    /* 记忆与联想心得卡片 */
+    .notes-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .notes-header {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--cyan);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .notes-content {
+      font-size: 13.5px;
+      color: #CBD5E1;
+      line-height: 1.6;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px 12px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <header class="topbar">
+    <div class="brand">
+      <a href="index.html" class="back-btn">← 游戏大厅</a>
+      <div class="brand-title">
+        <span>🧊 3D 魔方宝典</span>
+        <span class="brand-tag">CFOP & 二阶</span>
+      </div>
+    </div>
+    <!-- 阶数切换：默认三阶 -->
+    <div class="mode-switcher">
+      <button class="mode-btn active" id="btnOrder3" onclick="switchOrder(3)">🧊 3阶 CFOP</button>
+      <button class="mode-btn" id="btnOrder2" onclick="switchOrder(2)">🎲 2阶 极速</button>
+    </div>
+  </header>
+
+  <!-- 二级阶段导航 -->
+  <nav class="stage-bar" id="stageBar">
+    <!-- 动态填充：OLL / PLL / F2L 或 2阶OLL / 2阶PLL -->
+  </nav>
+
+  <!-- 三级分类筛选条 -->
+  <div class="filter-bar" id="filterBar">
+    <!-- 动态分类 Chips -->
+  </div>
+
+  <!-- 水平滚动形态选择卡片栏 -->
+  <div class="cases-scroll-wrap" id="casesScrollWrap">
+    <!-- 动态卡片列表 -->
+  </div>
+
+  <!-- 主交互工作台 -->
+  <main class="main-workspace">
+    <!-- 左侧：3D 仿真魔方视口 -->
+    <section class="cube-stage">
+      <div id="cubeCanvasContainer"></div>
+      <div class="stage-hint">🖱️ 拖拽可 360° 旋转观察魔方</div>
+      <div class="viewport-tools">
+        <button class="tool-btn" onclick="cubeEngine.setCameraView('default')">🔄 复位视角</button>
+        <button class="tool-btn" onclick="cubeEngine.setCameraView('top')">🔝 顶视</button>
+        <button class="tool-btn" onclick="cubeEngine.setCameraView('front')">👀 正视</button>
+      </div>
+    </section>
+
+    <!-- 右侧：练习伴学与提词器 -->
+    <section class="trainer-panel">
+      <!-- 形态标题行 -->
+      <div class="case-title-row">
+        <div>
+          <h2 class="case-title" id="caseTitleDisplay">加载中...</h2>
+          <div class="case-meta">
+            <span class="meta-badge" id="categoryBadge">分类</span>
+            <span class="meta-badge" id="probBadge">概率</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 手持实体魔方出题 Setup 卡片 -->
+      <div class="setup-card">
+        <div class="setup-header">
+          <div class="setup-title">
+            <span>🎯 实体魔方出题 (逆公式 Setup)</span>
+          </div>
+          <button class="setup-play-btn" onclick="playSetupAnimation()">▶️ 演示出题动画</button>
+        </div>
+        <div class="setup-exp" id="setupExpDisplay">--</div>
+        <div class="setup-note" id="setupNoteDisplay">拿着复原好的真实魔方做这串逆公式，魔方立刻变为当前形态。</div>
+      </div>
+
+      <!-- 多解方案预置 Tabs -->
+      <div class="algs-tabs-bar" id="algsTabsBar">
+        <!-- 动态生成解法 Tab -->
+      </div>
+
+      <!-- 动态发光提词器 -->
+      <div class="teleprompter-card">
+        <div class="prompter-label">
+          <span>🔤 动作发光提词器 (跟随 3D 动作跳动)</span>
+          <span id="stepCounterDisplay">0 / 0</span>
+        </div>
+        <div class="tokens-stream" id="tokensStream">
+          <!-- 动态公式动作标签 -->
+        </div>
+      </div>
+
+      <!-- 播放控制器 -->
+      <div class="controls-card">
+        <div class="main-controls-row">
+          <button class="ctrl-btn" onclick="handleReset()">⏮ 重置</button>
+          <button class="ctrl-btn" onclick="handleStepBackward()">❮ 上一步</button>
+          <button class="ctrl-btn primary" id="btnPlayPause" onclick="handleTogglePlay()">▶️ 播放</button>
+          <button class="ctrl-btn" onclick="handleStepForward()">下一步 ❯</button>
+          <button class="ctrl-btn" id="btnLoop" onclick="handleToggleLoop()">🔁 循环</button>
+        </div>
+        <div class="speed-row">
+          <span class="speed-label">指法播放速度</span>
+          <div class="speed-group">
+            <button class="speed-btn" onclick="setSpeed(0.5, this)">0.5x 慢速拆解</button>
+            <button class="speed-btn" onclick="setSpeed(0.8, this)">0.8x 跟练</button>
+            <button class="speed-btn active" onclick="setSpeed(1.0, this)">1.0x 标准</button>
+            <button class="speed-btn" onclick="setSpeed(1.5, this)">1.5x 竞速</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 记忆联想口诀与实战心得卡片 -->
+      <div class="notes-card">
+        <div class="notes-header">
+          <span>💡 联想口诀与实战心得</span>
+        </div>
+        <div class="notes-content" id="notesDisplay">--</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 引入 Three.js, OrbitControls, 3D魔方引擎与公式数据库 -->
+  <script src="lib/three.min.js"></script>
+  <script src="lib/OrbitControls.js"></script>
+  <script src="lib/cube-engine.js"></script>
+  <script src="data/cube-algs.js"></script>
+
+  <script>
+    // 页面全局状态
+    let currentOrder = 3; // 3 or 2
+    let currentStage = 'oll'; // 'oll', 'pll', 'f2l', 'oll2', 'pll2'
+    let currentCategory = '全部';
+    let currentCaseList = [];
+    let currentCaseIndex = 0;
+    let currentAlgIndex = 0;
+    let cubeEngine = null;
+    let isLooping = false;
+
+    // 初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('cubeCanvasContainer');
+      cubeEngine = new CubeEngine(container, {
+        order: currentOrder,
+        speed: 1.0,
+        onStepChange: updateTeleprompterState,
+        onFinish: onAlgFinish
+      });
+
+      renderStages();
+      switchStage('oll'); // 默认展示 3阶 OLL
+    });
+
+    // 阶数切换
+    function switchOrder(order) {
+      if (currentOrder === order) return;
+      currentOrder = order;
+      document.getElementById('btnOrder3').classList.toggle('active', order === 3);
+      document.getElementById('btnOrder2').classList.toggle('active', order === 2);
+
+      cubeEngine.setOrder(order);
+
+      renderStages();
+      if (order === 3) {
+        switchStage('oll');
+      } else {
+        switchStage('oll2');
+      }
+    }
+
+    // 渲染二级阶段
+    function renderStages() {
+      const bar = document.getElementById('stageBar');
+      bar.innerHTML = '';
+
+      let stages = [];
+      if (currentOrder === 3) {
+        stages = [
+          { key: 'oll', label: '⚡ OLL 顶层全向 (57)' },
+          { key: 'pll', label: '🎯 PLL 顶层复原 (21)' },
+          { key: 'f2l', label: '🧱 F2L 重点精解' }
+        ];
+      } else {
+        stages = [
+          { key: 'oll2', label: '⭐ 2阶 OLL 翻色 (7)' },
+          { key: 'pll2', label: '🎯 2阶 PLL 复原 (2)' }
+        ];
+      }
+
+      stages.forEach(st => {
+        const btn = document.createElement('button');
+        btn.className = `stage-tab ${currentStage === st.key ? 'active' : ''}`;
+        btn.textContent = st.label;
+        btn.onclick = () => switchStage(st.key);
+        bar.appendChild(btn);
+      });
+    }
+
+    // 切换阶段
+    function switchStage(stageKey) {
+      currentStage = stageKey;
+      currentCategory = '全部';
+      currentCaseIndex = 0;
+      currentAlgIndex = 0;
+
+      // 更新阶段按钮状态
+      document.querySelectorAll('.stage-tab').forEach((el, idx) => {
+        const stages = currentOrder === 3 ? ['oll', 'pll', 'f2l'] : ['oll2', 'pll2'];
+        el.classList.toggle('active', stages[idx] === stageKey);
+      });
+
+      // 提取当前数据
+      currentCaseList = CUBE_ALGS_DATA[stageKey] || [];
+
+      // 渲染分类筛选
+      renderCategories();
+      // 渲染横向形态列表
+      renderCasesList();
+      // 加载选中形态
+      loadCase(0);
+    }
+
+    // 渲染分类 Chips
+    function renderCategories() {
+      const bar = document.getElementById('filterBar');
+      bar.innerHTML = '';
+
+      const cats = ['全部'];
+      currentCaseList.forEach(c => {
+        if (c.category && !cats.includes(c.category)) {
+          cats.push(c.category);
+        }
+      });
+
+      cats.forEach(cat => {
+        const chip = document.createElement('button');
+        chip.className = `filter-chip ${currentCategory === cat ? 'active' : ''}`;
+        chip.textContent = cat;
+        chip.onclick = () => {
+          currentCategory = cat;
+          document.querySelectorAll('.filter-chip').forEach(el => el.classList.remove('active'));
+          chip.classList.add('active');
+          renderCasesList();
+          loadCase(0);
+        };
+        bar.appendChild(chip);
+      });
+    }
+
+    // 获取当前过滤的 Cases
+    function getFilteredCases() {
+      if (currentCategory === '全部') return currentCaseList;
+      return currentCaseList.filter(c => c.category === currentCategory);
+    }
+
+    // 渲染横向卡片列表
+    function renderCasesList() {
+      const wrap = document.getElementById('casesScrollWrap');
+      wrap.innerHTML = '';
+
+      const filtered = getFilteredCases();
+      filtered.forEach((c, idx) => {
+        const card = document.createElement('div');
+        card.className = `case-card ${currentCaseIndex === idx ? 'active' : ''}`;
+        card.innerHTML = `
+          <div class="case-card-id">${c.id}</div>
+          <div class="case-card-sub">${c.name.split(' ')[0]}</div>
+        `;
+        card.onclick = () => {
+          document.querySelectorAll('.case-card').forEach(el => el.classList.remove('active'));
+          card.classList.add('active');
+          loadCase(idx);
+        };
+        wrap.appendChild(card);
+      });
+    }
+
+    // 加载具体 Case
+    function loadCase(index) {
+      const filtered = getFilteredCases();
+      if (!filtered.length) return;
+      currentCaseIndex = index;
+      const c = filtered[index];
+
+      // 更新标题与元数据
+      document.getElementById('caseTitleDisplay').textContent = `${c.id} · ${c.name}`;
+      document.getElementById('categoryBadge').textContent = c.category;
+      document.getElementById('probBadge').textContent = c.prob ? `概率: ${c.prob}` : '基础型';
+
+      // 手持魔方出题 Setup
+      const setupExp = c.setup || cubeEngine.invertFormula(c.algs[0].exp);
+      document.getElementById('setupExpDisplay').textContent = setupExp;
+      document.getElementById('setupNoteDisplay').textContent = c.setupRelation || '拿着复原好的真实魔方做这串逆公式，魔方立刻变为当前形态。';
+
+      // 联想笔记
+      document.getElementById('notesDisplay').textContent = c.note || '暂无实战笔记。';
+
+      // 设置 3D 遮罩模式
+      cubeEngine.setStripMode(c.stripMode || 'PLL');
+
+      // 渲染多解 Tabs
+      renderAlgTabs(c);
+
+      // 加载公式到 3D 魔方中
+      applyAlgorithm(c, 0);
+    }
+
+    // 渲染多解方案 Tabs
+    function renderAlgTabs(caseItem) {
+      const bar = document.getElementById('algsTabsBar');
+      bar.innerHTML = '';
+      currentAlgIndex = 0;
+
+      caseItem.algs.forEach((alg, idx) => {
+        const tab = document.createElement('button');
+        tab.className = `alg-tab ${idx === 0 ? 'active' : ''}`;
+        tab.textContent = alg.name;
+        tab.title = alg.note || '';
+        tab.onclick = () => {
+          document.querySelectorAll('.alg-tab').forEach(el => el.classList.remove('active'));
+          tab.classList.add('active');
+          applyAlgorithm(caseItem, idx);
+        };
+        bar.appendChild(tab);
+      });
+    }
+
+    // 应用当前选中的公式
+    function applyAlgorithm(caseItem, algIdx) {
+      currentAlgIndex = algIdx;
+      const alg = caseItem.algs[algIdx];
+      const setupExp = caseItem.setup;
+
+      cubeEngine.setAlgorithm(alg.exp, setupExp);
+
+      // 渲染提词器动作卡片
+      renderTeleprompterTokens(cubeEngine.actions);
+      updatePlayBtnState(false);
+    }
+
+    // 渲染提词器卡片序列
+    function renderTeleprompterTokens(actions) {
+      const container = document.getElementById('tokensStream');
+      container.innerHTML = '';
+
+      actions.forEach((act, idx) => {
+        const badge = document.createElement('div');
+        badge.className = 'token-badge';
+        badge.id = `token-${idx}`;
+        badge.textContent = act.raw;
+        container.appendChild(badge);
+      });
+
+      updateTeleprompterState(0);
+    }
+
+    // 动态发光高亮更新
+    function updateTeleprompterState(stepIndex) {
+      const total = cubeEngine.actions.length;
+      document.getElementById('stepCounterDisplay').textContent = `${stepIndex} / ${total}`;
+
+      for (let i = 0; i < total; i++) {
+        const el = document.getElementById(`token-${i}`);
+        if (!el) continue;
+        el.classList.remove('active', 'passed');
+        if (i < stepIndex) {
+          el.classList.add('passed');
+        } else if (i === stepIndex && cubeEngine.isPlaying) {
+          el.classList.add('active');
+        }
+      }
+    }
+
+    function onAlgFinish() {
+      updatePlayBtnState(false);
+      updateTeleprompterState(cubeEngine.actions.length);
+    }
+
+    // 播放控制
+    function handleTogglePlay() {
+      cubeEngine.togglePlay();
+      updatePlayBtnState(cubeEngine.isPlaying);
+    }
+
+    function updatePlayBtnState(playing) {
+      const btn = document.getElementById('btnPlayPause');
+      btn.innerHTML = playing ? '⏸ 暂停' : '▶️ 播放';
+    }
+
+    function handleReset() {
+      cubeEngine.reInitCase();
+      updatePlayBtnState(false);
+    }
+
+    function handleStepForward() {
+      cubeEngine.stepForward();
+    }
+
+    function handleStepBackward() {
+      cubeEngine.stepBackward();
+    }
+
+    function handleToggleLoop() {
+      isLooping = !isLooping;
+      cubeEngine.setLoop(isLooping);
+      const btn = document.getElementById('btnLoop');
+      btn.classList.toggle('active', isLooping);
+    }
+
+    function setSpeed(speed, btn) {
+      cubeEngine.setSpeed(speed);
+      document.querySelectorAll('.speed-btn').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    // 演示 Setup 动画
+    function playSetupAnimation() {
+      const filtered = getFilteredCases();
+      const c = filtered[currentCaseIndex];
+      const setupExp = c.setup || cubeEngine.invertFormula(c.algs[0].exp);
+
+      // 先重置为完全复原态
+      cubeEngine.reset();
+      // 将 setup 公式作为动作序列平滑执行！
+      cubeEngine.actions = cubeEngine.parseFormula(setupExp);
+      cubeEngine.currentStep = 0;
+      renderTeleprompterTokens(cubeEngine.actions);
+      cubeEngine.play();
+      updatePlayBtnState(true);
+    }
+  </script>
+</body>
+</html>
