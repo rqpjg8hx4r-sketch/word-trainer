@@ -935,9 +935,15 @@
     function applyAlgorithm(caseItem, algIdx) {
       currentAlgIndex = algIdx;
       const alg = caseItem.algs[algIdx];
-      const setupExp = caseItem.setup;
+      const setupExp = alg.setup || caseItem.setup;
 
       cubeEngine.setAlgorithm(alg.exp, setupExp);
+
+      // 同步更新实战出题 Setup 展示
+      const setupExpDisplay = document.getElementById('setupExpDisplay');
+      if (setupExpDisplay && setupExp) {
+        setupExpDisplay.textContent = setupExp;
+      }
 
       // 渲染单行提词器动作卡片
       renderTeleprompterTokens(cubeEngine.actions);
