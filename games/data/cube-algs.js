@@ -467,21 +467,21 @@
       "prob": "1/36",
       "stripMode": "PLL",
       "order": 3,
-      "note": "前棱与右棱互换，后棱与左棱互换。自互逆。",
+      "note": "前棱与右棱互换，后棱与左棱互换。双手绝配：右手无名指与中指持续向上双推M'2，左手食指中指持续逆时针拨U'/U'2，手势零冲突！自互逆。",
       "setupRelation": "自互逆 (再做一遍 Z 即可出此形态)",
       "setup": "M2 U2 M U M2 U M2 U M",
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "M' U' M2 U' M2 U' M' U2 M2",
+          "exp": "M' U' M'2 U' M'2 U' M' U'2 M2",
           "setup": "M2 U2 M U M2 U M2 U M",
-          "note": "M层单手/双手极速，自互逆"
+          "note": "底面连续向上双推M'2+左手U'连续双拨，手势零冲突极速神技"
         },
         {
           "name": "Top 1 (SpeedCubeDB)",
           "exp": "M' U' M2 U' M2 U' M' U2 M2",
           "setup": "M2 U2 M U M2 U M2 U M",
-          "note": "高赞解法"
+          "note": "高赞通用标准解"
         }
       ]
     },
@@ -605,7 +605,7 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "R U2 R2 F R F' U2 R' F R F'",
+          "exp": "R U'2 R2' F R F' U'2 R' F R F'",
           "setup": "F R' F' R U2 F R' F' R2 U2 R'",
           "note": "精选手感推荐解"
         },
@@ -616,7 +616,7 @@
           "note": "主流标准解"
         }
       ],
-      "note": "中心仅 1 黄点，两黄点在侧。"
+      "note": "中心仅 1 黄点，两黄点在侧。左右手绝配指法：两次 U'2 均由左手食指中指连续逆时针双拨，无需换手松开右手握持！"
     },
     {
       "id": "OLL-02",
@@ -1128,7 +1128,7 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "M U R U R' U' M2 U R U' r'",
+          "exp": "M U R U R' U' M2' U R U' r'",
           "setup": "r U R' U' M2 U R U' R' U' M'",
           "note": "精选手感推荐解"
         },
@@ -1184,9 +1184,15 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "R U2 R2 U' R2 U' R2 U2 R",
+          "exp": "R U2 R2' U' R2 U' R2' U2 R",
           "setup": "R' U2 R2 U R2 U R2 U2 R'",
           "note": "精选手感推荐解"
+        },
+        {
+          "name": "Top 1 (SpeedCubeDB)",
+          "exp": "R U2 R2 U' R2 U' R2 U2 R",
+          "setup": "R' U2 R2 U R2 U R2 U2 R'",
+          "note": "主流标准解"
         }
       ],
       "note": "十字型 · 左右车灯"
@@ -1491,7 +1497,7 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "R U2 R2 F R F' R U2 R'",
+          "exp": "R U2 R2' F R F' R U2 R'",
           "setup": "R U2 R' F R' F' R2 U2 R'",
           "note": "精选手感推荐解"
         },
@@ -1817,9 +1823,15 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "r U' r2 U r2 U r2 U' r",
+          "exp": "r U' r2' U r2 U r2' U' r",
           "setup": "r' U r2 U' r2 U' r2 U r'",
           "note": "精选手感推荐解"
+        },
+        {
+          "name": "Top 1 (SpeedCubeDB)",
+          "exp": "r U' r2 U r2 U r2 U' r",
+          "setup": "r' U r2 U' r2 U' r2 U r'",
+          "note": "主流标准解"
         }
       ],
       "note": "小L型"
@@ -1836,9 +1848,15 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "r' U r2 U' r2 U' r2 U r'",
+          "exp": "r' U r2 U' r2' U' r2 U r'",
           "setup": "r U' r2 U r2 U r2 U' r",
           "note": "精选手感推荐解"
+        },
+        {
+          "name": "Top 1 (SpeedCubeDB)",
+          "exp": "r' U r2 U' r2 U' r2 U r'",
+          "setup": "r U' r2 U r2 U r2 U' r",
+          "note": "主流标准解"
         }
       ],
       "note": "小L型"
@@ -1973,7 +1991,7 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "R U2 R2 U' R U' R' U2 F R F'",
+          "exp": "R U2 R2' U' R U' R' U2 F R F'",
           "setup": "F R' F' U2 R U R' U R2 U2 R'",
           "note": "精选手感推荐解"
         },

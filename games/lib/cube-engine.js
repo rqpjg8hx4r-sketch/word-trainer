@@ -306,7 +306,7 @@
       const clean = formula.replace(/[()]/g, ' ').replace(/\s+/g, ' ').trim();
       if (!clean) return [];
 
-      const matches = clean.match(/([UDFBLRxyzMESudfrlb]['2]?[']?)/g);
+      const matches = clean.match(/([UDFBLRxyzMESudfrlb](?:'2|2'|2|')?)/g);
       if (!matches) return [];
 
       const actions = [];
@@ -320,18 +320,23 @@
     }
 
     _parseToken(token) {
-      const match = token.match(/^([UDFBLRxyzMESudfrlb])(['2]?[']?)$/);
+      const match = token.match(/^([UDFBLRxyzMESudfrlb])('2|2'|2|')?$/);
       if (!match) return null;
 
       const base = match[1];
-      const mod = match[2];
+      const mod = match[2] || '';
 
       let times = 1;
       let reverse = false;
 
-      if (mod === "2" || mod === "2'") {
+      if (mod === "2") {
         times = 2;
+        reverse = false;
+      } else if (mod === "2'" || mod === "'2") {
+        times = 2;
+        reverse = true;
       } else if (mod === "'") {
+        times = 1;
         reverse = true;
       }
 
@@ -637,16 +642,16 @@
 
         if (this.currentStep >= this.actions.length) {
           if (this.loop) {
-            // 完成一轮复原后，先停留 800ms 展示已复原成果
+            // 完成一轮复原后，先在终态（复原态）停留展示
             this.loopTimer = setTimeout(() => {
               if (!this.isPlaying) return;
-              // 重新打乱至题目形态，keepPlaying = true 保持播放状态
+              // 跳到起始态（题目形态），keepPlaying = true 保持播放状态
               this.reInitCase(true);
-              // 打乱完成后停顿 350ms 供视觉确认初始形态，随后自动开跑下一轮
+              // 跳到起始态后再停留一段时间（1000ms），供双手就位、看清形态，再开跑下一轮
               this.loopTimer = setTimeout(() => {
                 if (this.isPlaying) runNext();
-              }, 350);
-            }, 800);
+              }, 1000);
+            }, 1000);
           } else {
             this.isPlaying = false;
             if (this.onPlayStateChange) this.onPlayStateChange(false);
