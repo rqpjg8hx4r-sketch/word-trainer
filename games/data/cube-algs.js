@@ -50,21 +50,21 @@
       "prob": "1/18",
       "stripMode": "PLL",
       "order": 3,
-      "note": "顶层四角归位，后棱归位，前、左、右三棱顺时针置换。与 Ua 互为逆公式。",
+      "note": "顶层四角归位，后棱归位，前、左、右三棱顺时针置换。与 Ua 互为逆公式。双手单向流：右手底面双推M'2，左手全部向后拉U'/U'2。",
       "setupRelation": "做 Ua 即可得到此形态",
       "setup": "M2 U M U2 M' U M2",
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "M2 U' M U2 M' U' M2",
+          "exp": "M'2 U' M U'2 M' U' M'2",
           "setup": "M2 U M U2 M' U M2",
-          "note": "M层极速爆发"
+          "note": "M'2双推+左手U'连续逆时针单向流"
         },
         {
           "name": "Top 1 (SpeedCubeDB)",
           "exp": "M2 U' M U2 M' U' M2",
           "setup": "M2 U M U2 M' U M2",
-          "note": "M层高赞第一"
+          "note": "M层高赞通用解"
         },
         {
           "name": "Top 2 (纯RU)",
@@ -180,15 +180,15 @@
       "prob": "1/18",
       "stripMode": "PLL",
       "order": 3,
-      "note": "左侧完整一块已复原，与 Jb 左右镜像对应。",
+      "note": "左侧完整一块已复原，与 Jb 左右镜像对应。使用 L'2 顺向左手发力。",
       "setupRelation": "做 Jb 即可得到此形态",
       "setup": "U' L' U' L2 F L' U' L' U L F' L' U L y",
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "y' L' U' L F L' U' L U L F' L2 U L U",
+          "exp": "y' L' U' L F L' U' L U L F' L'2 U L U",
           "setup": "U' L' U' L2 F L' U' L' U L F' L' U L y",
-          "note": "左手顺手镜像"
+          "note": "左手顺手镜像（L'2顺指）"
         },
         {
           "name": "Top 1 (SpeedCubeDB)",
@@ -567,21 +567,21 @@
       "prob": "1/72",
       "stripMode": "PLL",
       "order": 3,
-      "note": "四角已归位，前后棱互换、左右棱互换。自互逆。",
+      "note": "四角已归位，前后棱互换、左右棱互换。自互逆。右手全部向上双推M'2，左手全部逆时针拉U'/U'2，方向零冲突！",
       "setupRelation": "自互逆 (再做一遍 H 即可出此形态)",
       "setup": "M2 U M2 U2 M2 U M2",
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "M2 U' M2 U2 M2 U' M2",
+          "exp": "M'2 U' M'2 U'2 M'2 U' M'2",
           "setup": "M2 U M2 U2 M2 U M2",
-          "note": "M层极速爆发，全套最顺手公式之一"
+          "note": "极速双推M'2+左手逆时针单向神技，自互逆"
         },
         {
           "name": "Top 1 (SpeedCubeDB)",
           "exp": "M2 U' M2 U2 M2 U' M2",
           "setup": "M2 U M2 U2 M2 U M2",
-          "note": "高赞第一"
+          "note": "高赞通用标准解"
         },
         {
           "name": "Top 2 (纯RU手法)",
