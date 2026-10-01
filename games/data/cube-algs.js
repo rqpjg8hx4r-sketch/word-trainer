@@ -473,9 +473,9 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "M' U' M'2 U' M'2 U' M' U'2 M2",
+          "exp": "M' U' M'2 U' M'2 U' M' U'2 M'2",
           "setup": "M2 U2 M U M2 U M2 U M",
-          "note": "底面连续向上双推M'2+左手U'连续双拨，手势零冲突极速神技"
+          "note": "底面连续向上双推M'2+左手U'连续双拨，全推无拉手势零冲突"
         },
         {
           "name": "Top 1 (SpeedCubeDB)",
