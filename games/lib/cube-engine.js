@@ -43,6 +43,8 @@
       this.fullColor = options.fullColor !== undefined ? options.fullColor : true; // 默认全彩实战显示所有面
       this.isPlaying = false;
       this.baseDuration = 220; // ms per 90 degree turn at 1.0x
+      this.loopEndDelay = options.loopEndDelay || 800; // 终态停留时间（复原态确认）
+      this.loopStartDelay = options.loopStartDelay || 2000; // 起始态停留时间（题目打乱态就位准备）
 
       this._initScene();
       this._buildCube(this.order);
@@ -642,16 +644,16 @@
 
         if (this.currentStep >= this.actions.length) {
           if (this.loop) {
-            // 完成一轮复原后，先在终态（复原态）停留展示
+            // 完成一轮复原后，终态（复原态）确认停留
             this.loopTimer = setTimeout(() => {
               if (!this.isPlaying) return;
               // 跳到起始态（题目形态），keepPlaying = true 保持播放状态
               this.reInitCase(true);
-              // 跳到起始态后再停留一段时间（1000ms），供双手就位、看清形态，再开跑下一轮
+              // 跳到起始态后再停留 2000ms（整整2秒），供双手就位、看清形态，再开跑下一轮
               this.loopTimer = setTimeout(() => {
                 if (this.isPlaying) runNext();
-              }, 1000);
-            }, 1000);
+              }, this.loopStartDelay);
+            }, this.loopEndDelay);
           } else {
             this.isPlaying = false;
             if (this.onPlayStateChange) this.onPlayStateChange(false);
