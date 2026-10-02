@@ -9,8 +9,8 @@
   const COLORS = {
     U: 0xFFD500, // Yellow (Top)
     D: 0xFFFFFF, // White (Bottom)
-    F: 0x009E60, // Green (Front)
-    B: 0x0051BA, // Blue (Back)
+    F: 0x0051BA, // Blue (Front)
+    B: 0x009E60, // Green (Back)
     R: 0xC41E3A, // Red (Right)
     L: 0xFF5800, // Orange (Left)
     CORE: 0x18181B, // Dark Slate / Carbon Black Core
@@ -108,7 +108,7 @@
       } else if (type === 'front') {
         this.camera.position.set(0, 0, 9.5);
       } else {
-        // default 3D isometric CFOP view: see U (Yellow), F (Green), R (Red) clearly
+        // default 3D isometric CFOP view: see U (Yellow), F (Blue), R (Red) clearly
         this.camera.position.set(5.2, 5.8, 6.8);
       }
       this.camera.lookAt(0, 0, 0);
@@ -209,8 +209,8 @@
       // 1: -X (Left: Orange)
       // 2: +Y (Up: Yellow)
       // 3: -Y (Down: White)
-      // 4: +Z (Front: Green)
-      // 5: -Z (Back: Blue)
+      // 4: +Z (Front: Blue)
+      // 5: -Z (Back: Green)
 
       const isRight = item.ix > 0;
       const isLeft = item.ix < 0;
