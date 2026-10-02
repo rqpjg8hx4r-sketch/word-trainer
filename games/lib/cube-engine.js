@@ -308,7 +308,7 @@
       const clean = formula.replace(/[()]/g, ' ').replace(/\s+/g, ' ').trim();
       if (!clean) return [];
 
-      const matches = clean.match(/([UDFBLRxyzMESudfrlb](?:'2|2'|2|')?)/g);
+      const matches = clean.match(/([UDFBLRxyzMESudfrlb](?:'2|2'|2|'3|3'|3|')?)/g);
       if (!matches) return [];
 
       const actions = [];
@@ -322,7 +322,7 @@
     }
 
     _parseToken(token) {
-      const match = token.match(/^([UDFBLRxyzMESudfrlb])('2|2'|2|')?$/);
+      const match = token.match(/^([UDFBLRxyzMESudfrlb])('2|2'|2|'3|3'|3|')?$/);
       if (!match) return null;
 
       const base = match[1];
@@ -336,6 +336,12 @@
         reverse = false;
       } else if (mod === "2'" || mod === "'2") {
         times = 2;
+        reverse = true;
+      } else if (mod === "3") {
+        times = 3;
+        reverse = false;
+      } else if (mod === "3'" || mod === "'3") {
+        times = 3;
         reverse = true;
       } else if (mod === "'") {
         times = 1;
@@ -375,7 +381,9 @@
         const act = actions[i];
         let mod = "'";
         if (act.times === 2) {
-          mod = "2";
+          mod = act.reverse ? "2" : "'2";
+        } else if (act.times === 3) {
+          mod = act.reverse ? "3" : "'3";
         } else if (act.reverse) {
           mod = "";
         }
@@ -554,7 +562,7 @@
         pivot.add(c);
       });
 
-      const duration = (this.baseDuration / this.speedMultiplier) * (action.times === 2 ? 1.35 : 1.0);
+      const duration = (this.baseDuration / this.speedMultiplier) * (action.times === 3 ? 1.5 : (action.times === 2 ? 1.35 : 1.0));
       const startTime = performance.now();
 
       const animate = (now) => {

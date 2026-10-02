@@ -7,591 +7,555 @@
   const CUBE_ALGS_DATA = {
   "pll": [
     {
-      "id": "Ua",
-      "name": "Ua (三棱逆时针换)",
-      "category": "三棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "顶层四角归位，后棱归位，前、左、右三棱逆时针置换。与 Ub 互为逆公式。",
-      "setupRelation": "做 Ub 即可得到此形态",
-      "setup": "R2 U R U R' U' R' U' R' U R'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R U' R U R U R U' R' U' R2",
-          "setup": "R2 U R U R' U' R' U' R' U R'",
-          "note": "纯RU双手极速流畅"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "M2 U M U2 M' U M2",
-          "setup": "M2 U' M U2 M' U' M2",
-          "note": "M层高赞标准解"
-        },
-        {
-          "name": "Top 2 (纯RU)",
-          "exp": "R U' R U R U R U' R' U' R2",
-          "setup": "R2 U R U R' U' R' U' R' U R'",
-          "note": "右手免翻"
-        },
-        {
-          "name": "Top 3 (后起手)",
-          "exp": "y2 R2 U' R' U' R U R U R U' R",
-          "setup": "R' U R' U' R' U' R' U R U R2 y2",
-          "note": "后手顺指"
-        }
-      ]
+        "id": "Ua",
+        "name": "Ua (三棱逆时针换)",
+        "category": "三棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "顶层四角归位，后棱归位，前、左、右三棱逆时针置换。与 Ub 互为逆公式。M'2双推+左手食指连续拉U单向流。",
+        "setupRelation": "做 Ub 即可得到此形态",
+        "setup": "R'2 U R U R' U' R3 U' R' U R'",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "M'2 U M U'2 M' U M'2",
+                "setup": "R'2 U R U R' U' R3 U' R' U R'",
+                "note": "M'2双推+左手U连续流，双手极速"
+            },
+            {
+                "name": "Top 1 (纯RU)",
+                "exp": "R U' R U R U R U' R' U' R2",
+                "setup": "R'2 U R U R' U' R3 U' R' U R'",
+                "note": "纯RU双手免M层"
+            },
+            {
+                "name": "Top 2 (SpeedCubeDB)",
+                "exp": "M2 U M U2 M' U M2",
+                "setup": "M2 U' M U2 M' U' M2",
+                "note": "M层高赞通用解"
+            }
+        ]
     },
     {
-      "id": "Ub",
-      "name": "Ub (三棱顺时针换)",
-      "category": "三棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "顶层四角归位，后棱归位，前、左、右三棱顺时针置换。与 Ua 互为逆公式。双手单向流：右手底面双推M'2，左手全部向后拉U'/U'2。",
-      "setupRelation": "做 Ua 即可得到此形态",
-      "setup": "M2 U M U2 M' U M2",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "M'2 U' M U'2 M' U' M'2",
-          "setup": "M2 U M U2 M' U M2",
-          "note": "M'2双推+左手U'连续逆时针单向流"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "M2 U' M U2 M' U' M2",
-          "setup": "M2 U M U2 M' U M2",
-          "note": "M层高赞通用解"
-        },
-        {
-          "name": "Top 2 (纯RU)",
-          "exp": "R2 U R U R' U' R' U' R' U R'",
-          "setup": "R U' R U R U R U' R' U' R2",
-          "note": "纯RU无M层"
-        },
-        {
-          "name": "Top 3 (后起手)",
-          "exp": "y2 R' U R' U' R' U' R' U R U R2",
-          "setup": "R2 U' R' U' R U R U R U' R y2",
-          "note": "后手顺指"
-        }
-      ]
+        "id": "Ub",
+        "name": "Ub (三棱顺时针换)",
+        "category": "三棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "顶层四角归位，后棱归位，前、左、右三棱顺时针置换。与 Ua 互为逆公式。(R'2 U)(RUR'U')R3... 纯RU连续顺向旋转发力。",
+        "setupRelation": "做 Ua 即可得到此形态",
+        "setup": "M'2 U M U'2 M' U M'2",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R'2 U R U R' U' R3 U' R' U R'",
+                "setup": "M'2 U M U'2 M' U M'2",
+                "note": "(R'2 U)(RUR'U')R3... 纯RU连续旋转发力流"
+            },
+            {
+                "name": "Top 1 (M层单向流)",
+                "exp": "M'2 U' M U'2 M' U' M'2",
+                "setup": "M'2 U M U'2 M' U M'2",
+                "note": "M'2双推+左手U'连续逆时针单向流"
+            },
+            {
+                "name": "Top 2 (SpeedCubeDB)",
+                "exp": "M2 U' M U2 M' U' M2",
+                "setup": "M2 U M U2 M' U M2",
+                "note": "M层经典解"
+            }
+        ]
     },
     {
-      "id": "Aa",
-      "name": "Aa (三角逆时针换)",
-      "category": "三角换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "两角相邻已复原（车灯朝左后），另三角逆时针置换。与 Ab 互为逆公式。",
-      "setupRelation": "做 Ab 即可得到此形态",
-      "setup": "x R2 D2 R U R' D2 R U' R x'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "x R' U R' D2 R U' R' D2 R2 x'",
-          "setup": "x R2 D2 R U R' D2 R U' R x'",
-          "note": "经典右手极速"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "x R' U R' D2 R U' R' D2 R2 x'",
-          "setup": "x R2 D2 R U R' D2 R U' R x'",
-          "note": "全球高赞主流"
-        },
-        {
-          "name": "Top 2 (免转体)",
-          "exp": "R' F R' B2 R F' R' B2 R2",
-          "setup": "R2 B2 R F R' B2 R F' R",
-          "note": "免大转体"
-        }
-      ]
+        "id": "Aa",
+        "name": "Aa (三角逆时针换)",
+        "category": "三角换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "两角相邻已复原（车灯朝左后），另三角逆时针置换。与 Ab 互为逆公式。",
+        "setupRelation": "做 Ab 即可得到此形态",
+        "setup": "x' R U' R D2 R' U R D2 R2 x",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "x' R2 D2 R' U' R D2 R' U R' x",
+                "setup": "x' R U' R D2 R' U R D2 R2 x",
+                "note": "经典俯仰手感流畅"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "x R' U R' D2 R U' R' D2 R2 x'",
+                "setup": "x R2 D2 R U R' D2 R U' R x'",
+                "note": "主流右手快速指法"
+            }
+        ]
     },
     {
-      "id": "Ab",
-      "name": "Ab (三角顺时针换)",
-      "category": "三角换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "两角相邻已复原（车灯朝左后），另三角顺时针置换。与 Aa 互为逆公式。",
-      "setupRelation": "做 Aa 即可得到此形态",
-      "setup": "x R' U R' D2 R U' R' D2 R2 x'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "x R2 D2 R U R' D2 R U' R x'",
-          "setup": "x R' U R' D2 R U' R' D2 R2 x'",
-          "note": "经典手感顺滑"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "x R2 D2 R U R' D2 R U' R x'",
-          "setup": "x R' U R' D2 R U' R' D2 R2 x'",
-          "note": "高赞主流解"
-        },
-        {
-          "name": "Top 2 (免转体)",
-          "exp": "R2 B2 R' F' R B2 R' F R'",
-          "setup": "R F' R B2 R' F R B2 R2",
-          "note": "免转体流"
-        }
-      ]
+        "id": "Ab",
+        "name": "Ab (三角顺时针换)",
+        "category": "三角换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "两角相邻已复原（车灯朝左后），另三角顺时针置换。与 Aa 互为逆公式。",
+        "setupRelation": "做 Aa 即可得到此形态",
+        "setup": "x' R2 D2 R' U' R D2 R' U R' x",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "x' R U' R D2 R' U R D2 R2 x",
+                "setup": "x' R2 D2 R' U' R D2 R' U R' x",
+                "note": "右起俯仰顺手推荐"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "x R2 D2 R U R' D2 R U' R x'",
+                "setup": "x R' U R' D2 R U' R' D2 R2 x'",
+                "note": "高赞主流解"
+            }
+        ]
     },
     {
-      "id": "Jb",
-      "name": "Jb (相邻角棱换)",
-      "category": "邻角邻棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "右侧完整一块已复原，互换左侧两角及左前两棱。全套 CFOP 中最顺手公式。",
-      "setupRelation": "做 Ja 即可得到此形态",
-      "setup": "R U R2 F' R U R U' R' F R U' R'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R U R' F' R U R' U' R' F R2 U' R'",
-          "setup": "R U R2 F' R U R U' R' F R U' R'",
-          "note": "指法连贯极佳，极速爆发"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R U R' F' R U R' U' R' F R2 U' R'",
-          "setup": "R U R2 F' R U R U' R' F R U' R'",
-          "note": "全球高赞第1"
-        },
-        {
-          "name": "Top 2 (纯RU)",
-          "exp": "R U2 R' U' R U2 L' U R' U' L",
-          "setup": "L' U R U' L U2 R' U R U2 R'",
-          "note": "纯RU/L流"
-        }
-      ]
+        "id": "Jb",
+        "name": "Jb (相邻角棱换)",
+        "category": "邻角邻棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "右侧完整一块已复原，互换左侧两角及左前两棱。全套 CFOP 中最顺手公式。",
+        "setupRelation": "自互逆（带AUF微调）",
+        "setup": "U R U R2 F' R U R U' R' F R U' R'",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R U R' F' R U R' U' R' F R2 U' R' U'",
+                "setup": "U R U R2 F' R U R U' R' F R U' R'",
+                "note": "经典Jb极速连贯（带末尾U'顺指）"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R U R' F' R U R' U' R' F R2 U' R'",
+                "setup": "R U R2 F' R U R U' R' F R U' R'",
+                "note": "全球高赞第1（免AUF）"
+            }
+        ]
     },
     {
-      "id": "Ja",
-      "name": "Ja (相邻角棱换)",
-      "category": "邻角邻棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "左侧完整一块已复原，与 Jb 左右镜像对应。使用 L'2 顺向左手发力。",
-      "setupRelation": "做 Jb 即可得到此形态",
-      "setup": "U' L' U' L2 F L' U' L' U L F' L' U L y",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "y' L' U' L F L' U' L U L F' L'2 U L U",
-          "setup": "U' L' U' L2 F L' U' L' U L F' L' U L y",
-          "note": "左手顺手镜像（L'2顺指）"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "y' L' U' L F L' U' L U L F' L2 U L U",
-          "setup": "U' L' U' L2 F L' U' L' U L F' L' U L y",
-          "note": "标准左手解"
-        },
-        {
-          "name": "Top 2 (纯RU右手)",
-          "exp": "R' U L' U2 R U' R' U2 R L U'",
-          "setup": "U L' R' U2 R U R' U2 L U' R",
-          "note": "纯RU/L免大换位"
-        }
-      ]
+        "id": "Ja",
+        "name": "Ja (相邻角棱换)",
+        "category": "邻角邻棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "左侧完整一块已复原，与 Jb 左右镜像对应。自互逆。",
+        "setupRelation": "自互逆",
+        "setup": "U' L' U' L2 F L' U' L' U L F' L' U L",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "L' U' L F L' U' L U L F' L2 U L U",
+                "setup": "U' L' U' L2 F L' U' L' U L F' L' U L",
+                "note": "左手镜面对称，手感极佳"
+            },
+            {
+                "name": "Top 1 (纯右手免换手)",
+                "exp": "x R2 F R F' R U2 r' F r U2 x'",
+                "setup": "x U2 r' F' r U2 R' F R' F' R2 x'",
+                "note": "纯右手不换手"
+            }
+        ]
     },
     {
-      "id": "Rb",
-      "name": "Rb (相邻角棱换 · 上起手)",
-      "category": "邻角邻棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "右侧车灯，前棱与右棱、前右角与后右角置换。与 Ra 互为逆公式。",
-      "setupRelation": "做 Ra 即可得到此形态",
-      "setup": "U R2 F R U R U' R' F' R U2 R' U2 R",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R' U2 R U2 R' F R U R' U' R' F' R2 U'",
-          "setup": "U R2 F R U R U' R' F' R U2 R' U2 R",
-          "note": "经典上起手，极佳流畅"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R' U2 R U2 R' F R U R' U' R' F' R2 U'",
-          "setup": "U R2 F R U R U' R' F' R U2 R' U2 R",
-          "note": "高赞标准上起手"
-        }
-      ]
+        "id": "Rb",
+        "name": "Rb (相邻角棱换 · 上起手)",
+        "category": "邻角邻棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "右侧车灯，前棱与右棱、前右角与后右角置换。与 Ra 互为逆公式。经典上起手带D层联动。",
+        "setupRelation": "做 Ra 即可得到此形态",
+        "setup": "R' U R U R' U' R' D' R U R' D R U'2 R",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R' U2 R' D' R U' R' D R U R U' R' U' R",
+                "setup": "R' U R U R' U' R' D' R U R' D R U'2 R",
+                "note": "经典上起手D层联动"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R' U2 R U2 R' F R U R' U' R' F' R2 U'",
+                "setup": "U R2 F R U R U' R' F' R U2 R' U2 R",
+                "note": "纯RUF上起手"
+            }
+        ]
     },
     {
-      "id": "Ra",
-      "name": "Ra (相邻角棱换 · 下起手)",
-      "category": "邻角邻棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "左侧车灯，前棱与左棱、前左角与后左角置换。与 Rb 互为逆公式。",
-      "setupRelation": "做 Rb 即可得到此形态",
-      "setup": "R U2 R D R' U R D' R' U' R' U R U R'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R U' R' U' R U R D R' U' R D' R' U2 R'",
-          "setup": "R U2 R D R' U R D' R' U' R' U R U R'",
-          "note": "经典下起手D层联动"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R U' R' U' R U R D R' U' R D' R' U2 R'",
-          "setup": "R U2 R D R' U R D' R' U' R' U R U R'",
-          "note": "高赞标准下起手"
-        },
-        {
-          "name": "Top 2 (免D层F起手)",
-          "exp": "R U R' F' R U2 R' U2 R' F R U R U2 R'",
-          "setup": "R U2 R' U' R' F' R U2 R U2 R' F R U' R'",
-          "note": "F面起手"
-        }
-      ]
+        "id": "Ra",
+        "name": "Ra (相邻角棱换 · 下起手)",
+        "category": "邻角邻棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "左侧车灯，前棱与左棱、前左角与后左角置换。与 Rb 互为逆公式。经典下起手带D层联动。",
+        "setupRelation": "做 Rb 即可得到此形态",
+        "setup": "R U'2 R D R' U R D' R' U' R' U R U R'",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R U' R' U' R U R D R' U' R D' R' U2 R'",
+                "setup": "R U'2 R D R' U R D' R' U' R' U R U R'",
+                "note": "经典下起手D层联动"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R U R' F' R U2 R' U2 R' F R U R U2 R'",
+                "setup": "R U2 R' U' R' F' R U2 R U2 R' F R U' R'",
+                "note": "纯RUF下起手"
+            }
+        ]
     },
     {
-      "id": "Ga",
-      "name": "Ga (三角三棱换 · 下起手)",
-      "category": "G-Perm",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "前车灯，右后有复原 1x2 块。逆时针循环。",
-      "setupRelation": "做 Gb 即可得到此形态",
-      "setup": "D R' U' R D' U R2 U R' U R U' R U' R2",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R2 U R' U R' U' R U' R2 U' D R' U R D'",
-          "setup": "D R' U' R D' U R2 U R' U R U' R U' R2",
-          "note": "经典下起手，指法连贯"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R2 U R' U R' U' R U' R2 U' D R' U R D'",
-          "setup": "D R' U' R D' U R2 U R' U R U' R U' R2",
-          "note": "高赞标准解"
-        }
-      ]
+        "id": "Ga",
+        "name": "Ga (三角三棱换 · 下起手)",
+        "category": "G-Perm",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "前车灯，右后有复原 1x2 块。逆时针循环。与 Gb 互为逆公式。",
+        "setupRelation": "做 Gb 即可得到此形态",
+        "setup": "D R' U' R U D' R2 U R' U R U' R U' R2",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R2 U R' U R' U' R U' R2 U' D R' U R D'",
+                "setup": "D R' U' R U D' R2 U R' U R U' R U' R2",
+                "note": "经典下起手，指法连贯"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R2 U R' U R' U' R U' R2 U' D R' U R D'",
+                "setup": "D R' U' R U D' R2 U R' U R U' R U' R2",
+                "note": "高赞标准解"
+            }
+        ]
     },
     {
-      "id": "Gb",
-      "name": "Gb (三角三棱换)",
-      "category": "G-Perm",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "前车灯，前右有复原 1x2 块。顺时针循环。",
-      "setupRelation": "做 Ga 即可得到此形态",
-      "setup": "D' R2 U R' U R' U' R U' R2 D U' R' U R",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R' U' R U D' R2 U R' U R U' R U' R2 D",
-          "setup": "D' R2 U R' U R' U' R U' R2 D U' R' U R",
-          "note": "经典极速顺指"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R' U' R U D' R2 U R' U R U' R U' R2 D",
-          "setup": "D' R2 U R' U R' U' R U' R2 D U' R' U R",
-          "note": "高赞标准解"
-        }
-      ]
+        "id": "Gb",
+        "name": "Gb (三角三棱换)",
+        "category": "G-Perm",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "前车灯，前右有复原 1x2 块。顺时针循环。与 Ga 互为逆公式。",
+        "setupRelation": "做 Ga 即可得到此形态",
+        "setup": "R2 U R' U R' U' R U' R2 U' D R' U R D'",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "D R' U' R U D' R2 U R' U R U' R U' R2",
+                "setup": "R2 U R' U R' U' R U' R2 U' D R' U R D'",
+                "note": "D起手经典流畅"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R' U' R U D' R2 U R' U R U' R U' R2 D",
+                "setup": "D' R2 U R' U R' U' R U' R2 D U' R' U R",
+                "note": "后D层版本"
+            }
+        ]
     },
     {
-      "id": "Gc",
-      "name": "Gc (三角三棱换 · 上起手)",
-      "category": "G-Perm",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "右车灯，左后有复原 1x2 块。",
-      "setupRelation": "做 Gd 即可得到此形态",
-      "setup": "D' R U R' U' D R2 U' R U' R' U R' U R2",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R2 U' R U' R U R' U R2 D' U R U' R' D",
-          "setup": "D' R U R' U' D R2 U' R U' R' U R' U R2",
-          "note": "经典上起手"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R2 U' R U' R U R' U R2 D' U R U' R' D",
-          "setup": "D' R U R' U' D R2 U' R U' R' U R' U R2",
-          "note": "高赞解法"
-        }
-      ]
+        "id": "Gc",
+        "name": "Gc (三角三棱换 · 上起手)",
+        "category": "G-Perm",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "右车灯，左后有复原 1x2 块。与 Gd 互为逆公式。",
+        "setupRelation": "与公式互逆",
+        "setup": "R'2 F' R U R U' R' F' R U2 R' U'2 R' F'2 R2 y'2",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "y2 R'2 F2 R U2 R U2' R' F R U R' U' R' F R2",
+                "setup": "R'2 F' R U R U' R' F' R U2 R' U'2 R' F'2 R2 y'2",
+                "note": "F面免D层爆发流"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R2 U' R U' R U R' U R2 D' U R U' R' D",
+                "setup": "D' R U R' U' D R2 U' R U' R' U R' U R2",
+                "note": "经典上起手"
+            }
+        ]
     },
     {
-      "id": "Gd",
-      "name": "Gd (三角三棱换 · 下起手)",
-      "category": "G-Perm",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "右车灯，左前有复原 1x2 块。",
-      "setupRelation": "做 Gc 即可得到此形态",
-      "setup": "D R2 U' R U' R U R' U' R2 D' U R U' R'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R U R' U' D R2 U R U' R' U R' U R2 D'",
-          "setup": "D R2 U' R U' R U R' U' R2 D' U R U' R'",
-          "note": "经典下起手"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R U R' U' D R2 U R U' R' U R' U R2 D'",
-          "setup": "D R2 U' R U' R U R' U' R2 D' U R U' R'",
-          "note": "高赞解法"
-        }
-      ]
+        "id": "Gd",
+        "name": "Gd (三角三棱换 · 下起手)",
+        "category": "G-Perm",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "右车灯，左前有复原 1x2 块。与 Gc 互为逆公式。",
+        "setupRelation": "与公式互逆",
+        "setup": "D R'2 U' R U' R U R' U R'2 D' U R U' R'",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R U R' U' D R2 U' R U' R' U R' U R2 D'",
+                "setup": "D R'2 U' R U' R U R' U R'2 D' U R U' R'",
+                "note": "经典下起手"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R U R' U' D R2 U R U' R' U R' U R2 D'",
+                "setup": "D R2 U' R U' R U R' U' R2 D' U R U' R'",
+                "note": "高赞解法"
+            }
+        ]
     },
     {
-      "id": "T",
-      "name": "T (相邻角棱换)",
-      "category": "邻角邻棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "左侧车灯，右侧两角互换，前棱与后棱互换。自互逆。",
-      "setupRelation": "自互逆 (再做一遍 T 即可出此形态)",
-      "setup": "F R U' R' U R U R2 F' R U R U' R'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R U R' U' R' F R2 U' R' U' R U R' F'",
-          "setup": "F R U' R' U R U R2 F' R U R U' R'",
-          "note": "CFOP必须肌肉记忆之神技，自互逆"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R U R' U' R' F R2 U' R' U' R U R' F'",
-          "setup": "F R U' R' U R U R2 F' R U R U' R'",
-          "note": "全球高赞第1"
-        }
-      ]
+        "id": "T",
+        "name": "T (相邻角棱换)",
+        "category": "邻角邻棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "左侧车灯，右侧两角互换，前棱与后棱互换。与 J Perm 类似，自互逆。",
+        "setupRelation": "自互逆",
+        "setup": "R U R' U' R' F R2 U' R' U' R U R' F'",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R U R' U' R' F R2 U' R' U' R U R' F'",
+                "setup": "R U R' U' R' F R2 U' R' U' R U R' F'",
+                "note": "CFOP必须肌肉记忆之神技，自互逆"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R U R' U' R' F R2 U' R' U' R U R' F'",
+                "setup": "R U R' U' R' F R2 U' R' U' R U R' F'",
+                "note": "全球高赞第1"
+            }
+        ]
     },
     {
-      "id": "F",
-      "name": "F (相邻角棱换)",
-      "category": "邻角邻棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "右侧两角互换，左右两棱互换。自互逆。",
-      "setupRelation": "自互逆 (再做一遍 F 即可出此形态)",
-      "setup": "R' U' R U' R' U R U R2 F' R U R U' R' F U R",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R",
-          "setup": "R' U' R U' R' U R U R2 F' R U R U' R' F U R",
-          "note": "标准解，T-Perm变体"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R",
-          "setup": "R' U' R U' R' U R U R2 F' R U R U' R' F U R",
-          "note": "高赞解法"
-        }
-      ]
+        "id": "F",
+        "name": "F (相邻角棱换)",
+        "category": "邻角邻棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "左侧车灯，前后两角互换，左棱与右棱互换。",
+        "setupRelation": "与公式互逆",
+        "setup": "R' U' R U' R' U R U R2 F' R U R U' R' F U R",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R",
+                "setup": "R' U' R U' R' U R U R2 F' R U R U' R' F U R",
+                "note": "少林转T-Perm，流畅极速"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R' U' F' R U R' U' R' F R2 U' R' U' R U R' U R",
+                "setup": "R' U' R U' R' U R U R2 F' R U R U' R' F U R",
+                "note": "主流高赞解"
+            }
+        ]
     },
     {
-      "id": "Y",
-      "name": "Y (对角对棱换)",
-      "category": "对角对棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "前左角与后右角置换，前棱与左棱置换。自互逆。",
-      "setupRelation": "自互逆 (再做一遍 Y 即可出此形态)",
-      "setup": "F R' F' R U R U' R' F R U' R' U R U R' F'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
-          "setup": "F R' F' R U R U' R' F R U' R' U R U R' F'",
-          "note": "前半少林后半性感，手感极致流畅，自互逆"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
-          "setup": "F R' F' R U R U' R' F R U' R' U R U R' F'",
-          "note": "全球高赞第1"
-        }
-      ]
+        "id": "Y",
+        "name": "Y (对角对棱换)",
+        "category": "对角对棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "左上与右下对角互换，上棱与右棱互换。自互逆。",
+        "setupRelation": "自互逆",
+        "setup": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
+                "setup": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
+                "note": "经典大F转性感少林，自互逆"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
+                "setup": "F R U' R' U' R U R' F' R U R' U' R' F R F'",
+                "note": "全球高赞第1"
+            }
+        ]
     },
     {
-      "id": "V",
-      "name": "V (对角对棱换)",
-      "category": "对角对棱换",
-      "prob": "1/18",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "前右角与后左角置换，前棱与右棱置换。自互逆。",
-      "setupRelation": "自互逆 (再做一遍 V 即可出此形态)",
-      "setup": "R' f' R U R' U R U2 R' U f R U R' U' R",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R' U R U' R' f' U' R U2 R' U' R U' R' f R",
-          "setup": "R' f' R U R' U R U2 R' U f R U R' U' R",
-          "note": "小f层连贯顺手"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R' U R U' R' f' U' R U2 R' U' R U' R' f R",
-          "setup": "R' f' R U R' U R U2 R' U f R U R' U' R",
-          "note": "高赞第一"
-        }
-      ]
+        "id": "V",
+        "name": "V (对角对棱换)",
+        "category": "对角对棱换",
+        "prob": "1/18",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "左上与右下对角互换，前棱与左棱互换。自互逆。",
+        "setupRelation": "自互逆",
+        "setup": "R' f' R U R' U R U2 R' U f R U R' U' R",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R' U R U' R' f' U' R U2 R' U' R U' R' f R",
+                "setup": "R' f' R U R' U R U2 R' U f R U R' U' R",
+                "note": "双层f手感极佳，自互逆"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "R' U R U' R' f' U' R U2 R' U' R U' R' f R",
+                "setup": "R' f' R U R' U R U2 R' U f R U R' U' R",
+                "note": "高赞双层f解"
+            }
+        ]
     },
     {
-      "id": "Z",
-      "name": "Z (相邻对棱互换)",
-      "category": "对棱换",
-      "prob": "1/36",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "前棱与右棱互换，后棱与左棱互换。双手绝配：右手无名指与中指持续向上双推M'2，左手食指中指持续逆时针拨U'/U'2，手势零冲突！自互逆。",
-      "setupRelation": "自互逆 (再做一遍 Z 即可出此形态)",
-      "setup": "M2 U2 M U M2 U M2 U M",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "M' U' M'2 U' M'2 U' M' U'2 M'2",
-          "setup": "M2 U2 M U M2 U M2 U M",
-          "note": "底面连续向上双推M'2+左手U'连续双拨，全推无拉手势零冲突"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "M' U' M2 U' M2 U' M' U2 M2",
-          "setup": "M2 U2 M U M2 U M2 U M",
-          "note": "高赞通用标准解"
-        }
-      ]
+        "id": "Z",
+        "name": "Z (相邻对棱互换)",
+        "category": "对棱换",
+        "prob": "1/36",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "顶层四角归位，前棱与右棱互换、后棱与左棱互换。全单向指法：右手向上双推M'2，左手全部向后拉U'/U'2。",
+        "setupRelation": "自互逆",
+        "setup": "M2 U2 M U M2 U M2 U M",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "M' U' M'2 U' M'2 U' M' U'2 M'2",
+                "setup": "M2 U2 M U M2 U M2 U M",
+                "note": "极速全单向流：右手向上双推M'2，左手全部向后拉U'/U'2"
+            },
+            {
+                "name": "Top 1 (表格原版)",
+                "exp": "M' U' M2 U' M2 U' M' U2 M2",
+                "setup": "M2 U2 M U M2 U M2 U M",
+                "note": "表格原版标准记法"
+            }
+        ]
     },
     {
-      "id": "E",
-      "name": "E (四角对角换)",
-      "category": "对角换",
-      "prob": "1/36",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "四角对角交叉互换，棱块完全归位。自互逆。",
-      "setupRelation": "自互逆 (再做一遍 E 即可出此形态)",
-      "setup": "x' D R U R' D' R U' R' D R U' R' D' R U R' x",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "x' R U' R' D R U R' D' R U R' D R U' R' D' x",
-          "setup": "x' D R U R' D' R U' R' D R U' R' D' R U R' x",
-          "note": "经典D层交替，自互逆"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "x' R U' R' D R U R' D' R U R' D R U' R' D' x",
-          "setup": "x' D R U R' D' R U' R' D R U' R' D' R U R' x",
-          "note": "高赞第一"
-        }
-      ]
+        "id": "E",
+        "name": "E (四角对角换)",
+        "category": "四角换",
+        "prob": "1/36",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "四棱归位，四角两两对换。自互逆。",
+        "setupRelation": "自互逆",
+        "setup": "x' R U' R' D R U R' D' R U R' D R U' R' D' x",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "x' R U' R' D R U R' D' R U R' D R U' R' D' x",
+                "setup": "x' R U' R' D R U R' D' R U R' D R U' R' D' x",
+                "note": "双手极速指法，自互逆"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "x' R U' R' D R U R' D' R U R' D R U' R' D' x",
+                "setup": "x' R U' R' D R U R' D' R U R' D R U' R' D' x",
+                "note": "高赞第一"
+            }
+        ]
     },
     {
-      "id": "Na",
-      "name": "Na (对角对棱换)",
-      "category": "对角对棱换",
-      "prob": "1/72",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "右侧两角互换，前后两棱互换。自互逆。",
-      "setupRelation": "自互逆 (再做一遍 Na 即可出此形态)",
-      "setup": "R U R' U2 R U R2 F' R U R U' R' F R U' R' U' R U' R'",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'",
-          "setup": "R U R' U2 R U R2 F' R U R U' R' F R U' R' U' R U' R'",
-          "note": "Jb组合神技，自互逆"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'",
-          "setup": "R U R' U2 R U R2 F' R U R U' R' F R U' R' U' R U' R'",
-          "note": "主流高赞"
-        }
-      ]
+        "id": "Na",
+        "name": "Na (对角对棱换)",
+        "category": "对角对棱换",
+        "prob": "1/72",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "右侧两角互换，前后两棱互换。自互逆。",
+        "setupRelation": "自互逆",
+        "setup": "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'",
+                "setup": "R U R' U R U R' F' R U R' U' R' F R2 U' R' U2 R U' R'",
+                "note": "Jb组合神技，自互逆"
+            },
+            {
+                "name": "Top 1 (5连步数解)",
+                "exp": "r' D r U2 r' D r U2 r' D r U2 r' D r U2 r' D r U2",
+                "setup": "r' D r U2 r' D r U2 r' D r U2 r' D r U2 r' D r U2",
+                "note": "(r' D r U2)5 极简步数五连发"
+            }
+        ]
     },
     {
-      "id": "Nb",
-      "name": "Nb (对角对棱换)",
-      "category": "对角对棱换",
-      "prob": "1/72",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "左侧两角互换，左右两棱互换。自互逆。",
-      "setupRelation": "自互逆 (再做一遍 Nb 即可出此形态)",
-      "setup": "R' U R' F R F' R U' R' F' U F R U R' U' R",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "R' U R U' R' F' U' F R U R' F R' F' R U' R",
-          "setup": "R' U R' F R F' R U' R' F' U F R U R' U' R",
-          "note": "经典右手流，自互逆"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "R' U R U' R' F' U' F R U R' F R' F' R U' R",
-          "setup": "R' U R' F R F' R U' R' F' U F R U R' U' R",
-          "note": "高赞第一"
-        }
-      ]
+        "id": "Nb",
+        "name": "Nb (对角对棱换)",
+        "category": "对角对棱换",
+        "prob": "1/72",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "左侧两角互换，左右两棱互换。自互逆。",
+        "setupRelation": "自互逆",
+        "setup": "L' U' L U' L' U' L F L' U' L U L F' L2 U L U2 L' U L",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "L' U' L U' L' U' L F L' U' L U L F' L2 U L U2 L' U L",
+                "setup": "L' U' L U' L' U' L F L' U' L U L F' L2 U L U2 L' U L",
+                "note": "接Ja极速长串，自互逆"
+            },
+            {
+                "name": "Top 1 (5连步数解)",
+                "exp": "r D r' U2 r D r' U2 r D r' U2 r D r' U2 r D r' U2",
+                "setup": "r D r' U2 r D r' U2 r D r' U2 r D r' U2 r D r' U2",
+                "note": "(r D r' U2)5 极简步数五连发"
+            },
+            {
+                "name": "Top 2 (SpeedCubeDB)",
+                "exp": "R' U R U' R' F' U' F R U R' F R' F' R U' R",
+                "setup": "R' U R' F R F' R U' R' F' U F R U R' U' R",
+                "note": "经典右手流"
+            }
+        ]
     },
     {
-      "id": "H",
-      "name": "H (对棱互换)",
-      "category": "对棱换",
-      "prob": "1/72",
-      "stripMode": "PLL",
-      "order": 3,
-      "note": "四角已归位，前后棱互换、左右棱互换。自互逆。右手全部向上双推M'2，左手全部逆时针拉U'/U'2，方向零冲突！",
-      "setupRelation": "自互逆 (再做一遍 H 即可出此形态)",
-      "setup": "M2 U M2 U2 M2 U M2",
-      "algs": [
-        {
-          "name": "⭐ 顺手推荐",
-          "exp": "M'2 U' M'2 U'2 M'2 U' M'2",
-          "setup": "M2 U M2 U2 M2 U M2",
-          "note": "极速双推M'2+左手逆时针单向神技，自互逆"
-        },
-        {
-          "name": "Top 1 (SpeedCubeDB)",
-          "exp": "M2 U' M2 U2 M2 U' M2",
-          "setup": "M2 U M2 U2 M2 U M2",
-          "note": "高赞通用标准解"
-        },
-        {
-          "name": "Top 2 (纯RU手法)",
-          "exp": "R2 U2 R U2 R2 U2 R2 U2 R U2 R2",
-          "setup": "R2 U2 R' U2 R2 U2 R2 U2 R' U2 R2",
-          "note": "纯RU无M层"
-        }
-      ]
+        "id": "H",
+        "name": "H (对棱互换)",
+        "category": "对棱换",
+        "prob": "1/72",
+        "stripMode": "PLL",
+        "order": 3,
+        "note": "四角已归位，前后棱互换、左右棱互换。自互逆。右手向上双推M'2，左手全部逆时针向后拉U'/U'2。",
+        "setupRelation": "自互逆",
+        "setup": "M'2 U' M'2 U'2 M'2 U' M'2",
+        "algs": [
+            {
+                "name": "⭐ 顺手推荐",
+                "exp": "M'2 U' M'2 U'2 M'2 U' M'2",
+                "setup": "M'2 U' M'2 U'2 M'2 U' M'2",
+                "note": "极速双推M'2+左手逆时针单向神技，自互逆"
+            },
+            {
+                "name": "Top 1 (SpeedCubeDB)",
+                "exp": "M2 U' M2 U2 M2 U' M2",
+                "setup": "M2 U M2 U2 M2 U M2",
+                "note": "高赞通用标准解"
+            },
+            {
+                "name": "Top 2 (纯RU手法)",
+                "exp": "R2 U2 R U2 R2 U2 R2 U2 R U2 R2",
+                "setup": "R2 U2 R' U2 R2 U2 R2 U2 R' U2 R2",
+                "note": "纯RU无M层"
+            }
+        ]
     }
-  ],
+],
   "oll": [
     {
       "id": "OLL-01",
