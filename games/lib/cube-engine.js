@@ -93,12 +93,19 @@
         const h = this.container.clientHeight;
         if (w && h) {
           this.camera.aspect = w / h;
+          // Keep the cube comfortably inside narrow portrait viewports.
+          const fit = Math.min(1, this.camera.aspect / 0.8);
+          this.camera.fov = Math.atan(Math.tan(19 * Math.PI / 180) / fit) * 360 / Math.PI;
           this.camera.updateProjectionMatrix();
           this.renderer.setSize(w, h);
         }
       };
       if (typeof window !== 'undefined' && window.addEventListener) {
         window.addEventListener('resize', this._onResize);
+      }
+      if (typeof ResizeObserver !== 'undefined') {
+        this._resizeObserver = new ResizeObserver(this._onResize);
+        this._resizeObserver.observe(this.container);
       }
     }
 
@@ -753,6 +760,7 @@
         this.loopTimer = null;
       }
       window.removeEventListener('resize', this._onResize);
+      this._resizeObserver?.disconnect();
       if (this.renderer && this.renderer.domElement && this.renderer.domElement.parentNode) {
         this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
       }

@@ -30,6 +30,7 @@
       overflow-y: scroll;
       scrollbar-gutter: stable;
     }
+    html.cube-fullscreen-fallback { overflow:hidden; scrollbar-gutter:auto; }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
@@ -264,6 +265,39 @@
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 76px;
+    }
+
+    .cube-practice { display:flex; flex-direction:column; gap:14px; min-width:0; }
+    .cube-practice.is-fullscreen {
+      width:100%;
+      height:100vh;
+      height:100dvh;
+      padding:calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left));
+      background:var(--bg);
+      gap:10px;
+      overflow:auto;
+    }
+    .cube-practice.fullscreen-fallback { position:fixed; inset:0; z-index:200; }
+    .cube-practice.is-fullscreen .cube-stage { flex:1 1 0; height:auto; min-height:140px; }
+    .cube-practice.is-fullscreen .trainer-card { flex-shrink:0; padding:10px 14px; gap:8px; }
+    .cube-practice.is-fullscreen .setup-card,
+    .cube-practice.is-fullscreen .notes-card { display:none; }
+    .fullscreen-btn { position:absolute; top:14px; right:14px; z-index:10; }
+    .fullscreen-btn:focus-visible { outline:2px solid var(--cyan); outline-offset:3px; }
+    @media (max-width:600px) {
+      .stage-hint { max-width:calc(100% - 130px); }
+      .viewport-tools { right:14px; flex-wrap:wrap; }
+    }
+    @media (max-width:600px), (max-height:600px) {
+      .cube-practice.is-fullscreen .unified-play-row { flex-wrap:wrap; }
+      .cube-practice.is-fullscreen .ctrl-btn { flex:1 1 auto; }
+      .cube-practice.is-fullscreen .speed-btn { flex:1; }
+      .cube-practice.is-fullscreen .ctrl-divider { display:none; }
+    }
+    @media (max-height:600px) and (min-width:700px) {
+      .cube-practice.is-fullscreen { flex-direction:row; }
+      .cube-practice.is-fullscreen .cube-stage { width:auto; min-width:0; }
+      .cube-practice.is-fullscreen .trainer-card { width:340px; max-width:42%; overflow:auto; }
     }
 
     /* 3D 舞台区域 (上下布局上方，全宽居中，加高魔方视野) */
@@ -653,9 +687,11 @@
     </section>
 
     <!-- 上部：3D 仿真魔方全景视口 (居中宽广，魔方完整在视野内) -->
+    <div id="cubePractice" class="cube-practice">
     <section class="cube-stage">
       <div id="cubeCanvasContainer"></div>
       <div class="stage-hint">🖱️ 拖拽可 360° 旋转观察魔方</div>
+      <button class="tool-btn fullscreen-btn" id="btnFullscreen" type="button" aria-controls="cubePractice" aria-pressed="false" onclick="toggleCubeFullscreen()">⛶ 全屏</button>
       <div class="viewport-tools">
         <button class="tool-btn active" id="btnColorToggle" onclick="toggleColorMode()">🎨 真实全彩 (空间感)</button>
         <button class="tool-btn" onclick="cubeEngine.setCameraView('default')">🔄 视角复位</button>
@@ -716,6 +752,7 @@
         <div class="notes-content" id="notesDisplay">--</div>
       </div>
     </section>
+    </div>
 
   </main>
 
@@ -736,6 +773,85 @@
     let cubeEngine = null;
     let isLooping = false;
     let isFullColor = true;
+    let fullscreenFallback = false;
+    let previousBodyOverflow = '';
+    let fullscreenInertElements = [];
+
+    function currentFullscreenElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement;
+    }
+
+    function syncCubeFullscreen() {
+      const panel = document.getElementById('cubePractice');
+      const active = fullscreenFallback || currentFullscreenElement() === panel;
+      panel.classList.toggle('is-fullscreen', active);
+      const button = document.getElementById('btnFullscreen');
+      button.textContent = active ? '⛶ 退出全屏' : '⛶ 全屏';
+      button.setAttribute('aria-pressed', String(active));
+      button.title = active ? '退出全屏（Esc）' : '全屏查看魔方与播放控制';
+      requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
+    }
+
+    function setFullscreenFallback(active) {
+      const panel = document.getElementById('cubePractice');
+      if (active && !fullscreenFallback) {
+        previousBodyOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        fullscreenInertElements = [...document.querySelectorAll('.topbar, .nav-card')].map(element => ({ element, inert:element.inert }));
+        fullscreenInertElements.forEach(({ element }) => { element.inert = true; });
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-modal', 'true');
+        panel.setAttribute('aria-label', '魔方全屏练习');
+      } else if (!active && fullscreenFallback) {
+        document.body.style.overflow = previousBodyOverflow;
+        fullscreenInertElements.forEach(({ element, inert }) => { element.inert = inert; });
+        fullscreenInertElements = [];
+        panel.removeAttribute('role');
+        panel.removeAttribute('aria-modal');
+        panel.removeAttribute('aria-label');
+      }
+      fullscreenFallback = active;
+      document.documentElement.classList.toggle('cube-fullscreen-fallback', active);
+      panel.classList.toggle('fullscreen-fallback', active);
+      syncCubeFullscreen();
+      document.getElementById('btnFullscreen').focus({ preventScroll:true });
+    }
+
+    async function toggleCubeFullscreen() {
+      const panel = document.getElementById('cubePractice');
+      const button = document.getElementById('btnFullscreen');
+      if (button.disabled) return;
+      button.disabled = true;
+      try {
+        if (fullscreenFallback) {
+          setFullscreenFallback(false);
+        } else if (currentFullscreenElement() === panel) {
+          const exit = document.exitFullscreen || document.webkitExitFullscreen;
+          await exit.call(document);
+        } else {
+          const enter = panel.requestFullscreen || panel.webkitRequestFullscreen;
+          if (enter) {
+            try { await enter.call(panel); }
+            catch (error) { setFullscreenFallback(true); }
+          } else {
+            setFullscreenFallback(true);
+          }
+        }
+        syncCubeFullscreen();
+      } finally {
+        button.disabled = false;
+        button.focus({ preventScroll:true });
+      }
+    }
+
+    document.addEventListener('fullscreenchange', syncCubeFullscreen);
+    document.addEventListener('webkitfullscreenchange', syncCubeFullscreen);
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && fullscreenFallback) {
+        event.preventDefault();
+        setFullscreenFallback(false);
+      }
+    });
 
     // 初始化
     window.addEventListener('DOMContentLoaded', () => {

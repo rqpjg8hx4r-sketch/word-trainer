@@ -25,6 +25,67 @@ test.afterAll(async () => {
   await new Promise(resolve => testServer.close(resolve));
 });
 
+test('cube fullscreen includes playback controls, resizes the canvas and preserves the current step', async ({ page }) => {
+  await page.goto('/games/cube.html');
+  await expect(page.locator('#cubeCanvasContainer canvas')).toBeVisible();
+  const initial = await page.locator('#cubeCanvasContainer').boundingBox();
+  await page.getByRole('button', { name:'⛶ 全屏', exact:true }).click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement?.id)).toBe('cubePractice');
+  await expect(page.locator('#btnFullscreen')).toHaveText('⛶ 退出全屏');
+  await expect(page.locator('#btnPlayPause')).toBeVisible();
+  await expect(page.locator('#tokensStream')).toBeVisible();
+  await expect.poll(() => page.locator('#cubeCanvasContainer').evaluate(container => container.clientHeight)).toBeGreaterThan(initial.height);
+  await expect.poll(() => page.locator('#cubeCanvasContainer').evaluate(container =>
+    container.querySelector('canvas').clientHeight === container.clientHeight
+    && container.querySelector('canvas').clientWidth === container.clientWidth
+  )).toBe(true);
+  await page.getByRole('button', { name:'❯', exact:true }).click();
+  await expect(page.locator('#stepCounterDisplay')).toContainText('1 /');
+  await page.locator('#btnFullscreen').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement)).toBe(null);
+  await expect(page.locator('#btnFullscreen')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#stepCounterDisplay')).toContainText('1 /');
+  await expect.poll(() => page.locator('#cubeCanvasContainer').evaluate(container => container.clientHeight)).toBe(initial.height);
+  await page.locator('#btnFullscreen').click();
+  await expect.poll(() => page.evaluate(() => document.fullscreenElement?.id)).toBe('cubePractice');
+  await page.evaluate(() => document.exitFullscreen());
+  await expect(page.locator('#btnFullscreen')).toHaveText('⛶ 全屏');
+});
+
+for (const [mode, viewport] of [['missing', { width:390, height:844 }], ['rejected', { width:844, height:390 }]]) {
+  test(`cube fullscreen fallback works when the browser API is ${mode}`, async ({ browser }) => {
+    const context = await browser.newContext({ viewport });
+    const page = await context.newPage();
+    await page.goto('/games/cube.html');
+    await expect(page.locator('#cubeCanvasContainer canvas')).toBeVisible();
+    await page.evaluate(mode => {
+      document.body.style.overflow = 'auto';
+      const panel = document.getElementById('cubePractice');
+      panel.requestFullscreen = mode === 'missing' ? undefined : () => Promise.reject(new Error('Fullscreen unavailable'));
+      panel.webkitRequestFullscreen = undefined;
+    }, mode);
+    await page.locator('#btnFullscreen').click();
+    await expect(page.locator('#cubePractice')).toHaveAttribute('aria-modal', 'true');
+    await expect(page.locator('#btnFullscreen')).toHaveText('⛶ 退出全屏');
+    const bounds = await page.locator('#cubePractice').boundingBox();
+    expect(bounds).toEqual({ x:0, y:0, width:viewport.width, height:viewport.height });
+    await expect(page.locator('#btnPlayPause')).toBeVisible();
+    await expect.poll(() => page.locator('#cubeCanvasContainer').evaluate(container =>
+      container.querySelector('canvas').clientHeight === container.clientHeight
+      && container.querySelector('canvas').clientWidth === container.clientWidth
+    )).toBe(true);
+    await page.locator('#btnFullscreen').click();
+    await expect(page.locator('#btnFullscreen')).toHaveAttribute('aria-pressed', 'false');
+    await expect(page.locator('#cubePractice')).not.toHaveAttribute('aria-modal');
+    await page.locator('#btnFullscreen').click();
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#btnFullscreen')).toHaveText('⛶ 全屏');
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe('auto');
+    expect(await page.locator('.topbar').evaluate(element => element.inert)).toBe(false);
+    await context.close();
+  });
+}
+
 test('English categories still load through an already running legacy preview server', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
