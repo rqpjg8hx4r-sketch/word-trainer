@@ -8,10 +8,7 @@ Write 35 words or more.
 
 #answer
 
-One day, Anna wrote a letter to her grandma and put a photo in the
-envelope. Then she went to the postbox and posted it. A few days
-later, her grandma received the letter. She was very happy to read
-it and see the photo.
+One day, Anna wrote a letter to her grandma and put a photo in the envelope. Then she went to the postbox and posted it. A few days later, her grandma received the letter. She was very happy to read it and see the photo.
 
 #tip
 
@@ -39,8 +36,7 @@ A few days later, … received the letter.
 把女孩命名为 Anna，把收信人设定为她的奶奶，让人物关系简单清楚。
 把照片写进故事，可以连接第一幅和第三幅图。
 
-用 One day 开始故事，Then 连接下一步行动，A few days later
-说明寄信和收信之间经过了一段时间。
+用 One day 开始故事，Then 连接下一步行动，A few days later 说明寄信和收信之间经过了一段时间。
 结尾用 was very happy to … 写人物感受，让故事自然收尾。
 
 wrote a letter to her grandma = 给奶奶写了一封信
