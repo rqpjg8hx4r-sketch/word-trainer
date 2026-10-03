@@ -27,7 +27,7 @@ const irregularInstructions = [
 function usage() {
   return [
     'Usage: npm run audio:words -- <word###.txt> [--limit N]',
-    '       npm run audio:words -- practice/irregular-verbs.txt',
+    '       npm run audio:words -- english/listening/irregular-verbs.txt',
     '       npm run audio:words -- --all-missing',
     '',
     'Options:',
@@ -36,7 +36,7 @@ function usage() {
     '  --instructions  Override the speaking-style prompt',
     '  --gap SECONDS   Silence between entries (default: 0.75)',
     '  --dry-run       Parse and print entries without calling the API',
-    '  --all-missing   Generate every homework/word###.txt without an MP3',
+    '  --all-missing   Generate every english/word/word###.txt without an MP3',
     '  --force         Replace an existing MP3 and cues file',
     '  --ffmpeg PATH   Override the bundled ffmpeg executable',
     '',
@@ -337,7 +337,7 @@ async function generate(options) {
 }
 
 async function generateAllMissing(options) {
-  const homeworkDir = path.join(projectRoot, 'homework');
+  const homeworkDir = path.join(projectRoot, 'english', 'word');
   const inputs = fs.readdirSync(homeworkDir)
     .filter(file => /^word\d{3}\.txt$/i.test(file))
     .sort((left, right) => left.localeCompare(right, 'en'));

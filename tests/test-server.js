@@ -5,21 +5,15 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const mime = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
   '.json': 'application/json; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
   '.m4a': 'audio/mp4', '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg',
   '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp',
   '.webmanifest': 'application/manifest+json; charset=utf-8'
 };
 
-function homeworkIndex() {
-  const files = fs.readdirSync(path.join(root, 'homework'))
-    .filter(file => file !== 'index.json')
-    .sort((a, b) => b.localeCompare(a));
-  return { files };
-}
-
-function practiceIndex() {
-  const directory = path.join(root, 'practice');
+function englishIndex(category) {
+  const directory = path.join(root, 'english', category);
   const files = fs.existsSync(directory)
     ? fs.readdirSync(directory).filter(file => file !== 'index.json').sort((a, b) => b.localeCompare(a))
     : [];
@@ -29,13 +23,14 @@ function practiceIndex() {
 function createTestServer() {
   return http.createServer((request, response) => {
   const url = new URL(request.url, 'http://127.0.0.1');
-  if (url.pathname === '/__homework-index.json') {
+  if (url.pathname === '/__english-index.json') {
+    const category = url.searchParams.get('category');
+    if (!['word', 'listening', 'writing', 'speaking'].includes(category)) {
+      response.writeHead(400);
+      return response.end('Invalid English category');
+    }
     response.writeHead(200, { 'Content-Type':mime['.json'] });
-    return response.end(JSON.stringify(homeworkIndex()));
-  }
-  if (url.pathname === '/__practice-index.json') {
-    response.writeHead(200, { 'Content-Type':mime['.json'] });
-    return response.end(JSON.stringify(practiceIndex()));
+    return response.end(JSON.stringify(englishIndex(category)));
   }
 
   const relative = decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname);

@@ -1,67 +1,64 @@
-# 作业内容设计规范
+# 英语内容设计规范
 
-本文档是每日单词、口语、听力作业和长期日常练习的唯一内容规范。`index.html`、本地生成工具、离线缓存和部署流程都必须与本文保持一致。
+本文档是词汇、听力、口语和写作素材的唯一内容规范。网页、本地音频生成工具、离线缓存和部署构建都必须与本文保持一致。
 
 ## 目标
 
-- 家长可以从手机上传每日作业。
-- 同一天可以包含单词、口语、听力中的任意一种或多种内容。
-- 网页自动发现有效 Day，缺失或空文件不会影响其他作业类型。
-- 单词和口语录音每天只保留一个完整音频，通过 cues 时间点播放局部片段。
-- 配套录音属于可选增强；没有录音、cues 无效或播放失败时，单词继续使用系统 TTS。
+- 默认进入英语的词汇分类，每次打开都从词汇开始。
+- 四类材料独立发现、独立选择；一种缺失或加载失败不会影响其他分类。
+- Day 是词汇或口语材料的编号标签，不再将不同分类绑定到同一天。
+- 保留现有词汇学习历史的存储键、数据结构和统计行为。
+- 听力使用原 practice 目录的长期素材，旧 listening008.mp3 作业已移除。
+- 配套录音属于可选增强；单词录音缺失或校验失败时使用系统英文 TTS。
 - API Key 不得出现在仓库、网页、生成文件或日志中。
-- 长期素材统一放在 `practice/`，网页根据同名配套文件自动决定只播放音频、显示文字或启用分段播放。
 
 ## 目录与命名
 
-所有每日内容平铺在 `homework/`：
+所有英语素材统一放在 english/，按用途分四个目录：
 
 ```text
-homework/
-  word010.txt
-  word010.mp3
-  word010.cues.json
-  speaking010.txt
-  speaking010.jpg
-  speaking010.m4a
-  speaking010.cues.json
-  listening010.mp3
+english/
+  word/
+    word010.txt
+    word010.mp3
+    word010.cues.json
+    paraphrase014.txt
+    paraphrase014.mp3
+    paraphrase014.cues.json
+  listening/
+    general001 Greeting and introduction.m4a
+    general001 Greeting and introduction.txt
+    irregular-verbs.txt
+    irregular-verbs.mp3
+    irregular-verbs.cues.json
+  speaking/
+    speaking010.txt
+    speaking010.jpg
+    speaking010.mp3
+    speaking010.cues.json
+  writing/
+    writing001.txt
+    writing001.jpg
 ```
 
-三位数字是共享的 Day 编号。文件名中不得混用 `day-010`、`day010` 和 `010` 等其他形式。
-
-长期练习不占用 Day 编号，统一放在 `practice/`，例如：
-
-```text
-practice/
-  general001.m4a
-  general001.txt
-  general001.cues.json
-  general001.jpg
-  listening001.mp3
-```
-
-音频是每项长期练习唯一的必需文件。网页自动寻找同名 TXT、cues 和图片：只有音频时显示完整播放器；有 TXT 时同时显示文字；再有 cues 时提供 Q、A 和 Q+A 分段按钮；同名图片也会自动显示。
-
-源码目录不需要人工维护 `index.json`。本地预览服务器自动扫描目录，GitHub Pages 使用 GitHub Contents API，`npm run build` 则自动生成 `dist/practice/index.json`。
+三位编号继续保留，迁移不修改 TXT、音频或 cues 文件内容。相同 basename 的 TXT、音频、cues 和图片组成一份材料；文件不能跨分类配套。
 
 ### 输入文件
 
-- `word###.txt`：当日单词表。
-- `speaking###.txt`：当日口语文本。
-- `speaking###.jpg`、`.jpeg`、`.png` 或 `.webp`：可选口语题目图片。
-- `listening###.mp3`、`.m4a` 或 `.ogg`：可选完整听力练习。
+- 词汇：word###.txt 和 paraphrase###.txt。
+- 口语：speaking###.txt，可配同名 JPG、JPEG、PNG 或 WebP 图片以及 MP3、M4A 或 OGG 录音。
+- 听力：MP3、M4A 或 OGG 音频是必需文件；同名 TXT、cues 和图片可选，允许 basename 含空格。
+- 写作：writing###.txt，可配同名 JPG、JPEG、PNG 或 WebP 图片，以及可选 MP3、M4A、OGG 答案录音和 cues。
+- 写作 TXT 使用 `#title: Writing 001 | Email: A cinema invitation` 作为内容标题，正文分为独占一行的 `#question`、`#answer`、`#tip`。网页读取 title 显示标题；参考答案默认折叠，写作提示默认展开，原文完整保留。仍兼容旧版 QUESTION、ANSWER、WRITING TIP 标题。
+- 参考答案后复用通用播放器，支持变速、暂停、重听与循环。没有录音时使用系统英文 TTS；系统朗读与 AI 录音生成器共用 writing-material.js，只读 `#answer` 正文，到下一个 `#` 字段停止，不读标题、题目或提示。TTS 重听从当前句开始，录音重听回退约两秒。
+- 配套写作录音默认只包含答案。若录音包含其他内容，可用 cues.segments.a1 或 cues.segments.answer 指定答案范围；cues 的 sourceHash 和 audioHash 如存在必须匹配当前 TXT 和录音。失效录音回退系统英文朗读。
+- 没有图片的材料正常显示文字；缺少 TXT 的独立图片不会形成一份写作或口语材料。
 
-缺失或空文件会被忽略。某个 Day 可以只有一种作业，例如只有 `listening008.mp3` 也能形成有效的 Day 8。
+### 生成文件与索引
 
-### 生成文件
+单词和口语录音仍采用一个完整音频加分段 cues。音频生成命令在对应分类中输出文件，不改变 basename。
 
-- `word###.mp3`：当日全部单词或短语合并后的录音。
-- `word###.cues.json`：各单词在 MP3 中的时间范围及版本指纹。
-- `speaking###.mp3`、`.m4a` 或 `.ogg`：当日完整口语录音。
-- `speaking###.cues.json`：各问题和答案的时间范围。
-
-自动生成优先使用 MP3，以获得较广的浏览器兼容性；已有 AAC/M4A 口语录音继续支持。生成过程中产生的分段 WAV 等临时文件不得提交。
+源码目录无需手工维护 index.json，启动脚本和构建会自动更新四个分类的同源索引。本地预览通过 /__english-index.json?category=word（或 listening、speaking、writing）扫描对应目录；已运行的旧预览服务不认识新接口时，网页回退读取 english/分类/index.json。启动脚本验证并复用当前项目的服务，固定 8765 端口，保留原浏览器学习记录。启动实现位于仓库内 start-word-trainer.cmd 和 scripts/start-preview.js，父目录原启动入口调用它们。GitHub Pages 使用 Contents API 发现 english/分类，其他静态部署使用 npm run build 自动生成的 dist/english/分类/index.json。
 
 ## 单词 TXT 格式
 
@@ -146,7 +143,7 @@ Q2: What do you do after school?
 
 ```powershell
 $env:OPENAI_API_KEY="你的 API Key"
-npm run audio:words -- homework/word010.txt
+npm run audio:words -- english/word/word010.txt
 ```
 
 不带 `--limit` 时生成 TXT 中的全部词条。如果同名 `word010.mp3` 已存在，命令会直接跳过，不调用语音 API，也不覆盖 MP3 或 cues，适合在自动化流程中重复执行。
@@ -157,16 +154,16 @@ npm run audio:words -- homework/word010.txt
 
 ```powershell
 # 只生成前 10 个词
-npm run audio:words -- homework/word010.txt --limit 10
+npm run audio:words -- english/word/word010.txt --limit 10
 
 # 只检查解析结果，不调用 API、不覆盖文件
-npm run audio:words -- homework/word010.txt --dry-run
+npm run audio:words -- english/word/word010.txt --dry-run
 
 # 临时覆盖声音或提示词
-npm run audio:words -- homework/word010.txt --voice marin --instructions "自定义提示词"
+npm run audio:words -- english/word/word010.txt --voice marin --instructions "自定义提示词"
 
 # 明确需要重新生成时，强制覆盖已有 MP3 和 cues
-npm run audio:words -- homework/word010.txt --force
+npm run audio:words -- english/word/word010.txt --force
 ```
 
 默认设置：
@@ -197,20 +194,50 @@ Pronounce only the supplied English word or phrase once. Speak in a cheerful and
 speaking2mp3 014
 ```
 
-命令读取 `word-trainer/homework/speaking014.txt`，生成同目录的 `speaking014.mp3` 和 `speaking014.cues.json`。TXT 中的 `Q1/A1`、`Q/A` 及跨行答案使用与网页一致的解析规则；问题和完整答案分别生成 WAV，再直接拼接为一个 MP3，并写入 `q1`、`a1` 等精确时间范围。
+命令读取 `word-trainer/english/speaking/speaking014.txt`，生成同目录的 `speaking014.mp3` 和 `speaking014.cues.json`。TXT 中的 `Q1/A1`、`Q/A` 及跨行答案使用与网页一致的解析规则；问题和完整答案分别生成 WAV，再直接拼接为一个 MP3，并写入 `q1`、`a1` 等精确时间范围。
 
 不带 Day 时，`speaking2mp3` 会扫描全部 `speaking###.txt`，生成缺少录音或 cues 中 `sourceHash` 已与 TXT 不一致的日期。已有录音且 TXT、cues、音频指纹全部匹配时直接跳过，避免重复调用 API；TXT 修改后则自动重新生成，不必额外传 `--force`。批量模式会保护没有可验证 cues 的旧手工录音，因为程序无法判断 TXT 是否变化；明确运行 `speaking2mp3 001` 时则会为这个 Day 生成新版 MP3 和 cues。Day 参数必须是三位数字。
 
 也可以在 `word-trainer` 目录直接运行：
 
 ```powershell
-npm run audio:speaking -- homework/speaking014.txt
-npm run audio:speaking -- homework/speaking014.txt --dry-run
-npm run audio:speaking -- homework/speaking014.txt --force
+npm run audio:speaking -- english/speaking/speaking014.txt
+npm run audio:speaking -- english/speaking/speaking014.txt --dry-run
+npm run audio:speaking -- english/speaking/speaking014.txt --force
 npm run audio:speaking-missing
 ```
 
 口语生成器固定使用 `gpt-4o-mini-tts`、`marin`、24 kHz 单声道 96 kbps MP3，并在问题和答案片段之间插入 0.75 秒静音。`--force` 可以生成 MP3 替换版本，但不会删除已有 M4A 或 OGG；新 cues 会明确指向生成的 MP3。中间 WAV、拼接清单和生成记录保留在 `alex-english/temp/speaking-day###/`，便于定位问题。
+
+## 本地写作答案录音生成命令
+
+在 `alex-english` 目录运行 `writing2mp3 001` 生成一份，或运行 `writing2mp3` 生成全部缺失或过期的写作录音。在 `word-trainer` 目录也可以运行：
+
+```powershell
+npm run audio:writing -- english/writing/writing001.txt --dry-run
+npm run audio:writing -- english/writing/writing001.txt
+npm run audio:writing-missing
+```
+
+TXT 格式示例：
+
+```text
+#title: Writing 001 | Email: A cinema invitation
+
+#question
+Write an email to invite your friend to the cinema.
+
+#answer
+Hi Jay,
+Would you like to go to the cinema with me on Saturday?
+See you soon!
+Alex
+
+#tip
+Invite → Suggest → Reason → End
+```
+
+写作复用口语录音生成器和声音设置，但只生成答案这一个 `a1` 片段。缺少或为空的答案会报错，禁止回退朗读整份 TXT。输出同名 MP3 与 cues，网页自动使用；中间文件保留在 `temp/writing-day###/`。`--dry-run` 仅显示将要朗读的答案，不调用 API。
 
 ## 本地同义转换录音生成命令
 
@@ -220,14 +247,14 @@ npm run audio:speaking-missing
 paraphrase2mp3 014
 ```
 
-命令读取 `word-trainer/homework/paraphrase014.txt` 的英文 A、英文 B 两列，生成 `paraphrase014.mp3` 和 `paraphrase014.cues.json`。时间点使用 `a1`、`b1`、`a2`、`b2` 等键。相同英文在同一个 Day 内只生成一次，所有对应键共用同一段录音；`get / have a cold` 等斜杠短语会转换为 `get or have a cold` 后朗读。
+命令读取 `word-trainer/english/word/paraphrase014.txt` 的英文 A、英文 B 两列，生成 `paraphrase014.mp3` 和 `paraphrase014.cues.json`。时间点使用 `a1`、`b1`、`a2`、`b2` 等键。相同英文在同一个 Day 内只生成一次，所有对应键共用同一段录音；`get / have a cold` 等斜杠短语会转换为 `get or have a cold` 后朗读。
 
 不带 Day 时，`paraphrase2mp3` 会生成所有缺失或 TXT/MP3 指纹已变化的同义转换录音。指纹全部一致时自动跳过。也可以在 `word-trainer` 目录运行：
 
 ```powershell
-npm run audio:paraphrase -- homework/paraphrase014.txt
-npm run audio:paraphrase -- homework/paraphrase014.txt --dry-run
-npm run audio:paraphrase -- homework/paraphrase014.txt --force
+npm run audio:paraphrase -- english/word/paraphrase014.txt
+npm run audio:paraphrase -- english/word/paraphrase014.txt --dry-run
+npm run audio:paraphrase -- english/word/paraphrase014.txt --force
 npm run audio:paraphrase-missing
 ```
 
@@ -235,16 +262,18 @@ npm run audio:paraphrase-missing
 
 ## 网页行为
 
-网页的顶层区域为：**词句练习**、**口语练习**、**听力练习**、**日常练习**和独立的**游戏**入口。前三个区域共享 Day 选择器；日常练习拥有独立素材选择器，不跟随 Day。一次只显示一个区域，并在本地记住上次选择。只有听力内容的 Day 会禁用词句页并自动打开听力页。
+英语导航固定为词汇、听力、口语和写作。每类都有自己的材料选择器，一次只显示一类。词汇与口语各自按编号选择最新有效材料，互不改变对方选择；听力按素材名称独立选择，写作按编号选择最新素材。分类切换时暂停离开的音频和连续播放。
 
-顶层导航最右侧提供独立的 **🎮 游戏** 入口，位于“日常练习”右侧。入口把当前 Day 带到 `type.html?day=###`，不归属于背单词区域。
+英语、游戏、数学、编程四个首页共用 site-nav.css 的 900px 内容宽度、12px 手机边距与滚动条占位，切换板块时导航和内容左右边界一致。
+
+单词打字入口位于词汇材料选择器旁，将当前词汇 Day 带到 type.html?day=###。学习记录仍保留在词汇模式栏。
 
 词句练习中的单词模式默认使用当前 Day 的完整词库，不再划分“第 1 页、第 2 页、全本”。学习卡显示 `当前位置/总词数`，提供上一个、下一个、前跳 10 个和后跳 10 个导航；到达词库首尾时停止，不循环。打印默写入口位于 Day 选择器旁。学习、选义和拼写卡片与顶层区域保持同宽。历史模式继续保留在模式栏中。
 
 ### 同义转换
 
-- 同义转换素材使用 `homework/paraphrase###.txt`，每个非注释行固定为 `英文 A | 中文 A | 英文 B | 中文 B`。
-- `paraphrase###.txt` 与其他作业按三位 Day 编号合并发现；即使没有同日 `word###.txt`，该 Day 也会出现在选择器中。
+- 同义转换素材使用 `english/word/paraphrase###.txt`，每个非注释行固定为 `英文 A | 中文 A | 英文 B | 中文 B`。
+- `paraphrase###.txt` 与同目录单词材料按三位 Day 编号合并发现；即使没有同日 `word###.txt`，该 Day 也会出现在选择器中。
 - 当天有同义转换素材时，词句练习的模式栏动态显示“🔁 同义转换”；旧 Day 没有素材时不显示，不改变原单词流程。
 - 卡片一次显示一组，默认同时显示题目和答案，也可手动隐藏答案；支持 A→B、B→A 切换、上一组、下一组，并可分别朗读题目或答案的完整英文。
 - 网页优先读取同名 `paraphrase###.mp3` 和 cues，两个喇叭分别定位 A/B 片段；TXT、MP3 与 cues 指纹必须全部一致。文件缺失、当前侧没有时间点或播放失败时自动回退系统英文 TTS。
@@ -261,25 +290,25 @@ npm run audio:paraphrase-missing
 5. cues 或 MP3 缺失、指纹不匹配、当前词没有 cue、浏览器播放失败时，自动回退系统英文 TTS。
 6. 键盘拼写默认静音，只有点击喇叭时发音；“上一个”和“下一个”循环浏览未完成词条，不记为拼写错误。
 
-### 口语与听力
+### 口语
 
 - 口语区按时间点播放 Q、A 或 Q+A，支持 0.75×、0.85×、1.0×、1.25×，以及暂停、回退约两秒和片段循环。
 - 没有 cues 的同名口语录音仍可整段播放。
 - 听力与口语区复用同款控制条，支持 0.75×、0.85×、1.0×、1.25×、整段播放、暂停/继续、回退约两秒和循环；不主动加入受管离线缓存。
 
-### 日常练习
+### 听力
 
-- 从 `practice/` 中的 MP3、M4A 和 OGG 音频发现练习项目，同一 basename 只形成一项。
+- 从 `english/listening/` 中的 MP3、M4A 和 OGG 音频发现练习项目，同一 basename 只形成一项。
 - 没有同名 TXT 时只显示完整播放器，适合磨耳朵素材。
 - 有同名 TXT 时使用与每日口语相同的 Q/A 或纯文本解析规则。
 - 有同名 cues 时使用与每日口语相同的 `segments.q1`、`segments.a1` 时间点显示分段按钮；cues 指定的音频文件名或 TXT 指纹不匹配时禁用分段，但仍保留文字和完整播放。
 - 可选同名 JPG、JPEG、PNG 或 WEBP 图片。
 - 完整播放使用与每日口语相同的速度、暂停、回退和循环控件；Q/A 分段按钮控制同一个播放器。
-- 日常练习在线播放，不加入受管离线缓存。
+- 听力素材在线播放，不加入受管离线缓存。
 
 ### TT 打字练习
 
-- `type.html` 读取查询参数中的 Day，并直接复用 `homework/word###.txt` 词库，不维护第二份单词数据。
+- `type.html` 读取查询参数中的 Day，并直接复用 `english/word/word###.txt` 词库，不维护第二份单词数据。
 - 点击开始后，英文单词从上方向下落；键入正确前缀时对应字母变绿，完整命中后单词消失并显示中文释义。
 - 命中后优先使用通过时间定位文件找到的 `word###.mp3` 片段；没有录音、没有对应 cue 或播放失败时使用系统英文 TTS。
 - 每局目标为命中 10 个词，顶部显示 `当前命中/10`、五次生命、WPM、准确率和当前连击，并提供下落速度、暂停与重新开始。
@@ -290,14 +319,12 @@ npm run audio:paraphrase-missing
 
 ### 内容发现与部署
 
-1. 从 `word###.txt`、`paraphrase###.txt`、`speaking###.txt` 和 `listening###` 音频的并集发现 Day。
-2. 按 Day 编号排序，默认打开最大的有效 Day。
-3. 切换 Day 时，各作业类型独立加载；一种失败不得破坏其他类型。
-4. 远程发现和单文件读取最多等待 60 秒；失败时优先继续使用本地词库缓存。
-5. 本地一键预览通过只读 `/__homework-index.json` 发现文件。
-6. GitHub Pages 使用 GitHub Contents API。
-7. Cloudflare Workers Static Assets 使用构建到干净 `dist/` 目录中的同源 `homework/index.json`；构建命令为 `npm run build`，部署命令为 `npx wrangler deploy`。
-8. `practice/` 使用同样的三路发现机制，本地和 GitHub Pages 无需清单，构建时自动生成 `dist/practice/index.json`。
+1. 词汇只发现 english/word 下的单词和同义转换材料，口语只发现 english/speaking 下的 TXT，写作只发现 english/writing 下的 TXT，听力只发现 english/listening 下的音频。
+2. 每次打开默认显示词汇；口语、听力和写作选择不受词汇 Day 影响。
+3. 目录与材料请求最多等待 60 秒；失败时目录优先使用本地素材清单缓存。
+4. 本地一键预览使用只读 /__english-index.json?category=分类。
+5. GitHub Pages 使用对应分类的 GitHub Contents API，无需手工索引。
+6. npm run build 生成干净 dist/ 和四个同源 english/分类/index.json，打包所有同名配套文件。
 
 同名文件是基础绑定规则。带有完整指纹的 cues 必须同时匹配 TXT 和音频；任何一项变化都会禁用旧录音片段，防止文本与读音错位。
 
@@ -310,7 +337,7 @@ npm run audio:paraphrase-missing
 - 听力文件可能较大，保持在线播放，不加入受管离线缓存。
 - 写入前校验文件哈希；相同文件不重复写入，变化文件只有在预期哈希验证成功后才替换。
 - 缓存音频支持 HTTP Range 响应，因此断网时仍能按时间点定位。
-- Service Worker 更新时最多自动重试三次；导航在线优先、失败时回退缓存页面。
+- Service Worker 更新时迁移旧 homework 和 practice 缓存到新分类路径，保留已下载内容；导航在线优先、失败时回退缓存页面。
 - 词库内容与学习历史继续保存在 `localStorage`。
 - 用户清除网站数据或系统存储压力过大时，浏览器仍可能删除缓存。
 

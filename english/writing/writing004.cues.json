@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "model": "gpt-4o-mini-tts",
+  "voice": "marin",
+  "instructions": "Speak in natural American English to one school-age child, as if having a friendly face-to-face conversation. Use a warm, bright, upbeat, gently cheerful tone, as if smiling while speaking. Sound encouraging, lively, and confident, but never exaggerated. Keep the pace relaxed and unhurried, at about 85 percent of normal adult conversational speed. Use clear pronunciation without over-enunciating. Use natural conversational rhythm, sentence stress, intonation, and gentle short pauses. Pause naturally after the two-part question before giving the answer. Do not sound like a teacher giving a lesson, a textbook recording, a formal presentation, or mechanical TTS. The child will listen and imitate the pronunciation.",
+  "audio": "writing004.mp3",
+  "sourceHash": "a417fd7e590287d9a00646cfbdf83d90eca73a34e99d847b4b4a868f68db031a",
+  "audioHash": "ea5fb5cd002cc81f5634efd13966f52f102084d7c5c679d325947864ca34effc",
+  "gapSeconds": 0.75,
+  "segments": {
+    "a1": {
+      "start": 0,
+      "end": 13.1
+    }
+  }
+}

@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
+const { parseWritingMaterial } = require('../writing-material');
 
 const projectRoot = path.resolve(__dirname, '..');
 const defaultFfmpeg = path.resolve(
@@ -28,13 +29,16 @@ function usage() {
   return [
     'Usage: npm run audio:speaking -- <speaking###.txt>',
     '       npm run audio:speaking-missing',
+    '       npm run audio:writing -- <writing###.txt>',
+    '       npm run audio:writing-missing',
     '',
     'Options:',
+    '  --kind NAME     speaking or writing (inferred from filename for a single file)',
     '  --voice NAME    OpenAI voice (default: marin)',
     '  --instructions  Override the fixed speaking-style prompt',
     '  --gap SECONDS   Silence between Q/A segments (default: 0.75)',
     '  --dry-run       Parse and print segments without calling the API',
-    '  --all-missing   Generate every speaking TXT without matching audio',
+    '  --all-missing   Generate missing/stale audio in the selected category',
     '  --force         Replace existing MP3/cues (does not remove M4A/OGG)',
     '  --ffmpeg PATH   Override the bundled ffmpeg executable',
     '',
@@ -44,12 +48,13 @@ function usage() {
 
 function parseArgs(argv) {
   const options = {
-    input:'', voice:'marin', gap:0.75, dryRun:false, force:false, allMissing:false,
+    input:'', kind:'', voice:'marin', gap:0.75, dryRun:false, force:false, allMissing:false,
     ffmpeg:defaultFfmpeg, instructions:defaultInstructions
   };
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
     if (!arg.startsWith('-') && !options.input) options.input = arg;
+    else if (arg === '--kind') options.kind = argv[++index];
     else if (arg === '--voice') options.voice = argv[++index];
     else if (arg === '--instructions') options.instructions = argv[++index];
     else if (arg === '--gap') options.gap = Number(argv[++index]);
@@ -61,14 +66,16 @@ function parseArgs(argv) {
     else throw new Error(`Unknown argument: ${arg}`);
   }
   if (!options.help && !options.input && !options.allMissing) {
-    throw new Error('A speaking###.txt path or --all-missing is required.');
+    throw new Error('A speaking###.txt / writing###.txt path or --all-missing is required.');
   }
   if (options.input && options.allMissing) {
-    throw new Error('Use either a speaking###.txt path or --all-missing, not both.');
+    throw new Error('Use either a TXT path or --all-missing, not both.');
   }
   if (!Number.isFinite(options.gap) || options.gap < 0) {
     throw new Error('--gap must be zero or greater.');
   }
+  if (!options.kind) options.kind = /^writing\d{3}\.txt$/i.test(path.basename(options.input)) ? 'writing' : 'speaking';
+  if (!['speaking', 'writing'].includes(options.kind)) throw new Error('--kind must be speaking or writing.');
   return options;
 }
 
@@ -150,6 +157,11 @@ function parseSpeaking(text) {
 
 function sha256(data) {
   return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+function parseWritingAnswer(text) {
+  const answer = normalizeSpeechText(parseWritingMaterial(text).answer);
+  return answer ? [{ index:0, key:'a1', text:answer }] : [];
 }
 
 function wavInfo(buffer) {
@@ -259,7 +271,7 @@ function inspectAudioState(basePath, sourceBytes) {
     return { status:'untracked', audio, reason:'matching cues have no source fingerprint' };
   }
   if (cues.sourceHash.toLowerCase() !== sha256(sourceBytes)) {
-    return { status:'stale', audio, reason:'speaking TXT has changed' };
+    return { status:'stale', audio, reason:'source TXT has changed' };
   }
   const expectedAudioName = path.basename(basePath);
   if (!new RegExp(`^${expectedAudioName}\\.(mp3|m4a|ogg)$`, 'i').test(cues.audio || '')) {
@@ -276,12 +288,13 @@ function inspectAudioState(basePath, sourceBytes) {
 
 async function generate(options) {
   const inputPath = path.resolve(options.input);
-  if (!/^speaking\d{3}\.txt$/i.test(path.basename(inputPath))) {
-    throw new Error('Input filename must match speaking###.txt.');
+  const kind = options.kind || (/^writing/i.test(path.basename(inputPath)) ? 'writing' : 'speaking');
+  if (!['speaking', 'writing'].includes(kind) || !new RegExp(`^${kind}\\d{3}\\.txt$`, 'i').test(path.basename(inputPath))) {
+    throw new Error(`Input filename must match ${kind}###.txt.`);
   }
   const sourceBytes = fs.readFileSync(inputPath);
-  const segments = parseSpeaking(sourceBytes.toString('utf8'));
-  if (!segments.length) throw new Error('No speaking content was found.');
+  const segments = kind === 'writing' ? parseWritingAnswer(sourceBytes.toString('utf8')) : parseSpeaking(sourceBytes.toString('utf8'));
+  if (!segments.length) throw new Error(kind === 'writing' ? 'No writing #answer content was found.' : 'No speaking content was found.');
   if (options.dryRun) {
     process.stdout.write(`${JSON.stringify({ input:inputPath, count:segments.length, segments }, null, 2)}\n`);
     return;
@@ -303,8 +316,8 @@ async function generate(options) {
   if (!apiKey) throw new Error('OPENAI_API_KEY is not set.');
   if (!fs.existsSync(options.ffmpeg)) throw new Error(`ffmpeg was not found: ${options.ffmpeg}`);
 
-  const day = path.basename(inputPath).match(/speaking(\d{3})\.txt/i)[1];
-  const tempDir = path.resolve(projectRoot, '..', 'temp', `speaking-day${day}`);
+  const day = path.basename(inputPath).match(/(\d{3})\.txt/i)[1];
+  const tempDir = path.resolve(projectRoot, '..', 'temp', `${kind}-day${day}`);
   fs.mkdirSync(tempDir, { recursive:true });
   process.stdout.write(`Keeping intermediate files in ${tempDir}\n`);
 
@@ -391,9 +404,10 @@ async function generate(options) {
 }
 
 async function generateAllMissing(options) {
-  const homeworkDir = path.join(projectRoot, 'homework');
+  const kind = options.kind || 'speaking';
+  const homeworkDir = path.join(projectRoot, 'english', kind);
   const inputs = fs.readdirSync(homeworkDir)
-    .filter(file => /^speaking\d{3}\.txt$/i.test(file))
+    .filter(file => new RegExp(`^${kind}\\d{3}\\.txt$`, 'i').test(file))
     .sort((left, right) => left.localeCompare(right, 'en'));
   const pending = inputs.filter(file => {
     const base = path.join(homeworkDir, file.slice(0, -path.extname(file).length));
@@ -402,10 +416,10 @@ async function generateAllMissing(options) {
     return state.status === 'missing' || state.status === 'stale';
   });
   if (!pending.length) {
-    process.stdout.write(`All ${inputs.length} speaking audio files are present and no tracked recording is stale.\n`);
+    process.stdout.write(`All ${inputs.length} ${kind} audio files are present and no tracked recording is stale.\n`);
     return;
   }
-  process.stdout.write(`Generating ${pending.length} missing or stale speaking audio file(s): ${pending.join(', ')}\n`);
+  process.stdout.write(`${options.dryRun ? 'Previewing' : 'Generating'} ${pending.length} missing or stale ${kind} audio file(s): ${pending.join(', ')}\n`);
   for (const file of pending) {
     await generate({ ...options, input:path.join(homeworkDir, file), allMissing:false });
   }
@@ -425,4 +439,4 @@ async function main() {
 
 if (require.main === module) main();
 
-module.exports = { parseArgs, parseSpeaking, normalizeSpeechText, wavDuration, wavPeakDb, partFilename, existingAudio, inspectAudioState, generateAllMissing };
+module.exports = { parseArgs, parseSpeaking, parseWritingAnswer, normalizeSpeechText, wavDuration, wavPeakDb, partFilename, existingAudio, inspectAudioState, generateAllMissing };

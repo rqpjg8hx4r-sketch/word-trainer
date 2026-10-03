@@ -1,6 +1,6 @@
-const CACHE_VERSION = 'word-trainer-v2.30';
+const CACHE_VERSION = 'word-trainer-v2.30-english4';
 const CONTENT_CACHE = 'word-trainer-homework-v1';
-const APP_SHELL = ['./', './index.html', './type.html', './manifest.webmanifest'];
+const APP_SHELL = ['./', './index.html', './site-nav.css', './english-library.js', './writing-material.js', './writing-player.js', './type.html', './manifest.webmanifest'];
 
 async function sha256Hex(data) {
   const digest = await crypto.subtle.digest('SHA-256', data);
@@ -16,12 +16,19 @@ self.addEventListener('activate', event => {
     caches.keys().then(async keys => {
       const contentCache = await caches.open(CONTENT_CACHE);
       const oldAppCaches = keys.filter(key => key.startsWith('word-trainer-v') && key !== CACHE_VERSION);
-      for (const key of oldAppCaches) {
+      // Keep previously downloaded recordings usable after the directory move.
+      for (const key of [...oldAppCaches, CONTENT_CACHE]) {
         const oldCache = await caches.open(key);
         for (const request of await oldCache.keys()) {
-          if (new URL(request.url).pathname.includes('/homework/')) {
+          const url = new URL(request.url);
+          const oldHomework = url.pathname.match(/\/homework\/((word|paraphrase|speaking)\d{3}\.[^/]+)$/i);
+          const oldPractice = url.pathname.includes('/practice/');
+          if (oldHomework || oldPractice) {
+            url.pathname = oldHomework
+              ? url.pathname.replace('/homework/', `/english/${oldHomework[2].toLowerCase() === 'speaking' ? 'speaking' : 'word'}/`)
+              : url.pathname.replace('/practice/', '/english/listening/');
             const response = await oldCache.match(request);
-            if (response) await contentCache.put(request, response);
+            if (response) await contentCache.put(url.href, response);
           }
         }
       }
@@ -82,7 +89,7 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  if (url.origin === self.location.origin && url.pathname.includes('/homework/')) {
+  if (url.origin === self.location.origin && /\/english\/(word|speaking|listening|writing)\//.test(url.pathname)) {
     event.respondWith(fetch(request).catch(() => caches.open(CONTENT_CACHE).then(cache => cache.match(url.href, { ignoreSearch:true }))));
     return;
   }
@@ -108,7 +115,7 @@ self.addEventListener('message', event => {
       const relativeUrl = typeof item === 'string' ? item : item?.url;
       const expectedHash = typeof item === 'object' ? String(item?.sha256 || '').toLowerCase() : '';
       const url = new URL(relativeUrl, self.registration.scope);
-      if (url.origin !== self.location.origin || !url.pathname.includes('/homework/')) throw new Error('Invalid cache URL');
+      if (url.origin !== self.location.origin || !/\/english\/(word|speaking|listening|writing)\//.test(url.pathname)) throw new Error('Invalid cache URL');
       if (!/^[a-f0-9]{64}$/.test(expectedHash)) throw new Error('Invalid content hash');
       return { url, expectedHash };
     });
@@ -138,7 +145,7 @@ self.addEventListener('message', event => {
       for (const download of downloads) {
         await cache.put(download.url, download.response);
       }
-      event.source?.postMessage({ type:'DAY_CACHED', day:event.data.day });
+      event.source?.postMessage({ type:'DAY_CACHED', day:event.data.day, category:event.data.category });
     } catch (error) {
       const alreadyCached = await Promise.all(entries.map(async entry => {
         const response = await cache.match(entry.url.href);
@@ -146,7 +153,8 @@ self.addEventListener('message', event => {
       }));
       event.source?.postMessage({
         type:alreadyCached.every(Boolean) ? 'DAY_CACHED' : 'DAY_CACHE_FAILED',
-        day:event.data.day
+        day:event.data.day,
+        category:event.data.category
       });
     }
   })());

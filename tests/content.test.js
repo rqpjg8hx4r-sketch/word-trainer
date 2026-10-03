@@ -9,10 +9,14 @@ const { parseArgs, spokenForm, wavDuration, wavPeakDb, partFilename } = require(
 const {
   parseArgs:parseSpeakingArgs,
   parseSpeaking,
+  parseWritingAnswer,
   normalizeSpeechText,
   partFilename:speakingPartFilename,
   inspectAudioState
 } = require('../scripts/generate-speaking-audio');
+const { parseWritingMaterial } = require('../writing-material');
+const { startPreview } = require('../scripts/start-preview');
+const http = require('node:http');
 const {
   parseArgs:parseParaphraseAudioArgs,
   spokenPhrase,
@@ -22,17 +26,71 @@ const {
 } = require('../scripts/generate-paraphrase-audio');
 
 const root = path.resolve(__dirname, '..');
-const homeworkDir = path.join(root, 'homework');
+const homeworkDir = path.join(root, 'english', 'word');
+const speakingDir = path.join(root, 'english', 'speaking');
+function materialPath(name) {
+  return path.join(/^speaking/i.test(name) ? speakingDir : homeworkDir, name);
+}
 
 function read(file) {
-  return fs.readFileSync(path.join(homeworkDir, file), 'utf8');
+  return fs.readFileSync(materialPath(file), 'utf8');
 }
 
 function fileHash(file) {
-  return crypto.createHash('sha256').update(fs.readFileSync(path.join(homeworkDir, file))).digest('hex');
+  return crypto.createHash('sha256').update(fs.readFileSync(materialPath(file))).digest('hex');
 }
 
-test('homework TXT files use supported flat three-digit day names', () => {
+test('writing sections stop at each # field and audio contains only the answer', () => {
+  const source = '\uFEFF#title: Writing 901 | Email about games\r\n\r\n#question\r\nWhat do you play?\r\n\r\n#answer\r\nHi Jay,\r\nI like Eggy Party.\r\n\r\n#tip\r\n回答 → 理由\r\n#notes\r\nPrivate notes.';
+  assert.deepEqual(parseWritingMaterial(source), {
+    question:'What do you play?', answer:'Hi Jay,\nI like Eggy Party.', tips:'回答 → 理由'
+  });
+  assert.deepEqual(parseWritingAnswer(source), [{ index:0, key:'a1', text:'Hi Jay, I like Eggy Party.' }]);
+  assert.deepEqual(parseWritingAnswer('#question\nDo this.\n#tip\nA tip.'), []);
+  assert.deepEqual(parseWritingAnswer('#answer\nOnly this.\n#unknown\nNever read this.'), [{ index:0, key:'a1', text:'Only this.' }]);
+  assert.equal(parseWritingMaterial('QUESTION\nOld question\nANSWER\nOld answer\nWRITING TIP\nOld tip').answer, 'Old answer');
+  assert.equal(parseWritingMaterial('#QUESTION:\nQ\n#ANSWER: Inline answer\n#TIP\nT').answer, 'Inline answer');
+});
+
+test('writing audio dry-run uses shared answer parsing for every current material', () => {
+  const writingDir = path.join(root, 'english', 'writing');
+  const files = fs.readdirSync(writingDir).filter(name => /^writing\d{3}\.txt$/i.test(name));
+  assert.ok(files.length >= 8);
+  for (const file of files) {
+    const input = path.join(writingDir, file);
+    const source = fs.readFileSync(input, 'utf8');
+    assert.match(source, /^#title: Writing \d{3} \| .+/);
+    assert.match(source, /^#question$/m);
+    assert.match(source, /^#answer$/m);
+    assert.match(source, /^#tip$/m);
+    const parts = parseWritingMaterial(source);
+    assert.ok(parts.question && parts.answer && parts.tips);
+    const parsed = JSON.parse(execFileSync(process.execPath, [path.join(root, 'scripts/generate-speaking-audio.js'), '--kind', 'writing', input, '--dry-run'], {
+      encoding:'utf8', env:{ ...process.env, OPENAI_API_KEY:'' }
+    }));
+    assert.deepEqual(parsed.segments, [{ index:0, key:'a1', text:normalizeSpeechText(parts.answer) }], file);
+  }
+  assert.equal(parseSpeakingArgs(['--kind', 'writing', '--all-missing']).kind, 'writing');
+  assert.equal(parseSpeakingArgs(['english/writing/writing001.txt']).kind, 'writing');
+  assert.throws(() => parseSpeakingArgs(['--kind', 'word', '--all-missing']), /speaking or writing/);
+});
+
+test('writing audio rejects a missing answer before calling the speech API', () => {
+  const fixture = path.join(os.tmpdir(), `writing-no-answer-${Date.now()}`);
+  fs.mkdirSync(fixture);
+  const input = path.join(fixture, 'writing901.txt');
+  try {
+    fs.writeFileSync(input, '#title: No answer\n#question\nQuestion only.\n#tip\nAdvice only.');
+    assert.throws(() => execFileSync(process.execPath, [path.join(root, 'scripts/generate-speaking-audio.js'), input, '--dry-run'], {
+      encoding:'utf8', stdio:'pipe', env:{ ...process.env, OPENAI_API_KEY:'' }
+    }), error => /No writing #answer content/.test(error.stderr));
+  } finally {
+    fs.rmSync(input);
+    fs.rmdirSync(fixture);
+  }
+});
+
+test('vocabulary TXT files use supported three-digit material names', () => {
   const files = fs.readdirSync(homeworkDir);
   const textFiles = files.filter(file => file.endsWith('.txt'));
   assert.ok(textFiles.length > 0);
@@ -187,10 +245,10 @@ test('speaking audio command parses numbered, unnumbered, and multiline Q/A text
 
 test('speaking audio command supports all-missing and dry-run modes', () => {
   assert.equal(parseSpeakingArgs(['--all-missing']).allMissing, true);
-  assert.equal(parseSpeakingArgs(['homework/speaking014.txt', '--dry-run']).dryRun, true);
+  assert.equal(parseSpeakingArgs(['english/speaking/speaking014.txt', '--dry-run']).dryRun, true);
   const output = execFileSync(process.execPath, [
     path.join(root, 'scripts', 'generate-speaking-audio.js'),
-    path.join(homeworkDir, 'speaking014.txt'),
+    path.join(speakingDir, 'speaking014.txt'),
     '--dry-run'
   ], { encoding:'utf8' });
   const result = JSON.parse(output);
@@ -200,13 +258,30 @@ test('speaking audio command supports all-missing and dry-run modes', () => {
 });
 
 test('speaking audio command skips an existing M4A without requiring the API', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'speaking-audio-skip-'));
+  const input = path.join(tempDir, 'speaking999.txt');
+  const audio = path.join(tempDir, 'speaking999.m4a');
+  const text = Buffer.from('Q1: How are you?\nA1: I am fine.');
+  const recording = Buffer.from('existing recording');
+  fs.writeFileSync(input, text);
+  fs.writeFileSync(audio, recording);
+  fs.writeFileSync(path.join(tempDir, 'speaking999.cues.json'), JSON.stringify({
+    audio:'speaking999.m4a',
+    sourceHash:crypto.createHash('sha256').update(text).digest('hex'),
+    audioHash:crypto.createHash('sha256').update(recording).digest('hex')
+  }));
   const env = { ...process.env };
   delete env.OPENAI_API_KEY;
-  const output = execFileSync(process.execPath, [
-    path.join(root, 'scripts', 'generate-speaking-audio.js'),
-    path.join(homeworkDir, 'speaking006.txt')
-  ], { encoding:'utf8', env });
-  assert.match(output, /Skipped existing .*speaking006\.m4a/i);
+  try {
+    const output = execFileSync(process.execPath, [
+      path.join(root, 'scripts', 'generate-speaking-audio.js'), input
+    ], { encoding:'utf8', env });
+    assert.match(output, /Skipped existing .*speaking999\.m4a/i);
+    assert.deepEqual(fs.readFileSync(audio), recording);
+  } finally {
+    assert.equal(path.dirname(tempDir), path.resolve(os.tmpdir()));
+    fs.rmSync(tempDir, { recursive:true, force:true });
+  }
 });
 
 test('speaking audio state detects a changed TXT from its cues fingerprint', () => {
@@ -231,7 +306,7 @@ test('speaking audio state detects a changed TXT from its cues fingerprint', () 
 });
 
 test('speaking TXT files contain displayable text', () => {
-  const files = fs.readdirSync(homeworkDir).filter(file => /^speaking\d{3}\.txt$/.test(file));
+  const files = fs.readdirSync(speakingDir).filter(file => /^speaking\d{3}\.txt$/.test(file));
   for (const file of files) {
     const content = read(file).replace(/^\uFEFF/, '').split(/\r?\n/)
       .filter(line => !/^\s*#/.test(line))
@@ -240,18 +315,21 @@ test('speaking TXT files contain displayable text', () => {
   }
 });
 
-test('listening audio uses a flat three-digit day name', () => {
-  const files = fs.readdirSync(homeworkDir).filter(file => /^listening/i.test(file));
-  for (const file of files) assert.match(file, /^listening\d{3}\.(mp3|m4a|ogg)$/i);
+test('old daily listening is removed and long-term audio is available', () => {
+  assert.ok(!fs.existsSync(path.join(root,'homework')));
+  assert.ok(!fs.existsSync(path.join(root,'practice')));
+  const files=fs.readdirSync(path.join(root,'english','listening'));
+  assert.ok(files.some(file => /\.(mp3|m4a|ogg)$/i.test(file)));
+  assert.ok(!files.includes('listening008.mp3'));
 });
 
 test('cue files point to existing audio and contain valid ranges', () => {
-  const files = fs.readdirSync(homeworkDir).filter(file => /^speaking\d{3}\.cues\.json$/.test(file));
+  const files = fs.readdirSync(speakingDir).filter(file => /^speaking\d{3}\.cues\.json$/.test(file));
   for (const file of files) {
     const day = file.match(/\d{3}/)[0];
     const cues = JSON.parse(read(file));
     assert.match(cues.audio, new RegExp(`^speaking${day}\\.(mp3|m4a|ogg)$`, 'i'));
-    assert.ok(fs.existsSync(path.join(homeworkDir, cues.audio)), `${cues.audio} is missing`);
+    assert.ok(fs.existsSync(materialPath(cues.audio)), `${cues.audio} is missing`);
     assert.equal(cues.sourceHash, fileHash(`speaking${day}.txt`), `${file}: sourceHash is stale`);
     assert.equal(cues.audioHash, fileHash(cues.audio), `${file}: audioHash is stale`);
     for (const [name, range] of Object.entries(cues.segments || {})) {
@@ -270,7 +348,7 @@ test('word cue files match their text and audio and contain valid items', () => 
     assert.equal(cues.audio, `word${day}.mp3`);
     assert.equal(typeof cues.instructions, 'string', `${file}: instructions are missing`);
     assert.ok(cues.instructions.trim(), `${file}: instructions are empty`);
-    assert.ok(fs.existsSync(path.join(homeworkDir, cues.audio)), `${cues.audio} is missing`);
+    assert.ok(fs.existsSync(materialPath(cues.audio)), `${cues.audio} is missing`);
     assert.equal(cues.sourceHash, fileHash(`word${day}.txt`), `${file}: sourceHash is stale`);
     assert.equal(cues.audioHash, fileHash(cues.audio), `${file}: audioHash is stale`);
     assert.ok(Array.isArray(cues.items) && cues.items.length > 0, `${file}: items are missing`);
@@ -289,7 +367,7 @@ test('paraphrase cue files match their text and audio and contain valid A/B rang
     const day = file.match(/\d{3}/)[0];
     const cues = JSON.parse(read(file));
     assert.equal(cues.audio, `paraphrase${day}.mp3`);
-    assert.ok(fs.existsSync(path.join(homeworkDir, cues.audio)), `${cues.audio} is missing`);
+    assert.ok(fs.existsSync(materialPath(cues.audio)), `${cues.audio} is missing`);
     assert.equal(cues.sourceHash, fileHash(`paraphrase${day}.txt`), `${file}: sourceHash is stale`);
     assert.equal(cues.audioHash, fileHash(cues.audio), `${file}: audioHash is stale`);
     for (const [key, range] of Object.entries(cues.segments || {})) {
@@ -318,10 +396,54 @@ test('app shell and offline worker versions stay aligned', () => {
   assert.match(worker, /'\.\/type\.html'/);
 });
 
-test('build creates a deployment index for the optional practice directory', () => {
+test('build indexes all four English categories and excludes former paths', () => {
   execFileSync(process.execPath, [path.join(root, 'scripts', 'build-site.js')]);
   assert.ok(fs.existsSync(path.join(root, 'dist', 'type.html')));
-  const index = JSON.parse(fs.readFileSync(path.join(root, 'dist', 'practice', 'index.json'), 'utf8'));
-  assert.ok(Array.isArray(index.files));
-  assert.ok(index.files.every(file => file !== 'index.json'));
+  assert.ok(fs.existsSync(path.join(root, 'dist', 'english-library.js')));
+  for(const category of ['word','listening','writing','speaking']) {
+    const index=JSON.parse(fs.readFileSync(path.join(root,'dist','english',category,'index.json'),'utf8'));
+    assert.ok(Array.isArray(index.files));
+    assert.ok(index.files.every(file=>file!=='index.json'));
+    assert.ok(index.files.length>0);
+  }
+  assert.ok(!fs.existsSync(path.join(root,'dist','homework')));
+  assert.ok(!fs.existsSync(path.join(root,'dist','practice')));
+});
+
+test('preview launcher starts once and serves all four English categories on the same origin', async () => {
+  const reservation = http.createServer();
+  await new Promise(resolve => reservation.listen(0, '127.0.0.1', resolve));
+  const port = reservation.address().port;
+  await new Promise(resolve => reservation.close(resolve));
+  const preview = await startPreview(port);
+  assert.ok(preview.startedPid);
+  try {
+    for (const category of ['word', 'listening', 'speaking', 'writing']) {
+      const response = await fetch(`${preview.baseUrl}/__english-index.json?category=${category}`);
+      assert.equal(response.status, 200, category);
+      const { files } = await response.json();
+      assert.ok(files.length > 0, category);
+      assert.ok(!files.includes('index.json'));
+      const staticIndex = await fetch(`${preview.baseUrl}/english/${category}/index.json`);
+      assert.deepEqual((await staticIndex.json()).files, files);
+    }
+    const second = await startPreview(port);
+    assert.equal(second.startedPid, null);
+    assert.equal(second.baseUrl, preview.baseUrl);
+  } finally {
+    process.kill(preview.startedPid);
+  }
+});
+
+test('preview launcher leaves a different website on the requested port running', async () => {
+  const other = http.createServer((request, response) => response.end('Another website'));
+  await new Promise(resolve => other.listen(0, '127.0.0.1', resolve));
+  const port = other.address().port;
+  try {
+    await assert.rejects(startPreview(port), /occupied by another website/);
+    assert.equal(await (await fetch(`http://127.0.0.1:${port}/index.html`)).text(), 'Another website');
+  } finally {
+    other.closeAllConnections();
+    await new Promise(resolve => other.close(resolve));
+  }
 });

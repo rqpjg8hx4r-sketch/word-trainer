@@ -8,6 +8,8 @@
     "audio:missing": "node scripts/generate-word-audio.js --all-missing",
     "audio:speaking": "node scripts/generate-speaking-audio.js",
     "audio:speaking-missing": "node scripts/generate-speaking-audio.js --all-missing",
+    "audio:writing": "node scripts/generate-speaking-audio.js --kind writing",
+    "audio:writing-missing": "node scripts/generate-speaking-audio.js --kind writing --all-missing",
     "audio:paraphrase": "node scripts/generate-paraphrase-audio.js",
     "audio:paraphrase-missing": "node scripts/generate-paraphrase-audio.js --all-missing",
     "test": "node --test tests/content.test.js && playwright test"

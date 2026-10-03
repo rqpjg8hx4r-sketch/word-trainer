@@ -5,10 +5,10 @@ const crypto = require('node:crypto');
 const { createTestServer } = require('./test-server');
 
 let testServer;
-const homeworkDir = path.resolve(__dirname, '..', 'homework');
-const expectedHomeworkDays = new Set(
+const homeworkDir = path.resolve(__dirname, '..', 'english', 'word');
+const expectedWordMaterials = new Set(
   fs.readdirSync(homeworkDir)
-    .map(file => file.match(/^(?:word|speaking|listening|paraphrase)(\d{3})\./i)?.[1])
+    .map(file => file.match(/^(?:word|paraphrase)(\d{3})\./i)?.[1])
     .filter(Boolean)
 ).size;
 
@@ -25,6 +25,49 @@ test.afterAll(async () => {
   await new Promise(resolve => testServer.close(resolve));
 });
 
+test('English categories still load through an already running legacy preview server', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.route('**/__english-index.json?category=*', route => route.fulfill({ status:404, body:'Not found' }));
+  await page.goto('/index.html');
+  await expect(page.locator('#librarySelect option')).toHaveCount(expectedWordMaterials);
+  await page.getByRole('tab', { name:/听力/ }).click();
+  await expect(page.locator('#listeningSelect option')).toHaveCount(4);
+  await expect(page.locator('#listeningStatus')).not.toContainText('404');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await expect(page.locator('#speakingSelect option')).toHaveCount(14);
+  await expect(page.locator('#speakingLibraryStatus')).toContainText('共 14 份');
+  await page.getByRole('tab', { name:/写作/ }).click();
+  await expect(page.locator('#writingSelect option')).toHaveCount(8);
+  await expect(page.locator('#writingTitle')).toContainText('A bike accident');
+  await expect(page.locator('#writingStatus')).not.toContainText('404');
+  await context.close();
+});
+
+test('all four homepages keep the same navigation and content width', async ({ browser }) => {
+  for (const viewport of [{ width:1200, height:900 }, { width:390, height:844 }]) {
+    const context = await browser.newContext({ viewport, serviceWorkers:'block' });
+    const page = await context.newPage();
+    const sizes = [];
+    for (const url of ['/index.html', '/games/index.html', '/math/index.html', '/coding/index.html']) {
+      await page.goto(url);
+      sizes.push(await page.evaluate(() => {
+        const bounds = document.querySelector('.container').getBoundingClientRect();
+        const nav = document.querySelector('.site-nav').getBoundingClientRect();
+        return { left:bounds.left, width:bounds.width, navLeft:nav.left, navWidth:nav.width, overflow:document.documentElement.scrollWidth > innerWidth };
+      }));
+    }
+    for (const size of sizes) {
+      expect(size).toEqual(sizes[0]);
+      expect(size.navLeft).toBe(size.left);
+      expect(size.navWidth).toBe(size.width);
+      expect(size.overflow).toBe(false);
+    }
+    if (viewport.width === 1200) expect(sizes[0].width).toBe(900);
+    await context.close();
+  }
+});
+
 async function waitForDayReady(page, day) {
   await expect(page.locator('#offlineStatus')).toContainText(`Day ${day} 离线已就绪`, { timeout:15_000 });
 }
@@ -33,9 +76,9 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await page.goto('/index.html');
   await expect(page.locator('#appVersion')).toHaveText('v2.30');
   await expect(page).toHaveTitle('每日英语');
-  await expect(page.locator('#librarySelect option')).toHaveCount(expectedHomeworkDays);
+  await expect(page.locator('#librarySelect option')).toHaveCount(expectedWordMaterials);
   await page.locator('#librarySelect').selectOption('word007.txt');
-  await page.getByRole('tab', { name:/词句练习/ }).click();
+  await page.getByRole('tab', { name:/词汇/ }).click();
   await expect(page.locator('#appSyncStatus')).toContainText(/^同步：(今天|\d{2}\/\d{2})/);
   await expect(page.locator('.header .streak-badge')).toHaveCount(0);
 
@@ -72,8 +115,9 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   await expect(page.locator('#spellSection')).toBeVisible();
   await expect(page.locator('#spellSection .streak-badge')).toHaveText('🔥 连对 0');
 
-  await page.locator('#librarySelect').selectOption('word006.txt');
-  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking006.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
   await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(9);
   await page.getByRole('button', { name:'▶ 听问题' }).nth(1).click();
@@ -81,7 +125,8 @@ test('existing word and speaking workflows remain available', async ({ page }) =
   expect(q2Time).toBeGreaterThanOrEqual(12.042);
   expect(q2Time).toBeLessThan(14.5);
 
-  await page.locator('#librarySelect').selectOption('word004.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking004.txt');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
 });
 
@@ -89,14 +134,14 @@ test('paraphrase-only homework opens as a reversible phrase exercise', async ({ 
   await page.goto('/index.html');
   await page.locator('#librarySelect').selectOption('day014');
 
-  await expect(page.getByRole('tab', { name:/词句练习/ })).toBeEnabled();
+  await expect(page.getByRole('tab', { name:/词汇/ })).toBeEnabled();
   await expect(page.getByRole('button', { name:'🔁 同义转换' })).toBeVisible();
   await expect(page.getByRole('button', { name:'🔁 同义转换' })).toHaveClass(/active/);
   await expect(page.getByRole('button', { name:'📖 学习模式' })).toBeDisabled();
   await expect(page.getByRole('button', { name:'🎯 选义测试' })).toBeDisabled();
   await expect(page.getByRole('button', { name:'🔤 键盘拼写' })).toBeDisabled();
   await expect(page.getByRole('button', { name:'打印默写' })).toBeDisabled();
-  await expect(page.getByRole('tab', { name:/游戏/ })).toBeDisabled();
+  await expect(page.getByRole('button', { name:'单词打字' })).toBeDisabled();
 
   await expect(page.locator('#paraphrasePosition')).toHaveText('1/42');
   await expect(page.locator('#paraphrasePromptEnglish')).toHaveText('famous');
@@ -129,7 +174,7 @@ test('paraphrase-only homework opens as a reversible phrase exercise', async ({ 
   await page.locator('#librarySelect').selectOption('word013.txt');
   await expect(page.getByRole('button', { name:'🔁 同义转换' })).toBeHidden();
   await expect(page.getByRole('button', { name:'📖 学习模式' })).toBeEnabled();
-  await expect(page.getByRole('tab', { name:/游戏/ })).toBeEnabled();
+  await expect(page.getByRole('button', { name:'单词打字' })).toBeEnabled();
 });
 
 test('paraphrase buttons prefer recorded A/B ranges and fall back when a range is missing', async ({ browser }) => {
@@ -138,7 +183,7 @@ test('paraphrase buttons prefer recorded A/B ranges and fall back when a range i
   const textBytes = fs.readFileSync(path.join(homeworkDir, 'paraphrase014.txt'));
   const audioBytes = fs.readFileSync(path.join(homeworkDir, 'word010.mp3'));
   const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-  await page.route('**/homework/paraphrase014.cues.json', route => route.fulfill({
+  await page.route('**/english/word/paraphrase014.cues.json', route => route.fulfill({
     status:200,
     contentType:'application/json',
     body:JSON.stringify({
@@ -148,7 +193,7 @@ test('paraphrase buttons prefer recorded A/B ranges and fall back when a range i
       segments:{ a1:{ start:1, end:2 }, b1:{ start:2.75, end:3.5 } }
     })
   }));
-  await page.route('**/homework/paraphrase014.mp3', route => route.fulfill({
+  await page.route('**/english/word/paraphrase014.mp3', route => route.fulfill({
     status:200,
     contentType:'audio/mpeg',
     body:audioBytes
@@ -208,25 +253,19 @@ test('paraphrase continuous playback reads both sides and advances to the next p
   await expect(page.getByRole('button', { name:'▶ 连续播放' })).toBeVisible();
 });
 
-test('the top-level game entry opens a playable typing game for the selected day', async ({ page }) => {
+test('the vocabulary typing entry opens a playable game for the selected material', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#librarySelect').selectOption('word010.txt');
 
-  const tabs = await page.locator('.main-tab').allTextContents();
-  expect(tabs).toEqual(['📚 词句练习', '🎧 口语练习', '🎵 听力练习', '🌱 日常练习', '🎮 游戏']);
+  expect(await page.locator('.main-tab').allTextContents()).toEqual(['📚 词汇', '🎧 听力', '🗣️ 口语', '✍️ 写作']);
   const tabXs = [];
-  for (const name of [/词句练习/, /口语练习/, /听力练习/, /日常练习/]) {
+  for (const name of [/词汇/, /听力/, /口语/, /写作/]) {
     await page.getByRole('tab', { name }).click();
     tabXs.push((await page.locator('.main-tabs').boundingBox()).x);
   }
   expect(Math.max(...tabXs)-Math.min(...tabXs)).toBeLessThanOrEqual(1);
-  expect(await page.evaluate(() => getComputedStyle(document.documentElement).overflowY)).toBe('scroll');
-  const practiceButton = page.getByRole('tab', { name:/日常练习/ });
-  const gameButton = page.getByRole('tab', { name:/游戏/ });
-  await expect(gameButton).toBeVisible();
-  const [practiceBox, gameBox] = await Promise.all([practiceButton.boundingBox(), gameButton.boundingBox()]);
-  expect(gameBox.x).toBeGreaterThan(practiceBox.x);
-
+  await page.getByRole('tab', { name:/词汇/ }).click();
+  const gameButton = page.getByRole('button', { name:'单词打字' });
   await gameButton.click();
   await expect(page).toHaveURL(/\/type\.html\?day=010$/);
   await expect(page.locator('#dayBadge')).toHaveText('Day 10');
@@ -362,7 +401,7 @@ test('visited word recordings remain available offline', async ({ browser }) => 
   await expect.poll(() => page.evaluate(async () => {
     const cache = await caches.open('word-trainer-homework-v1');
     const names = ['word011.txt', 'word011.cues.json', 'word011.mp3'];
-    const matches = await Promise.all(names.map(name => cache.match(`homework/${name}`)));
+    const matches = await Promise.all(names.map(name => cache.match(`english/word/${name}`)));
     return matches.every(Boolean);
   }), { timeout:15_000 }).toBe(true);
 
@@ -386,7 +425,7 @@ test('visited word recordings remain available offline', async ({ browser }) => 
 test('word dictation prints the complete day with Chinese cues only', async ({ page }) => {
   await page.goto('/index.html');
   await page.locator('#librarySelect').selectOption('word002.txt');
-  await page.getByRole('tab', { name:/词句练习/ }).click();
+  await page.getByRole('tab', { name:/词汇/ }).click();
 
   await expect(page.locator('#wordsArea .toolbar')).toHaveCount(0);
   await expect(page.getByText('手动导入词库（备用）')).toHaveCount(0);
@@ -408,10 +447,11 @@ test('word dictation prints the complete day with Chinese cues only', async ({ p
 test('missing cue file falls back to same-name complete audio', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
-  await page.route('**/homework/speaking005.cues.json', route => route.fulfill({ status:404, body:'Not found' }));
+  await page.route('**/english/speaking/speaking005.cues.json', route => route.fulfill({ status:404, body:'Not found' }));
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word005.txt');
-  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking005.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
   await expect(page.locator('#speakingAudio')).toBeHidden();
   await expect(page.locator('#speakingPlayer')).toBeVisible();
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(0);
@@ -422,14 +462,15 @@ test('missing cue file falls back to same-name complete audio', async ({ browser
 test('changed speaking text rejects stale cues and audio', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
-  await page.route('**/homework/speaking005.txt', route => route.fulfill({
+  await page.route('**/english/speaking/speaking005.txt', route => route.fulfill({
     status:200,
     contentType:'text/plain',
     body:'Q1: This is newly updated text.\nA1: The old recording must not play.'
   }));
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word005.txt');
-  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking005.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
   await expect(page.locator('#speakingHomeworkItems')).toContainText('newly updated text');
   await expect(page.locator('#speakingAudio')).toBeHidden();
   await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(0);
@@ -437,50 +478,43 @@ test('changed speaking text rejects stale cues and audio', async ({ browser }) =
   await context.close();
 });
 
-test('visited days reopen and seek while offline', async ({ browser }) => {
+test('visited speaking materials reopen and seek while offline', async ({ browser }) => {
   const context = await browser.newContext();
   const page = await context.newPage();
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word007.txt');
-  await waitForDayReady(page, 7);
-  await page.locator('#librarySelect').selectOption('word004.txt');
-  await waitForDayReady(page, 4);
-  await page.locator('#librarySelect').selectOption('word005.txt');
-  await waitForDayReady(page, 5);
-  await page.locator('#librarySelect').selectOption('word006.txt');
-  await waitForDayReady(page, 6);
-
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking005.txt');
+  await expect(page.locator('#speakingHomeworkItems')).toContainText('What is your favourite subject');
+  await expect.poll(() => page.evaluate(async () => {
+    const cache = await caches.open('word-trainer-homework-v1');
+    return !!await cache.match('english/speaking/speaking005.mp3');
+  }), { timeout:15_000 }).toBe(true);
   await context.setOffline(true);
   await page.reload();
-  await page.locator('#librarySelect').selectOption('word011.txt');
-  await expect(page.locator('#learnWord')).toContainText('ball');
-  await page.locator('#librarySelect').selectOption('word007.txt');
-  await page.getByRole('tab', { name:/口语练习/ }).click();
-  await expect(page.locator('#speakingHomeworkImage')).toBeVisible();
-  await page.locator('#librarySelect').selectOption('word006.txt');
-  await expect(page.locator('#speakingHomeworkItems button')).toHaveCount(9);
-  await page.getByRole('button', { name:'▶ 听问题' }).nth(1).click();
-  const offlineQ2Time = await page.locator('#speakingAudio').evaluate(audio => audio.currentTime);
-  expect(offlineQ2Time).toBeGreaterThanOrEqual(12.042);
-  expect(offlineQ2Time).toBeLessThan(14.5);
-  await page.locator('#librarySelect').selectOption('word005.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking005.txt');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('What is your favourite subject');
-  await page.locator('#librarySelect').selectOption('word004.txt');
-  await expect(page.locator('#speakingHomeworkItems')).toContainText('How do you like to travel');
+  await expect(page.locator('#speakingPlayer')).toBeVisible();
+  await page.getByRole('button', { name:'▶ 听问题' }).first().click();
+  await expect.poll(() => page.locator('#speakingAudio').evaluate(audio => audio.currentTime)).toBeGreaterThan(0);
   await context.close();
 });
 
 test('a slower previous day cannot overwrite the latest selection', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
-  await page.route('**/homework/speaking005.m4a', async route => {
+  await page.route('**/english/speaking/speaking005.m4a', async route => {
     const response = await route.fetch();
     await new Promise(resolve => setTimeout(resolve, 800));
     await route.fulfill({ response });
   });
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word005.txt');
-  await page.locator('#librarySelect').selectOption('word006.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking005.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking006.txt');
   await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('Is there a sports centre near your home');
   await page.waitForTimeout(1_000);
@@ -493,16 +527,18 @@ test('a missing latest speaking day cannot overwrite an older selection', async 
   const page = await context.newPage();
   let markDay7Requested;
   const day7Requested = new Promise(resolve => { markDay7Requested = resolve; });
-  await page.route('**/homework/speaking007.txt', async route => {
+  await page.route('**/english/speaking/speaking007.txt', async route => {
     markDay7Requested();
     await new Promise(resolve => setTimeout(resolve, 800));
     await route.fulfill({ status:404, body:'Not found' });
   });
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word007.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking007.txt');
   await day7Requested;
-  await page.getByRole('tab', { name:/口语练习/ }).click();
-  await page.locator('#librarySelect').selectOption('word005.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking005.txt');
   await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 5');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('What is your favourite subject');
   await page.waitForTimeout(1_000);
@@ -512,9 +548,9 @@ test('a missing latest speaking day cannot overwrite an older selection', async 
 
 test('spelling skips fixed punctuation and supports previous and next navigation', async ({ page }) => {
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(expectedHomeworkDays);
+  await expect(page.locator('#librarySelect option')).toHaveCount(expectedWordMaterials);
   await page.locator('#librarySelect').selectOption('word004.txt');
-  await page.getByRole('tab', { name:/词句练习/ }).click();
+  await page.getByRole('tab', { name:/词汇/ }).click();
   await page.evaluate(() => {
     const words = remoteLibraryCache['word004.txt'].words;
     const punctuated = words.find(item => item.w === 'classical (music)');
@@ -548,14 +584,15 @@ test('spelling skips fixed punctuation and supports previous and next navigation
 test('speaking accepts Q and A labels without numbers', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
-  await page.route('**/homework/speaking007.txt', route => route.fulfill({
+  await page.route('**/english/speaking/speaking007.txt', route => route.fulfill({
     status:200,
     contentType:'text/plain',
     body:'Q: What is your favourite programme?\nA: I like animal programmes.\n\nQ: Why?\nA: Because I can learn about animals.'
   }));
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word007.txt');
-  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking007.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
   await expect(page.locator('#speakingHomeworkItems')).toContainText('Q1: What is your favourite programme?');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('A2: Because I can learn about animals.');
   await context.close();
@@ -564,14 +601,15 @@ test('speaking accepts Q and A labels without numbers', async ({ browser }) => {
 test('speaking displays the complete text when there are no Q or A labels', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
-  await page.route('**/homework/speaking007.txt', route => route.fulfill({
+  await page.route('**/english/speaking/speaking007.txt', route => route.fulfill({
     status:200,
     contentType:'text/plain',
     body:'Listen to this short story.\n\nThe cat sat by the window.\nThen it went outside to play.'
   }));
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word007.txt');
-  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking007.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
   await expect(page.locator('#speakingHomeworkItems')).toContainText('Listen to this short story.');
   await expect(page.locator('#speakingHomeworkItems')).toContainText('Then it went outside to play.');
   await expect(page.locator('#speakingHomeworkItems strong')).toHaveCount(0);
@@ -580,43 +618,43 @@ test('speaking displays the complete text when there are no Q or A labels', asyn
 
 test('speaking automatically displays and removes an optional same-name image', async ({ page }) => {
   await page.goto('/index.html');
-  await page.locator('#librarySelect').selectOption('word007.txt');
-  await page.getByRole('tab', { name:/口语练习/ }).click();
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking007.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
   const image = page.locator('#speakingHomeworkImage');
   await expect(image).toBeVisible();
   await expect.poll(() => image.evaluate(element => element.naturalWidth)).toBeGreaterThan(0);
 
-  await page.locator('#librarySelect').selectOption('word006.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking006.txt');
   await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
   await expect(image).toBeHidden();
 });
 
-test('a day loads its matching listening audio', async ({ browser }) => {
+test('listening uses independent long-term materials', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
   await page.goto('/index.html');
-  await expect(page.locator('#librarySelect option')).toHaveCount(expectedHomeworkDays);
   await page.locator('#librarySelect').selectOption('word008.txt');
-  await page.getByRole('tab', { name:/听力练习/ }).click();
-  await expect(page.locator('#listeningBadge')).toContainText('Day 8 · 听力');
-  await expect(page.locator('#listeningAudio')).toBeHidden();
+  await page.getByRole('tab', { name:/听力/ }).click();
+  await expect(page.locator('#listeningSelect option')).toHaveCount(4);
+  await page.locator('#listeningSelect').selectOption('general002 About school');
+  await expect(page.locator('#listeningAudio')).toHaveAttribute('src','english/listening/general002 About school.m4a');
   await expect(page.locator('#listeningPlayer')).toBeVisible();
-  await expect(page.locator('#listeningPlayer .speed-btn')).toHaveCount(4);
-  await expect(page.locator('#listeningPlayer .player-btn')).toHaveCount(4);
-  await expect(page.locator('#listeningAudio')).toHaveAttribute('src', 'homework/listening008.mp3');
   await page.locator('#listeningPlayer .speed-btn[data-speed="1"]').click();
   await expect.poll(() => page.locator('#listeningAudio').evaluate(audio => audio.playbackRate)).toBe(1);
-
+  await page.getByRole('tab', { name:/词汇/ }).click();
   await page.locator('#librarySelect').selectOption('word007.txt');
-  await expect(page.locator('#listeningBadge')).toContainText('Day 7 · 暂无听力');
-  await expect(page.locator('#listeningPlayer')).toBeHidden();
+  await page.getByRole('tab', { name:/听力/ }).click();
+  await expect(page.locator('#listeningSelect')).toHaveValue('general002 About school');
+  await expect(page.locator('#listeningAudio')).toHaveAttribute('src','english/listening/general002 About school.m4a');
   await context.close();
 });
 
-test('practice automatically supports audio-only and text with cue segments', async ({ browser }) => {
+test('listening automatically supports audio-only and text with cue segments', async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
-  await page.route('**/__practice-index.json', route => route.fulfill({
+  await page.route('**/__english-index.json?category=listening', route => route.fulfill({
     status:200,
     contentType:'application/json',
     body:JSON.stringify({ files:[
@@ -626,12 +664,12 @@ test('practice automatically supports audio-only and text with cue segments', as
       'listening001.mp3'
     ] })
   }));
-  await page.route('**/practice/general001.txt', route => route.fulfill({
+  await page.route('**/english/listening/general001.txt', route => route.fulfill({
     status:200,
     contentType:'text/plain',
     body:'# Title: Everyday Conversation\n\nQ1: How are you?\nA1: I am great, thank you.'
   }));
-  await page.route('**/practice/general001.cues.json', route => route.fulfill({
+  await page.route('**/english/listening/general001.cues.json', route => route.fulfill({
     status:200,
     contentType:'application/json',
     body:JSON.stringify({
@@ -639,27 +677,180 @@ test('practice automatically supports audio-only and text with cue segments', as
       segments:{ q1:{ start:0.2, end:1.1 }, a1:{ start:1.3, end:2.8 } }
     })
   }));
-  const sampleAudio = path.resolve(__dirname, '..', 'homework', 'speaking001.m4a');
-  await page.route('**/practice/general001.m4a', route => route.fulfill({ status:200, contentType:'audio/mp4', path:sampleAudio }));
-  await page.route('**/practice/listening001.mp3', route => route.fulfill({ status:200, contentType:'audio/mpeg', path:sampleAudio }));
+  const sampleAudio = path.resolve(__dirname, '..', 'english', 'speaking', 'speaking001.m4a');
+  await page.route('**/english/listening/general001.m4a', route => route.fulfill({ status:200, contentType:'audio/mp4', path:sampleAudio }));
+  await page.route('**/english/listening/listening001.mp3', route => route.fulfill({ status:200, contentType:'audio/mpeg', path:sampleAudio }));
 
   await page.goto('/index.html');
-  await page.getByRole('tab', { name:/日常练习/ }).click();
-  await expect(page.locator('#practiceSelect option')).toHaveCount(2);
-  await expect(page.locator('#practiceTitle')).toContainText('Everyday Conversation');
-  await expect(page.locator('#practiceBadge')).toHaveText('可分段');
-  await expect(page.locator('#practiceItems')).toContainText('Q1: How are you?');
-  await expect(page.locator('#practiceItems button')).toHaveCount(3);
-  await expect(page.locator('#practiceAudio')).toBeHidden();
-  await expect(page.locator('#practicePlayer')).toBeVisible();
-  await expect(page.locator('#practicePlayer .speed-btn')).toHaveCount(4);
-  await expect(page.locator('#practicePlayer .player-btn')).toHaveCount(4);
-  await page.locator('#practiceRepeatBtn').click();
-  await expect(page.locator('#practiceRepeatBtn')).toContainText('循环开启');
+  await page.getByRole('tab', { name:/听力/ }).click();
+  await expect(page.locator('#listeningSelect option')).toHaveCount(2);
+  await expect(page.locator('#listeningTitle')).toContainText('Everyday Conversation');
+  await expect(page.locator('#listeningBadge')).toHaveText('可分段');
+  await expect(page.locator('#listeningItems')).toContainText('Q1: How are you?');
+  await expect(page.locator('#listeningItems button')).toHaveCount(3);
+  await expect(page.locator('#listeningAudio')).toBeHidden();
+  await expect(page.locator('#listeningPlayer')).toBeVisible();
+  await expect(page.locator('#listeningPlayer .speed-btn')).toHaveCount(4);
+  await expect(page.locator('#listeningPlayer .player-btn')).toHaveCount(4);
+  await page.locator('#listeningRepeatBtn').click();
+  await expect(page.locator('#listeningRepeatBtn')).toContainText('循环开启');
 
-  await page.locator('#practiceSelect').selectOption('listening001');
-  await expect(page.locator('#practiceBadge')).toHaveText('纯音频');
-  await expect(page.locator('#practiceItems')).toBeEmpty();
-  await expect(page.locator('#practiceAudio')).toHaveAttribute('src', 'practice/listening001.mp3');
+  await page.locator('#listeningSelect').selectOption('listening001');
+  await expect(page.locator('#listeningBadge')).toHaveText('纯音频');
+  await expect(page.locator('#listeningItems')).toBeEmpty();
+  await expect(page.locator('#listeningAudio')).toHaveAttribute('src', 'english/listening/listening001.mp3');
+  await context.close();
+});
+
+test('speaking and vocabulary selections remain independent', async ({ page }) => {
+  await page.goto('/index.html');
+  await page.locator('#librarySelect').selectOption('word004.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await page.locator('#speakingSelect').selectOption('speaking006.txt');
+  await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
+  await page.getByRole('tab', { name:/词汇/ }).click();
+  await expect(page.locator('#librarySelect')).toHaveValue('word004.txt');
+  await page.locator('#librarySelect').selectOption('word007.txt');
+  await page.getByRole('tab', { name:/口语/ }).click();
+  await expect(page.locator('#speakingSelect')).toHaveValue('speaking006.txt');
+  await expect(page.locator('#speakingHomeworkBadge')).toContainText('Day 6');
+});
+
+test('writing displays question, reference and tips with an optional same-name image', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.route('**/__english-index.json?category=writing', route => route.fulfill({
+    contentType:'application/json', body:JSON.stringify({ files:['writing901.txt','writing901.png','writing902.txt'] })
+  }));
+  const text = '#title: Writing 901 | Email: A cinema invitation\n\n#question\n\nInvite your friend to the cinema.\n\n#answer\n\nHi Jay, would you like to come with me?\n\n#tip\n\nInvite → Suggest → Reason → End';
+  await page.route('**/english/writing/writing901.txt', route => route.fulfill({ contentType:'text/plain', body:text }));
+  await page.route('**/english/writing/writing902.txt', route => route.fulfill({ contentType:'text/plain', body:'QUESTION\nWrite about your favourite sport.\n\nANSWER\nI like fencing.' }));
+  await page.route('**/english/writing/writing901.png', route => route.fulfill({
+    contentType:'image/png', body:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a1ioAAAAASUVORK5CYII=', 'base64')
+  }));
+  await page.goto('/index.html');
+  await expect(page.locator('#mainTabWords')).toHaveAttribute('aria-selected','true');
+  await page.getByRole('tab', { name:/写作/ }).click();
+  await page.locator('#writingSelect').selectOption('writing901.txt');
+  await expect(page.locator('#writingItems')).toContainText('Invite your friend to the cinema.');
+  await expect(page.locator('#writingTitle')).toHaveText('✍️ Writing 901 | Email: A cinema invitation');
+  await expect(page.locator('#writingItems')).toContainText('Invite → Suggest → Reason → End');
+  const answer = page.locator('#writingItems details').filter({ has:page.locator('summary', { hasText:'参考答案' }) });
+  await expect(answer.locator('.material-text')).toBeHidden();
+  await answer.locator('summary').click();
+  await expect(answer.locator('.material-text')).toContainText('Hi Jay');
+  await expect(page.locator('#writingImage')).toBeVisible();
+  await expect.poll(() => page.locator('#writingImage').evaluate(image => image.naturalWidth)).toBeGreaterThan(0);
+  await page.locator('#writingSelect').selectOption('writing902.txt');
+  await expect(page.locator('#writingItems')).toContainText('favourite sport');
+  await expect(page.locator('#writingImage')).toBeHidden();
+  await context.close();
+});
+
+test('directory migration keeps old records and downloaded content, and defaults to vocabulary', async ({ browser }) => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  await page.goto('/type.html?day=001');
+  const stats = { 'day-001--001':{ learn:3, quizCorrect:2, quizWrong:1, spellCorrect:4, spellWrong:0, lastAt:1234 } };
+  await page.evaluate(async stats => {
+    localStorage.setItem('wordTrainerV1', JSON.stringify({ days:{ 'day-001':{
+      title:'Existing lesson', createdAt:1234, words:[{ id:'day-001--001', w:'example', pos:'n.', m:'例子' }], stats
+    } } }));
+    localStorage.setItem('wordTrainerMainArea','speaking');
+    const cache = await caches.open('word-trainer-homework-v1');
+    await cache.put('homework/word999.mp3', new Response('old word recording'));
+    await cache.put('homework/speaking999.txt', new Response('old speaking text'));
+    await cache.put('practice/archive.txt', new Response('old listening text'));
+  }, stats);
+  await page.goto('/index.html');
+  await expect(page.locator('#mainTabWords')).toHaveAttribute('aria-selected','true');
+  await expect.poll(() => page.evaluate(async () => {
+    const cache = await caches.open('word-trainer-homework-v1');
+    return !!await cache.match('english/word/word999.mp3');
+  })).toBe(true);
+  const preserved = await page.evaluate(async () => {
+    const cache = await caches.open('word-trainer-homework-v1');
+    const paths = ['english/word/word999.mp3', 'english/speaking/speaking999.txt', 'english/listening/archive.txt'];
+    const contents = await Promise.all(paths.map(async path => (await cache.match(path)).text()));
+    return { stats:JSON.parse(localStorage.getItem('wordTrainerV1')).days['day-001'].stats, contents };
+  });
+  expect(preserved.stats).toEqual(stats);
+  expect(preserved.contents).toEqual(['old word recording','old speaking text','old listening text']);
+  await context.close();
+});
+
+test('writing answer speech reuses player controls and stops when leaving writing', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  await page.route('**/__english-index.json?category=writing', route => route.fulfill({
+    contentType:'application/json', body:JSON.stringify({ files:['writing001.txt'] })
+  }));
+  await page.goto('/index.html');
+  await page.getByRole('tab', { name:/写作/ }).click();
+  await page.locator('#writingSelect').selectOption('writing001.txt');
+  await page.locator('#writingAnswerSection summary').click();
+  await page.evaluate(() => {
+    window.__writingSpoken = [];
+    window.__writingPauses = 0;
+    window.speechSynthesis.cancel = () => {};
+    window.speechSynthesis.pause = () => window.__writingPauses++;
+    window.speechSynthesis.resume = () => {};
+    window.speechSynthesis.speak = utterance => {
+      window.__writingUtterance = utterance;
+      window.__writingSpoken.push({ text:utterance.text, rate:utterance.rate });
+    };
+  });
+  await page.locator('#writingPlayer').getByRole('button', { name:'▶ 听答案' }).click();
+  const first = await page.evaluate(() => window.__writingSpoken[0]);
+  expect(first.text).toContain('Hi Jay,');
+  expect(first.text).not.toContain('QUESTION');
+  expect(first.text).not.toContain('Invite:');
+  expect(first.rate).toBeCloseTo(0.85, 5);
+  await page.locator('#writingPlayer .speed-btn[data-speed="1.25"]').click();
+  expect(await page.evaluate(() => window.__writingSpoken.at(-1).rate)).toBe(1.25);
+  await page.locator('#writingPauseBtn').click();
+  await expect(page.locator('#writingPauseBtn')).toHaveText('▶ 继续');
+  expect(await page.evaluate(() => window.__writingPauses)).toBe(1);
+  await page.locator('#writingPauseBtn').click();
+  await expect(page.locator('#writingPauseBtn')).toHaveText('⏸ 暂停');
+  await page.locator('#writingRepeatBtn').click();
+  await page.evaluate(() => window.__writingUtterance.onend());
+  expect(await page.evaluate(() => window.__writingSpoken.length)).toBe(3);
+  await page.getByRole('tab', { name:/词汇/ }).click();
+  await page.evaluate(() => window.__writingUtterance.onend());
+  expect(await page.evaluate(() => window.__writingSpoken.length)).toBe(3);
+  await context.close();
+});
+
+test('writing prefers matching answer recordings and seeks to the answer cue', async ({ browser }) => {
+  const context = await browser.newContext({ serviceWorkers:'block' });
+  const page = await context.newPage();
+  const text = 'QUESTION\nInvite a friend.\n\nANSWER\nHi Jay, come to the cinema with me.\n\nWRITING TIP\nGive a reason.';
+  const audio = fs.readFileSync(path.resolve(__dirname, '..', 'english', 'speaking', 'speaking001.m4a'));
+  await page.route('**/__english-index.json?category=writing', route => route.fulfill({
+    contentType:'application/json', body:JSON.stringify({ files:['writing901.txt','writing901.m4a','writing901.cues.json'] })
+  }));
+  await page.route('**/english/writing/writing901.txt', route => route.fulfill({ contentType:'text/plain', body:text }));
+  await page.route('**/english/writing/writing901.m4a', route => route.fulfill({ contentType:'audio/mp4', body:audio }));
+  await page.route('**/english/writing/writing901.cues.json', route => route.fulfill({
+    contentType:'application/json', body:JSON.stringify({
+      audio:'writing901.m4a', sourceHash:crypto.createHash('sha256').update(text).digest('hex'),
+      audioHash:crypto.createHash('sha256').update(audio).digest('hex'), segments:{ a1:{ start:1.25, end:2.5 } }
+    })
+  }));
+  await page.goto('/index.html');
+  await page.getByRole('tab', { name:/写作/ }).click();
+  await expect(page.locator('#writingAudioStatus')).toContainText('播放答案片段');
+  await page.locator('#writingAnswerSection summary').click();
+  await page.evaluate(() => {
+    window.__writingRecordedStarts = [];
+    document.getElementById('writingAudio').play = () => {
+      window.__writingRecordedStarts.push(document.getElementById('writingAudio').currentTime);
+      return Promise.resolve();
+    };
+    window.speechSynthesis.speak = () => { throw new Error('Recording should be preferred'); };
+  });
+  await page.locator('#writingPlayer').getByRole('button', { name:'▶ 听答案' }).click();
+  expect(await page.evaluate(() => window.__writingRecordedStarts)).toEqual([1.25]);
   await context.close();
 });

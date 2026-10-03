@@ -573,12 +573,19 @@
       line-height: 1.6;
     }
   </style>
+  <link rel="stylesheet" href="../site-nav.css">
 </head>
 <body>
 
 <canvas id="confetti-canvas"></canvas>
 
 <div class="party-container">
+  <nav class="site-nav" aria-label="网站板块">
+    <a class="site-nav-link" href="../index.html"><span aria-hidden="true">📚</span> 英语</a>
+    <a class="site-nav-link" href="../games/index.html" aria-current="true"><span aria-hidden="true">🎮</span> 游戏</a>
+    <a class="site-nav-link" href="../math/index.html"><span aria-hidden="true">📐</span> 数学</a>
+    <a class="site-nav-link" href="../coding/index.html"><span aria-hidden="true">💻</span> 编程</a>
+  </nav>
   <!-- 顶部导航栏 -->
   <div class="party-topbar">
     <div class="party-brand">
@@ -591,7 +598,6 @@
     <div style="display:flex; gap:6px;">
       <button id="sound-btn" class="party-nav-btn" onclick="toggleSound()" title="开关音效">🔊 音效: 开</button>
       <a href="index.html" class="party-nav-btn">🎮 游戏大厅</a>
-      <a href="../math/" class="party-nav-btn" style="background:#065F46; color:#A7F3D0; border-color:#059669;">📐 数学</a>
     </div>
   </div>
 

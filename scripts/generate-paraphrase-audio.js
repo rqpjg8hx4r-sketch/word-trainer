@@ -257,7 +257,7 @@ async function generate(options) {
 }
 
 async function generateAllMissing(options) {
-  const homeworkDir = path.join(projectRoot, 'homework');
+  const homeworkDir = path.join(projectRoot, 'english', 'word');
   const inputs = fs.readdirSync(homeworkDir)
     .filter(file => /^paraphrase\d{3}\.txt$/i.test(file))
     .sort((left, right) => left.localeCompare(right, 'en'));
