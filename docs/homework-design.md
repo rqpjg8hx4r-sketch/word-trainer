@@ -48,10 +48,10 @@ english/
 - 词汇：word###.txt 和 paraphrase###.txt。
 - 口语：speaking###.txt，可配同名 JPG、JPEG、PNG 或 WebP 图片以及 MP3、M4A 或 OGG 录音。
 - 听力：MP3、M4A 或 OGG 音频是必需文件；同名 TXT、cues 和图片可选，允许 basename 含空格。
-- 写作：writing###.txt，可配同名 JPG、JPEG、PNG 或 WebP 图片，以及可选 MP3、M4A、OGG 答案录音和 cues。
+- 写作：writing###.txt，可配同名 JPG、JPEG、PNG 或 WebP 图片，以及可选 MP3、M4A、OGG 答案录音；不需要 cues。
 - 写作 TXT 使用 `#title: Writing 001 | Email: A cinema invitation` 作为内容标题，正文分为独占一行的 `#question`、`#answer`、`#tip`。网页读取 title 显示标题；参考答案默认折叠，写作提示默认展开，原文完整保留。仍兼容旧版 QUESTION、ANSWER、WRITING TIP 标题。
 - 参考答案后复用通用播放器，支持变速、暂停、重听与循环。没有录音时使用系统英文 TTS；系统朗读与 AI 录音生成器共用 writing-material.js，只读 `#answer` 正文，到下一个 `#` 字段停止，不读标题、题目或提示。TTS 重听从当前句开始，录音重听回退约两秒。
-- 配套写作录音默认只包含答案。若录音包含其他内容，可用 cues.segments.a1 或 cues.segments.answer 指定答案范围；cues 的 sourceHash 和 audioHash 如存在必须匹配当前 TXT 和录音。失效录音回退系统英文朗读。
+- 配套写作录音只包含答案，网页直接整段播放同名音频，不读取 cues，也不校验 TXT 与录音的指纹关系。清理换行、修改题目或提示后仍可播放原录音。录音缺失或播放失败时回退系统英文朗读。
 - 没有图片的材料正常显示文字；缺少 TXT 的独立图片不会形成一份写作或口语材料。
 
 ### 生成文件与索引
@@ -237,7 +237,9 @@ Alex
 Invite → Suggest → Reason → End
 ```
 
-写作复用口语录音生成器和声音设置，但只生成答案这一个 `a1` 片段。缺少或为空的答案会报错，禁止回退朗读整份 TXT。输出同名 MP3 与 cues，网页自动使用；中间文件保留在 `temp/writing-day###/`。`--dry-run` 仅显示将要朗读的答案，不调用 API。
+写作复用口语录音生成器和声音设置，但只朗读 `#answer` 内容。缺少或为空的答案会报错，禁止回退朗读整份 TXT。只输出同名答案 MP3，不生成 cues，网页自动整段播放；中间文件保留在 `temp/writing-day###/`。`--dry-run` 仅显示将要朗读的答案，不调用 API。
+
+写作生成器发现同名 MP3、M4A 或 OGG 就直接跳过，不依赖 cues；修改 TXT 后已有录音继续保留，避免因清理排版重复调用 API。旧写作 cues 不再使用，可自行删除。真正修改答案并需要重录时，运行 `npm run audio:writing -- english/writing/writing001.txt --force`。口语生成器保留原来的 TXT 指纹检查。
 
 ## 本地同义转换录音生成命令
 
@@ -328,7 +330,7 @@ npm run audio:paraphrase-missing
 5. GitHub Pages 使用对应分类的 GitHub Contents API，无需手工索引。
 6. npm run build 生成干净 dist/ 和四个同源 english/分类/index.json，打包所有同名配套文件。
 
-同名文件是基础绑定规则。带有完整指纹的 cues 必须同时匹配 TXT 和音频；任何一项变化都会禁用旧录音片段，防止文本与读音错位。
+同名文件是基础绑定规则。词汇、口语和同义转换的带指纹 cues 必须匹配 TXT 与音频。写作录音只按同名文件绑定，允许 TXT 变化，不读取 cues，整段播放答案。
 
 ## 离线缓存
 
@@ -372,7 +374,7 @@ Speak in natural American English to one school-age child, as if having a friend
 3. 合并为当日一个 MP3。
 4. 写入精确时间点、生成参数和文件哈希。
 5. 删除临时分段文件。
-6. 只提交最终 MP3 和 cues JSON。
+6. 只提交最终 MP3 和需要分段的 cues JSON；写作只需 MP3。
 
 `OPENAI_API_KEY` 只能保存为 GitHub Actions Secret，工作流不得输出或写入该密钥。
 

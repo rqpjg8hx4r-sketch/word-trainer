@@ -90,6 +90,83 @@ test('writing audio rejects a missing answer before calling the speech API', () 
   }
 });
 
+test('writing recordings survive TXT edits with missing or invalid cues without calling the API', () => {
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'writing-audio-skip-'));
+  const base = path.join(fixture, 'writing999');
+  const input = `${base}.txt`;
+  const recording = Buffer.from('existing answer recording');
+  const oldText = '#question\nOld question.\n#answer\nHi Jay,\ncome to the cinema.\n#tip\nOld tip.';
+  const newText = '#question\nNew question.\n#answer\nHi Jay, come to the cinema.\n#tip\nNew tip.';
+  fs.writeFileSync(input, newText);
+  try {
+    for (const extension of ['mp3', 'm4a', 'ogg']) {
+      const audio = `${base}.${extension}`;
+      fs.writeFileSync(audio, recording);
+      for (const cues of [null, 'invalid JSON', JSON.stringify({
+        audio:'different.mp3', sourceHash:crypto.createHash('sha256').update(oldText).digest('hex'),
+        audioHash:'0'.repeat(64), segments:{ a1:{ start:1, end:2 } }
+      })]) {
+        if (cues === null) fs.rmSync(`${base}.cues.json`, { force:true });
+        else fs.writeFileSync(`${base}.cues.json`, cues);
+        assert.equal(inspectAudioState(base, Buffer.from(newText), { kind:'writing' }).status, 'up-to-date');
+        const output = execFileSync(process.execPath, [path.join(root, 'scripts/generate-speaking-audio.js'), '--kind', 'writing', input], {
+          encoding:'utf8', env:{ ...process.env, OPENAI_API_KEY:'' }
+        });
+        assert.match(output, /Skipped existing/);
+        assert.deepEqual(fs.readFileSync(audio), recording);
+        if (cues === null) assert.equal(fs.existsSync(`${base}.cues.json`), false);
+        else assert.equal(fs.readFileSync(`${base}.cues.json`, 'utf8'), cues);
+      }
+      fs.rmSync(audio);
+    }
+    assert.equal(inspectAudioState(base, Buffer.from(newText), { kind:'writing' }).status, 'missing');
+  } finally {
+    assert.equal(path.dirname(fixture), path.resolve(os.tmpdir()));
+    fs.rmSync(fixture, { recursive:true, force:true });
+  }
+});
+
+test('writing generator produces an answer-only MP3 without cues using a local speech fixture', () => {
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'writing-audio-generate-'));
+  const tempRoot = path.resolve(root, '..', 'temp');
+  let day = 999;
+  while (day > 900 && fs.existsSync(path.join(tempRoot, `writing-day${day}`))) day--;
+  assert.ok(day > 900, 'An unused temporary day is required');
+  const generationDir = path.join(tempRoot, `writing-day${day}`);
+  const input = path.join(fixture, `writing${day}.txt`);
+  const mock = path.join(fixture, 'mock-speech.cjs');
+  const wav = Buffer.alloc(44 + 48000);
+  wav.write('RIFF', 0); wav.writeUInt32LE(wav.length - 8, 4); wav.write('WAVEfmt ', 8);
+  wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22);
+  wav.writeUInt32LE(24000, 24); wav.writeUInt32LE(48000, 28);
+  wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write('data', 36); wav.writeUInt32LE(48000, 40);
+  for (let offset = 44; offset < wav.length; offset += 2) wav.writeInt16LE(Math.round(5000 * Math.sin(offset / 8)), offset);
+  fs.writeFileSync(path.join(fixture, 'answer.wav'), wav);
+  fs.writeFileSync(input, '#title: A title\n#question\nNever speak the question.\n#answer\nHi Jay,\ncome to the cinema.\n#tip\nNever speak the tip.');
+  fs.writeFileSync(mock, `const fs = require('node:fs');
+const path = require('node:path');
+global.fetch = async (url, options) => {
+  if (url !== 'https://api.openai.com/v1/audio/speech') throw new Error('Unexpected request');
+  fs.writeFileSync(path.join(__dirname, 'request.json'), options.body);
+  return new Response(fs.readFileSync(path.join(__dirname, 'answer.wav')), { status:200 });
+};
+`);
+  try {
+    const output = execFileSync(process.execPath, ['--require', mock, path.join(root, 'scripts/generate-speaking-audio.js'), '--kind', 'writing', input], {
+      encoding:'utf8', env:{ ...process.env, OPENAI_API_KEY:'local-test-fixture' }
+    });
+    assert.equal(JSON.parse(fs.readFileSync(path.join(fixture, 'request.json'), 'utf8')).input, 'Hi Jay, come to the cinema.');
+    assert.ok(fs.statSync(input.replace(/\.txt$/, '.mp3')).size > 0);
+    assert.equal(fs.existsSync(input.replace(/\.txt$/, '.cues.json')), false);
+    assert.doesNotMatch(output, /Created .*cues/);
+  } finally {
+    assert.equal(path.dirname(fixture), path.resolve(os.tmpdir()));
+    assert.equal(path.dirname(generationDir), tempRoot);
+    fs.rmSync(fixture, { recursive:true, force:true });
+    fs.rmSync(generationDir, { recursive:true, force:true });
+  }
+});
+
 test('vocabulary TXT files use supported three-digit material names', () => {
   const files = fs.readdirSync(homeworkDir);
   const textFiles = files.filter(file => file.endsWith('.txt'));

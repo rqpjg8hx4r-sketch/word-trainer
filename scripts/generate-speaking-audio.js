@@ -39,7 +39,7 @@ function usage() {
     '  --gap SECONDS   Silence between Q/A segments (default: 0.75)',
     '  --dry-run       Parse and print segments without calling the API',
     '  --all-missing   Generate missing/stale audio in the selected category',
-    '  --force         Replace existing MP3/cues (does not remove M4A/OGG)',
+    '  --force         Replace existing MP3 (speaking also updates cues; keeps M4A/OGG)',
     '  --ffmpeg PATH   Override the bundled ffmpeg executable',
     '',
     'Requires OPENAI_API_KEY unless --dry-run is used.'
@@ -256,9 +256,10 @@ function existingAudio(basePath) {
   return ['.mp3', '.m4a', '.ogg'].map(extension => `${basePath}${extension}`).find(fs.existsSync);
 }
 
-function inspectAudioState(basePath, sourceBytes) {
+function inspectAudioState(basePath, sourceBytes, { kind = 'speaking' } = {}) {
   const audio = existingAudio(basePath);
   if (!audio) return { status:'missing', audio:'' };
+  if (kind === 'writing') return { status:'up-to-date', audio };
   const cuesPath = `${basePath}.cues.json`;
   if (!fs.existsSync(cuesPath)) return { status:'untracked', audio, reason:'matching cues file is missing' };
   let cues;
@@ -303,10 +304,10 @@ async function generate(options) {
   const basePath = inputPath.slice(0, -path.extname(inputPath).length);
   const outputMp3 = `${basePath}.mp3`;
   const outputCues = `${basePath}.cues.json`;
-  const audioState = inspectAudioState(basePath, sourceBytes);
+  const audioState = inspectAudioState(basePath, sourceBytes, { kind });
   if (!options.force && audioState.status === 'up-to-date') {
     process.stdout.write(`Skipped existing ${audioState.audio}\n`);
-    process.stdout.write('TXT, cues, and audio fingerprints are already up to date.\n');
+    process.stdout.write(kind === 'writing' ? 'Writing recordings are kept when TXT changes. Use --force to regenerate the answer.\n' : 'TXT, cues, and audio fingerprints are already up to date.\n');
     return;
   }
   if (!options.force && (audioState.status === 'stale' || audioState.status === 'untracked')) {
@@ -359,29 +360,29 @@ async function generate(options) {
 
   const tempMp3 = path.join(tempDir, 'output.mp3');
   runFfmpeg(options.ffmpeg, ['-f', 'concat', '-safe', '0', '-i', concatList, '-ar', '24000', '-ac', '1', '-b:a', '96k', tempMp3]);
-  let cursor = 0;
-  const cueSegments = {};
-  segments.forEach(segment => {
-    cueSegments[segment.key] = {
-      start:Number(cursor.toFixed(3)),
-      end:Number((cursor + segment.duration).toFixed(3))
-    };
-    cursor += segment.duration + options.gap;
-  });
-
-  const audioBytes = fs.readFileSync(tempMp3);
   fs.copyFileSync(tempMp3, outputMp3);
-  fs.writeFileSync(outputCues, `${JSON.stringify({
-    version:1,
-    model:'gpt-4o-mini-tts',
-    voice:options.voice,
-    instructions:options.instructions,
-    audio:path.basename(outputMp3),
-    sourceHash:sha256(sourceBytes),
-    audioHash:sha256(audioBytes),
-    gapSeconds:options.gap,
-    segments:cueSegments
-  }, null, 2)}\n`, 'utf8');
+  if (kind === 'speaking') {
+    let cursor = 0;
+    const cueSegments = {};
+    segments.forEach(segment => {
+      cueSegments[segment.key] = {
+        start:Number(cursor.toFixed(3)),
+        end:Number((cursor + segment.duration).toFixed(3))
+      };
+      cursor += segment.duration + options.gap;
+    });
+    fs.writeFileSync(outputCues, `${JSON.stringify({
+      version:1,
+      model:'gpt-4o-mini-tts',
+      voice:options.voice,
+      instructions:options.instructions,
+      audio:path.basename(outputMp3),
+      sourceHash:sha256(sourceBytes),
+      audioHash:sha256(fs.readFileSync(tempMp3)),
+      gapSeconds:options.gap,
+      segments:cueSegments
+    }, null, 2)}\n`, 'utf8');
+  }
   fs.writeFileSync(path.join(tempDir, 'generation.json'), `${JSON.stringify({
     version:1,
     day:Number(day),
@@ -400,7 +401,9 @@ async function generate(options) {
       peakDb:Number(segment.peakDb.toFixed(1))
     }))
   }, null, 2)}\n`, 'utf8');
-  process.stdout.write(`Created ${outputMp3}\nCreated ${outputCues}\nKept intermediates in ${tempDir}\n`);
+  process.stdout.write(`Created ${outputMp3}\n`);
+  if (kind === 'speaking') process.stdout.write(`Created ${outputCues}\n`);
+  process.stdout.write(`Kept intermediates in ${tempDir}\n`);
 }
 
 async function generateAllMissing(options) {
@@ -412,14 +415,14 @@ async function generateAllMissing(options) {
   const pending = inputs.filter(file => {
     const base = path.join(homeworkDir, file.slice(0, -path.extname(file).length));
     const sourceBytes = fs.readFileSync(path.join(homeworkDir, file));
-    const state = inspectAudioState(base, sourceBytes);
+    const state = inspectAudioState(base, sourceBytes, { kind });
     return state.status === 'missing' || state.status === 'stale';
   });
   if (!pending.length) {
-    process.stdout.write(`All ${inputs.length} ${kind} audio files are present and no tracked recording is stale.\n`);
+    process.stdout.write(kind === 'writing' ? `All ${inputs.length} writing audio files are present.\n` : `All ${inputs.length} speaking audio files are present and no tracked recording is stale.\n`);
     return;
   }
-  process.stdout.write(`${options.dryRun ? 'Previewing' : 'Generating'} ${pending.length} missing or stale ${kind} audio file(s): ${pending.join(', ')}\n`);
+  process.stdout.write(`${options.dryRun ? 'Previewing' : 'Generating'} ${pending.length} ${kind === 'writing' ? 'missing' : 'missing or stale'} ${kind} audio file(s): ${pending.join(', ')}\n`);
   for (const file of pending) {
     await generate({ ...options, input:path.join(homeworkDir, file), allMissing:false });
   }

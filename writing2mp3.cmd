@@ -46,5 +46,5 @@ exit /b 1
 
 :usage
 echo Usage: writing2mp3 [014]
-echo Without a day, generates every missing or stale writing MP3.
+echo Without a day, generates every missing writing MP3.
 exit /b 1

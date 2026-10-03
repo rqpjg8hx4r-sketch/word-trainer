@@ -90,7 +90,6 @@ async function refreshWritingLibrary() {
       file.audio = ['mp3', 'm4a', 'ogg'].map(extension =>
         files.find(candidate => candidate.name.toLowerCase() === `${basename}.${extension}`)
       ).find(Boolean) || null;
-      file.cues = files.find(candidate => candidate.name.toLowerCase() === `${basename}.cues.json`) || null;
     });
     if (!writingLibrary.length) throw new Error('暂无写作材料');
     select.innerHTML = writingLibrary.map(file =>
@@ -150,7 +149,7 @@ async function selectWritingItem(name) {
     badge.textContent = '写作材料';
     status.textContent = `共 ${writingLibrary.length} 份材料 · 先读题目，再展开参考答案和写作提示。`;
     cacheDayForOffline(Number(item.name.match(/\d{3}/)[0]), [{ url, sha256:await sha256Hex(bytes) }]);
-    await loadWritingRecording(item, bytes, requestId);
+    await loadWritingRecording(item, requestId);
   } catch (error) {
     if (requestId !== writingLoadRequestId) return;
     badge.textContent = '读取失败';

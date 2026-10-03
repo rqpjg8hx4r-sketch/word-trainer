@@ -883,25 +883,27 @@ test('writing answer speech reuses player controls and stops when leaving writin
   await context.close();
 });
 
-test('writing prefers matching answer recordings and seeks to the answer cue', async ({ browser }) => {
+for (const hasLegacyCues of [false, true]) test(`writing keeps whole recordings after TXT edits ${hasLegacyCues ? 'and ignores legacy cues' : 'without cues'}`, async ({ browser }) => {
   const context = await browser.newContext({ serviceWorkers:'block' });
   const page = await context.newPage();
   const text = 'QUESTION\nInvite a friend.\n\nANSWER\nHi Jay, come to the cinema with me.\n\nWRITING TIP\nGive a reason.';
+  let cueRequests = 0;
   const audio = fs.readFileSync(path.resolve(__dirname, '..', 'english', 'speaking', 'speaking001.m4a'));
   await page.route('**/__english-index.json?category=writing', route => route.fulfill({
-    contentType:'application/json', body:JSON.stringify({ files:['writing901.txt','writing901.m4a','writing901.cues.json'] })
+    contentType:'application/json', body:JSON.stringify({ files:['writing901.txt','writing901.m4a', ...(hasLegacyCues ? ['writing901.cues.json'] : [])] })
   }));
   await page.route('**/english/writing/writing901.txt', route => route.fulfill({ contentType:'text/plain', body:text }));
   await page.route('**/english/writing/writing901.m4a', route => route.fulfill({ contentType:'audio/mp4', body:audio }));
-  await page.route('**/english/writing/writing901.cues.json', route => route.fulfill({
-    contentType:'application/json', body:JSON.stringify({
-      audio:'writing901.m4a', sourceHash:crypto.createHash('sha256').update(text).digest('hex'),
-      audioHash:crypto.createHash('sha256').update(audio).digest('hex'), segments:{ a1:{ start:1.25, end:2.5 } }
-    })
-  }));
+  await page.route('**/english/writing/writing901.cues.json', route => {
+    cueRequests++;
+    return route.fulfill({ contentType:'application/json', body:JSON.stringify({
+      audio:'old-recording.mp3', sourceHash:'0'.repeat(64), audioHash:'0'.repeat(64),
+      segments:{ a1:{ start:1.25, end:2.5 } }
+    }) });
+  });
   await page.goto('/index.html');
   await page.getByRole('tab', { name:/写作/ }).click();
-  await expect(page.locator('#writingAudioStatus')).toContainText('播放答案片段');
+  await expect(page.locator('#writingAudioStatus')).toContainText('配套答案录音已加载');
   await page.locator('#writingAnswerSection summary').click();
   await page.evaluate(() => {
     window.__writingRecordedStarts = [];
@@ -912,6 +914,7 @@ test('writing prefers matching answer recordings and seeks to the answer cue', a
     window.speechSynthesis.speak = () => { throw new Error('Recording should be preferred'); };
   });
   await page.locator('#writingPlayer').getByRole('button', { name:'▶ 听答案' }).click();
-  expect(await page.evaluate(() => window.__writingRecordedStarts)).toEqual([1.25]);
+  expect(await page.evaluate(() => window.__writingRecordedStarts)).toEqual([0]);
+  expect(cueRequests).toBe(0);
   await context.close();
 });
