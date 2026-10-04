@@ -8,10 +8,7 @@ Write 35 words or more.
 
 #answer
 
-One day, Tom and his friend were riding their bikes on a country
-road. Suddenly, Tom fell off his bike and hurt his leg. His friend
-called Tom's dad for help. Soon, his dad arrived by car to take
-them home.
+One day, Tom and his friend were riding their bikes on a country road. Suddenly, Tom fell off his bike and hurt his leg. His friend called Tom's dad for help. Soon, his dad arrived by car to take them home.
 
 #tip
 
@@ -48,8 +45,7 @@ called Tom's dad for help = 给 Tom 的爸爸打电话求助
 arrived by car = 开车到达
 to take them home = 为了带他们回家
 
-注意时态：were riding 表示当时正在骑车；fell、hurt、called、arrived
-表示随后发生的事情。
+注意时态：were riding 表示当时正在骑车；fell、hurt、called、arrived 表示随后发生的事情。
 fall → fell；hurt 的过去式仍然是 hurt；take → took。
 本篇 to take them home 中，to 后面用原形 take。
 

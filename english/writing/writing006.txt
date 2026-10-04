@@ -8,9 +8,7 @@ Write 35 words or more.
 
 #answer
 
-One day, Tom and three friends took part in a bike race. At first,
-he was behind the others. But he did not give up and rode faster.
-In the end, he won the race. Everyone cheered for him.
+One day, Tom and three friends took part in a bike race. At first, he was behind the others. But he did not give up and rode faster. In the end, he won the race. Everyone cheered for him.
 
 #tip
 
