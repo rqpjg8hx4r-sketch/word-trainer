@@ -697,9 +697,192 @@
     .modal-btn.primary:hover { background: #4338CA; }
     .modal-btn.secondary { background: #F1F5F9; color: #334155; }
     .modal-btn.secondary:hover { background: #E2E8F0; }
+
+    /* ==================== 原版 TT 自适应模式专有样式 ==================== */
+    .adaptive-nav-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+      background: #FFFFFF;
+      border: 1.5px solid #C7D2FE;
+      border-radius: 14px;
+      padding: 12px 14px;
+      box-shadow: 0 4px 16px rgba(79, 70, 229, 0.05);
+    }
+    .adaptive-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .adaptive-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .adaptive-tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--primary-light);
+      color: var(--primary);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid #C7D2FE;
+    }
+    .adaptive-level-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0F172A;
+    }
+    .adaptive-progress-stats {
+      font-size: 12px;
+      color: var(--subtext);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .adaptive-progress-stats strong {
+      color: #0F172A;
+      font-family: monospace;
+      font-size: 13px;
+    }
+    .adaptive-focus-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      flex-wrap: wrap;
+    }
+    .focus-keys-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .focus-keys-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #475569;
+      white-space: nowrap;
+    }
+    .focus-pills-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .focus-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #FEF3C7;
+      border: 1.5px solid #F59E0B;
+      color: #92400E;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      font-family: monospace;
+      box-shadow: 0 1px 3px rgba(245, 158, 11, 0.15);
+    }
+    .focus-pill small {
+      font-size: 10px;
+      color: #B45309;
+      font-weight: 700;
+    }
+    .syllable-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      color: #065F46;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+    .adaptive-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .adaptive-btn {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+    .adaptive-btn:hover {
+      background: #F1F5F9;
+      color: var(--primary);
+      border-color: #CBD5E1;
+    }
+    .key.focus-weak-target {
+      position: relative;
+      background: #FEF3C7 !important;
+      border-color: #F59E0B !important;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.45);
+    }
+    .key.focus-weak-target::before {
+      content: "🎯";
+      position: absolute;
+      top: -8px;
+      right: -4px;
+      font-size: 10px;
+      line-height: 1;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    }
+    .adaptive-toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      border: 1.5px solid #10B981;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 99999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .adaptive-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
   </style>
 </head>
 <body onclick="handleBodyClick(event)">
+
+<div id="adaptiveToast" class="adaptive-toast">
+  <span id="adaptiveToastIcon">🎉</span>
+  <span id="adaptiveToastMsg">恭喜解锁新按键！</span>
+</div>
 
 <input id="hiddenInput" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
@@ -728,6 +911,9 @@
       <button id="tabDrill" class="mode-tab active" onclick="switchAppMode('drill')">
         <span>📖</span> TT 梯次指法特训
       </button>
+      <button id="tabAdaptive" class="mode-tab" onclick="switchAppMode('adaptive')">
+        <span>🧠</span> 原版自适应音节强化
+      </button>
       <button id="tabGame" class="mode-tab" onclick="switchAppMode('game')">
         <span>🚀</span> 经典保卫战小游戏
       </button>
@@ -742,7 +928,7 @@
   <!-- ==================== 模块 1：TT 梯次练习系统 ==================== -->
   <div id="drillSection" class="card">
     <!-- 10 大核心模块下拉选择器与篇章无尽模式 -->
-    <div class="module-nav-row">
+    <div id="standardModuleNav" class="module-nav-row">
       <div class="module-select-wrapper">
         <span class="module-select-label">📂 选择课程模块:</span>
         <select id="moduleSelect" class="module-select" onchange="selectModule(parseInt(this.value))" onclick="event.stopPropagation()">
@@ -757,6 +943,36 @@
     <!-- 模块内 3~4 个子阶段切换 -->
     <div class="substep-bar" id="substepBar">
       <!-- 动态生成子阶段按钮 -->
+    </div>
+
+    <!-- 原版自适应音节强化面板 (原版 TT 动态引擎) -->
+    <div id="adaptiveNavRow" class="adaptive-nav-panel" style="display:none;">
+      <div class="adaptive-meta-row">
+        <div class="adaptive-title-group">
+          <span class="adaptive-tag-badge">🧠 原版 TT 自适应引擎</span>
+          <span id="adaptiveLevelTitle" class="adaptive-level-title">第 1 阶 · 双手基准行 (ASDF JKL;)</span>
+        </div>
+        <div class="adaptive-progress-stats">
+          <span>已解锁: <strong id="adaptiveUnlockedCount">8</strong>/64 键</span>
+          <span style="color:#CBD5E1;">·</span>
+          <span>薄弱待攻坚: <strong id="adaptiveUnmasteredCount" style="color:var(--amber);">0</strong>/4 键 (少于4个自动晋级解锁新键)</span>
+        </div>
+      </div>
+      <div class="adaptive-focus-bar">
+        <div class="focus-keys-group">
+          <span class="focus-keys-label">🎯 重点突破键 (Keys to Work on):</span>
+          <div id="adaptiveFocusKeysList" class="focus-pills-row">
+            <!-- 动态填充 3 颗弱键 -->
+          </div>
+        </div>
+        <div id="adaptiveSyllableTag" class="syllable-badge">
+          🔥 连击音节流: -tion, -sion
+        </div>
+        <div class="adaptive-actions-group">
+          <button class="adaptive-btn" onclick="generateAndLoadAdaptiveLine(true)" title="换一组自适应强化词">🔄 换一组</button>
+          <button class="adaptive-btn" onclick="resetAdaptiveProgress()" title="重置单键手速统计">📊 重置统计</button>
+        </div>
+      </div>
     </div>
 
     <!-- 静态多行字符排版展示卡（绝对零位移） -->
@@ -1371,6 +1587,413 @@ const INFINITE_ARTICLES_POOL = [
   }
 ];
 
+/* ==================== 3.5 原版 TT 64 键逐级解锁序列、连击音节词库与自适应引擎 ==================== */
+
+// 1. 原版 64 键逐级递进序列 (源自 Tt.exe 静态数据区 DS:7920h)
+const TT_64_KEY_SEQUENCE = [
+  // Stage 1: Home row 基准行 (0~7)
+  'a', 's', 'd', 'f', 'j', 'k', 'l', ';',
+  // Stage 2: Primary extension 核心元音与句号 (8~11)
+  'e', 'i', 't', '.',
+  // Stage 3: Secondary extension 次常用扩展与逗号 (12~15)
+  'n', 'r', 'o', ',',
+  // Stage 4: Full alphabet 辅音全字母表扩展 (16~28)
+  'h', 'c', 'p', 'u', 'm', 'y', 'g', 'w', 'v', 'b', 'x', 'q', 'z',
+  // Stage 5: Punctuation 英文常用标点 (29~36)
+  "'", ':', '"', '?', '!', '(', ')', '-',
+  // Stage 6: Numbers 顶排数字按指距跨度 (37~46)
+  '4', '7', '3', '8', '2', '9', '1', '0', '5', '6',
+  // Stage 7: Symbols 符号与括号 (47~63)
+  '=', '$', '+', '%', '&', '*', '#', '@', '<', '>', '/', '[', ']', '{', '}', '^', '_'
+];
+
+function getAdaptiveStageInfo(unlockedCount) {
+  if (unlockedCount <= 8) return { stage: 1, title: '第 1 阶 · 双手基准行 (ASDF JKL;)', desc: '找准 F/J 凸起锚点，建立八指盲打基石' };
+  if (unlockedCount <= 12) return { stage: 2, title: '第 2 阶 · 核心元音与句号 (E/I/T/.)', desc: '纵深探键，极速解锁大批英文常用成词' };
+  if (unlockedCount <= 16) return { stage: 3, title: '第 3 阶 · 次常用扩展与逗号 (N/R/O/,)', desc: '元音 O 与高频辅音，解锁 -tion 等黄金连击' };
+  if (unlockedCount <= 29) return { stage: 4, title: '第 4 阶 · 辅音全字母表覆盖 (H/C/P/U/M...)', desc: '攻克全字母表，练就行云流水的盲打肌肉反射' };
+  if (unlockedCount <= 37) return { stage: 5, title: '第 5 阶 · 常用英文标点符号 (\' : " ? !)', desc: 'Shift 交叉协作与常见语法标点' };
+  if (unlockedCount <= 47) return { stage: 6, title: '第 6 阶 · 数字排指距极限 (4 7 3 8 2 9 1 0 5 6)', desc: '按手指跨度由易到难攻克数字盲打' };
+  return { stage: 7, title: '第 7 阶 · 编程全符号大满贯 (= $ + % & *...)', desc: '攻破复杂特殊括号与高阶编程符号' };
+}
+
+// 2. 丰富的高频连击音节、经典词缀与常用词库 (包含 -tion, -sion, -version, -ment, -ing 等)
+const TT_SYLLABLES_AND_WORDS = [
+  // --- 经典名词后缀: -tion (极高频连击) ---
+  'tion', 'action', 'nation', 'station', 'motion', 'portion', 'option', 'section',
+  'mention', 'fraction', 'notion', 'function', 'education', 'creation', 'location',
+  'operation', 'attention', 'direction', 'production', 'condition', 'position',
+  'solution', 'question', 'fiction', 'relation', 'tradition', 'situation',
+  // --- 经典名词后缀: -sion / -version (极高频连击) ---
+  'sion', 'version', 'mission', 'session', 'vision', 'decision', 'division',
+  'passion', 'tension', 'dimension', 'extension', 'collision', 'conversion',
+  'reversion', 'diversion', 'subversion', 'inversion',
+  // --- 经典后缀: -ment (高频连击) ---
+  'ment', 'element', 'payment', 'comment', 'moment', 'statement', 'agreement',
+  'treatment', 'movement', 'document', 'department', 'development', 'management',
+  'government', 'instrument', 'settlement', 'judgment',
+  // --- 经典动词/进行时后缀: -ing ---
+  'ing', 'sing', 'ring', 'king', 'doing', 'going', 'taking', 'making', 'seeing',
+  'saying', 'playing', 'feeling', 'working', 'learning', 'thinking', 'training',
+  'running', 'jumping', 'building', 'meeting', 'setting', 'testing', 'getting',
+  // --- 经典过去式/被动后缀: -ed ---
+  'ed', 'used', 'asked', 'looked', 'called', 'walked', 'passed', 'turned',
+  'started', 'opened', 'closed', 'played', 'needed', 'waited', 'tested', 'ended',
+  // --- 经典比较级/职业后缀: -er ---
+  'er', 'user', 'order', 'water', 'paper', 'letter', 'number', 'mother', 'father',
+  'sister', 'brother', 'writer', 'reader', 'server', 'player', 'teacher', 'worker',
+  'leader', 'winner', 'runner', 'master', 'dinner',
+  // --- 经典副词后缀: -ly ---
+  'ly', 'only', 'early', 'daily', 'slowly', 'quickly', 'really', 'simply',
+  'hardly', 'nearly', 'mostly', 'lately', 'badly', 'gladly', 'safely',
+  // --- 经典形容词后缀: -able / -ible ---
+  'able', 'table', 'cable', 'stable', 'enable', 'capable', 'possible', 'visible', 'flexible',
+  // --- 经典后缀: -ence / -ance / -ous / -ive ---
+  'ence', 'ance', 'ous', 'ive', 'sense', 'glance', 'chance', 'dance', 'france',
+  'distance', 'silence', 'patience', 'sentence', 'difference', 'famous', 'nervous',
+  'serious', 'curious', 'various', 'generous', 'active', 'native', 'creative',
+  'positive', 'effective',
+  // --- 经典辅音字母组合连击: -ight / -ound / -ould / -ough ---
+  'ight', 'ound', 'ould', 'ough', 'right', 'light', 'night', 'sight', 'might',
+  'tight', 'flight', 'bright', 'height', 'round', 'sound', 'found', 'ground',
+  'would', 'could', 'should', 'rough', 'tough', 'though', 'through', 'thought', 'enough',
+  // --- 经典高频词头连击 ---
+  'the', 'that', 'this', 'they', 'them', 'then', 'there', 'their', 'what', 'when',
+  'where', 'which', 'while', 'much', 'such', 'child', 'check', 'chair', 'catch',
+  'program', 'project', 'process', 'problem', 'product', 'protect', 'provide',
+  'come', 'common', 'connect', 'control', 'contain', 'content', 'complete', 'company',
+  'real', 'read', 'rest', 'reach', 'ready', 'return', 'record', 'report', 'repeat',
+  'deep', 'deal', 'dead', 'detail', 'demand', 'design', 'define', 'develop',
+  'into', 'inside', 'index', 'input', 'under', 'until', 'unless',
+  // --- 基准行早期词汇 (纯 asdfjkl; 可成词) ---
+  'all', 'ask', 'dad', 'fad', 'fall', 'flask', 'glad', 'salad', 'half', 'lads', 'alas', 'lass', 'dash', 'flash',
+  // --- 早期扩展词汇 (asdfjkl; + eit.) ---
+  'is', 'it', 'at', 'as', 'see', 'sea', 'set', 'let', 'tell', 'late', 'fate', 'life',
+  'diet', 'idle', 'site', 'side', 'tail', 'sail', 'taste', 'state', 'steel', 'feel',
+  'feet', 'elite', 'little', 'settle', 'detail', 'delete', 'title', 'test', 'least', 'fast', 'east', 'idea', 'lead', 'leaf',
+  // --- 次级扩展词汇 (asdfjkl; + eit. + nro,) ---
+  'an', 'on', 'in', 'no', 'not', 'or', 'nor', 'one', 'run', 'rain', 'train', 'iron',
+  'stone', 'order', 'roll', 'door', 'floor', 'store', 'score', 'learn', 'near', 'ratio',
+  'reason', 'season', 'person', 'lesson', 'tailor', 'sailor', 'enter', 'better', 'corner',
+  'doctor', 'motor', 'rotor', 'formal', 'normal', 'listen', 'silent', 'filter', 'linear'
+];
+
+// 3. 单键性能画像持久化存储 (原版 EWMA 手速平滑与错误惩罚)
+let KEY_STATS = {};
+let lastKeystrokeTime = 0;
+let currentAdaptiveUnlockedCount = 8; // 默认前 8 键 (Home row)
+let currentAdaptiveFocusKeys = ['f', 'j', 'd'];
+
+function loadKeyStats() {
+  try {
+    const raw = localStorage.getItem('tt_key_stats_v2');
+    if (raw) KEY_STATS = JSON.parse(raw);
+  } catch (e) { KEY_STATS = {}; }
+  currentAdaptiveUnlockedCount = parseInt(localStorage.getItem('tt_adaptive_level') || '8', 10);
+  if (currentAdaptiveUnlockedCount < 8) currentAdaptiveUnlockedCount = 8;
+  if (currentAdaptiveUnlockedCount > TT_64_KEY_SEQUENCE.length) currentAdaptiveUnlockedCount = TT_64_KEY_SEQUENCE.length;
+}
+
+function saveKeyStats() {
+  try {
+    localStorage.setItem('tt_key_stats_v2', JSON.stringify(KEY_STATS));
+    localStorage.setItem('tt_adaptive_level', currentAdaptiveUnlockedCount.toString());
+  } catch (e) {}
+}
+
+function recordKeystroke(targetChar, isMatch) {
+  if (!targetChar || targetChar === ' ' || targetChar === '\n') return;
+  const ch = targetChar.toLowerCase();
+  const now = Date.now();
+  const dt = lastKeystrokeTime > 0 ? Math.max(40, now - lastKeystrokeTime) : 350;
+  lastKeystrokeTime = now;
+
+  if (!KEY_STATS[ch]) {
+    KEY_STATS[ch] = { wpm: 20, weight: 10, hits: 0, misses: 0 };
+  }
+  const stat = KEY_STATS[ch];
+
+  if (isMatch) {
+    stat.hits++;
+    // 原版公式：2040 时钟滴答 / 间隔 -> 换算成毫秒约为 12000 / dt
+    const instWpm = Math.min(150, Math.max(5, Math.round(12000 / dt)));
+    // 原版 EWMA: 75% 近期瞬时手速 + 25% 历史手速
+    stat.wpm = Math.round((3 * instWpm + stat.wpm) / 4);
+    // 正确击中，平缓降低该键权重
+    stat.weight = Math.max(1, stat.weight - 1);
+  } else {
+    stat.misses++;
+    // 错误非线性惩罚 (显著拉高该键出现几率)
+    stat.weight = Math.min(100, stat.weight + 8);
+  }
+  saveKeyStats();
+}
+
+// 4. 提取当前已解锁键位中 最薄弱的 3 颗键 (Keys to Work on)
+function getAdaptiveFocusKeys() {
+  const unlocked = TT_64_KEY_SEQUENCE.slice(0, currentAdaptiveUnlockedCount);
+  const scored = unlocked.map(k => {
+    const s = KEY_STATS[k] || { wpm: 15, weight: 12, hits: 0, misses: 0 };
+    return { key: k, weight: s.weight, wpm: s.wpm, hits: s.hits, misses: s.misses };
+  });
+
+  // 按权重由高到低 (错误多、权重高者优先)，权重相同时按手速慢的排前面
+  scored.sort((a, b) => {
+    if (b.weight !== a.weight) return b.weight - a.weight;
+    return a.wpm - b.wpm;
+  });
+
+  const top3 = scored.slice(0, 3).map(item => item.key);
+  while (top3.length < 3 && unlocked.length > top3.length) {
+    for (const k of unlocked) {
+      if (!top3.includes(k)) { top3.push(k); break; }
+    }
+  }
+  return top3;
+}
+
+// 5. 原版轮盘赌 + 连击音节词库 动态构词生成器
+function generateAdaptiveDrillLine(wordCount = 6) {
+  const unlockedList = TT_64_KEY_SEQUENCE.slice(0, currentAdaptiveUnlockedCount);
+  const unlockedSet = new Set(unlockedList);
+  const focusKeys = getAdaptiveFocusKeys();
+  currentAdaptiveFocusKeys = focusKeys;
+
+  // 1. 在音节词库中筛选：能够被当前已解锁键完全拼出，且含有至少一颗焦点弱键的词
+  const eligibleMorphemes = [];
+  const featuredSyllablesSet = new Set();
+
+  for (const word of TT_SYLLABLES_AND_WORDS) {
+    let canForm = true;
+    for (const ch of word) {
+      if (!unlockedSet.has(ch)) { canForm = false; break; }
+    }
+    if (canForm) {
+      let hitsFocus = false;
+      for (const fk of focusKeys) {
+        if (word.includes(fk)) { hitsFocus = true; break; }
+      }
+      if (hitsFocus) {
+        eligibleMorphemes.push(word);
+        if (word.length <= 5) featuredSyllablesSet.add(word);
+      }
+    }
+  }
+
+  // 2. 原版字符级轮盘赌抽样 (Roulette-Wheel Selection)
+  function pickRouletteChar() {
+    let totalWeight = 0;
+    for (const k of unlockedList) {
+      totalWeight += (KEY_STATS[k]?.weight || 10);
+    }
+    let r = Math.random() * totalWeight;
+    for (const k of unlockedList) {
+      r -= (KEY_STATS[k]?.weight || 10);
+      if (r <= 0) return k;
+    }
+    return unlockedList[0];
+  }
+
+  // 3. 动态合成单词
+  const chosenWords = [];
+  const numMorphemes = Math.min(Math.floor(wordCount * 0.65), eligibleMorphemes.length);
+  const shuffledMorphemes = [...eligibleMorphemes].sort(() => 0.5 - Math.random());
+  for (let i = 0; i < numMorphemes; i++) {
+    chosenWords.push(shuffledMorphemes[i]);
+  }
+
+  // 剩余槽位采用轮盘赌合成 4~7 字符律动词
+  while (chosenWords.length < wordCount) {
+    const len = Math.floor(Math.random() * 4) + 4;
+    let pseudo = '';
+    const guaranteedWeakKey = focusKeys[Math.floor(Math.random() * focusKeys.length)];
+    const weakInsertPos = Math.floor(Math.random() * len);
+    for (let c = 0; c < len; c++) {
+      if (c === weakInsertPos) pseudo += guaranteedWeakKey;
+      else pseudo += pickRouletteChar();
+    }
+    chosenWords.push(pseudo);
+  }
+
+  chosenWords.sort(() => 0.5 - Math.random());
+
+  // 提取展示在面板上的高频音节标识
+  let syllableTagText = '🔥 针对音节: ';
+  const commonTags = ['tion', 'sion', 'ment', 'ing', 'ous', 'ive', 'able', 'ight', 'ound', 'the'];
+  const activeTags = commonTags.filter(t => eligibleMorphemes.some(m => m.includes(t)));
+  if (activeTags.length) {
+    syllableTagText += activeTags.slice(0, 3).map(t => `-${t}`).join(', ');
+  } else if (featuredSyllablesSet.size) {
+    syllableTagText += Array.from(featuredSyllablesSet).slice(0, 3).join(', ');
+  } else {
+    syllableTagText += focusKeys.map(k=>k.toUpperCase()).join(' ') + ' 专项律动';
+  }
+
+  return {
+    lineText: chosenWords.join(' '),
+    focusKeys: focusKeys,
+    syllableTag: syllableTagText
+  };
+}
+
+// 6. 晋级与掌握度判定 (原版 sub_15584/1544E: 未达标键 < 4 自动晋级)
+function isKeyMastered(k) {
+  const stat = KEY_STATS[k];
+  if (!stat || stat.hits < 4) return false;
+  const acc = stat.hits / (stat.hits + stat.misses);
+  return acc >= 0.90 && stat.wpm >= 20;
+}
+
+function checkAdaptivePromotion() {
+  const unlocked = TT_64_KEY_SEQUENCE.slice(0, currentAdaptiveUnlockedCount);
+  let unmasteredCount = 0;
+  for (const k of unlocked) {
+    if (!isKeyMastered(k)) unmasteredCount++;
+  }
+
+  if (unmasteredCount < 4 && currentAdaptiveUnlockedCount < TT_64_KEY_SEQUENCE.length) {
+    const nextKey = TT_64_KEY_SEQUENCE[currentAdaptiveUnlockedCount];
+    currentAdaptiveUnlockedCount++;
+    saveKeyStats();
+    showAdaptiveToast(`🎉 掌握度达标！恭喜解锁新按键：【${nextKey.toUpperCase()}】！`);
+    playSound('win');
+    return { promoted: true, newKey: nextKey, unmasteredCount };
+  }
+  return { promoted: false, unmasteredCount };
+}
+
+// 7. 更新自适应模式面板渲染
+function updateAdaptiveDashboard(syllableText) {
+  const stageInfo = getAdaptiveStageInfo(currentAdaptiveUnlockedCount);
+  const titleEl = document.getElementById('adaptiveLevelTitle');
+  const countEl = document.getElementById('adaptiveUnlockedCount');
+  if (titleEl) titleEl.textContent = stageInfo.title;
+  if (countEl) countEl.textContent = currentAdaptiveUnlockedCount;
+
+  const unlocked = TT_64_KEY_SEQUENCE.slice(0, currentAdaptiveUnlockedCount);
+  let unmastered = 0;
+  for (const k of unlocked) {
+    if (!isKeyMastered(k)) unmastered++;
+  }
+  const unmasteredEl = document.getElementById('adaptiveUnmasteredCount');
+  if (unmasteredEl) {
+    unmasteredEl.textContent = unmastered;
+    unmasteredEl.style.color = unmastered < 4 ? 'var(--success)' : 'var(--amber)';
+  }
+
+  const listEl = document.getElementById('adaptiveFocusKeysList');
+  if (listEl) {
+    listEl.innerHTML = '';
+    currentAdaptiveFocusKeys.forEach(k => {
+      const stat = KEY_STATS[k] || { wpm: 0 };
+      const pill = document.createElement('span');
+      pill.className = 'focus-pill';
+      const strong = document.createElement('strong');
+      strong.textContent = k.toUpperCase();
+      const small = document.createElement('small');
+      small.textContent = `${stat.wpm}WPM`;
+      pill.appendChild(strong);
+      pill.appendChild(document.createTextNode(' '));
+      pill.appendChild(small);
+      listEl.appendChild(pill);
+    });
+  }
+
+  if (syllableText) {
+    const sylEl = document.getElementById('adaptiveSyllableTag');
+    if (sylEl) sylEl.textContent = syllableText;
+  }
+}
+
+// 8. 启动与加载自适应强化行
+function startAdaptiveMode() {
+  loadKeyStats();
+  generateAndLoadAdaptiveLine(false);
+}
+
+function generateAndLoadAdaptiveLine(isManual = false) {
+  isInfiniteArticleMode = false;
+  const drill = generateAdaptiveDrillLine(6);
+  currentFullText = drill.lineText;
+  charIndex = 0;
+  totalTyped = 0;
+  correctTyped = 0;
+  startTime = null;
+  lastKeystrokeTime = 0;
+
+  const stageInfo = getAdaptiveStageInfo(currentAdaptiveUnlockedCount);
+  document.getElementById('moduleTitleText').textContent = `原版自适应强化 · ${stageInfo.title}`;
+  document.getElementById('anchorRuleTip').textContent = `${stageInfo.desc} · 重点攻坚：${drill.focusKeys.map(k=>k.toUpperCase()).join(' ')}`;
+
+  updateAdaptiveDashboard(drill.syllableTag);
+  buildStaticTextDOM();
+  updateCharHighlights();
+  focusGameInput();
+
+  if (isManual) {
+    showAdaptiveToast('🔄 已为你换一组针对性练习！');
+  }
+}
+
+function resetAdaptiveProgress() {
+  if (confirm('确定要重置自适应单键性能与解锁进度吗？将从初始 8 个基准键重新开始。')) {
+    localStorage.removeItem('tt_key_stats_v2');
+    localStorage.removeItem('tt_adaptive_level');
+    KEY_STATS = {};
+    currentAdaptiveUnlockedCount = 8;
+    currentAdaptiveFocusKeys = ['f', 'j', 'd'];
+    saveKeyStats();
+    generateAndLoadAdaptiveLine(false);
+    showAdaptiveToast('📊 已重置自适应打字数据，从基准行重新起步！');
+  }
+}
+
+function showAdaptiveToast(msg, icon = '🎉') {
+  const toast = document.getElementById('adaptiveToast');
+  if (!toast) return;
+  document.getElementById('adaptiveToastIcon').textContent = icon;
+  document.getElementById('adaptiveToastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function handleAdaptiveLineCompleted(wpm, acc, bpm) {
+  const promo = checkAdaptivePromotion();
+  updateAdaptiveDashboard();
+  const { starsText } = recordProgressStars(acc);
+
+  const modal = document.getElementById('completionModal');
+  const stageInfo = getAdaptiveStageInfo(currentAdaptiveUnlockedCount);
+  document.getElementById('modalTitle').textContent = promo.promoted ? `🎊 恭喜晋级！解锁新按键：【${promo.newKey.toUpperCase()}】！` : `🎯 自适应强化行击破！`;
+  document.getElementById('modalSubtitle').textContent = `${stageInfo.title} · 针对性突破：${currentAdaptiveFocusKeys.map(k=>k.toUpperCase()).join(' ')}`;
+  document.getElementById('modalWpm').textContent = `${wpm} 词/分`;
+  document.getElementById('modalAcc').textContent = `${acc}%`;
+  document.getElementById('modalBpm').textContent = `${bpm} 击/分 (BPM)`;
+
+  let stars = '⭐⭐⭐';
+  if (acc < 90) stars = '⭐';
+  else if (acc < 95) stars = '⭐⭐';
+  document.getElementById('modalStars').textContent = stars;
+
+  const starsGainEl = document.getElementById('modalStarsGain');
+  if (starsGainEl) {
+    starsGainEl.textContent = `${starsText}（按 Enter 或空格键立即继续下一组强化！）`;
+  }
+
+  const rankUpEl = document.getElementById('modalRankUp');
+  if (rankUpEl) {
+    if (promo.promoted) {
+      rankUpEl.innerHTML = `🌟 <strong>掌握度达标！</strong>成功将键盘解锁拓展至 <strong>${currentAdaptiveUnlockedCount}/64</strong> 键！`;
+      rankUpEl.style.display = 'block';
+    } else {
+      rankUpEl.innerHTML = `🎯 保持节拍！未掌握薄弱键还剩 <strong>${promo.unmasteredCount}</strong> 个（少于4个自动晋级）`;
+      rankUpEl.style.display = 'block';
+    }
+  }
+
+  modal.style.display = 'flex';
+}
+
 /* ==================== 4. 核心训练状态机 ==================== */
 let currentModuleIdx = 0;
 let currentStepIdx = 0;
@@ -1560,8 +2183,24 @@ function updateCharHighlights() {
 }
 
 function highlightKeyboardAndHand(char) {
-  document.querySelectorAll('.key').forEach(k => k.classList.remove('active-target'));
+  const allKeys = Array.from(document.querySelectorAll('.key'));
+  allKeys.forEach(k => {
+    k.classList.remove('active-target');
+    k.classList.remove('focus-weak-target');
+  });
   document.querySelectorAll('.finger').forEach(f => f.classList.remove('active'));
+
+  // 原版自适应模式下：高亮标记 3 颗重点攻坚键 (Keys to Work on)
+  if (currentAppMode === 'adaptive' && currentAdaptiveFocusKeys && currentAdaptiveFocusKeys.length) {
+    currentAdaptiveFocusKeys.forEach(fk => {
+      const baseKey = (SHIFT_MAP[fk]?.base || fk).toLowerCase();
+      const el = allKeys.find(k => {
+        const val = k.getAttribute('data-k');
+        return val && val.toLowerCase() === baseKey;
+      });
+      if (el) el.classList.add('focus-weak-target');
+    });
+  }
 
   if (!char) {
     document.getElementById('fingerGuideText').innerHTML = '🎉 练习完成！按回车或空格继续！';
@@ -1582,7 +2221,7 @@ function highlightKeyboardAndHand(char) {
   if (char === ' ') targetKeyStr = ' ';
   if (char === '\n') targetKeyStr = 'Enter';
 
-  const keyEl = document.querySelector(`.key[data-k="${targetKeyStr}"]`);
+  const keyEl = allKeys.find(k => k.getAttribute('data-k') === targetKeyStr);
   if (keyEl) keyEl.classList.add('active-target');
 
   if (info) {
@@ -1676,7 +2315,7 @@ window.addEventListener('keydown', (e) => {
     return;
   }
 
-  if (currentAppMode === 'drill') {
+  if (currentAppMode === 'drill' || currentAppMode === 'adaptive') {
     handleDrillKey(e.key);
   } else {
     handleGameKey(e.key);
@@ -1718,6 +2357,9 @@ function handleDrillKey(key) {
   if (target === ' ' && (key === ' ' || key === 'Space')) isMatch = true;
   if (target === '\n' && key === 'Enter') isMatch = true;
 
+  // 记录击键指标到原版单键画像字典中 (实时更新手速与错键惩罚)
+  recordKeystroke(target, isMatch);
+
   if (isMatch) {
     if (target === '\n') playSound('enter');
     else playSound('tap');
@@ -1737,7 +2379,11 @@ function handleDrillKey(key) {
       document.getElementById('statBpm').textContent = `${bpm} BPM (击/分)`;
 
       updateCharHighlights();
-      showCompletionModal(wpm, acc, bpm);
+      if (currentAppMode === 'adaptive') {
+        handleAdaptiveLineCompleted(wpm, acc, bpm);
+      } else {
+        showCompletionModal(wpm, acc, bpm);
+      }
       return;
     }
   } else {
@@ -1853,7 +2499,15 @@ function showCompletionModal(wpm, acc, bpm) {
 
 function replayCurrentStep() {
   document.getElementById('completionModal').style.display = 'none';
-  if (isInfiniteArticleMode) {
+  if (currentAppMode === 'adaptive') {
+    charIndex = 0;
+    totalTyped = 0;
+    correctTyped = 0;
+    startTime = null;
+    lastKeystrokeTime = 0;
+    buildStaticTextDOM();
+    updateCharHighlights();
+  } else if (isInfiniteArticleMode) {
     const art = INFINITE_ARTICLES_POOL[currentArticleIdx];
     currentFullText = art.text;
     charIndex = 0;
@@ -1870,7 +2524,9 @@ function replayCurrentStep() {
 
 function confirmNextStep() {
   document.getElementById('completionModal').style.display = 'none';
-  if (isInfiniteArticleMode) {
+  if (currentAppMode === 'adaptive') {
+    generateAndLoadAdaptiveLine();
+  } else if (isInfiniteArticleMode) {
     startInfiniteArticleMode(); // 篇章无尽模式：自动随机调取下一篇文章
   } else {
     advanceNextStep();
@@ -1905,18 +2561,39 @@ function switchAppMode(mode) {
   const drillSec = document.getElementById('drillSection');
   const gameSec = document.getElementById('gameSection');
   const tabDrill = document.getElementById('tabDrill');
+  const tabAdaptive = document.getElementById('tabAdaptive');
   const tabGame = document.getElementById('tabGame');
+  const stdNav = document.getElementById('standardModuleNav');
+  const subBar = document.getElementById('substepBar');
+  const adaptNav = document.getElementById('adaptiveNavRow');
 
   if (mode === 'drill') {
     drillSec.style.display = 'block';
     gameSec.style.display = 'none';
     tabDrill.classList.add('active');
+    if (tabAdaptive) tabAdaptive.classList.remove('active');
     tabGame.classList.remove('active');
+    if (stdNav) stdNav.style.display = 'flex';
+    if (subBar) subBar.style.display = 'flex';
+    if (adaptNav) adaptNav.style.display = 'none';
     stopGame();
+    loadStepText();
+  } else if (mode === 'adaptive') {
+    drillSec.style.display = 'block';
+    gameSec.style.display = 'none';
+    tabDrill.classList.remove('active');
+    if (tabAdaptive) tabAdaptive.classList.add('active');
+    tabGame.classList.remove('active');
+    if (stdNav) stdNav.style.display = 'none';
+    if (subBar) subBar.style.display = 'none';
+    if (adaptNav) adaptNav.style.display = 'flex';
+    stopGame();
+    startAdaptiveMode();
   } else {
     drillSec.style.display = 'none';
     gameSec.style.display = 'block';
     tabDrill.classList.remove('active');
+    if (tabAdaptive) tabAdaptive.classList.remove('active');
     tabGame.classList.add('active');
     setTimeout(() => initCanvas(), 50);
   }
@@ -2444,7 +3121,7 @@ if (hiddenInp) {
       const compModal = document.getElementById('completionModal');
       const overModal = document.getElementById('gameOverModal');
       const isModalOpen = (compModal && compModal.style.display !== 'none') || (overModal && overModal.style.display !== 'none');
-      if (!isModalOpen && currentAppMode === 'drill') {
+      if (!isModalOpen && (currentAppMode === 'drill' || currentAppMode === 'adaptive')) {
         const reminder = document.getElementById('focusReminder');
         if (reminder) reminder.style.display = 'flex';
       }
@@ -2454,6 +3131,7 @@ if (hiddenInp) {
 
 // 页面初始化
 window.addEventListener('DOMContentLoaded', () => {
+  loadKeyStats();
   initCurriculumUI();
   updateGamificationDisplay();
   initCanvas();
