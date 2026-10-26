@@ -951,45 +951,46 @@ const SUIT_DEFS = {
 
 // 实体牌花色点阵排版 (坐标体系：0~100 x 0~140)
 function getExactPipLayout(num) {
+  const n = parseInt(num, 10) || 1;
   const pips = [];
-  if (num === 1) {
-    pips.push({ x: 50, y: 70, s: 0.28 });
-  } else if (num === 2) {
+  if (n === 1) {
+    pips.push({ x: 50, y: 70, s: 0.36 });
+  } else if (n === 2) {
     pips.push({ x: 50, y: 34, s: 0.17 }, { x: 50, y: 106, s: 0.17, flip: true });
-  } else if (num === 3) {
+  } else if (n === 3) {
     pips.push({ x: 50, y: 34, s: 0.17 }, { x: 50, y: 70, s: 0.17 }, { x: 50, y: 106, s: 0.17, flip: true });
-  } else if (num === 4) {
+  } else if (n === 4) {
     pips.push({ x: 30, y: 34, s: 0.17 }, { x: 70, y: 34, s: 0.17 },
               { x: 30, y: 106, s: 0.17, flip: true }, { x: 70, y: 106, s: 0.17, flip: true });
-  } else if (num === 5) {
+  } else if (n === 5) {
     pips.push({ x: 30, y: 34, s: 0.17 }, { x: 70, y: 34, s: 0.17 },
               { x: 50, y: 70, s: 0.17 },
               { x: 30, y: 106, s: 0.17, flip: true }, { x: 70, y: 106, s: 0.17, flip: true });
-  } else if (num === 6) {
+  } else if (n === 6) {
     pips.push({ x: 30, y: 34, s: 0.16 }, { x: 70, y: 34, s: 0.16 },
               { x: 30, y: 70, s: 0.16 }, { x: 70, y: 70, s: 0.16 },
               { x: 30, y: 106, s: 0.16, flip: true }, { x: 70, y: 106, s: 0.16, flip: true });
-  } else if (num === 7) {
+  } else if (n === 7) {
     // 实体牌：上部 2 个，中间偏上 1 个，中部 2 个，下部 2 个(翻转)
     pips.push({ x: 30, y: 34, s: 0.15 }, { x: 70, y: 34, s: 0.15 },
               { x: 50, y: 52, s: 0.15 },
               { x: 30, y: 70, s: 0.15 }, { x: 70, y: 70, s: 0.15 },
               { x: 30, y: 106, s: 0.15, flip: true }, { x: 70, y: 106, s: 0.15, flip: true });
-  } else if (num === 8) {
+  } else if (n === 8) {
     // 实体牌：上 2，上中 1，中 2，下中 1(翻转)，下 2(翻转)
     pips.push({ x: 30, y: 34, s: 0.15 }, { x: 70, y: 34, s: 0.15 },
               { x: 50, y: 50, s: 0.15 },
               { x: 30, y: 70, s: 0.15 }, { x: 70, y: 70, s: 0.15 },
               { x: 50, y: 90, s: 0.15, flip: true },
               { x: 30, y: 106, s: 0.15, flip: true }, { x: 70, y: 106, s: 0.15, flip: true });
-  } else if (num === 9) {
+  } else if (n === 9) {
     // 实体牌：两列各 4 个，正中间 1 个
     pips.push({ x: 30, y: 30, s: 0.14 }, { x: 70, y: 30, s: 0.14 },
               { x: 30, y: 56, s: 0.14 }, { x: 70, y: 56, s: 0.14 },
               { x: 50, y: 70, s: 0.14 },
               { x: 30, y: 84, s: 0.14, flip: true }, { x: 70, y: 84, s: 0.14, flip: true },
               { x: 30, y: 110, s: 0.14, flip: true }, { x: 70, y: 110, s: 0.14, flip: true });
-  } else if (num === 10) {
+  } else if (n === 10) {
     // 实体牌：两列各 4 个，中轴线 2 个(一正一反)
     pips.push({ x: 30, y: 30, s: 0.14 }, { x: 70, y: 30, s: 0.14 },
               { x: 50, y: 43, s: 0.14 },
@@ -997,16 +998,35 @@ function getExactPipLayout(num) {
               { x: 30, y: 84, s: 0.14, flip: true }, { x: 70, y: 84, s: 0.14, flip: true },
               { x: 50, y: 97, s: 0.14, flip: true },
               { x: 30, y: 110, s: 0.14, flip: true }, { x: 70, y: 110, s: 0.14, flip: true });
+  } else {
+    // 针对 11(J), 12(Q), 13(K) 或意外异常值的兜底点阵（居中大花色）
+    pips.push({ x: 50, y: 70, s: 0.32 });
   }
   return pips;
 }
 
 // 生成整张扑克牌的矢量 SVG 标记
 function generatePokerSvg(num, suitKey, used = false) {
+  const n = parseInt(num, 10) || 1;
   const suit = SUIT_DEFS[suitKey] || SUIT_DEFS.spade;
-  const displayRank = num === 1 ? 'A' : String(num);
 
-  const pips = getExactPipLayout(num);
+  let displayRank = String(n);
+  let subRank = '';
+  if (n === 1) {
+    displayRank = 'A';
+    subRank = '1';
+  } else if (n === 11) {
+    displayRank = 'J';
+    subRank = '11';
+  } else if (n === 12) {
+    displayRank = 'Q';
+    subRank = '12';
+  } else if (n === 13) {
+    displayRank = 'K';
+    subRank = '13';
+  }
+
+  const pips = getExactPipLayout(n);
   const pipsSvg = pips.map(p => {
     const rot = p.flip ? 'rotate(180)' : '';
     const offsetX = -50 * p.s;
@@ -1028,27 +1048,58 @@ function generatePokerSvg(num, suitKey, used = false) {
     `;
   }
 
-  // 10 居中微调
-  const textX = num === 10 ? '5.5' : '7.5';
+  // 10 居中微调 (10 占两位字符，x 微调为 5.5，单字符为 7.5)
+  const textX = n === 10 ? '5.5' : '7.5';
+
+  // 角标副标（如 A 下方清晰标注 (1) 点）
+  const subRankSvg = subRank ? `
+    <text x="${textX}" y="23" font-size="8.5" font-weight="900" fill="${suit.color}" opacity="0.85" dominant-baseline="hanging" font-family="-apple-system, BlinkMacSystemFont, sans-serif">(${subRank})</text>
+  ` : '';
+
+  const suitY = subRank ? 35 : 25;
+
+  // 牌心浅色大数字水印 (让卡牌点数一目了然，彻底消除白牌空洞感)
+  const watermarkText = n === 1 ? '1' : displayRank;
+  const watermarkSvg = `
+    <text x="50" y="71" text-anchor="middle" dominant-baseline="central" font-size="58" font-weight="900" fill="${suit.color}" opacity="0.08" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" letter-spacing="-2">${watermarkText}</text>
+  `;
+
+  // 特别处理：A 牌心花色内嵌入醒目白色 1
+  let aceCenterOverlay = '';
+  if (n === 1) {
+    aceCenterOverlay = `
+      <g transform="translate(50, 70)">
+        <text x="0" y="1" text-anchor="middle" dominant-baseline="central" font-size="16" font-weight="900" fill="#FFFFFF" font-family="-apple-system, BlinkMacSystemFont, sans-serif">1</text>
+      </g>
+    `;
+  }
 
   return `
     <svg viewBox="0 0 100 140" class="poker-svg" xmlns="http://www.w3.org/2000/svg">
       <!-- 纸牌底板与边框 -->
       <rect width="100" height="140" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" />
 
+      <!-- 牌心浅色大数字水印 -->
+      ${watermarkSvg}
+
       <!-- 左上角标 (数字 + 小花色) -->
-      <text x="${textX}" y="17" font-size="14" font-weight="900" fill="${suit.color}" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" letter-spacing="-0.5">${displayRank}</text>
-      <g transform="translate(4, 20)">
-        <path d="${suit.d}" transform="scale(0.1)" fill="${suit.color}" />
+      <g>
+        <text x="${textX}" y="6" font-size="16" font-weight="900" fill="${suit.color}" dominant-baseline="hanging" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">${displayRank}</text>
+        ${subRankSvg}
+        <g transform="translate(4, ${suitY})">
+          <path d="${suit.d}" transform="scale(0.1)" fill="${suit.color}" />
+        </g>
       </g>
 
       <!-- 纸牌中央点阵 (完全依照实体纸牌排版) -->
       ${pipsSvg}
+      ${aceCenterOverlay}
 
       <!-- 右下角标 (旋转 180 度对称) -->
       <g transform="translate(100, 140) rotate(180)">
-        <text x="${textX}" y="17" font-size="14" font-weight="900" fill="${suit.color}" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" letter-spacing="-0.5">${displayRank}</text>
-        <g transform="translate(4, 20)">
+        <text x="${textX}" y="6" font-size="16" font-weight="900" fill="${suit.color}" dominant-baseline="hanging" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">${displayRank}</text>
+        ${subRankSvg}
+        <g transform="translate(4, ${suitY})">
           <path d="${suit.d}" transform="scale(0.1)" fill="${suit.color}" />
         </g>
       </g>
