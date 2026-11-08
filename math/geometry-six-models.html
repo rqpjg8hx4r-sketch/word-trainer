@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#F8FAFC">
-  <title>六大几何模型与鸟头模型 · Alex Math Lab</title>
+  <title>小学六大几何模型与鸟头模型 · Alex Math Lab</title>
   <style>
     :root {
       --bg: #F8FAFC;
@@ -38,7 +38,7 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       margin: 0;
-      padding: calc(16px + env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom));
+      padding: calc(14px + env(safe-area-inset-top)) 14px calc(36px + env(safe-area-inset-bottom));
       background-color: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -55,9 +55,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
     .breadcrumb {
       display: flex;
@@ -98,22 +98,22 @@
     .hero-banner {
       background: linear-gradient(135deg, #FFFFFF 0%, #ECFDF5 50%, #F5F3FF 100%);
       border: 1px solid var(--emerald-border);
-      border-radius: 20px;
-      padding: 22px 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.05);
+      border-radius: 18px;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 2px 10px rgba(5, 150, 105, 0.04);
     }
     .tag-badges-group {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .tag-badge {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
-      padding: 4px 10px;
-      border-radius: 8px;
+      padding: 3px 9px;
+      border-radius: 7px;
       background: var(--emerald-light);
       color: var(--emerald-dark);
       border: 1px solid var(--emerald-border);
@@ -129,97 +129,97 @@
       border-color: var(--indigo-border);
     }
     .hero-banner h1 {
-      margin: 0 0 8px 0;
-      font-size: 22px;
+      margin: 0 0 6px 0;
+      font-size: 21px;
       font-weight: 800;
       color: #0F172A;
       line-height: 1.35;
     }
     .hero-banner p {
       margin: 0;
-      font-size: 14.5px;
+      font-size: 13.5px;
       color: #475569;
       line-height: 1.6;
     }
 
-    /* 主模式切换栏 (3大板块) */
-    .mode-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 22px;
+    /* 篇章切换横向滚动条 (独立篇章，每个均有交互) */
+    .chapters-wrapper {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      background: rgba(248, 250, 252, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 6px 0 14px 0;
+      margin-bottom: 8px;
     }
-    @media (max-width: 720px) {
-      .mode-tabs { grid-template-columns: 1fr; }
-    }
-    .mode-tab-btn {
+    .chapters-bar {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 14px 16px;
-      border-radius: 16px;
-      border: 2px solid var(--border);
-      background: var(--card-bg);
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding: 3px 2px;
     }
-    .mode-tab-btn:hover {
+    .chapters-bar::-webkit-scrollbar { display: none; }
+    .chap-btn {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      white-space: nowrap;
+    }
+    .chap-btn:hover {
       border-color: #CBD5E1;
+      color: var(--emerald-dark);
       transform: translateY(-1px);
     }
-    .mode-tab-btn .tab-icon {
-      font-size: 28px;
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: #F1F5F9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .mode-tab-btn .tab-info h3 {
-      margin: 0 0 3px 0;
-      font-size: 15px;
-      font-weight: 800;
-      color: #1E293B;
-    }
-    .mode-tab-btn .tab-info p {
-      margin: 0;
-      font-size: 12px;
-      color: var(--subtext);
-    }
-    .mode-tab-btn.active {
+    .chap-btn.active {
+      background: var(--emerald);
       border-color: var(--emerald);
-      background: #FFFFFF;
-      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.12);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
     }
-    .mode-tab-btn.active .tab-icon {
-      background: var(--emerald-light);
+    .chap-btn .chap-tag {
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #F1F5F9;
+      color: #475569;
+      font-weight: 800;
     }
-    .mode-tab-btn.active .tab-info h3 {
-      color: var(--emerald-dark);
+    .chap-btn.active .chap-tag {
+      background: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
     }
 
-    /* 面板内容容器 */
-    .tab-panel {
+    /* 篇章内容容器 */
+    .chapter-panel {
       display: none;
     }
-    .tab-panel.active {
+    .chapter-panel.active {
       display: block;
-      animation: fadeIn 0.25s ease-out;
+      animation: fadeIn 0.2s ease-out;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 左右分栏布局 (画板 + 控制器/说明) */
+    /* 左右分栏 */
     .lab-grid {
       display: grid;
       grid-template-columns: 1fr 340px;
-      gap: 20px;
+      gap: 18px;
       margin-bottom: 24px;
     }
     @media (max-width: 860px) {
@@ -229,37 +229,36 @@
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 18px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
-    /* 画板容器 */
     .board-card {
       display: flex;
       flex-direction: column;
-      position: relative;
     }
     .board-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       gap: 8px;
     }
     .board-title {
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 800;
       color: #0F172A;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .board-actions {
       display: flex;
       gap: 6px;
       align-items: center;
+      flex-wrap: wrap;
     }
     .pill-btn {
       font-size: 12px;
@@ -281,7 +280,7 @@
 
     .svg-wrapper {
       width: 100%;
-      height: 420px;
+      height: 390px;
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
       border-radius: 14px;
@@ -295,18 +294,18 @@
       user-select: none;
     }
 
-    /* 数据浮标与控制条 */
+    /* 实时数值指示栏 */
     .live-stats {
-      margin-top: 14px;
+      margin-top: 12px;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
     }
     .stat-pill {
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
-      border-radius: 12px;
-      padding: 10px 12px;
+      border-radius: 10px;
+      padding: 8px 10px;
       text-align: center;
     }
     .stat-pill.highlight {
@@ -317,6 +316,10 @@
       background: #FFFBEB;
       border-color: var(--amber-border);
     }
+    .stat-pill.highlight-indigo {
+      background: #EEF2FF;
+      border-color: var(--indigo-border);
+    }
     .stat-label {
       font-size: 11px;
       font-weight: 700;
@@ -324,19 +327,20 @@
       margin-bottom: 2px;
     }
     .stat-val {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       color: #0F172A;
       font-family: var(--font-mono);
     }
     .stat-pill.highlight .stat-val { color: var(--emerald-dark); }
     .stat-pill.highlight-amber .stat-val { color: var(--amber-dark); }
+    .stat-pill.highlight-indigo .stat-val { color: var(--indigo); }
 
-    /* 侧边信息栏与推导步骤 */
+    /* 侧边信息栏 */
     .side-info {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
     .section-head {
       font-size: 14px;
@@ -347,17 +351,29 @@
       gap: 6px;
       margin-bottom: 8px;
     }
-    .formula-banner {
-      background: #F1F5F9;
+
+    /* 优美数学公式专用样式 (纯 HTML/CSS，告别 LaTeX 原码杂乱) */
+    .math-sym {
+      font-family: "Cambria Math", "Times New Roman", Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+    }
+    .math-formula-box {
+      background: linear-gradient(135deg, #F1F5F9 0%, #EEF2FF 100%);
       border-left: 4px solid var(--indigo);
       border-radius: 0 10px 10px 0;
       padding: 10px 14px;
-      font-family: var(--font-mono);
-      font-size: 13.5px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 800;
       color: #1E293B;
-      line-height: 1.5;
+      line-height: 1.6;
+      margin-bottom: 10px;
     }
+    .math-formula-box .formula-highlight {
+      color: var(--indigo);
+      font-family: var(--font-mono);
+    }
+
     .step-list {
       display: flex;
       flex-direction: column;
@@ -369,9 +385,8 @@
       border-radius: 10px;
       padding: 10px 12px;
       font-size: 12.5px;
-      line-height: 1.6;
+      line-height: 1.65;
       color: #334155;
-      transition: all 0.2s;
     }
     .step-item.active {
       background: #FFFFFF;
@@ -393,34 +408,67 @@
     }
     .step-item strong { color: #0F172A; }
 
-    /* 题目 12 交互逆推计算器 */
+    /* 滑块控件组 */
+    .slider-box {
+      margin-top: 14px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .slider-row:last-child { margin-bottom: 0; }
+    .slider-row label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      white-space: nowrap;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      cursor: pointer;
+    }
+    .slider-val {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--indigo);
+      font-family: var(--font-mono);
+      width: 45px;
+      text-align: right;
+    }
+
+    /* 逆推计算器 */
     .calculator-box {
       background: linear-gradient(135deg, #FEF3C7 0%, #FFFFFF 100%);
       border: 1px solid var(--amber-border);
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 10px;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 8px;
     }
     .calc-input-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: 10px 0;
+      margin: 8px 0;
     }
     .calc-input-row label {
       font-size: 13px;
       font-weight: 700;
       color: #78350F;
-      white-space: nowrap;
     }
     .calc-input-row input {
-      width: 100px;
-      padding: 6px 10px;
+      width: 90px;
+      padding: 5px 8px;
       font-size: 14px;
       font-weight: 800;
       border: 1px solid #F59E0B;
-      border-radius: 8px;
-      background: #FFFFFF;
+      border-radius: 7px;
       font-family: var(--font-mono);
       outline: none;
     }
@@ -434,14 +482,14 @@
     /* 六大模型全景卡片网格 */
     .models-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
     }
     .model-card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -450,19 +498,19 @@
     }
     .model-card:hover {
       border-color: var(--emerald-border);
-      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.08);
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.08);
       transform: translateY(-2px);
     }
     .model-card-header {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
     .model-icon {
-      font-size: 24px;
-      width: 40px;
-      height: 40px;
+      font-size: 22px;
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
       background: var(--emerald-light);
       display: flex;
@@ -472,22 +520,21 @@
     }
     .model-card-header h3 {
       margin: 0;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: #0F172A;
     }
     .model-card-header .alias {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--subtext);
-      font-weight: normal;
     }
     .model-diagram {
       width: 100%;
-      height: 140px;
+      height: 120px;
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
-      border-radius: 10px;
-      margin-bottom: 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -495,58 +542,53 @@
     }
     .model-formula {
       background: #F1F5F9;
-      border-radius: 8px;
-      padding: 8px 10px;
-      font-family: var(--font-mono);
-      font-size: 12.5px;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--indigo);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       text-align: center;
     }
     .model-desc {
-      font-size: 12.5px;
+      font-size: 12px;
       color: #475569;
-      line-height: 1.55;
-      margin: 0 0 10px 0;
+      line-height: 1.5;
+      margin: 0 0 8px 0;
     }
     .model-tags {
       display: flex;
-      gap: 5px;
+      gap: 4px;
       flex-wrap: wrap;
     }
     .tag-sm {
-      font-size: 10.5px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 2px 6px;
+      padding: 2px 5px;
       border-radius: 4px;
       background: #F1F5F9;
       color: #475569;
     }
-
-    /* 鸟头模型4形态切换按钮组 */
-    .variant-pills {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-    .variant-btn {
-      padding: 6px 12px;
+    .quick-jump-btn {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+      padding: 6px 10px;
       border-radius: 8px;
-      border: 1px solid var(--border);
-      background: #FFFFFF;
-      font-size: 12px;
-      font-weight: 700;
-      color: #475569;
+      border: 1px solid var(--emerald-border);
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      font-size: 11.5px;
+      font-weight: 800;
       cursor: pointer;
       transition: all 0.15s;
     }
-    .variant-btn:hover { background: #F1F5F9; }
-    .variant-btn.active {
-      background: var(--emerald-light);
-      border-color: var(--emerald-border);
-      color: var(--emerald-dark);
+    .quick-jump-btn:hover {
+      background: var(--emerald);
+      color: #FFFFFF;
     }
   </style>
 </head>
@@ -567,84 +609,83 @@
   <!-- 横幅介绍 -->
   <div class="hero-banner">
     <div class="tag-badges-group">
-      <span class="tag-badge">小学奥数核心高频</span>
-      <span class="tag-badge amber">动态交互验证</span>
-      <span class="tag-badge indigo">题目 12 顺次外扩实战</span>
+      <span class="tag-badge">全独立交互篇章</span>
+      <span class="tag-badge amber">公式清晰直观排版</span>
+      <span class="tag-badge indigo">六大模型全实装</span>
     </div>
-    <h1>小学六大几何模型 · 鸟头模型与面积倍数</h1>
+    <h1>小学六大几何模型 · 全交互动态探索营</h1>
     <p>
-      几何图形不靠死记公式！通过动态画板直观观察<strong>等积拉窗帘、一半分割、蝴蝶交叉、沙漏相似、鸟头共角与燕尾截比</strong>，解锁图形伸缩与倍数转化的底层思维。
+      每个经典模型均配有<strong>实时可拖拽画板与动态计算</strong>。直观洞察等积拉窗帘、一半分割、蝴蝶交叉、沙漏相似、鸟头共角与燕尾截比的数学原理！
     </p>
   </div>
 
-  <!-- 主模式切换 (3大板块) -->
-  <div class="mode-tabs">
-    <button class="mode-tab-btn active" onclick="switchMode('problem12')">
-      <div class="tab-icon">📐</div>
-      <div class="tab-info">
-        <h3>题目 12：外扩 5 倍定理</h3>
-        <p>动态拖拽四边形，实战面积逆推</p>
-      </div>
-    </button>
-    <button class="mode-tab-btn" onclick="switchMode('birdhead')">
-      <div class="tab-icon">🐦</div>
-      <div class="tab-info">
-        <h3>鸟头模型 (共角定理)</h3>
-        <p>4 种经典形态与边长乘积比</p>
-      </div>
-    </button>
-    <button class="mode-tab-btn" onclick="switchMode('allmodels')">
-      <div class="tab-icon">🧩</div>
-      <div class="tab-info">
-        <h3>六大几何模型百宝箱</h3>
-        <p>等积/一半/蝴蝶/沙漏/燕尾全景</p>
-      </div>
-    </button>
+  <!-- 独立篇章横向切换栏 (8大独立篇章) -->
+  <div class="chapters-wrapper">
+    <div class="chapters-bar">
+      <button class="chap-btn active" onclick="switchChapter('problem12')">
+        <span class="chap-tag">实战</span> 📐 题目12：外扩5倍
+      </button>
+      <button class="chap-btn" onclick="switchChapter('equal')">
+        <span class="chap-tag">模型1</span> 🪟 等积模型
+      </button>
+      <button class="chap-btn" onclick="switchChapter('half')">
+        <span class="chap-tag">模型2</span> 🌓 一半模型
+      </button>
+      <button class="chap-btn" onclick="switchChapter('butterfly')">
+        <span class="chap-tag">模型3</span> 🦋 蝴蝶模型
+      </button>
+      <button class="chap-btn" onclick="switchChapter('hourglass')">
+        <span class="chap-tag">模型4</span> ⏳ 沙漏模型
+      </button>
+      <button class="chap-btn" onclick="switchChapter('birdhead')">
+        <span class="chap-tag">模型5</span> 🐦 鸟头模型
+      </button>
+      <button class="chap-btn" onclick="switchChapter('swallow')">
+        <span class="chap-tag">模型6</span> 🕊️ 燕尾模型
+      </button>
+      <button class="chap-btn" onclick="switchChapter('overview')">
+        <span class="chap-tag">汇总</span> 📚 六大模型宝典
+      </button>
+    </div>
   </div>
 
-  <!-- ======================= 板块 1：题目 12 顺次外扩 5 倍定理 ======================= -->
-  <div id="panel-problem12" class="tab-panel active">
+  <!-- ============================================================== -->
+  <!-- 篇章 0：题目 12：四边形顺次外扩 5 倍定理 (已修复公式排版) -->
+  <!-- ============================================================== -->
+  <div id="panel-problem12" class="chapter-panel active">
     <div class="lab-grid">
-      <!-- 动态交互画板 -->
       <div class="card board-card">
         <div class="board-header">
           <div class="board-title">
-            <span>✨</span> 顺次延长 1 倍动态画板（可拖拽 ABCD 顶点）
+            <span>✨</span> 题目 12：顺次外扩 1 倍动态画板（可拖拽 ABCD 顶点）
           </div>
           <div class="board-actions">
             <button id="btnToggleMedian" class="pill-btn active" onclick="toggleMedians()">显示中线</button>
             <button id="btnToggleDiagonal" class="pill-btn" onclick="toggleDiagonals()">显示对角线</button>
-            <button class="pill-btn" onclick="resetQuad()">重置顶点</button>
+            <button class="pill-btn" onclick="resetQuad()">重置形状</button>
           </div>
         </div>
 
         <div class="svg-wrapper" id="quadBoard">
-          <svg id="svgQuad" class="canvas" viewBox="0 0 560 420">
-            <defs>
-              <!-- 顶点渐变与阴影 -->
-              <filter id="dropGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.12"/>
-              </filter>
-            </defs>
-            <!-- 背景网格微点 -->
-            <pattern id="gridPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+          <svg id="svgQuad" class="canvas" viewBox="0 0 560 390">
+            <pattern id="gridPattern1" width="20" height="20" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="1" fill="#E2E8F0" />
             </pattern>
-            <rect width="100%" height="100%" fill="url(#gridPattern)" />
+            <rect width="100%" height="100%" fill="url(#gridPattern1)" />
 
-            <!-- 外围大四边形 EFGH 填充 -->
+            <!-- 大四边形 EFGH -->
             <polygon id="polyEFGH" points="" fill="#EEF2FF" stroke="#4F46E5" stroke-width="2.5" stroke-linejoin="round"/>
 
-            <!-- 四个外围小三角形独立填充着色 -->
-            <polygon id="polyEAH" points="" fill="#FFE4E6" fill-opacity="0.75" stroke="#E11D48" stroke-width="1.2" stroke-dasharray="4 3"/>
-            <polygon id="polyFBE" points="" fill="#FEF3C7" fill-opacity="0.75" stroke="#D97706" stroke-width="1.2" stroke-dasharray="4 3"/>
-            <polygon id="polyGCF" points="" fill="#ECFDF5" fill-opacity="0.75" stroke="#059669" stroke-width="1.2" stroke-dasharray="4 3"/>
-            <polygon id="polyHDG" points="" fill="#F5F3FF" fill-opacity="0.75" stroke="#7C3AED" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <!-- 四个外围三角形独立着色 -->
+            <polygon id="polyEAH" points="" fill="#FFE4E6" fill-opacity="0.8" stroke="#E11D48" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <polygon id="polyFBE" points="" fill="#FEF3C7" fill-opacity="0.8" stroke="#D97706" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <polygon id="polyGCF" points="" fill="#ECFDF5" fill-opacity="0.8" stroke="#059669" stroke-width="1.2" stroke-dasharray="4 3"/>
+            <polygon id="polyHDG" points="" fill="#F5F3FF" fill-opacity="0.8" stroke="#7C3AED" stroke-width="1.2" stroke-dasharray="4 3"/>
 
-            <!-- 内部原四边形 ABCD 填充 -->
-            <polygon id="polyABCD" points="" fill="#FDE047" fill-opacity="0.85" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/>
+            <!-- 原四边形 ABCD -->
+            <polygon id="polyABCD" points="" fill="#FDE047" fill-opacity="0.9" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/>
 
-            <!-- 辅助线组：中线 -->
+            <!-- 中线辅助线 -->
             <g id="mediansGroup" stroke="#64748B" stroke-width="1.5" stroke-dasharray="3 3">
               <line id="lineED" x1="0" y1="0" x2="0" y2="0" stroke="#E11D48" />
               <line id="lineAF" x1="0" y1="0" x2="0" y2="0" stroke="#D97706" />
@@ -652,30 +693,24 @@
               <line id="lineCH" x1="0" y1="0" x2="0" y2="0" stroke="#7C3AED" />
             </g>
 
-            <!-- 辅助线组：对角线 -->
+            <!-- 对角线辅助线 -->
             <g id="diagonalsGroup" stroke="#0284C7" stroke-width="1.8" stroke-dasharray="4 4" style="display:none;">
               <line id="lineBD" x1="0" y1="0" x2="0" y2="0" />
               <line id="lineAC" x1="0" y1="0" x2="0" y2="0" />
             </g>
 
-            <!-- 外围端点 E, F, G, H 标签 -->
-            <g id="outerPointsGroup">
-              <circle id="ptE" cx="0" cy="0" r="5" fill="#E11D48" />
-              <circle id="ptF" cx="0" cy="0" r="5" fill="#D97706" />
-              <circle id="ptG" cx="0" cy="0" r="5" fill="#059669" />
-              <circle id="ptH" cx="0" cy="0" r="5" fill="#7C3AED" />
-              <text id="lblE" font-size="13" font-weight="800" fill="#E11D48">E</text>
-              <text id="lblF" font-size="13" font-weight="800" fill="#D97706">F</text>
-              <text id="lblG" font-size="13" font-weight="800" fill="#059669">G</text>
-              <text id="lblH" font-size="13" font-weight="800" fill="#7C3AED">H</text>
-            </g>
+            <!-- 外围顶点 E, F, G, H -->
+            <circle id="ptE" cx="0" cy="0" r="5" fill="#E11D48" /><text id="lblE" font-size="13" font-weight="800" fill="#E11D48">E</text>
+            <circle id="ptF" cx="0" cy="0" r="5" fill="#D97706" /><text id="lblF" font-size="13" font-weight="800" fill="#D97706">F</text>
+            <circle id="ptG" cx="0" cy="0" r="5" fill="#059669" /><text id="lblG" font-size="13" font-weight="800" fill="#059669">G</text>
+            <circle id="ptH" cx="0" cy="0" r="5" fill="#7C3AED" /><text id="lblH" font-size="13" font-weight="800" fill="#7C3AED">H</text>
 
-            <!-- 可拖动顶点 A, B, C, D -->
-            <g id="innerPointsGroup" filter="url(#dropGlow)" cursor="grab">
-              <circle id="handleA" cx="0" cy="0" r="8.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" />
-              <circle id="handleB" cx="0" cy="0" r="8.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" />
-              <circle id="handleC" cx="0" cy="0" r="8.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" />
-              <circle id="handleD" cx="0" cy="0" r="8.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" />
+            <!-- 内部可拖拽顶点 A, B, C, D -->
+            <g cursor="grab">
+              <circle id="handleA" cx="0" cy="0" r="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" />
+              <circle id="handleB" cx="0" cy="0" r="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" />
+              <circle id="handleC" cx="0" cy="0" r="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" />
+              <circle id="handleD" cx="0" cy="0" r="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" />
               <text id="lblA" font-size="13" font-weight="800" fill="#0F172A">A</text>
               <text id="lblB" font-size="13" font-weight="800" fill="#0F172A">B</text>
               <text id="lblC" font-size="13" font-weight="800" fill="#0F172A">C</text>
@@ -684,7 +719,6 @@
           </svg>
         </div>
 
-        <!-- 实时面积比监测面板 -->
         <div class="live-stats">
           <div class="stat-pill highlight-amber">
             <div class="stat-label">内四边形 ABCD</div>
@@ -705,65 +739,68 @@
         </div>
       </div>
 
-      <!-- 侧边解题步骤与推导演练 -->
       <div class="side-info">
         <div class="card">
           <div class="section-head">
             <span>📝</span> 题目 12 题目重现
           </div>
           <p style="font-size:13.5px; line-height:1.6; color:#334155; margin:0 0 10px 0;">
-            四边形 $EFGH$ 的面积是 <strong>66 平方米</strong>，$EA = AB, CB = BF, DC = CG, HD = DA$，求四边形 $ABCD$ 的面积。
+            如图，四边形 <em>EFGH</em> 的面积是 <strong>66 平方米</strong>，已知 <span style="background:#FEF3C7; padding:1px 5px; border-radius:4px; font-weight:700;">EA = AB</span>，<span style="background:#FEF3C7; padding:1px 5px; border-radius:4px; font-weight:700;">CB = BF</span>，<span style="background:#FEF3C7; padding:1px 5px; border-radius:4px; font-weight:700;">DC = CG</span>，<span style="background:#FEF3C7; padding:1px 5px; border-radius:4px; font-weight:700;">HD = DA</span>，求四边形 <em>ABCD</em> 的面积。
           </p>
-          <div class="formula-banner">
-            定理：顺次延长各边 1 倍，<br>恒满足：S(EFGH) = 5 × S(ABCD)
+          <div class="math-formula-box">
+            核心定理：顺次延长各边 1 倍，<br>
+            恒满足：<span class="formula-highlight">S<sub>EFGH</sub> = 5 × S<sub>ABCD</sub></span>
           </div>
         </div>
 
         <div class="card">
           <div class="section-head">
-            <span>🔍</span> 严密推导五步法
+            <span>🔍</span> 严密推导五步法 (公式清晰展示)
           </div>
           <div class="step-list">
             <div class="step-item active">
               <span class="step-num">1</span>
-              <strong>看左角 $\triangle EAH$：</strong>连辅助线 $ED$。因 $HD=DA$，$ED$ 为中线，则 $S_{\triangle EDH}=S_{\triangle EAD}$；因 $EA=AB$，$DA$ 为 $\triangle EBD$ 中线，则 $S_{\triangle EAD}=S_{\triangle ABD}$。故 <strong>$S_{\triangle EAH} = 2 S_{\triangle ABD}$</strong>。
+              <strong>看左角 △<em>EAH</em>：</strong>连辅助线 <em>ED</em>。<br>
+              因 <em>HD = DA</em>，<em>ED</em> 为中线，则 <em>S</em><sub>△EDH</sub> = <em>S</em><sub>△EAD</sub>；<br>
+              因 <em>EA = AB</em>，<em>DA</em> 为 △<em>EBD</em> 中线，则 <em>S</em><sub>△EAD</sub> = <em>S</em><sub>△ABD</sub>。<br>
+              故 <strong><em>S</em><sub>△EAH</sub> = 2 <em>S</em><sub>△ABD</sub></strong>。
             </div>
             <div class="step-item">
               <span class="step-num">2</span>
-              <strong>看其余三角同理：</strong>连 $AF, DF, CH$ 中线，可得：<br>
-              • $S_{\triangle FBE} = 2 S_{\triangle ABC}$<br>
-              • $S_{\triangle GCF} = 2 S_{\triangle BCD}$<br>
-              • $S_{\triangle HDG} = 2 S_{\triangle ADC}$
+              <strong>看其余三角同理：</strong>连 <em>AF, DF, CH</em> 中线：<br>
+              • <em>S</em><sub>△FBE</sub> = 2 <em>S</em><sub>△ABC</sub><br>
+              • <em>S</em><sub>△GCF</sub> = 2 <em>S</em><sub>△BCD</sub><br>
+              • <em>S</em><sub>△HDG</sub> = 2 <em>S</em><sub>△ADC</sub>
             </div>
             <div class="step-item">
               <span class="step-num">3</span>
               <strong>四周 4 角求和：</strong><br>
-              $2(S_{\triangle ABD} + S_{\triangle BCD}) + 2(S_{\triangle ABC} + S_{\triangle ADC}) = 2 S_{ABCD} + 2 S_{ABCD} = \mathbf{4 S_{ABCD}}$。
+              2(<em>S</em><sub>△ABD</sub> + <em>S</em><sub>△BCD</sub>) + 2(<em>S</em><sub>△ABC</sub> + <em>S</em><sub>△ADC</sub>)<br>
+              = 2 <em>S</em><sub>ABCD</sub> + 2 <em>S</em><sub>ABCD</sub> = <strong>4 <em>S</em><sub>ABCD</sub></strong>。
             </div>
             <div class="step-item">
               <span class="step-num">4</span>
               <strong>大四边形总面积：</strong><br>
-              $S_{EFGH} = S_{ABCD} + 4 S_{ABCD} = \mathbf{5 S_{ABCD}}$。
+              <em>S</em><sub>EFGH</sub> = <em>S</em><sub>ABCD</sub> + 4 <em>S</em><sub>ABCD</sub> = <strong>5 <em>S</em><sub>ABCD</sub></strong>。
             </div>
             <div class="step-item active" style="background:#ECFDF5; border-color:var(--emerald-border);">
               <span class="step-num" style="background:var(--emerald); color:#fff;">5</span>
               <strong>计算最终面积：</strong><br>
-              $S_{ABCD} = 66 \div 5 = \mathbf{13.2\text{ 平方米}}$。
+              <em>S</em><sub>ABCD</sub> = 66 ÷ 5 = <strong>13.2 平方米</strong>。
             </div>
           </div>
 
-          <!-- 自定义数值逆推计算器 -->
           <div class="calculator-box">
             <div class="section-head" style="color:#B45309; margin-bottom:4px;">
               <span>🧮</span> 任意面积快速逆推
             </div>
             <div class="calc-input-row">
-              <label for="inputTotalArea">输入 S(EFGH)：</label>
+              <label for="inputTotalArea">输入 S<sub>EFGH</sub>：</label>
               <input type="number" id="inputTotalArea" value="66" step="any" oninput="updateCalculator()">
               <span style="font-size:13px; font-weight:700; color:#78350F;">m²</span>
             </div>
             <div id="calcResultDisplay" class="calc-res-banner">
-              内四边形 S(ABCD) = 66 ÷ 5 = <strong>13.20</strong> 平方米
+              内四边形 S<sub>ABCD</sub> = 66 ÷ 5 = <strong>13.20</strong> 平方米
             </div>
           </div>
         </div>
@@ -771,71 +808,402 @@
     </div>
   </div>
 
-  <!-- ======================= 板块 2：鸟头模型 (共角定理) ======================= -->
-  <div id="panel-birdhead" class="tab-panel">
+  <!-- ============================================================== -->
+  <!-- 篇章 1：等积模型 (拉窗帘模型) 独立交互 -->
+  <!-- ============================================================== -->
+  <div id="panel-equal" class="chapter-panel">
     <div class="lab-grid">
-      <!-- 鸟头模型交互画板 -->
       <div class="card board-card">
         <div class="board-header">
           <div class="board-title">
-            <span>🐦</span> 鸟头模型（共角定理）动态演练
+            <span>🪟</span> 等积模型（拉窗帘）动态画板：沿平行线拖动顶点 A
           </div>
-          <!-- 4 种形态切换 -->
-          <div class="variant-pills">
-            <button class="variant-btn active" onclick="setBirdVariant('internal')">形态1: 内共角(红冠顶)</button>
-            <button class="variant-btn" onclick="setBirdVariant('external')">形态2: 外共角</button>
-            <button class="variant-btn" onclick="setBirdVariant('vertical')">形态3: 对顶角</button>
-            <button class="variant-btn" onclick="setBirdVariant('supplement')">形态4: 邻补角</button>
+          <div class="board-actions">
+            <button id="btnAutoCurtain" class="pill-btn" onclick="toggleAutoCurtain()">▶ 自动拉窗帘</button>
+            <button class="pill-btn" onclick="resetEqualModel()">重置位置</button>
+          </div>
+        </div>
+
+        <div class="svg-wrapper" id="equalBoard">
+          <svg id="svgEqual" class="canvas" viewBox="0 0 560 390">
+            <rect width="100%" height="100%" fill="url(#gridPattern1)" />
+
+            <!-- 上下平行线轨道 -->
+            <line x1="20" y1="90" x2="540" y2="90" stroke="#0284C7" stroke-width="2" stroke-dasharray="5 4"/>
+            <line x1="20" y1="290" x2="540" y2="290" stroke="#0284C7" stroke-width="2.5"/>
+            <text x="30" y="80" font-size="12" font-weight="800" fill="#0284C7">平行线 L₁</text>
+            <text x="30" y="315" font-size="12" font-weight="800" fill="#0284C7">平行线 L₂</text>
+
+            <!-- 动态三角形 ABC -->
+            <polygon id="polyEqualTri" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="2.5" stroke-linejoin="round"/>
+
+            <!-- 垂线高 h -->
+            <line id="lineHeightEqual" x1="0" y1="90" x2="0" y2="290" stroke="#EF4444" stroke-width="2" stroke-dasharray="3 3"/>
+            <polyline id="rightAngleEqual" points="" fill="none" stroke="#EF4444" stroke-width="1.5"/>
+            <text id="lblHeightEqual" x="0" y="0" font-size="12" font-weight="800" fill="#EF4444">高 h 恒定</text>
+
+            <!-- 固定底边 BC 标注 -->
+            <circle cx="160" cy="290" r="6" fill="#0F172A"/>
+            <circle cx="400" cy="290" r="6" fill="#0F172A"/>
+            <text x="145" y="315" font-size="13" font-weight="800" fill="#0F172A">B</text>
+            <text x="405" y="315" font-size="13" font-weight="800" fill="#0F172A">C</text>
+            <text x="280" y="315" font-size="12" font-weight="800" fill="#0F172A" text-anchor="middle">固定底边 b = 12 cm</text>
+
+            <!-- 可拖拽滑动顶点 A -->
+            <g id="dragHandleEqual" cursor="ew-resize">
+              <circle id="ptAEqual" cx="240" cy="90" r="9" fill="#FDE047" stroke="#0F172A" stroke-width="2.5"/>
+              <text id="lblAEqual" x="240" y="70" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle">A (左右拖我)</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="live-stats">
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">固定底边 b</div>
+            <div class="stat-val">12.0 cm</div>
+          </div>
+          <div class="stat-pill highlight-amber">
+            <div class="stat-label">两平行线间高 h</div>
+            <div class="stat-val">8.0 cm (恒定)</div>
+          </div>
+          <div class="stat-pill highlight">
+            <div class="stat-label">三角形面积 S = ½ b·h</div>
+            <div id="statEqualArea" class="stat-val">48.0 cm² (恒等)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-info">
+        <div class="card">
+          <div class="section-head">
+            <span>🪟</span> 等积模型（拉窗帘）核心要领
+          </div>
+          <p style="font-size:13.5px; line-height:1.6; color:#334155; margin:0 0 10px 0;">
+            两平行线之间的垂直距离（高）处处相等。当三角形的底固定在一条线上，顶点在另一条线上左右滑动时，就像<strong>拉窗帘</strong>一样，形状虽然剧烈变化，但<strong>底和高从未改变</strong>！
+          </p>
+          <div class="math-formula-box">
+            核心公式：<br>
+            <span class="formula-highlight">S = ½ × 底 b × 高 h （面积处处相等）</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <span>💡</span> 实战应用与技巧
+          </div>
+          <div style="font-size:13px; line-height:1.65; color:#475569;">
+            <p style="margin:0 0 8px 0;">
+              • <strong>不规则多边形等积化简</strong>：遇到复杂的凹凸四边形，可以通过平行线滑动顶点，将其转化为简单的等积三角形。
+            </p>
+            <p style="margin:0;">
+              • <strong>梯形两腰三角形等积</strong>：在梯形 <em>ABCD</em>（<em>AD // BC</em>）中，△<em>ABC</em> 与 △<em>DBC</em> 同底等高同积，减去公共底 △<em>OBC</em> 后，立刻能证明<strong>两腰翅膀面积相等</strong>（即蝴蝶模型梯形性质）！
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 2：一半模型 独立交互 -->
+  <!-- ============================================================== -->
+  <div id="panel-half" class="chapter-panel">
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title">
+            <span>🌓</span> 一半模型动态画板：自由拖动顶点或内部点 P
+          </div>
+          <div class="board-actions">
+            <button id="btnHalfMode1" class="pill-btn active" onclick="setHalfMode('edge')">模式A: 边上顶点</button>
+            <button id="btnHalfMode2" class="pill-btn" onclick="setHalfMode('inside')">模式B: 内部任意点</button>
+          </div>
+        </div>
+
+        <div class="svg-wrapper" id="halfBoard">
+          <svg id="svgHalf" class="canvas" viewBox="0 0 560 390">
+            <rect width="100%" height="100%" fill="url(#gridPattern1)" />
+
+            <!-- 平行四边形 / 矩形边框 -->
+            <polygon id="polyHalfRect" points="80,90 480,90 480,310 80,310" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/>
+
+            <!-- 模式 A：边上单三角形阴影 -->
+            <polygon id="polyHalfTriA" points="" fill="#A7F3D0" fill-opacity="0.85" stroke="#059669" stroke-width="2" stroke-linejoin="round"/>
+
+            <!-- 模式 B：内部任意点连线构成的四块三角形 -->
+            <g id="groupHalfInside" style="display:none;">
+              <!-- 上下两块 (蓝/青) -->
+              <polygon id="polyHalfTop" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="1.5"/>
+              <polygon id="polyHalfBottom" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="1.5"/>
+              <!-- 左右两块 (黄/橙) -->
+              <polygon id="polyHalfLeft" points="" fill="#FEF08A" fill-opacity="0.85" stroke="#D97706" stroke-width="1.5"/>
+              <polygon id="polyHalfRight" points="" fill="#FEF08A" fill-opacity="0.85" stroke="#D97706" stroke-width="1.5"/>
+            </g>
+
+            <!-- 四个外顶点标签 -->
+            <text x="65" y="85" font-size="13" font-weight="800" fill="#0F172A">A</text>
+            <text x="490" y="85" font-size="13" font-weight="800" fill="#0F172A">B</text>
+            <text x="490" y="325" font-size="13" font-weight="800" fill="#0F172A">C</text>
+            <text x="65" y="325" font-size="13" font-weight="800" fill="#0F172A">D</text>
+
+            <!-- 拖拽点 P -->
+            <g id="dragHandleHalf" cursor="move">
+              <circle id="ptHalfP" cx="240" cy="90" r="9" fill="#FDE047" stroke="#0F172A" stroke-width="2.5"/>
+              <text id="lblHalfP" x="240" y="70" font-size="13" font-weight="800" fill="#0F172A" text-anchor="middle">P (拖我)</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="live-stats">
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">总四边形面积</div>
+            <div class="stat-val">100.0%</div>
+          </div>
+          <div class="stat-pill highlight-amber">
+            <div class="stat-label" id="statHalfPart1Label">阴影三角形面积</div>
+            <div id="statHalfPart1Val" class="stat-val">50.0%</div>
+          </div>
+          <div class="stat-pill highlight">
+            <div class="stat-label" id="statHalfResultLabel">面积占比 (恒为一半)</div>
+            <div id="statHalfResultVal" class="stat-val">正好 ½ (50.0%)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-info">
+        <div class="card">
+          <div class="section-head">
+            <span>🌓</span> 一半模型的核心两种形态
+          </div>
+          <div class="math-formula-box">
+            形态 A：底为一边，顶在对边<br>
+            <span class="formula-highlight">S<sub>阴影</sub> = ½ × S<sub>平行四边形</sub></span><br><br>
+            形态 B：内部任意点连四顶<br>
+            <span class="formula-highlight">S<sub>上</sub> + S<sub>下</sub> = S<sub>左</sub> + S<sub>右</sub> = ½ × S<sub>总</sub></span>
+          </div>
+          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
+            无论点 <em>P</em> 在对边上如何滑动（形态 A），底都是一整条边，高都是四边形的高，面积必定占一半！<br>
+            当点 <em>P</em> 处于内部任意位置（形态 B），两对对顶三角形的高之和等于四边形的总高，因此它们各自的面积和恒等于总面积的一半！
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 3：蝴蝶模型 独立交互 -->
+  <!-- ============================================================== -->
+  <div id="panel-butterfly" class="chapter-panel">
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title">
+            <span>🦋</span> 蝴蝶模型动态画板：拖拽顶点体验“头×尾 = 翅×翅”
+          </div>
+          <div class="board-actions">
+            <button id="btnBflyTrapezoid" class="pill-btn active" onclick="setBflyShape('trapezoid')">梯形蝴蝶</button>
+            <button id="btnBflyArbitrary" class="pill-btn" onclick="setBflyShape('arbitrary')">任意四边形</button>
+          </div>
+        </div>
+
+        <div class="svg-wrapper" id="bflyBoard">
+          <svg id="svgBfly" class="canvas" viewBox="0 0 560 390">
+            <rect width="100%" height="100%" fill="url(#gridPattern1)" />
+
+            <!-- 四个翅膀多边形 -->
+            <polygon id="polyBflyHead" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="1.8"/>
+            <polygon id="polyBflyTail" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="1.8"/>
+            <polygon id="polyBflyLeft" points="" fill="#FDE68A" fill-opacity="0.85" stroke="#D97706" stroke-width="1.8"/>
+            <polygon id="polyBflyRight" points="" fill="#FDE68A" fill-opacity="0.85" stroke="#D97706" stroke-width="1.8"/>
+
+            <!-- 对角线 -->
+            <line id="lineBflyAC" x1="0" y1="0" x2="0" y2="0" stroke="#0F172A" stroke-width="2"/>
+            <line id="lineBflyBD" x1="0" y1="0" x2="0" y2="0" stroke="#0F172A" stroke-width="2"/>
+
+            <!-- 区域文字标注 (头、尾、翅、翅) -->
+            <text id="lblBflyHead" font-size="12" font-weight="800" fill="#0369A1" text-anchor="middle">头 S₁</text>
+            <text id="lblBflyTail" font-size="12" font-weight="800" fill="#0369A1" text-anchor="middle">尾 S₂</text>
+            <text id="lblBflyLeft" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">翅 S₃</text>
+            <text id="lblBflyRight" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">翅 S₄</text>
+
+            <!-- 顶点 A, B, C, D -->
+            <g cursor="grab">
+              <circle id="hBflyA" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+              <circle id="hBflyB" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+              <circle id="hBflyC" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+              <circle id="hBflyD" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="live-stats">
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">头 × 尾 (S₁ × S₂)</div>
+            <div id="statBflyHeadTail" class="stat-val">120.0</div>
+          </div>
+          <div class="stat-pill highlight-amber">
+            <div class="stat-label">翅 × 翅 (S₃ × S₄)</div>
+            <div id="statBflyWings" class="stat-val">120.0</div>
+          </div>
+          <div class="stat-pill highlight">
+            <div class="stat-label">乘积恒等验证</div>
+            <div class="stat-val" style="color:var(--emerald-dark)">两积完全相等 ✓</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-info">
+        <div class="card">
+          <div class="section-head">
+            <span>🦋</span> 蝴蝶模型两大黄金法则
+          </div>
+          <div class="math-formula-box">
+            法则 1（任意四边形通识）：<br>
+            <span class="formula-highlight">头 × 尾 = 翅 × 翅 （S₁ × S₂ = S₃ × S₄）</span><br><br>
+            法则 2（梯形特有性质）：<br>
+            <span class="formula-highlight">左翅 = 右翅 （S₃ = S₄）</span>
+          </div>
+          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
+            在任意四边形对角线划分出的 4 个三角形中，对顶三角形面积之积永远等于两侧三角形面积之积！若上下两底平行（梯形），两侧翅膀面积更是严丝合缝完全相等。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 4：沙漏模型 独立交互 -->
+  <!-- ============================================================== -->
+  <div id="panel-hourglass" class="chapter-panel">
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title">
+            <span>⏳</span> 沙漏模型动态画板：调节底边比例，观察“面积平方比”
+          </div>
+        </div>
+
+        <div class="svg-wrapper" id="hgBoard">
+          <svg id="svgHg" class="canvas" viewBox="0 0 560 390">
+            <rect width="100%" height="100%" fill="url(#gridPattern1)" />
+
+            <!-- 上下两平行线 -->
+            <line x1="30" y1="70" x2="530" y2="70" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <line x1="30" y1="320" x2="530" y2="320" stroke="#64748B" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+            <!-- 沙漏交叉三角形 -->
+            <polygon id="polyHgTop" points="" fill="#FED7AA" fill-opacity="0.85" stroke="#EA580C" stroke-width="2"/>
+            <polygon id="polyHgBottom" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="2"/>
+
+            <!-- 上底边与下底边粗实线 -->
+            <line id="lineHgTop" x1="0" y1="70" x2="0" y2="70" stroke="#EA580C" stroke-width="3"/>
+            <line id="lineHgBottom" x1="0" y1="320" x2="0" y2="320" stroke="#0284C7" stroke-width="3"/>
+
+            <!-- 交叉点 O -->
+            <circle id="ptHgCross" cx="280" cy="170" r="5" fill="#0F172A"/>
+
+            <!-- 文字标注 -->
+            <text id="lblHgTop" x="280" y="55" font-size="13" font-weight="800" fill="#C2410C" text-anchor="middle">上底 a</text>
+            <text id="lblHgBottom" x="280" y="345" font-size="13" font-weight="800" fill="#0369A1" text-anchor="middle">下底 A</text>
+            <text id="lblHgTopArea" x="280" y="125" font-size="13" font-weight="800" fill="#EA580C" text-anchor="middle">S(上)</text>
+            <text id="lblHgBottomArea" x="280" y="265" font-size="14" font-weight="800" fill="#0284C7" text-anchor="middle">S(下)</text>
+          </svg>
+        </div>
+
+        <div class="slider-box">
+          <div class="slider-row">
+            <label for="sliderHgA">上底边长 a：</label>
+            <input type="range" id="sliderHgA" min="60" max="220" step="10" value="120" oninput="updateHourglass()">
+            <span id="valHgA" class="slider-val">120</span>
+          </div>
+          <div class="slider-row">
+            <label for="sliderHgB">下底边长 A：</label>
+            <input type="range" id="sliderHgB" min="140" max="380" step="10" value="240" oninput="updateHourglass()">
+            <span id="valHgB" class="slider-val">240</span>
+          </div>
+        </div>
+
+        <div class="live-stats">
+          <div class="stat-pill highlight-amber">
+            <div class="stat-label">边长比 k = a / A</div>
+            <div id="statHgRatio" class="stat-val">1 : 2.0 (0.50)</div>
+          </div>
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">面积平方比 k²</div>
+            <div id="statHgSqRatio" class="stat-val">1 : 4.0 (0.25)</div>
+          </div>
+          <div class="stat-pill highlight">
+            <div class="stat-label">下底面积是上底的</div>
+            <div id="statHgTimes" class="stat-val">4.00 倍</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-info">
+        <div class="card">
+          <div class="section-head">
+            <span>⏳</span> 沙漏模型核心本质
+          </div>
+          <div class="math-formula-box">
+            相似比定理：<br>
+            <span class="formula-highlight">S<sub>上</sub> / S<sub>下</sub> = (a / A)² = (h₁ / h₂)²</span>
+          </div>
+          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
+            沙漏形状上下两底平行，内错角相等，因此上下两三角形<strong>严格相似</strong>！<br>
+            不仅对应底边成比例，高也成相同比例，故面积比为<strong>边长比例的平方</strong>（底乘高双倍放大）。
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 5：鸟头模型 (共角定理) 独立交互 -->
+  <!-- ============================================================== -->
+  <div id="panel-birdhead" class="chapter-panel">
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title">
+            <span>🐦</span> 鸟头模型（共角定理）4 种形态动态演练
+          </div>
+          <div class="board-actions">
+            <button class="variant-btn pill-btn active" onclick="setBirdVariant('internal')">形态1: 内共角</button>
+            <button class="variant-btn pill-btn" onclick="setBirdVariant('external')">形态2: 外共角</button>
+            <button class="variant-btn pill-btn" onclick="setBirdVariant('vertical')">形态3: 对顶角</button>
+            <button class="variant-btn pill-btn" onclick="setBirdVariant('supplement')">形态4: 邻补角</button>
           </div>
         </div>
 
         <div class="svg-wrapper" id="birdBoard">
           <svg id="svgBird" class="canvas" viewBox="0 0 560 380">
-            <!-- 底色网格 -->
-            <rect width="100%" height="100%" fill="url(#gridPattern)" />
+            <rect width="100%" height="100%" fill="url(#gridPattern1)" />
 
-            <!-- 大三角形 (蓝底) -->
+            <!-- 大三角形 (蓝) -->
             <polygon id="polyBigTri" points="" fill="#BAE6FD" fill-opacity="0.8" stroke="#0284C7" stroke-width="2.5" stroke-linejoin="round"/>
-
-            <!-- 小三角形 (鸟冠/黄底) -->
+            <!-- 小三角形 (鸟冠/黄) -->
             <polygon id="polySmallTri" points="" fill="#FEF08A" fill-opacity="0.9" stroke="#EAB308" stroke-width="2.5" stroke-linejoin="round"/>
 
-            <!-- 共角红顶标记弧线 -->
-            <path id="angleArc" d="" fill="none" stroke="#EF4444" stroke-width="2.5" />
+            <!-- 共角红顶标记 -->
             <circle id="sharedVertexPt" cx="0" cy="0" r="5" fill="#EF4444" />
-
-            <!-- 线段与顶点标签 -->
-            <g id="birdLabelsGroup" font-size="13" font-weight="800">
-              <text id="lblVertexTop" fill="#EF4444">共角 O</text>
-              <text id="lblA_side" fill="#0284C7">A</text>
-              <text id="lblB_side" fill="#0284C7">B</text>
-              <text id="lbla_side" fill="#CA8A04">a</text>
-              <text id="lblb_side" fill="#CA8A04">b</text>
-            </g>
+            <text id="lblVertexTop" font-size="13" font-weight="800" fill="#EF4444">共角 O</text>
+            <text id="lblBirdFormula" x="280" y="360" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle"></text>
           </svg>
         </div>
 
-        <!-- 边长与面积比例滑块调节 -->
-        <div style="margin-top:16px; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:14px;">
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-            <div>
-              <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:#475569; margin-bottom:4px;">
-                <span>边比 a / A (左侧)：</span>
-                <span id="sliderVal1Text" style="color:var(--indigo); font-family:var(--font-mono);">0.50</span>
-              </div>
-              <input type="range" id="sliderRatio1" min="0.1" max="0.9" step="0.05" value="0.5" style="width:100%; cursor:pointer;" oninput="updateBirdSliders()">
-            </div>
-            <div>
-              <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; color:#475569; margin-bottom:4px;">
-                <span>边比 b / B (右侧)：</span>
-                <span id="sliderVal2Text" style="color:var(--indigo); font-family:var(--font-mono);">0.60</span>
-              </div>
-              <input type="range" id="sliderRatio2" min="0.1" max="0.9" step="0.05" value="0.6" style="width:100%; cursor:pointer;" oninput="updateBirdSliders()">
-            </div>
+        <div class="slider-box">
+          <div class="slider-row">
+            <label for="sliderRatio1">边长比 a / A (左侧)：</label>
+            <input type="range" id="sliderRatio1" min="0.1" max="0.9" step="0.05" value="0.5" oninput="updateBirdSliders()">
+            <span id="sliderVal1Text" class="slider-val">0.50</span>
+          </div>
+          <div class="slider-row">
+            <label for="sliderRatio2">边长比 b / B (右侧)：</label>
+            <input type="range" id="sliderRatio2" min="0.1" max="0.9" step="0.05" value="0.6" oninput="updateBirdSliders()">
+            <span id="sliderVal2Text" class="slider-val">0.60</span>
           </div>
         </div>
 
-        <!-- 面积比例实时计算显示 -->
         <div class="live-stats">
           <div class="stat-pill highlight-amber">
             <div class="stat-label">小鸟头 S(黄)</div>
@@ -852,49 +1220,122 @@
         </div>
       </div>
 
-      <!-- 鸟头模型知识点说明 -->
       <div class="side-info">
         <div class="card">
           <div class="section-head">
-            <span>📖</span> 鸟头模型（共角定理）本质
+            <span>🐦</span> 鸟头模型（共角定理）本质
           </div>
-          <p style="font-size:13.5px; line-height:1.6; color:#334155; margin:0 0 10px 0;">
-            若两三角形<strong>共用一个角</strong>（或两角互为<strong>对顶角、互补角</strong>），它们的面积之比等于夹该角<strong>两边乘积之比</strong>。
+          <div class="math-formula-box">
+            核心公式：<br>
+            <span class="formula-highlight">S<sub>黄</sub> / S<sub>蓝</sub> = (a × b) / (A × B)</span>
+          </div>
+          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
+            两三角形共用一个角（或互补、对顶），面积比严格等于两边乘积之比。<br>
+            <strong>题目12妙用</strong>：四边形向外延展形成的角与内角互补，直接套用鸟头乘积比即可证明外围每个角三角形等于内侧对应三角形的 2 倍！
           </p>
-          <div class="formula-banner">
-            S(黄) / S(蓝) = (a × b) / (A × B)
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="section-head">
-            <span>💡</span> 为什么这个结论极其强大？
-          </div>
-          <div style="font-size:13px; color:#475569; line-height:1.6;">
-            <p style="margin:0 0 8px 0;">
-              • <strong>无需作高</strong>：传统面积公式需要求底和高，共角定理直接用边长线段比例转化面积！
-            </p>
-            <p style="margin:0 0 8px 0;">
-              • <strong>四种变体通杀</strong>：不论小角是在大角内部、反向对顶还是平角互补，因为 $\sin \theta = \sin(180^\circ - \theta)$，所以面积比恒等于两边乘积比。
-            </p>
-            <p style="margin:0;">
-              • <strong>题目12秒杀应用</strong>：在题目12中，$\triangle EAH$ 与 $\triangle BAD$ 在点 $A$ 处对顶/互补，$\frac{EA \cdot AH}{AB \cdot AD} = \frac{1 \cdot 2}{1 \cdot 1} = 2$，立刻得到外围角面积是内部三角形的 2 倍！
-            </p>
-          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ======================= 板块 3：六大几何模型百宝箱 ======================= -->
-  <div id="panel-allmodels" class="tab-panel">
-    <div class="card" style="margin-bottom:20px; background:#F8FAFC; border-color:var(--emerald-border);">
+  <!-- ============================================================== -->
+  <!-- 篇章 6：燕尾模型 独立交互 -->
+  <!-- ============================================================== -->
+  <div id="panel-swallow" class="chapter-panel">
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title">
+            <span>🕊️</span> 燕尾模型动态画板：拖拽三角形内部点 P
+          </div>
+          <div class="board-actions">
+            <button class="pill-btn" onclick="resetSwallowPoint()">居中点 P</button>
+          </div>
+        </div>
+
+        <div class="svg-wrapper" id="swallowBoard">
+          <svg id="svgSwallow" class="canvas" viewBox="0 0 560 390">
+            <rect width="100%" height="100%" fill="url(#gridPattern1)" />
+
+            <!-- 大外三角形 ABC -->
+            <polygon points="280,40 80,330 480,330" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round"/>
+
+            <!-- 四块分割三角形 -->
+            <polygon id="polySwallowS1" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="1.5"/>
+            <polygon id="polySwallowS2" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="1.5"/>
+            <polygon id="polySwallowS3" points="" fill="#FED7AA" fill-opacity="0.85" stroke="#EA580C" stroke-width="1.5"/>
+            <polygon id="polySwallowS4" points="" fill="#FEF08A" fill-opacity="0.85" stroke="#CA8A04" stroke-width="1.5"/>
+
+            <!-- 延伸线 APD -->
+            <line id="lineSwallowAPD" x1="280" y1="40" x2="280" y2="330" stroke="#EF4444" stroke-width="2" stroke-dasharray="3 3"/>
+            <!-- 连线 BP, CP -->
+            <line id="lineSwallowBP" x1="80" y1="330" x2="0" y2="0" stroke="#0F172A" stroke-width="1.5"/>
+            <line id="lineSwallowCP" x1="480" y1="330" x2="0" y2="0" stroke="#0F172A" stroke-width="1.5"/>
+
+            <!-- 顶点文字 -->
+            <text x="280" y="30" font-size="13" font-weight="800" fill="#0F172A" text-anchor="middle">A</text>
+            <text x="65" y="345" font-size="13" font-weight="800" fill="#0F172A">B</text>
+            <text x="490" y="345" font-size="13" font-weight="800" fill="#0F172A">C</text>
+            <text id="lblSwallowD" x="0" y="355" font-size="13" font-weight="800" fill="#EF4444" text-anchor="middle">D</text>
+
+            <!-- 面积标识 -->
+            <text id="lblSwallowS1" font-size="12" font-weight="800" fill="#0369A1">S₁</text>
+            <text id="lblSwallowS2" font-size="12" font-weight="800" fill="#0369A1">S₂</text>
+            <text id="lblSwallowS3" font-size="11" font-weight="800" fill="#C2410C">S₃</text>
+            <text id="lblSwallowS4" font-size="11" font-weight="800" fill="#A16207">S₄</text>
+
+            <!-- 内部点 P (可拖拽) -->
+            <g id="dragHandleSwallow" cursor="move">
+              <circle id="ptSwallowP" cx="280" cy="220" r="9" fill="#FDE047" stroke="#0F172A" stroke-width="2.5"/>
+              <text id="lblSwallowP" x="280" y="205" font-size="13" font-weight="800" fill="#0F172A" text-anchor="middle">P (拖拽我)</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="live-stats">
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">左翼÷右翼 (S₁/S₂)</div>
+            <div id="statSwallowWings" class="stat-val">1.00</div>
+          </div>
+          <div class="stat-pill highlight-amber">
+            <div class="stat-label">下底两块比 (S₃/S₄)</div>
+            <div id="statSwallowBottom" class="stat-val">1.00</div>
+          </div>
+          <div class="stat-pill highlight">
+            <div class="stat-label">底边截比 (d₁/d₂)</div>
+            <div id="statSwallowBase" class="stat-val">1.00 (恒等)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-info">
+        <div class="card">
+          <div class="section-head">
+            <span>🕊️</span> 燕尾模型黄金三等比
+          </div>
+          <div class="math-formula-box">
+            核心定理：<br>
+            <span class="formula-highlight">S₁ / S₂ = S₃ / S₄ = d₁ / d₂</span>
+          </div>
+          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
+            形状如同展开的燕子尾巴。当顶点 <em>A</em> 与点 <em>P</em> 的射线交底边于 <em>D</em> 时，左侧大面积与右侧大面积之比、下方两小面积之比，<strong>完全等同于底边线段分割比 <em>BD / CD</em></strong>！
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 7：六大几何模型百宝箱汇总 -->
+  <!-- ============================================================== -->
+  <div id="panel-overview" class="chapter-panel">
+    <div class="card" style="margin-bottom:18px; background:#F8FAFC; border-color:var(--emerald-border);">
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-        <span style="font-size:20px;">🎬</span>
-        <h2 style="margin:0; font-size:17px; font-weight:800; color:#064E3B;">小学奥数六大几何模型全景速览</h2>
+        <span style="font-size:22px;">📚</span>
+        <h2 style="margin:0; font-size:17px; font-weight:800; color:#064E3B;">小学六大几何模型速查全景图</h2>
       </div>
       <p style="margin:0; font-size:13.5px; color:#334155; line-height:1.6;">
-        这六大模型是小学高年级与初中几何转化的核心基石。掌握了“同底等高、比例转化、交叉相似”，遇到不规则复杂图形就能轻松拆解。
+        点击任意模型卡片底部的「进入动态画板」，即可直达对应篇章并拖拽图形深度探索！
       </p>
     </div>
 
@@ -905,31 +1346,16 @@
           <div class="model-card-header">
             <div class="model-icon">🪟</div>
             <div>
-              <h3>等积模型</h3>
+              <h3>1. 等积模型</h3>
               <div class="alias">别名：拉窗帘模型</div>
             </div>
           </div>
-          <div class="model-diagram">
-            <svg width="240" height="110" viewBox="0 0 240 110">
-              <line x1="15" y1="20" x2="225" y2="20" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="4 3"/>
-              <line x1="15" y1="90" x2="225" y2="90" stroke="#94A3B8" stroke-width="1.5"/>
-              <polygon points="50,90 190,90 90,20" fill="#BAE6FD" fill-opacity="0.8" stroke="#0284C7" stroke-width="2"/>
-              <polygon points="50,90 190,90 160,20" fill="none" stroke="#059669" stroke-width="2" stroke-dasharray="3 3"/>
-              <line x1="90" y1="20" x2="90" y2="90" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="2 2"/>
-              <text x="120" y="84" font-size="11" font-weight="700" fill="#0284C7" text-anchor="middle">公共底 b</text>
-              <text x="96" y="58" font-size="11" font-weight="700" fill="#EF4444">高 h 恒定</text>
-            </svg>
-          </div>
-          <div class="model-formula">S₁ = S₂ （同底等高）</div>
+          <div class="model-formula">S = ½ × b × h （同底等高）</div>
           <p class="model-desc">
-            两平行线间距离（高）处处相等。顶点沿平行线滑动时（像拉窗帘），底与高不变，面积处处相等。
+            平行线间距离（高）处处相等。顶点沿平行线滑动时，底与高不变，面积处处相等。
           </p>
         </div>
-        <div class="model-tags">
-          <span class="tag-sm">平行线</span>
-          <span class="tag-sm">底高不变</span>
-          <span class="tag-sm">形状任意变</span>
-        </div>
+        <button class="quick-jump-btn" onclick="switchChapter('equal')">打开等积模型画板 →</button>
       </div>
 
       <!-- 2. 一半模型 -->
@@ -938,26 +1364,16 @@
           <div class="model-card-header">
             <div class="model-icon">🌓</div>
             <div>
-              <h3>一半模型</h3>
-              <div class="alias">常见于矩形、平行四边形</div>
+              <h3>2. 一半模型</h3>
+              <div class="alias">矩形与平行四边形</div>
             </div>
           </div>
-          <div class="model-diagram">
-            <svg width="240" height="110" viewBox="0 0 240 110">
-              <rect x="30" y="20" width="180" height="70" fill="#FFFFFF" stroke="#0F172A" stroke-width="2" rx="4"/>
-              <polygon points="30,90 210,90 120,20" fill="#A7F3D0" fill-opacity="0.8" stroke="#059669" stroke-width="2"/>
-              <text x="120" y="65" font-size="12" font-weight="800" fill="#065F46" text-anchor="middle">S = 1/2 S总</text>
-            </svg>
-          </div>
-          <div class="model-formula">S(阴影) = 1/2 × S(平行四边形)</div>
+          <div class="model-formula">S(阴影) = ½ × S(平行四边形)</div>
           <p class="model-desc">
-            三角形的底为平行四边形的一边，顶点在对边上，高相等，面积必占一半；或内部任一点向对顶引线上下和占一半。
+            底为一边顶点在对边，或内部任意点向四顶引线上下和等于一半。
           </p>
         </div>
-        <div class="model-tags">
-          <span class="tag-sm">长方形/平行四边形</span>
-          <span class="tag-sm">对顶和为半</span>
-        </div>
+        <button class="quick-jump-btn" onclick="switchChapter('half')">打开一半模型画板 →</button>
       </div>
 
       <!-- 3. 蝴蝶模型 -->
@@ -966,35 +1382,16 @@
           <div class="model-card-header">
             <div class="model-icon">🦋</div>
             <div>
-              <h3>蝴蝶模型</h3>
-              <div class="alias">任意凸四边形对角线</div>
+              <h3>3. 蝴蝶模型</h3>
+              <div class="alias">对角线交叉四分法</div>
             </div>
           </div>
-          <div class="model-diagram">
-            <svg width="240" height="110" viewBox="0 0 240 110">
-              <polygon points="40,20 200,20 180,90 60,90" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
-              <line x1="40" y1="20" x2="180" y2="90" stroke="#0F172A" stroke-width="1.5"/>
-              <line x1="200" y1="20" x2="60" y2="90" stroke="#0F172A" stroke-width="1.5"/>
-              <polygon points="40,20 200,20 120,55" fill="#BAE6FD" fill-opacity="0.8"/>
-              <polygon points="60,90 180,90 120,55" fill="#BAE6FD" fill-opacity="0.8"/>
-              <polygon points="40,20 60,90 120,55" fill="#FDE68A" fill-opacity="0.8"/>
-              <polygon points="200,20 180,90 120,55" fill="#FDE68A" fill-opacity="0.8"/>
-              <text x="120" y="38" font-size="10" font-weight="800" fill="#0369A1" text-anchor="middle">头</text>
-              <text x="120" y="80" font-size="10" font-weight="800" fill="#0369A1" text-anchor="middle">尾</text>
-              <text x="75" y="60" font-size="10" font-weight="800" fill="#B45309" text-anchor="middle">翅</text>
-              <text x="165" y="60" font-size="10" font-weight="800" fill="#B45309" text-anchor="middle">翅</text>
-            </svg>
-          </div>
-          <div class="model-formula">头 × 尾 = 翅 × 翅 （S₁×S₂ = S₃×S₄）</div>
+          <div class="model-formula">头 × 尾 = 翅 × 翅 (S₁×S₂ = S₃×S₄)</div>
           <p class="model-desc">
-            对角线相交形成的四个三角形中，对顶面积积相等。在梯形中，左右两个翅膀的面积还完全相等！
+            任意四边形对顶积相等；梯形中左右两翅膀面积完全相等！
           </p>
         </div>
-        <div class="model-tags">
-          <span class="tag-sm">交叉对角线</span>
-          <span class="tag-sm">积相等</span>
-          <span class="tag-sm">梯形双翅等</span>
-        </div>
+        <button class="quick-jump-btn" onclick="switchChapter('butterfly')">打开蝴蝶模型画板 →</button>
       </div>
 
       <!-- 4. 沙漏模型 -->
@@ -1003,29 +1400,16 @@
           <div class="model-card-header">
             <div class="model-icon">⏳</div>
             <div>
-              <h3>沙漏模型</h3>
-              <div class="alias">X 字形相似比</div>
+              <h3>4. 沙漏模型</h3>
+              <div class="alias">X 相似比定理</div>
             </div>
           </div>
-          <div class="model-diagram">
-            <svg width="240" height="110" viewBox="0 0 240 110">
-              <line x1="70" y1="20" x2="170" y2="20" stroke="#0F172A" stroke-width="2"/>
-              <line x1="40" y1="90" x2="200" y2="90" stroke="#0F172A" stroke-width="2"/>
-              <polygon points="70,20 170,20 120,50" fill="#FED7AA" stroke="#EA580C" stroke-width="1.5"/>
-              <polygon points="40,90 200,90 120,50" fill="#BAE6FD" stroke="#0284C7" stroke-width="1.5"/>
-              <text x="120" y="34" font-size="10" font-weight="800" fill="#C2410C" text-anchor="middle">a</text>
-              <text x="120" y="82" font-size="10" font-weight="800" fill="#0369A1" text-anchor="middle">A</text>
-            </svg>
-          </div>
-          <div class="model-formula">S(上) / S(下) = a² / A²</div>
+          <div class="model-formula">S(上) / S(下) = (a / A)²</div>
           <p class="model-desc">
-            上下两底平行的相交图形。上下两三角形相似，面积之比等于对应边长之比的平方。
+            两底平行的交叉相似图形，面积比等于对应边长比的平方。
           </p>
         </div>
-        <div class="model-tags">
-          <span class="tag-sm">相似形</span>
-          <span class="tag-sm">边长平方比</span>
-        </div>
+        <button class="quick-jump-btn" onclick="switchChapter('hourglass')">打开沙漏模型画板 →</button>
       </div>
 
       <!-- 5. 鸟头模型 -->
@@ -1034,29 +1418,16 @@
           <div class="model-card-header">
             <div class="model-icon">🐦</div>
             <div>
-              <h3>鸟头模型</h3>
+              <h3>5. 鸟头模型</h3>
               <div class="alias">共角 / 互补角定理</div>
             </div>
           </div>
-          <div class="model-diagram">
-            <svg width="240" height="110" viewBox="0 0 240 110">
-              <polygon points="120,15 50,95 190,95" fill="#BAE6FD" stroke="#0284C7" stroke-width="2"/>
-              <polygon points="120,15 85,55 155,55" fill="#FDE047" stroke="#CA8A04" stroke-width="2"/>
-              <circle cx="120" cy="15" r="4" fill="#EF4444"/>
-              <text x="120" y="42" font-size="10" font-weight="800" fill="#A16207" text-anchor="middle">S(小)</text>
-              <text x="120" y="82" font-size="11" font-weight="800" fill="#0369A1" text-anchor="middle">S(大)</text>
-            </svg>
-          </div>
           <div class="model-formula">S(小) / S(大) = (a × b) / (A × B)</div>
           <p class="model-desc">
-            共用一个顶角，面积之比等于夹该角两边长度乘积之比。涵盖内接、外接、对顶与互补四大形态。
+            两三角形共角或互补，面积比等于夹角两边乘积之比。题目12核心！
           </p>
         </div>
-        <div class="model-tags">
-          <span class="tag-sm">乘积之比</span>
-          <span class="tag-sm">免求高</span>
-          <span class="tag-sm">题目12核心</span>
-        </div>
+        <button class="quick-jump-btn" onclick="switchChapter('birdhead')">打开鸟头模型画板 →</button>
       </div>
 
       <!-- 6. 燕尾模型 -->
@@ -1065,91 +1436,48 @@
           <div class="model-card-header">
             <div class="model-icon">🕊️</div>
             <div>
-              <h3>燕尾模型</h3>
-              <div class="alias">三角形内点向三顶引线</div>
+              <h3>6. 燕尾模型</h3>
+              <div class="alias">三角形内点三射定理</div>
             </div>
-          </div>
-          <div class="model-diagram">
-            <svg width="240" height="110" viewBox="0 0 240 110">
-              <polygon points="120,15 40,95 200,95" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
-              <line x1="120" y1="15" x2="120" y2="60" stroke="#0F172A" stroke-width="1.5"/>
-              <line x1="40" y1="95" x2="120" y2="60" stroke="#0F172A" stroke-width="1.5"/>
-              <line x1="200" y1="95" x2="120" y2="60" stroke="#0F172A" stroke-width="1.5"/>
-              <line x1="120" y1="60" x2="120" y2="95" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="2 2"/>
-              <polygon points="40,95 120,60 120,95" fill="#FED7AA" fill-opacity="0.8"/>
-              <polygon points="200,95 120,60 120,95" fill="#FEF08A" fill-opacity="0.8"/>
-              <text x="80" y="55" font-size="10" font-weight="800" fill="#0284C7">S₁</text>
-              <text x="150" y="55" font-size="10" font-weight="800" fill="#0284C7">S₂</text>
-              <text x="85" y="88" font-size="9" font-weight="700" fill="#C2410C">S₃</text>
-              <text x="145" y="88" font-size="9" font-weight="700" fill="#A16207">S₄</text>
-            </svg>
           </div>
           <div class="model-formula">S₁ / S₂ = S₃ / S₄ = d₁ / d₂</div>
           <p class="model-desc">
-            左右两侧大三角形面积之比，等于下方两个小三角形面积之比，且等于它们在底边所截出的线段长度之比。
+            左右两大大三角形之比等于下方两小三角形之比，且等于底边截比。
           </p>
         </div>
-        <div class="model-tags">
-          <span class="tag-sm">三线交点</span>
-          <span class="tag-sm">底边截比</span>
-          <span class="tag-sm">分份转化</span>
-        </div>
+        <button class="quick-jump-btn" onclick="switchChapter('swallow')">打开燕尾模型画板 →</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  /* ================= 全局 Tab 切换逻辑 ================= */
-  function switchMode(mode) {
-    document.querySelectorAll('.mode-tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+  /* ================= 篇章导航切换 ================= */
+  const chapterKeys = ['problem12', 'equal', 'half', 'butterfly', 'hourglass', 'birdhead', 'swallow', 'overview'];
 
-    if (mode === 'problem12') {
-      document.querySelectorAll('.mode-tab-btn')[0].classList.add('active');
-      document.getElementById('panel-problem12').classList.add('active');
-      renderQuad();
-    } else if (mode === 'birdhead') {
-      document.querySelectorAll('.mode-tab-btn')[1].classList.add('active');
-      document.getElementById('panel-birdhead').classList.add('active');
-      renderBird();
-    } else if (mode === 'allmodels') {
-      document.querySelectorAll('.mode-tab-btn')[2].classList.add('active');
-      document.getElementById('panel-allmodels').classList.add('active');
-    }
+  function switchChapter(chap) {
+    chapterKeys.forEach(k => {
+      const panel = document.getElementById('panel-' + k);
+      if (panel) panel.classList.toggle('active', k === chap);
+    });
+
+    document.querySelectorAll('.chap-btn').forEach(btn => {
+      const isMatch = btn.getAttribute('onclick').includes(`'${chap}'`);
+      btn.classList.toggle('active', isMatch);
+      if (isMatch) btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    });
+
+    // 触发对应篇章初始化
+    if (chap === 'problem12') renderQuad();
+    else if (chap === 'equal') renderEqual();
+    else if (chap === 'half') renderHalf();
+    else if (chap === 'butterfly') renderBfly();
+    else if (chap === 'hourglass') renderHourglass();
+    else if (chap === 'birdhead') renderBird();
+    else if (chap === 'swallow') renderSwallow();
   }
 
-  /* ================= 板块 1：题目 12 几何画板交互 ================= */
-  // 内部顶点 A, B, C, D 初始坐标
-  const defaultQuad = [
-    { x: 230, y: 245 }, // A (左下)
-    { x: 330, y: 220 }, // B (右下)
-    { x: 310, y: 150 }, // C (右上)
-    { x: 215, y: 170 }  // D (左上)
-  ];
-  let quadABCD = JSON.parse(JSON.stringify(defaultQuad));
-  let showMedians = true;
-  let showDiagonals = false;
-  let activeHandle = null;
-
-  function resetQuad() {
-    quadABCD = JSON.parse(JSON.stringify(defaultQuad));
-    renderQuad();
-  }
-
-  function toggleMedians() {
-    showMedians = !showMedians;
-    document.getElementById('btnToggleMedian').classList.toggle('active', showMedians);
-    document.getElementById('mediansGroup').style.display = showMedians ? 'block' : 'none';
-  }
-
-  function toggleDiagonals() {
-    showDiagonals = !showDiagonals;
-    document.getElementById('btnToggleDiagonal').classList.toggle('active', showDiagonals);
-    document.getElementById('diagonalsGroup').style.display = showDiagonals ? 'block' : 'none';
-  }
-
-  // 多边形面积计算 (Shoelace formula)
+  /* ================= 辅助函数 ================= */
   function polygonArea(pts) {
     let s = 0;
     const n = pts.length;
@@ -1160,65 +1488,84 @@
     }
     return Math.abs(s) / 2;
   }
-
-  function pointsToString(pts) {
+  function ptsToStr(pts) {
     return pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  }
+  function setLine(id, p1, p2) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('x1', p1.x); el.setAttribute('y1', p1.y);
+    el.setAttribute('x2', p2.x); el.setAttribute('y2', p2.y);
+  }
+  function setCircle(id, p) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('cx', p.x); el.setAttribute('cy', p.y);
+  }
+  function setLabel(id, p, dx, dy) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.setAttribute('x', p.x + dx); el.setAttribute('y', p.y + dy);
+  }
+
+  /* ================= 篇章 0：题目 12 画板 ================= */
+  const defaultQuad = [
+    { x: 230, y: 230 }, // A
+    { x: 330, y: 205 }, // B
+    { x: 310, y: 140 }, // C
+    { x: 215, y: 160 }  // D
+  ];
+  let quadABCD = JSON.parse(JSON.stringify(defaultQuad));
+  let showMedians = true;
+  let showDiagonals = false;
+  let activeHandleQuad = null;
+
+  function resetQuad() {
+    quadABCD = JSON.parse(JSON.stringify(defaultQuad));
+    renderQuad();
+  }
+  function toggleMedians() {
+    showMedians = !showMedians;
+    document.getElementById('btnToggleMedian').classList.toggle('active', showMedians);
+    document.getElementById('mediansGroup').style.display = showMedians ? 'block' : 'none';
+  }
+  function toggleDiagonals() {
+    showDiagonals = !showDiagonals;
+    document.getElementById('btnToggleDiagonal').classList.toggle('active', showDiagonals);
+    document.getElementById('diagonalsGroup').style.display = showDiagonals ? 'block' : 'none';
   }
 
   function renderQuad() {
-    const A = quadABCD[0];
-    const B = quadABCD[1];
-    const C = quadABCD[2];
-    const D = quadABCD[3];
-
-    // 顺次外扩 1 倍：
-    // EA = AB => E = 2A - B
-    // CB = BF => F = 2B - C
-    // DC = CG => G = 2C - D
-    // HD = DA => H = 2D - A
+    const [A, B, C, D] = quadABCD;
     const E = { x: 2 * A.x - B.x, y: 2 * A.y - B.y };
     const F = { x: 2 * B.x - C.x, y: 2 * B.y - C.y };
     const G = { x: 2 * C.x - D.x, y: 2 * C.y - D.y };
     const H = { x: 2 * D.x - A.x, y: 2 * D.y - A.y };
 
-    // 更新多边形图形
-    document.getElementById('polyEFGH').setAttribute('points', pointsToString([E, F, G, H]));
-    document.getElementById('polyABCD').setAttribute('points', pointsToString([A, B, C, D]));
-    document.getElementById('polyEAH').setAttribute('points', pointsToString([E, A, H]));
-    document.getElementById('polyFBE').setAttribute('points', pointsToString([F, B, E]));
-    document.getElementById('polyGCF').setAttribute('points', pointsToString([G, C, F]));
-    document.getElementById('polyHDG').setAttribute('points', pointsToString([H, D, G]));
+    document.getElementById('polyEFGH').setAttribute('points', ptsToStr([E, F, G, H]));
+    document.getElementById('polyABCD').setAttribute('points', ptsToStr([A, B, C, D]));
+    document.getElementById('polyEAH').setAttribute('points', ptsToStr([E, A, H]));
+    document.getElementById('polyFBE').setAttribute('points', ptsToStr([F, B, E]));
+    document.getElementById('polyGCF').setAttribute('points', ptsToStr([G, C, F]));
+    document.getElementById('polyHDG').setAttribute('points', ptsToStr([H, D, G]));
 
-    // 更新辅助线：中线
-    setLine('lineED', E, D);
-    setLine('lineAF', A, F);
-    setLine('lineDF', D, F);
-    setLine('lineCH', C, H);
+    setLine('lineED', E, D); setLine('lineAF', A, F);
+    setLine('lineDF', D, F); setLine('lineCH', C, H);
+    setLine('lineBD', B, D); setLine('lineAC', A, C);
 
-    // 更新辅助线：对角线
-    setLine('lineBD', B, D);
-    setLine('lineAC', A, C);
-
-    // 更新外围端点
     setCircle('ptE', E); setLabel('lblE', E, -14, 5);
     setCircle('ptF', F); setLabel('lblF', F, 10, 5);
     setCircle('ptG', G); setLabel('lblG', G, 10, -5);
     setCircle('ptH', H); setLabel('lblH', H, -14, -5);
 
-    // 更新内部把手顶点
     setCircle('handleA', A); setLabel('lblA', A, -12, 18);
     setCircle('handleB', B); setLabel('lblB', B, 12, 18);
     setCircle('handleC', C); setLabel('lblC', C, 12, -10);
     setCircle('handleD', D); setLabel('lblD', D, -14, -8);
 
-    // 计算面积与比例
     const sABCD = polygonArea([A, B, C, D]);
     const sEFGH = polygonArea([E, F, G, H]);
-    const sEAH = polygonArea([E, A, H]);
-    const sFBE = polygonArea([F, B, E]);
-    const sGCF = polygonArea([G, C, F]);
-    const sHDG = polygonArea([H, D, G]);
-    const sOuter = sEAH + sFBE + sGCF + sHDG;
+    const sOuter = polygonArea([E, A, H]) + polygonArea([F, B, E]) + polygonArea([G, C, F]) + polygonArea([H, D, G]);
     const ratio = sABCD > 0 ? (sEFGH / sABCD) : 5.0;
 
     document.getElementById('statAreaABCD').textContent = (sABCD / 1000).toFixed(2);
@@ -1227,84 +1574,378 @@
     document.getElementById('statRatio').textContent = ratio.toFixed(2) + ' 倍';
   }
 
-  function setLine(id, p1, p2) {
-    const el = document.getElementById(id);
-    el.setAttribute('x1', p1.x); el.setAttribute('y1', p1.y);
-    el.setAttribute('x2', p2.x); el.setAttribute('y2', p2.y);
-  }
-  function setCircle(id, p) {
-    const el = document.getElementById(id);
-    el.setAttribute('cx', p.x); el.setAttribute('cy', p.y);
-  }
-  function setLabel(id, p, dx, dy) {
-    const el = document.getElementById(id);
-    el.setAttribute('x', p.x + dx); el.setAttribute('y', p.y + dy);
-  }
-
-  // 顶点拖拽交互 (Mouse & Touch)
-  const svgQuad = document.getElementById('svgQuad');
-  function getSvgPoint(e) {
-    const rect = svgQuad.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const scaleX = 560 / rect.width;
-    const scaleY = 420 / rect.height;
+  function getSvgPt(svg, e) {
+    const rect = svg.getBoundingClientRect();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
     return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY
+      x: (cx - rect.left) * (560 / rect.width),
+      y: (cy - rect.top) * (390 / rect.height)
     };
   }
 
-  function onQuadPointerDown(e) {
-    const pt = getSvgPoint(e);
+  const svgQuad = document.getElementById('svgQuad');
+  svgQuad.addEventListener('mousedown', e => {
+    const pt = getSvgPt(svgQuad, e);
     for (let i = 0; i < 4; i++) {
-      const d = Math.hypot(pt.x - quadABCD[i].x, pt.y - quadABCD[i].y);
-      if (d < 22) {
-        activeHandle = i;
+      if (Math.hypot(pt.x - quadABCD[i].x, pt.y - quadABCD[i].y) < 22) {
+        activeHandleQuad = i;
         e.preventDefault();
         break;
       }
     }
-  }
-
-  function onQuadPointerMove(e) {
-    if (activeHandle === null) return;
-    e.preventDefault();
-    const pt = getSvgPoint(e);
-    // 边界限制保持在可视区内
-    pt.x = Math.max(120, Math.min(440, pt.x));
-    pt.y = Math.max(90, Math.min(330, pt.y));
-    quadABCD[activeHandle] = pt;
+  });
+  window.addEventListener('mousemove', e => {
+    if (activeHandleQuad === null) return;
+    const pt = getSvgPt(svgQuad, e);
+    quadABCD[activeHandleQuad] = { x: Math.max(120, Math.min(440, pt.x)), y: Math.max(80, Math.min(310, pt.y)) };
     renderQuad();
-  }
-
-  function onQuadPointerUp() {
-    activeHandle = null;
-  }
-
-  svgQuad.addEventListener('mousedown', onQuadPointerDown);
-  window.addEventListener('mousemove', onQuadPointerMove);
-  window.addEventListener('mouseup', onQuadPointerUp);
-  svgQuad.addEventListener('touchstart', onQuadPointerDown, { passive: false });
-  window.addEventListener('touchmove', onQuadPointerMove, { passive: false });
-  window.addEventListener('touchend', onQuadPointerUp);
+  });
+  window.addEventListener('mouseup', () => activeHandleQuad = null);
+  svgQuad.addEventListener('touchstart', e => {
+    const pt = getSvgPt(svgQuad, e);
+    for (let i = 0; i < 4; i++) {
+      if (Math.hypot(pt.x - quadABCD[i].x, pt.y - quadABCD[i].y) < 26) {
+        activeHandleQuad = i;
+        e.preventDefault();
+        break;
+      }
+    }
+  }, { passive: false });
+  window.addEventListener('touchmove', e => {
+    if (activeHandleQuad === null) return;
+    e.preventDefault();
+    const pt = getSvgPt(svgQuad, e);
+    quadABCD[activeHandleQuad] = { x: Math.max(120, Math.min(440, pt.x)), y: Math.max(80, Math.min(310, pt.y)) };
+    renderQuad();
+  }, { passive: false });
+  window.addEventListener('touchend', () => activeHandleQuad = null);
 
   function updateCalculator() {
     const val = parseFloat(document.getElementById('inputTotalArea').value) || 0;
     const res = val / 5;
     document.getElementById('calcResultDisplay').innerHTML =
-      `内四边形 S(ABCD) = ${val} ÷ 5 = <strong>${res.toFixed(2)}</strong> 平方米`;
+      `内四边形 S<sub>ABCD</sub> = ${val} ÷ 5 = <strong>${res.toFixed(2)}</strong> 平方米`;
   }
 
-  /* ================= 板块 2：鸟头模型交互 ================= */
+  /* ================= 篇章 1：等积模型画板 ================= */
+  let ptAEqualX = 240;
+  let isAutoCurtain = false;
+  let curtainDir = 1.5;
+  let curtainTimer = null;
+  let isDraggingEqualA = false;
+
+  function resetEqualModel() {
+    ptAEqualX = 240;
+    if (isAutoCurtain) toggleAutoCurtain();
+    renderEqual();
+  }
+
+  function toggleAutoCurtain() {
+    isAutoCurtain = !isAutoCurtain;
+    const btn = document.getElementById('btnAutoCurtain');
+    btn.classList.toggle('active', isAutoCurtain);
+    btn.textContent = isAutoCurtain ? '⏸ 暂停拉窗帘' : '▶ 自动拉窗帘';
+    if (isAutoCurtain) {
+      curtainTimer = setInterval(() => {
+        ptAEqualX += curtainDir;
+        if (ptAEqualX > 460) { ptAEqualX = 460; curtainDir = -1.5; }
+        if (ptAEqualX < 100) { ptAEqualX = 100; curtainDir = 1.5; }
+        renderEqual();
+      }, 20);
+    } else {
+      clearInterval(curtainTimer);
+    }
+  }
+
+  function renderEqual() {
+    const A = { x: ptAEqualX, y: 90 };
+    const B = { x: 160, y: 290 };
+    const C = { x: 400, y: 290 };
+
+    document.getElementById('polyEqualTri').setAttribute('points', ptsToStr([A, B, C]));
+    setCircle('ptAEqual', A);
+    setLabel('lblAEqual', A, 0, -18);
+
+    // 垂线与垂足
+    setLine('lineHeightEqual', A, { x: A.x, y: 290 });
+    const lblH = document.getElementById('lblHeightEqual');
+    lblH.setAttribute('x', A.x + 8);
+    lblH.setAttribute('y', 190);
+
+    const ra = document.getElementById('rightAngleEqual');
+    ra.setAttribute('points', `${A.x},278 ${A.x + 12},278 ${A.x + 12},290`);
+  }
+
+  const svgEqual = document.getElementById('svgEqual');
+  svgEqual.addEventListener('mousedown', e => {
+    const pt = getSvgPt(svgEqual, e);
+    if (Math.hypot(pt.x - ptAEqualX, pt.y - 90) < 25) {
+      isDraggingEqualA = true;
+      if (isAutoCurtain) toggleAutoCurtain();
+    }
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDraggingEqualA) return;
+    const pt = getSvgPt(svgEqual, e);
+    ptAEqualX = Math.max(70, Math.min(490, pt.x));
+    renderEqual();
+  });
+  window.addEventListener('mouseup', () => isDraggingEqualA = false);
+  svgEqual.addEventListener('touchstart', e => {
+    const pt = getSvgPt(svgEqual, e);
+    if (Math.hypot(pt.x - ptAEqualX, pt.y - 90) < 28) {
+      isDraggingEqualA = true;
+      if (isAutoCurtain) toggleAutoCurtain();
+    }
+  }, { passive: false });
+  window.addEventListener('touchmove', e => {
+    if (!isDraggingEqualA) return;
+    const pt = getSvgPt(svgEqual, e);
+    ptAEqualX = Math.max(70, Math.min(490, pt.x));
+    renderEqual();
+  }, { passive: false });
+  window.addEventListener('touchend', () => isDraggingEqualA = false);
+
+  /* ================= 篇章 2：一半模型画板 ================= */
+  let halfMode = 'edge';
+  let ptHalfP = { x: 260, y: 90 };
+  let isDraggingHalf = false;
+
+  function setHalfMode(mode) {
+    halfMode = mode;
+    document.getElementById('btnHalfMode1').classList.toggle('active', mode === 'edge');
+    document.getElementById('btnHalfMode2').classList.toggle('active', mode === 'inside');
+    if (mode === 'edge') {
+      ptHalfP.y = 90;
+      document.getElementById('polyHalfTriA').style.display = 'block';
+      document.getElementById('groupHalfInside').style.display = 'none';
+      document.getElementById('statHalfPart1Label').textContent = '阴影三角形面积';
+      document.getElementById('statHalfResultLabel').textContent = '面积占比 (恒为一半)';
+    } else {
+      ptHalfP.y = 200;
+      document.getElementById('polyHalfTriA').style.display = 'none';
+      document.getElementById('groupHalfInside').style.display = 'block';
+      document.getElementById('statHalfPart1Label').textContent = '上+下 两块面积和';
+      document.getElementById('statHalfResultLabel').textContent = '上+下 = 左+右 = ½';
+    }
+    renderHalf();
+  }
+
+  function renderHalf() {
+    const A = { x: 80, y: 90 }, B = { x: 480, y: 90 }, C = { x: 480, y: 310 }, D = { x: 80, y: 310 };
+    setCircle('ptHalfP', ptHalfP);
+    setLabel('lblHalfP', ptHalfP, 0, halfMode === 'edge' ? -16 : -14);
+
+    if (halfMode === 'edge') {
+      document.getElementById('polyHalfTriA').setAttribute('points', ptsToStr([ptHalfP, C, D]));
+      document.getElementById('statHalfPart1Val').textContent = '50.0%';
+      document.getElementById('statHalfResultVal').textContent = '正好 ½ (50.0%)';
+    } else {
+      document.getElementById('polyHalfTop').setAttribute('points', ptsToStr([ptHalfP, A, B]));
+      document.getElementById('polyHalfBottom').setAttribute('points', ptsToStr([ptHalfP, C, D]));
+      document.getElementById('polyHalfLeft').setAttribute('points', ptsToStr([ptHalfP, A, D]));
+      document.getElementById('polyHalfRight').setAttribute('points', ptsToStr([ptHalfP, B, C]));
+
+      const sTop = polygonArea([ptHalfP, A, B]);
+      const sBottom = polygonArea([ptHalfP, C, D]);
+      const sLeft = polygonArea([ptHalfP, A, D]);
+      const sRight = polygonArea([ptHalfP, B, C]);
+      const total = sTop + sBottom + sLeft + sRight;
+      const topBottomPct = ((sTop + sBottom) / total * 100).toFixed(1);
+      const leftRightPct = ((sLeft + sRight) / total * 100).toFixed(1);
+
+      document.getElementById('statHalfPart1Val').textContent = `${topBottomPct}% (上+下)`;
+      document.getElementById('statHalfResultVal').textContent = `${leftRightPct}% (左+右)`;
+    }
+  }
+
+  const svgHalf = document.getElementById('svgHalf');
+  svgHalf.addEventListener('mousedown', e => {
+    const pt = getSvgPt(svgHalf, e);
+    if (Math.hypot(pt.x - ptHalfP.x, pt.y - ptHalfP.y) < 25) isDraggingHalf = true;
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDraggingHalf) return;
+    const pt = getSvgPt(svgHalf, e);
+    if (halfMode === 'edge') {
+      ptHalfP.x = Math.max(90, Math.min(470, pt.x));
+      ptHalfP.y = 90;
+    } else {
+      ptHalfP.x = Math.max(100, Math.min(460, pt.x));
+      ptHalfP.y = Math.max(110, Math.min(290, pt.y));
+    }
+    renderHalf();
+  });
+  window.addEventListener('mouseup', () => isDraggingHalf = false);
+  svgHalf.addEventListener('touchstart', e => {
+    const pt = getSvgPt(svgHalf, e);
+    if (Math.hypot(pt.x - ptHalfP.x, pt.y - ptHalfP.y) < 28) isDraggingHalf = true;
+  }, { passive: false });
+  window.addEventListener('touchmove', e => {
+    if (!isDraggingHalf) return;
+    const pt = getSvgPt(svgHalf, e);
+    if (halfMode === 'edge') {
+      ptHalfP.x = Math.max(90, Math.min(470, pt.x));
+      ptHalfP.y = 90;
+    } else {
+      ptHalfP.x = Math.max(100, Math.min(460, pt.x));
+      ptHalfP.y = Math.max(110, Math.min(290, pt.y));
+    }
+    renderHalf();
+  }, { passive: false });
+  window.addEventListener('touchend', () => isDraggingHalf = false);
+
+  /* ================= 篇章 3：蝴蝶模型画板 ================= */
+  let bflyShape = 'trapezoid';
+  let bflyPts = [
+    { x: 180, y: 100 }, // A
+    { x: 100, y: 300 }, // B
+    { x: 460, y: 300 }, // C
+    { x: 380, y: 100 }  // D
+  ];
+  let activeBflyHandle = null;
+
+  function setBflyShape(s) {
+    bflyShape = s;
+    document.getElementById('btnBflyTrapezoid').classList.toggle('active', s === 'trapezoid');
+    document.getElementById('btnBflyArbitrary').classList.toggle('active', s === 'arbitrary');
+    if (s === 'trapezoid') {
+      bflyPts = [{ x: 180, y: 100 }, { x: 100, y: 300 }, { x: 460, y: 300 }, { x: 380, y: 100 }];
+    } else {
+      bflyPts = [{ x: 160, y: 110 }, { x: 80, y: 310 }, { x: 480, y: 280 }, { x: 400, y: 80 }];
+    }
+    renderBfly();
+  }
+
+  function lineIntersection(p1, p2, p3, p4) {
+    const det = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
+    if (Math.abs(det) < 1e-5) return { x: (p1.x + p3.x) / 2, y: (p1.y + p3.y) / 2 };
+    const t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / det;
+    return {
+      x: p1.x + t * (p2.x - p1.x),
+      y: p1.y + t * (p2.y - p1.y)
+    };
+  }
+
+  function renderBfly() {
+    const [A, B, C, D] = bflyPts;
+    const O = lineIntersection(A, C, B, D);
+
+    setLine('lineBflyAC', A, C);
+    setLine('lineBflyBD', B, D);
+
+    document.getElementById('polyBflyHead').setAttribute('points', ptsToStr([A, D, O]));
+    document.getElementById('polyBflyTail').setAttribute('points', ptsToStr([B, C, O]));
+    document.getElementById('polyBflyLeft').setAttribute('points', ptsToStr([A, B, O]));
+    document.getElementById('polyBflyRight').setAttribute('points', ptsToStr([D, C, O]));
+
+    setCircle('hBflyA', A); setCircle('hBflyB', B);
+    setCircle('hBflyC', C); setCircle('hBflyD', D);
+
+    setLabel('lblBflyHead', { x: (A.x + D.x + O.x) / 3, y: (A.y + D.y + O.y) / 3 + 4 }, 0, 0);
+    setLabel('lblBflyTail', { x: (B.x + C.x + O.x) / 3, y: (B.y + C.y + O.y) / 3 + 4 }, 0, 0);
+    setLabel('lblBflyLeft', { x: (A.x + B.x + O.x) / 3, y: (A.y + B.y + O.y) / 3 + 4 }, 0, 0);
+    setLabel('lblBflyRight', { x: (D.x + C.x + O.x) / 3, y: (D.y + C.y + O.y) / 3 + 4 }, 0, 0);
+
+    const sHead = polygonArea([A, D, O]);
+    const sTail = polygonArea([B, C, O]);
+    const sLeft = polygonArea([A, B, O]);
+    const sRight = polygonArea([D, C, O]);
+
+    const prod1 = sHead * sTail / 10000;
+    const prod2 = sLeft * sRight / 10000;
+
+    document.getElementById('statBflyHeadTail').textContent = prod1.toFixed(1);
+    document.getElementById('statBflyWings').textContent = prod2.toFixed(1);
+  }
+
+  const svgBfly = document.getElementById('svgBfly');
+  svgBfly.addEventListener('mousedown', e => {
+    const pt = getSvgPt(svgBfly, e);
+    for (let i = 0; i < 4; i++) {
+      if (Math.hypot(pt.x - bflyPts[i].x, pt.y - bflyPts[i].y) < 22) {
+        activeBflyHandle = i;
+        break;
+      }
+    }
+  });
+  window.addEventListener('mousemove', e => {
+    if (activeBflyHandle === null) return;
+    const pt = getSvgPt(svgBfly, e);
+    bflyPts[activeBflyHandle] = { x: Math.max(50, Math.min(510, pt.x)), y: Math.max(50, Math.min(340, pt.y)) };
+    renderBfly();
+  });
+  window.addEventListener('mouseup', () => activeBflyHandle = null);
+  svgBfly.addEventListener('touchstart', e => {
+    const pt = getSvgPt(svgBfly, e);
+    for (let i = 0; i < 4; i++) {
+      if (Math.hypot(pt.x - bflyPts[i].x, pt.y - bflyPts[i].y) < 26) {
+        activeBflyHandle = i;
+        break;
+      }
+    }
+  }, { passive: false });
+  window.addEventListener('touchmove', e => {
+    if (activeBflyHandle === null) return;
+    const pt = getSvgPt(svgBfly, e);
+    bflyPts[activeBflyHandle] = { x: Math.max(50, Math.min(510, pt.x)), y: Math.max(50, Math.min(340, pt.y)) };
+    renderBfly();
+  }, { passive: false });
+  window.addEventListener('touchend', () => activeBflyHandle = null);
+
+  /* ================= 篇章 4：沙漏模型画板 ================= */
+  function updateHourglass() {
+    const a = parseFloat(document.getElementById('sliderHgA').value);
+    const b = parseFloat(document.getElementById('sliderHgB').value);
+    document.getElementById('valHgA').textContent = a;
+    document.getElementById('valHgB').textContent = b;
+    renderHourglass();
+  }
+
+  function renderHourglass() {
+    const a = parseFloat(document.getElementById('sliderHgA').value);
+    const b = parseFloat(document.getElementById('sliderHgB').value);
+
+    const midX = 280;
+    const yTop = 70;
+    const yBottom = 320;
+
+    const A1 = { x: midX - a / 2, y: yTop };
+    const A2 = { x: midX + a / 2, y: yTop };
+    const B1 = { x: midX - b / 2, y: yBottom };
+    const B2 = { x: midX + b / 2, y: yBottom };
+
+    const O = lineIntersection(A1, B2, A2, B1);
+
+    document.getElementById('polyHgTop').setAttribute('points', ptsToStr([A1, A2, O]));
+    document.getElementById('polyHgBottom').setAttribute('points', ptsToStr([B1, B2, O]));
+
+    setLine('lineHgTop', A1, A2);
+    setLine('lineHgBottom', B1, B2);
+    setCircle('ptHgCross', O);
+
+    setLabel('lblHgTopArea', { x: midX, y: (yTop + O.y) / 2 + 5 }, 0, 0);
+    setLabel('lblHgBottomArea', { x: midX, y: (yBottom + O.y) / 2 + 5 }, 0, 0);
+
+    const ratio = a / b;
+    const sqRatio = ratio * ratio;
+
+    document.getElementById('statHgRatio').textContent = `1 : ${(1 / ratio).toFixed(2)} (${ratio.toFixed(2)})`;
+    document.getElementById('statHgSqRatio').textContent = `1 : ${(1 / sqRatio).toFixed(2)} (${sqRatio.toFixed(2)})`;
+    document.getElementById('statHgTimes').textContent = (1 / sqRatio).toFixed(2) + ' 倍';
+  }
+
+  /* ================= 篇章 5：鸟头模型画板 ================= */
   let birdVariant = 'internal';
   let ratioA = 0.5;
   let ratioB = 0.6;
 
   function setBirdVariant(v) {
     birdVariant = v;
-    document.querySelectorAll('.variant-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.variant-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${v}'`));
+    });
     renderBird();
   }
 
@@ -1321,77 +1962,151 @@
     let Big1, Big2, Sm1, Sm2;
 
     if (birdVariant === 'internal') {
-      // 标准内接形态
-      Big1 = { x: 130, y: 310 };
-      Big2 = { x: 430, y: 310 };
+      Big1 = { x: 130, y: 310 }; Big2 = { x: 430, y: 310 };
       Sm1 = { x: O.x + (Big1.x - O.x) * ratioA, y: O.y + (Big1.y - O.y) * ratioA };
       Sm2 = { x: O.x + (Big2.x - O.x) * ratioB, y: O.y + (Big2.y - O.y) * ratioB };
-      setCircle('sharedVertexPt', O);
-      setLabel('lblVertexTop', O, -20, -10);
+      setCircle('sharedVertexPt', O); setLabel('lblVertexTop', O, -20, -10);
     } else if (birdVariant === 'external') {
-      // 外延形态
-      Big1 = { x: 160, y: 280 };
-      Big2 = { x: 380, y: 280 };
+      Big1 = { x: 160, y: 280 }; Big2 = { x: 380, y: 280 };
       Sm1 = { x: O.x + (Big1.x - O.x) * (1 + ratioA * 0.8), y: O.y + (Big1.y - O.y) * (1 + ratioA * 0.8) };
       Sm2 = { x: O.x + (Big2.x - O.x) * ratioB, y: O.y + (Big2.y - O.y) * ratioB };
-      setCircle('sharedVertexPt', O);
-      setLabel('lblVertexTop', O, -20, -10);
+      setCircle('sharedVertexPt', O); setLabel('lblVertexTop', O, -20, -10);
     } else if (birdVariant === 'vertical') {
-      // 对顶角形态
       const Center = { x: 280, y: 190 };
-      Big1 = { x: 150, y: 320 };
-      Big2 = { x: 410, y: 320 };
+      Big1 = { x: 150, y: 320 }; Big2 = { x: 410, y: 320 };
       Sm1 = { x: Center.x - (Big1.x - Center.x) * ratioA, y: Center.y - (Big1.y - Center.y) * ratioA };
       Sm2 = { x: Center.x - (Big2.x - Center.x) * ratioB, y: Center.y - (Big2.y - Center.y) * ratioB };
-      setCircle('sharedVertexPt', Center);
-      setLabel('lblVertexTop', Center, 10, -5);
-      document.getElementById('polyBigTri').setAttribute('points', pointsToString([Center, Big1, Big2]));
-      document.getElementById('polySmallTri').setAttribute('points', pointsToString([Center, Sm1, Sm2]));
+      setCircle('sharedVertexPt', Center); setLabel('lblVertexTop', Center, 10, -5);
+      document.getElementById('polyBigTri').setAttribute('points', ptsToStr([Center, Big1, Big2]));
+      document.getElementById('polySmallTri').setAttribute('points', ptsToStr([Center, Sm1, Sm2]));
       updateBirdStats();
       return;
     } else if (birdVariant === 'supplement') {
-      // 邻补角形态
       const Base = { x: 280, y: 300 };
-      Big1 = { x: 120, y: 300 };
-      Big2 = { x: 220, y: 100 };
+      Big1 = { x: 120, y: 300 }; Big2 = { x: 220, y: 100 };
       Sm1 = { x: 440, y: 300 };
       Sm2 = { x: Base.x + (Big2.x - Base.x) * ratioB, y: Base.y + (Big2.y - Base.y) * ratioB };
-      setCircle('sharedVertexPt', Base);
-      setLabel('lblVertexTop', Base, -20, 20);
-      document.getElementById('polyBigTri').setAttribute('points', pointsToString([Base, Big1, Big2]));
-      document.getElementById('polySmallTri').setAttribute('points', pointsToString([Base, Sm1, Sm2]));
+      setCircle('sharedVertexPt', Base); setLabel('lblVertexTop', Base, -20, 20);
+      document.getElementById('polyBigTri').setAttribute('points', ptsToStr([Base, Big1, Big2]));
+      document.getElementById('polySmallTri').setAttribute('points', ptsToStr([Base, Sm1, Sm2]));
       updateBirdStats();
       return;
     }
 
-    document.getElementById('polyBigTri').setAttribute('points', pointsToString([O, Big1, Big2]));
-    document.getElementById('polySmallTri').setAttribute('points', pointsToString([O, Sm1, Sm2]));
+    document.getElementById('polyBigTri').setAttribute('points', ptsToStr([O, Big1, Big2]));
+    document.getElementById('polySmallTri').setAttribute('points', ptsToStr([O, Sm1, Sm2]));
     updateBirdStats();
   }
 
   function updateBirdStats() {
-    const areaPercent = (ratioA * ratioB * 100).toFixed(1);
-    document.getElementById('statBirdSmall').textContent = areaPercent + '%';
-    document.getElementById('statBirdRatio').textContent =
-      `(${ratioA.toFixed(2)}) × (${ratioB.toFixed(2)}) = ${areaPercent}%`;
+    const areaPct = (ratioA * ratioB * 100).toFixed(1);
+    document.getElementById('statBirdSmall').textContent = areaPct + '%';
+    document.getElementById('statBirdRatio').textContent = `(${ratioA.toFixed(2)}) × (${ratioB.toFixed(2)}) = ${areaPct}%`;
   }
 
-  // 初始化画板
+  /* ================= 篇章 6：燕尾模型画板 ================= */
+  let ptSwallowP = { x: 280, y: 220 };
+  let isDraggingSwallow = false;
+
+  function resetSwallowPoint() {
+    ptSwallowP = { x: 280, y: 220 };
+    renderSwallow();
+  }
+
+  function renderSwallow() {
+    const A = { x: 280, y: 40 };
+    const B = { x: 80, y: 330 };
+    const C = { x: 480, y: 330 };
+    const P = ptSwallowP;
+
+    // AP 延长线与底边 BC (y=330) 的交点 D
+    // 直线 AP: (x - A.x) / (P.x - A.x) = (y - A.y) / (P.y - A.y)
+    let Dx = P.x;
+    if (Math.abs(P.y - A.y) > 1e-4) {
+      Dx = A.x + (330 - A.y) * (P.x - A.x) / (P.y - A.y);
+    }
+    Dx = Math.max(100, Math.min(460, Dx));
+    const D = { x: Dx, y: 330 };
+
+    setLine('lineSwallowAPD', A, D);
+    setLine('lineSwallowBP', B, P);
+    setLine('lineSwallowCP', C, P);
+
+    document.getElementById('polySwallowS1').setAttribute('points', ptsToStr([A, B, P]));
+    document.getElementById('polySwallowS2').setAttribute('points', ptsToStr([A, C, P]));
+    document.getElementById('polySwallowS3').setAttribute('points', ptsToStr([B, D, P]));
+    document.getElementById('polySwallowS4').setAttribute('points', ptsToStr([C, D, P]));
+
+    setCircle('ptSwallowP', P);
+    setLabel('lblSwallowP', P, 0, -15);
+    setLabel('lblSwallowD', D, 0, 18);
+
+    setLabel('lblSwallowS1', { x: (A.x + B.x + P.x) / 3, y: (A.y + B.y + P.y) / 3 }, 0, 0);
+    setLabel('lblSwallowS2', { x: (A.x + C.x + P.x) / 3, y: (A.y + C.y + P.y) / 3 }, 0, 0);
+    setLabel('lblSwallowS3', { x: (B.x + D.x + P.x) / 3, y: (B.y + D.y + P.y) / 3 }, 0, 0);
+    setLabel('lblSwallowS4', { x: (C.x + D.x + P.x) / 3, y: (C.y + D.y + P.y) / 3 }, 0, 0);
+
+    const s1 = polygonArea([A, B, P]);
+    const s2 = polygonArea([A, C, P]);
+    const s3 = polygonArea([B, D, P]);
+    const s4 = polygonArea([C, D, P]);
+    const d1 = Math.abs(D.x - B.x);
+    const d2 = Math.abs(C.x - D.x);
+
+    const r1 = s2 > 0 ? (s1 / s2).toFixed(2) : '1.00';
+    const r2 = s4 > 0 ? (s3 / s4).toFixed(2) : '1.00';
+    const r3 = d2 > 0 ? (d1 / d2).toFixed(2) : '1.00';
+
+    document.getElementById('statSwallowWings').textContent = r1;
+    document.getElementById('statSwallowBottom').textContent = r2;
+    document.getElementById('statSwallowBase').textContent = r3 + ' (恒等)';
+  }
+
+  const svgSwallow = document.getElementById('svgSwallow');
+  svgSwallow.addEventListener('mousedown', e => {
+    const pt = getSvgPt(svgSwallow, e);
+    if (Math.hypot(pt.x - ptSwallowP.x, pt.y - ptSwallowP.y) < 25) isDraggingSwallow = true;
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDraggingSwallow) return;
+    const pt = getSvgPt(svgSwallow, e);
+    ptSwallowP = { x: Math.max(140, Math.min(420, pt.x)), y: Math.max(90, Math.min(300, pt.y)) };
+    renderSwallow();
+  });
+  window.addEventListener('mouseup', () => isDraggingSwallow = false);
+  svgSwallow.addEventListener('touchstart', e => {
+    const pt = getSvgPt(svgSwallow, e);
+    if (Math.hypot(pt.x - ptSwallowP.x, pt.y - ptSwallowP.y) < 28) isDraggingSwallow = true;
+  }, { passive: false });
+  window.addEventListener('touchmove', e => {
+    if (!isDraggingSwallow) return;
+    const pt = getSvgPt(svgSwallow, e);
+    ptSwallowP = { x: Math.max(140, Math.min(420, pt.x)), y: Math.max(90, Math.min(300, pt.y)) };
+    renderSwallow();
+  }, { passive: false });
+  window.addEventListener('touchend', () => isDraggingSwallow = false);
+
+  /* ================= 页面初始化 ================= */
   window.addEventListener('DOMContentLoaded', () => {
     const hash = window.location.hash.replace('#', '');
     const saved = localStorage.getItem('math_six_models_tab');
-    if (hash === 'birdhead' || hash === 'bird-head' || saved === 'birdhead') {
-      switchMode('birdhead');
-    } else if (hash === 'allmodels' || hash === 'all-models' || saved === 'allmodels') {
-      switchMode('allmodels');
+    const target = hash || saved || 'problem12';
+    if (chapterKeys.includes(target)) {
+      switchChapter(target);
     } else {
-      switchMode('problem12');
+      switchChapter('problem12');
     }
     localStorage.removeItem('math_six_models_tab');
   });
 
+  // 初始渲染
   renderQuad();
+  renderEqual();
+  renderHalf();
+  renderBfly();
+  renderHourglass();
   renderBird();
+  renderSwallow();
 </script>
 </body>
 </html>
