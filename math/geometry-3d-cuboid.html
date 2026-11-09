@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>长方体与正方体空间思维：蜜蜂穿墙 vs 蚂蚁爬行 · Alex Math Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+      --emerald: #059669;
+      --emerald-dark: #047857;
+      --emerald-light: #ECFDF5;
+      --emerald-border: #A7F3D0;
+      --indigo: #4F46E5;
+      --indigo-dark: #3730A3;
+      --indigo-light: #EEF2FF;
+      --indigo-border: #C7D2FE;
+      --amber: #D97706;
+      --amber-dark: #B45309;
+      --amber-light: #FEF3C7;
+      --amber-border: #FDE68A;
+      --rose: #E11D48;
+      --rose-light: #FFE4E6;
+      --rose-border: #FECDD3;
+      --cyan: #0284C7;
+      --cyan-light: #F0F9FF;
+      --cyan-border: #BAE6FD;
+      --purple: #7C3AED;
+      --purple-light: #F5F3FF;
+      --purple-border: #DDD6FE;
+      --text: #1E293B;
+      --subtext: #64748B;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(14px + env(safe-area-inset-top)) 14px calc(36px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      width: 100%;
+      max-width: 1000px;
+    }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+    .breadcrumb a {
+      color: var(--emerald);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb .sep { color: #94A3B8; }
+    .breadcrumb .current { color: #0F172A; }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { background: #F1F5F9; }
+
+    /* 顶部横幅 */
+    .hero-banner {
+      background: linear-gradient(135deg, #FFFFFF 0%, #EEF2FF 50%, #ECFDF5 100%);
+      border: 1px solid var(--indigo-border);
+      border-radius: 18px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 10px rgba(79, 70, 229, 0.05);
+    }
+    .tag-badges-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .tag-badge {
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 7px;
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      border: 1px solid var(--emerald-border);
+    }
+    .tag-badge.amber {
+      background: var(--amber-light);
+      color: var(--amber-dark);
+      border-color: var(--amber-border);
+    }
+    .tag-badge.indigo {
+      background: var(--indigo-light);
+      color: var(--indigo);
+      border-color: var(--indigo-border);
+    }
+    .tag-badge.rose {
+      background: var(--rose-light);
+      color: var(--rose);
+      border-color: var(--rose-border);
+    }
+    .hero-banner h1 {
+      margin: 0 0 6px 0;
+      font-size: 21px;
+      font-weight: 800;
+      color: #0F172A;
+      line-height: 1.35;
+    }
+    .hero-banner p {
+      margin: 0;
+      font-size: 13.5px;
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    /* 篇章横向导航 */
+    .chapters-wrapper {
+      position: sticky;
+      top: 10px;
+      z-index: 100;
+      background: rgba(248, 250, 252, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 6px 0 12px 0;
+      margin-bottom: 8px;
+    }
+    .chapters-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 3px 2px;
+    }
+    .chapters-bar::-webkit-scrollbar { display: none; }
+    .chap-btn {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      white-space: nowrap;
+    }
+    .chap-btn:hover {
+      border-color: #CBD5E1;
+      color: var(--indigo);
+      transform: translateY(-1px);
+    }
+    .chap-btn.active {
+      background: var(--indigo);
+      border-color: var(--indigo);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+    .chap-btn .chap-tag {
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #F1F5F9;
+      color: #475569;
+      font-weight: 800;
+    }
+    .chap-btn.active .chap-tag {
+      background: rgba(255, 255, 255, 0.25);
+      color: #FFFFFF;
+    }
+
+    .chapter-panel { display: none; }
+    .chapter-panel.active {
+      display: block;
+      animation: fadeIn 0.2s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 蜜蜂 vs 蚂蚁 核心公式对比横幅 */
+    .vs-banner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 760px) {
+      .vs-banner { grid-template-columns: 1fr; }
+    }
+    .vs-card {
+      border-radius: 16px;
+      padding: 14px 18px;
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .vs-card.bee {
+      background: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%);
+      border-color: var(--amber-border);
+    }
+    .vs-card.bee.active {
+      border-color: var(--amber);
+      box-shadow: 0 6px 18px rgba(217, 119, 6, 0.14);
+    }
+    .vs-card.ant {
+      background: linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%);
+      border-color: var(--emerald-border);
+    }
+    .vs-card.ant.active {
+      border-color: var(--emerald);
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.14);
+    }
+    .vs-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .vs-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .vs-formula {
+      font-size: 17px;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      padding: 6px 12px;
+      border-radius: 10px;
+      margin: 6px 0;
+      text-align: center;
+    }
+    .vs-card.bee .vs-formula {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+    }
+    .vs-card.ant .vs-formula {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
+    .vs-why {
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #334155;
+    }
+
+    /* 主网格 */
+    .lab-grid {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    @media (max-width: 880px) {
+      .lab-grid { grid-template-columns: 1fr; }
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .board-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .board-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .board-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .pill-btn {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #F8FAFC;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pill-btn:hover { background: #F1F5F9; }
+    .pill-btn.active {
+      background: var(--indigo-light);
+      border-color: var(--indigo-border);
+      color: var(--indigo);
+    }
+    .pill-btn.amber.active {
+      background: var(--amber-light);
+      border-color: var(--amber-border);
+      color: var(--amber-dark);
+    }
+    .pill-btn.emerald.active {
+      background: var(--emerald-light);
+      border-color: var(--emerald-border);
+      color: var(--emerald-dark);
+    }
+
+    .svg-wrapper {
+      width: 100%;
+      height: 400px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      position: relative;
+      overflow: hidden;
+      touch-action: none;
+    }
+    svg.canvas {
+      width: 100%;
+      height: 100%;
+      user-select: none;
+    }
+
+    /* 滑块控制箱 */
+    .slider-box {
+      margin-top: 12px;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 7px;
+    }
+    .slider-row:last-child { margin-bottom: 0; }
+    .slider-row label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      min-width: 105px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      cursor: pointer;
+    }
+    .slider-val {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--indigo);
+      font-family: var(--font-mono);
+      min-width: 48px;
+      text-align: right;
+    }
+
+    /* 实时数据胶囊 */
+    .live-stats {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+    }
+    .stat-pill {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+    .stat-pill.highlight {
+      background: #ECFDF5;
+      border-color: var(--emerald-border);
+    }
+    .stat-pill.highlight-amber {
+      background: #FFFBEB;
+      border-color: var(--amber-border);
+    }
+    .stat-pill.highlight-indigo {
+      background: #EEF2FF;
+      border-color: var(--indigo-border);
+    }
+    .stat-pill.highlight-rose {
+      background: var(--rose-light);
+      border-color: var(--rose-border);
+    }
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--subtext);
+      margin-bottom: 3px;
+    }
+    .stat-val {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0F172A;
+      font-family: var(--font-mono);
+    }
+    .stat-pill.highlight .stat-val { color: var(--emerald-dark); }
+    .stat-pill.highlight-amber .stat-val { color: var(--amber-dark); }
+    .stat-pill.highlight-indigo .stat-val { color: var(--indigo); }
+    .stat-pill.highlight-rose .stat-val { color: var(--rose); }
+
+    /* 右侧信息栏 */
+    .side-info {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .section-head {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+    .math-formula-box {
+      background: linear-gradient(135deg, #F1F5F9 0%, #EEF2FF 100%);
+      border-left: 4px solid var(--indigo);
+      border-radius: 0 10px 10px 0;
+      padding: 10px 14px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #1E293B;
+      line-height: 1.65;
+      margin-bottom: 10px;
+    }
+    .math-formula-box .formula-highlight {
+      color: var(--indigo);
+      font-family: var(--font-mono);
+    }
+
+    /* 根号排版美化 */
+    .sqrt {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-weight: 800;
+    }
+    .sqrt-rad {
+      font-size: 1.1em;
+      margin-right: 1px;
+    }
+    .sqrt-body {
+      border-top: 1.6px solid currentColor;
+      padding: 0 3px;
+      line-height: 1.2;
+    }
+
+    /* 路线 PK 卡片 */
+    .route-pk-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .route-pk-item {
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: #F8FAFC;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 12.5px;
+    }
+    .route-pk-item:hover { border-color: #94A3B8; }
+    .route-pk-item.active {
+      background: #EEF2FF;
+      border-color: var(--indigo);
+    }
+    .route-pk-item.best {
+      background: #ECFDF5;
+      border-color: var(--emerald);
+    }
+    .route-pk-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 800;
+      margin-bottom: 3px;
+    }
+    .route-badge {
+      font-size: 10.5px;
+      padding: 1px 6px;
+      border-radius: 5px;
+      font-weight: 800;
+    }
+    .route-badge.best {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+    .route-badge.normal {
+      background: #E2E8F0;
+      color: #475569;
+    }
+
+    /* 课堂母题精讲区 */
+    .cases-section {
+      margin-top: 6px;
+      margin-bottom: 28px;
+    }
+    .cases-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #EEF2FF 0%, #ECFDF5 100%);
+      border: 1px solid var(--indigo-border);
+      border-radius: 14px;
+    }
+    .cases-section-title {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: #1E1B4B;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cases-section-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: #4338CA;
+      background: #FFFFFF;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--indigo-border);
+    }
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .case-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .case-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .case-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--indigo-light);
+      color: var(--indigo);
+      border: 1px solid var(--indigo-border);
+    }
+    .case-tag.amber {
+      background: var(--amber-light);
+      color: var(--amber-dark);
+      border-color: var(--amber-border);
+    }
+    .case-tag.emerald {
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      border-color: var(--emerald-border);
+    }
+    .case-tag.rose {
+      background: var(--rose-light);
+      color: var(--rose);
+      border-color: var(--rose-border);
+    }
+    .case-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 8px 0;
+      line-height: 1.4;
+    }
+    .case-prob-text {
+      font-size: 12.5px;
+      color: #334155;
+      line-height: 1.6;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin-bottom: 10px;
+    }
+    .case-svg-box {
+      width: 100%;
+      height: 180px;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .case-steps {
+      font-size: 12.5px;
+      color: #334155;
+      line-height: 1.7;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .case-step-line {
+      background: #F8FAFC;
+      border-left: 3px solid var(--indigo);
+      padding: 6px 10px;
+      border-radius: 0 8px 8px 0;
+    }
+    .case-step-line.ans {
+      background: #ECFDF5;
+      border-left-color: var(--emerald);
+      color: #064E3B;
+      font-weight: 700;
+    }
+
+    /* 11种展开图网格按钮 */
+    .nets-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .net-btn {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: #334155;
+      cursor: pointer;
+    }
+    .net-btn.active {
+      background: var(--indigo);
+      color: #FFFFFF;
+      border-color: var(--indigo);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- 顶部面包屑 -->
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="index.html"><span>📐</span> 数学探索营</a>
+      <span class="sep">/</span>
+      <span class="current">立体几何：长方体蜜蜂穿墙 vs 蚂蚁爬行 &amp; 展开图</span>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-btn"><span>🏠</span> 返回数学主页</a>
+    </div>
+  </div>
+
+  <!-- 顶部介绍横幅 -->
+  <div class="hero-banner">
+    <div class="tag-badges-group">
+      <span class="tag-badge amber">🐝 蜜蜂体对角线 √(a²+b²+c²)</span>
+      <span class="tag-badge">🐜 蚂蚁表面最短路 √((a+b)²+c²)</span>
+      <span class="tag-badge indigo">📦 11种正方体展开图 &amp; 挖洞三视图</span>
+    </div>
+    <h1>长方体与正方体空间思维 · 3D 旋转与平面展开实验室</h1>
+    <p>
+      为什么<strong>蜜蜂穿墙飞</strong>是 <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">a² + b² + c²</span></span>，而<strong>蚂蚁贴着盒子表面爬</strong>却是 <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">(a + b)² + c²</span></span>？拖动 3D 视角与纸盒展开滑块，亲眼看见“两次空间垂直勾股”与“开盒摊平共线”的本质区别！
+    </p>
+  </div>
+
+  <!-- 4大独立篇章切换栏 -->
+  <div class="chapters-wrapper">
+    <div class="chapters-bar">
+      <button class="chap-btn active" onclick="switchChapter('bee-ant')">
+        <span class="chap-tag">核心突破</span> 🐝🐜 蜜蜂穿墙 vs 蚂蚁爬行
+      </button>
+      <button class="chap-btn" onclick="switchChapter('edges-faces')">
+        <span class="chap-tag">第35讲</span> 📏 棱与面：平行/相交/异面
+      </button>
+      <button class="chap-btn" onclick="switchChapter('cube-nets')">
+        <span class="chap-tag">第36讲</span> 📦 正方体11种展开图与找对面
+      </button>
+      <button class="chap-btn" onclick="switchChapter('surface-holes')">
+        <span class="chap-tag">第36讲</span> 🧱 挖洞变面、切刀与三视图
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 1：🐝 蜜蜂穿墙 vs 🐜 蚂蚁贴面爬 核心对比实验室 -->
+  <!-- ============================================================== -->
+  <div id="panel-bee-ant" class="chapter-panel active">
+    <!-- 顶部核心对比双卡 (点击直接切换模式) -->
+    <div class="vs-banner">
+      <div id="vsCardBee" class="vs-card bee active" onclick="setPathMode('bee')">
+        <div>
+          <div class="vs-header">
+            <div class="vs-title">🐝 模式 1：蜜蜂内部直飞（体对角线）</div>
+            <span class="tag-badge amber">穿墙走内部</span>
+          </div>
+          <div class="vs-formula">
+            L<sub>蜜蜂</sub> = √( a² + b² + c² )
+          </div>
+          <div class="vs-why">
+            <strong>为什么三个平方分开加？</strong>因为 <em>a</em> 与 <em>b</em> 在地面<strong>拐弯垂直（90°）</strong>，先用勾股定理算出地面跳板 <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">a²+b²</span></span>，再与竖直高 <em>c</em> <strong>第二次垂直（90°）</strong>勾股！
+          </div>
+        </div>
+      </div>
+
+      <div id="vsCardAnt" class="vs-card ant" onclick="setPathMode('ant')">
+        <div>
+          <div class="vs-header">
+            <div class="vs-title">🐜 模式 2：蚂蚁表面直达（展开对角线）</div>
+            <span class="tag-badge">贴面展开走</span>
+          </div>
+          <div class="vs-formula">
+            L<sub>蚂蚁最短</sub> = √( (a + b)² + c² )
+          </div>
+          <div class="vs-why">
+            <strong>为什么 (a+b) 先加起来再平方？</strong>因为把两个相邻面<strong>像纸盒一样摊平</strong>后，原本拐弯的两条边被拉直成<strong>同一条直线（180° 共线）</strong>，直接相加变成一条大直角边 <em>(a+b)</em>！
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title" id="mainBoardTitle">
+            <span>🐝</span> 3D 交互画板（按住画面可 360° 旋转视角）
+          </div>
+          <div class="board-actions">
+            <button id="btnModeBee" class="pill-btn amber active" onclick="setPathMode('bee')">🐝 看蜜蜂飞 (体对角线)</button>
+            <button id="btnModeAnt" class="pill-btn emerald" onclick="setPathMode('ant')">🐜 看蚂蚁爬 (展开平面)</button>
+            <button class="pill-btn" onclick="loadPreset(6,5,4,'bee')">课堂例13 (6,5,4)</button>
+            <button class="pill-btn" onclick="loadPreset(2,2,2,'bee')">例14 (2,2,2)</button>
+            <button class="pill-btn" onclick="loadPreset(4,2,1,'ant')">例16 (4,2,1)</button>
+            <button class="pill-btn" onclick="loadPreset(5,4,3,'ant')">例17 (5,4,3)</button>
+          </div>
+        </div>
+
+        <!-- 复合 SVG 画板：左侧 3D 旋转长方体 + 右侧 2D 真实直角切片/展开图 -->
+        <div class="svg-wrapper" id="cuboidBoard">
+          <svg id="svgCuboid" class="canvas" viewBox="0 0 600 400">
+            <defs>
+              <pattern id="gridPat3D" width="20" height="20" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1" fill="#E2E8F0" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#gridPat3D)" />
+
+            <!-- 中间分隔虚线 -->
+            <line x1="325" y1="15" x2="325" y2="385" stroke="#CBD5E1" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+            <!-- 左半区标题 -->
+            <text x="162" y="24" font-size="12.5" font-weight="800" fill="#334155" text-anchor="middle">🔄 3D 空间透视图（拖拽旋转消除视觉死角）</text>
+            <!-- 右半区标题 -->
+            <text id="rightPaneTitle" x="462" y="24" font-size="12.5" font-weight="800" fill="#4F46E5" text-anchor="middle">📐 2D 真实无变形直角图</text>
+
+            <!-- 3D 渲染图层 -->
+            <g id="layer3D"></g>
+
+            <!-- 2D 真实拆解图层 -->
+            <g id="layer2D"></g>
+          </svg>
+        </div>
+
+        <!-- 尺寸与展开动画控制滑块 -->
+        <div class="slider-box">
+          <div class="slider-row">
+            <label for="sliderDimC">长 c (左右 AB)：</label>
+            <input type="range" id="sliderDimC" min="1" max="8" step="1" value="6" oninput="onDimChange()">
+            <span id="valDimC" class="slider-val">6</span>
+          </div>
+          <div class="slider-row">
+            <label for="sliderDimA">宽 a (前后 BC)：</label>
+            <input type="range" id="sliderDimA" min="1" max="8" step="1" value="4" oninput="onDimChange()">
+            <span id="valDimA" class="slider-val">4</span>
+          </div>
+          <div class="slider-row">
+            <label for="sliderDimB">高 b (上下 CF)：</label>
+            <input type="range" id="sliderDimB" min="1" max="8" step="1" value="3" oninput="onDimChange()">
+            <span id="valDimB" class="slider-val">3</span>
+          </div>
+          <!-- 蜜蜂专属：步骤切换；蚂蚁专属：开盒摊平滑块 -->
+          <div id="beeControlRow" class="slider-row" style="margin-top:8px; padding-top:8px; border-top:1px dashed #CBD5E1;">
+            <label>🐝 拆解步骤：</label>
+            <div style="display:flex; gap:6px; flex:1; flex-wrap:wrap;">
+              <button id="btnBeeStep1" class="pill-btn" onclick="setBeeStep(1)">第1步：地面勾股 √(c²+a²)</button>
+              <button id="btnBeeStep2" class="pill-btn active" onclick="setBeeStep(2)">第2步：立起金色切面 √(c²+a²+b²)</button>
+              <button class="pill-btn" onclick="faceCutPlane()">👁️ 转正看切面</button>
+            </div>
+          </div>
+          <div id="antControlRow" class="slider-row" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #CBD5E1;">
+            <label for="sliderUnfold">📦 纸盒摊平度：</label>
+            <input type="range" id="sliderUnfold" min="0" max="100" step="2" value="100" oninput="renderCuboidScene()">
+            <span id="valUnfold" class="slider-val">100%</span>
+          </div>
+        </div>
+
+        <!-- 底部实时对比胶囊 -->
+        <div class="live-stats">
+          <div class="stat-pill highlight-amber">
+            <div class="stat-label">🐝 蜜蜂穿墙 √(a²+b²+c²)</div>
+            <div id="statBeeVal" class="stat-val">√61 ≈ 7.81</div>
+          </div>
+          <div class="stat-pill highlight">
+            <div class="stat-label">🐜 蚂蚁最短 √((a+b)²+c²)</div>
+            <div id="statAntBestVal" class="stat-val">√85 ≈ 9.22</div>
+          </div>
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label" id="statDiffLabel">展开平方 vs 穿墙平方</div>
+            <div id="statDiffVal" class="stat-val">多出 2ab = +24</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧深度讲解栏 -->
+      <div class="side-info">
+        <!-- 蜜蜂模式讲解卡 -->
+        <div id="sideCardBee" class="card">
+          <div class="section-head">
+            <span>🐝</span> 为什么蜜蜂体对角线是 √(a²+b²+c²)？
+          </div>
+          <div class="math-formula-box">
+            <strong>两步直角跳板法（连用2次勾股定理）：</strong><br>
+            ① 地面直角 △<em>ABC</em>（∠B = 90°）：<br>
+            <span class="formula-highlight">AC² = c² + a² ⇒ AC = √(c² + a²)</span><br>
+            ② 竖直切面直角 △<em>ACF</em>（∠ACF = 90°）：<br>
+            <span class="formula-highlight">AF² = AC² + b² = c² + a² + b²</span><br>
+            故体对角线：<span class="formula-highlight">AF = √(a² + b² + c²)</span>
+          </div>
+          <div id="beeDynamicExplain" style="font-size:12.5px; line-height:1.65; color:#334155; background:#FFFBEB; border:1px solid var(--amber-border); border-radius:10px; padding:10px 12px;">
+          </div>
+          <p style="font-size:12px; color:var(--subtext); margin:8px 0 0 0; line-height:1.5;">
+            💡 <strong>破除视觉错觉</strong>：在左图 3D 盒子里，底面的 ∠<em>ABC</em> 和竖直的 ∠<em>ACF</em> 因为斜着画看起来不像 90°，但看右图<strong>真实切面</strong>，它们都是千真万确的<strong>标准直角</strong>！
+          </p>
+        </div>
+
+        <!-- 蚂蚁模式讲解卡 -->
+        <div id="sideCardAnt" class="card" style="display:none;">
+          <div class="section-head">
+            <span>🐜</span> 为什么蚂蚁爬行是 √((a+b)²+c²)？
+          </div>
+          <div class="math-formula-box">
+            <strong>化折为直（两个面摊平成一张纸）：</strong><br>
+            把相邻两个面展开到同一平面，两条边<strong>拉直共线相加</strong>变成 <strong>(a + b)</strong>，与第三边 <strong>c</strong> 组成一个平面大直角三角形：<br>
+            <span class="formula-highlight">L = √( (a + b)² + c² ) = √(a²+b²+c² + 2ab)</span>
+          </div>
+
+          <div style="font-size:12.5px; font-weight:800; color:#0F172A; margin-bottom:6px;">
+            👇 点击切换 3 种展开路线（对比哪条最短）：
+          </div>
+          <div class="route-pk-list" id="routePkList"></div>
+
+          <div style="margin-top:10px; font-size:12px; line-height:1.6; color:#065F46; background:#ECFDF5; border:1px solid var(--emerald-border); border-radius:8px; padding:8px 10px;">
+            🎯 <strong>考场秒杀口诀（为什么选最短两边相加）</strong>：<br>
+            因为 <span style="font-family:var(--font-mono);">(a+b)² + c² = a² + b² + c² + <strong>2ab</strong></span>！<br>
+            要想路程最短，多出来的 <strong>2ab</strong> 必须最小 ⇒ <strong>把最短的两条边加在一起 (a+b)，最长的一条边 c 单独平方！</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 课堂笔记原题精讲：例13、例14、例15、例16、例17 -->
+    <div class="cases-section">
+      <div class="cases-section-header">
+        <div class="cases-section-title">
+          <span>🏫</span> 蜜蜂体对角线 &amp; 蚂蚁最短路径 · 课堂笔记原题全收录
+        </div>
+        <span class="cases-section-sub">源自第36讲课堂板书 · 例13 ~ 例17</span>
+      </div>
+
+      <div class="cases-grid">
+        <!-- 课堂例 13 & 例 14 -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag amber">课堂例 13 &amp; 例 14 · 蜜蜂体对角线</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">例13: √77 / 例14: 2√3</span>
+          </div>
+          <h4 class="case-title">长方体与正方体的体对角线公式实战</h4>
+          <div class="case-prob-text">
+            <strong>【例13】</strong>在长方体 <em>ABCD-A'B'C'D'</em> 中，<em>CD</em>=6，<em>AD</em>=5，<em>DD'</em>=4，连接 <em>AC'</em>，求体对角线 <em>AC'</em> 的长度。<br>
+            <strong>【例14】</strong>在正方体 <em>ABCD-EFGH</em> 中，若棱长是 2 cm，求体对角线 <em>BH</em> 的长度。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 170" width="100%" height="100%">
+              <!-- 左侧：例13 (6,5,4) -->
+              <polygon points="20,130 105,130 135,105 50,105" fill="#FEF3C7" fill-opacity="0.4" stroke="#0F172A" stroke-width="1.3" stroke-dasharray="3 2"/>
+              <rect x="20" y="55" width="85" height="75" fill="none" stroke="#0F172A" stroke-width="1.6"/>
+              <polyline points="20,55 50,30 135,30 135,105 105,130" fill="none" stroke="#0F172A" stroke-width="1.6"/>
+              <line x1="105" y1="55" x2="135" y2="30" stroke="#0F172A" stroke-width="1.6"/>
+              <!-- 底面对角线与体对角线 -->
+              <line x1="20" y1="130" x2="135" y2="105" stroke="#0284C7" stroke-width="1.8" stroke-dasharray="3 2"/>
+              <line x1="20" y1="55" x2="135" y2="105" stroke="#E11D48" stroke-width="2.2"/>
+              <text x="12" y="52" font-size="11" font-weight="800">C'</text>
+              <text x="12" y="142" font-size="11" font-weight="800">C</text>
+              <text x="140" y="110" font-size="11" font-weight="800">A</text>
+              <text x="62" y="145" font-size="11.5" font-weight="800" fill="#E11D48">6</text>
+              <text x="128" y="125" font-size="11.5" font-weight="800" fill="#E11D48">5</text>
+              <text x="10" y="95" font-size="11.5" font-weight="800" fill="#E11D48">4</text>
+              <text x="82" y="114" font-size="11" font-weight="800" fill="#0284C7">√61</text>
+              <text x="78" y="76" font-size="12" font-weight="800" fill="#E11D48">√77</text>
+
+              <line x1="162" y1="15" x2="162" y2="155" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+              <!-- 右侧：例14 正方体棱长2 -->
+              <rect x="185" y="55" width="75" height="75" fill="none" stroke="#0F172A" stroke-width="1.6"/>
+              <polyline points="185,55 215,30 290,30 290,105 260,130" fill="none" stroke="#0F172A" stroke-width="1.6"/>
+              <line x1="260" y1="55" x2="290" y2="30" stroke="#0F172A" stroke-width="1.6"/>
+              <line x1="215" y1="105" x2="260" y2="130" stroke="#0284C7" stroke-width="1.8" stroke-dasharray="3 2"/>
+              <line x1="215" y1="105" x2="260" y2="55" stroke="#E11D48" stroke-width="2.2"/>
+              <text x="203" y="112" font-size="11" font-weight="800">H</text>
+              <text x="264" y="55" font-size="11" font-weight="800">B</text>
+              <text x="264" y="142" font-size="11" font-weight="800">C</text>
+              <text x="222" y="145" font-size="11.5" font-weight="800" fill="#E11D48">2</text>
+              <text x="282" y="125" font-size="11.5" font-weight="800" fill="#E11D48">2</text>
+              <text x="295" y="75" font-size="11.5" font-weight="800" fill="#E11D48">2</text>
+              <text x="235" y="75" font-size="12" font-weight="800" fill="#E11D48">√12=2√3</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>【例13 板书分步】</strong>：<br>
+              ① 先算底面对角线：<em>AC</em> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">5² + 6²</span></span> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">25 + 36</span></span> = <strong><span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">61</span></span></strong>；<br>
+              ② 再立起竖直高 <em>CC'</em>=4：(<em>AC'</em>)² = 4² + (<span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">61</span></span>)² = 16 + 61 = 77 ⇒ <em>AC'</em> = <strong><span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">77</span></span></strong>！
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>【例14 正方体公式】</strong>：正方体棱长 <em>a</em> = 2，体对角线 <em>BH</em> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">2² + 2² + 2²</span></span> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">12</span></span> = <strong>2<span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">3</span></span></strong>（正方体通用秒杀：<span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">3</span></span><em>a</em>）。
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 15 & 例 16 -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag emerald">课堂例 15 &amp; 例 16 · 蚂蚁展开三路线 PK 🔥</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">例15: √5 / 例16: 5</span>
+          </div>
+          <h4 class="case-title">为什么长宽高 4、2、1 的表面最短路线正好是整数 5？</h4>
+          <div class="case-prob-text">
+            <strong>【例15】</strong>正方体棱长是 <strong>1 cm</strong>，蚂蚁从顶点 <em>D</em> 沿表面爬到对角顶点 <em>F</em>，最短路线长多少？<br>
+            <strong>【例16】</strong>长方体的长、宽、高分别为 <strong>4、2、1</strong>，沿表面从顶点 <em>A</em> 到对角顶点 <em>F</em> 的最短路线长为多少？
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 170" width="100%" height="100%">
+              <!-- 左侧：例16 最优展开 (4 与 2+1=3) -->
+              <rect x="20" y="25" width="110" height="40" fill="#BAE6FD" fill-opacity="0.5" stroke="#0284C7" stroke-width="1.6"/>
+              <rect x="20" y="65" width="110" height="75" fill="#A7F3D0" fill-opacity="0.5" stroke="#059669" stroke-width="1.6"/>
+              <line x1="20" y1="140" x2="130" y2="25" stroke="#E11D48" stroke-width="2.5"/>
+              <text x="10" y="145" font-size="11.5" font-weight="800">A</text>
+              <text x="134" y="24" font-size="11.5" font-weight="800" fill="#E11D48">F</text>
+              <text x="75" y="156" font-size="12" font-weight="800" fill="#0F172A" text-anchor="middle">长 c = 4</text>
+              <text x="145" y="50" font-size="11.5" font-weight="800" fill="#0284C7">1</text>
+              <text x="145" y="105" font-size="11.5" font-weight="800" fill="#059669">2</text>
+              <text x="145" y="80" font-size="12" font-weight="800" fill="#E11D48">a+b=3</text>
+              <text x="65" y="82" font-size="14" font-weight="900" fill="#E11D48">AF = 5</text>
+
+              <!-- 右侧：另外两种较长展开对比 -->
+              <rect x="195" y="22" width="105" height="32" fill="#F8FAFC" stroke="#64748B" stroke-width="1.3"/>
+              <line x1="265" y1="22" x2="265" y2="54" stroke="#64748B" stroke-width="1.2" stroke-dasharray="2 2"/>
+              <line x1="195" y1="54" x2="300" y2="22" stroke="#64748B" stroke-width="1.6" stroke-dasharray="3 2"/>
+              <text x="247" y="68" font-size="11" font-weight="700" fill="#64748B" text-anchor="middle">展法②：(4+2)²+1² = √37</text>
+
+              <rect x="195" y="86" width="90" height="48" fill="#F8FAFC" stroke="#64748B" stroke-width="1.3"/>
+              <line x1="195" y1="102" x2="285" y2="102" stroke="#64748B" stroke-width="1.2" stroke-dasharray="2 2"/>
+              <line x1="195" y1="134" x2="285" y2="86" stroke="#64748B" stroke-width="1.6" stroke-dasharray="3 2"/>
+              <text x="247" y="152" font-size="11" font-weight="700" fill="#64748B" text-anchor="middle">展法③：(4+1)²+2² = √29</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>【例15 正方体展开】</strong>：两个正方形面摊平拼成长 2、宽 1 的长方形，<em>DF</em> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">(1+1)² + 1²</span></span> = <strong><span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">5</span></span></strong>。
+            </div>
+            <div class="case-step-line">
+              <strong>【例16 三种展开分类讨论】</strong>：<br>
+              • 展法①（短边 2 和 1 合体）：<span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">(2+1)² + 4²</span></span> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">9 + 16</span></span> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">25</span></span> = <strong>5</strong>（最短✓）<br>
+              • 展法②（4 和 2 合体）：<span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">(4+2)² + 1²</span></span> = <strong><span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">37</span></span></strong><br>
+              • 展法③（4 和 1 合体）：<span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">(4+1)² + 2²</span></span> = <strong><span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">29</span></span></strong>
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>秒杀验证</strong>：用口诀“最短两边 1+2=3 加一起，最长边 4 单列”，直接凑出勾股数 3、4、<strong>5</strong>！
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 2：📏 棱与面的位置关系（平行、相交、异面 & 垂直） -->
+  <!-- ============================================================== -->
+  <div id="panel-edges-faces" class="chapter-panel">
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title">
+            <span>📏</span> 空间直线三大位置关系交互仪：以棱 AD 为基准观察
+          </div>
+          <div class="board-actions">
+            <button id="btnEdgeRelAll" class="pill-btn active" onclick="setEdgeFilter('all')">全部显示</button>
+            <button id="btnEdgeRelPara" class="pill-btn emerald" onclick="setEdgeFilter('parallel')">🟢 平行棱 (3条)</button>
+            <button id="btnEdgeRelInter" class="pill-btn" onclick="setEdgeFilter('intersect')">🔵 相交棱 (4条)</button>
+            <button id="btnEdgeRelSkew" class="pill-btn amber" onclick="setEdgeFilter('skew')">🔴 异面棱 (4条)</button>
+          </div>
+        </div>
+
+        <div class="svg-wrapper">
+          <svg id="svgEdges" class="canvas" viewBox="0 0 560 390">
+            <rect width="100%" height="100%" fill="url(#gridPat3D)" />
+            <!-- 长方体 ABCD-EFGH: 下底 A(130,300) B(370,300) C(440,220) D(200,220); 上底 E(130,130) F(370,130) G(440,50) H(200,50) -->
+            <!-- 基准棱 AD (加粗黑黄高亮) -->
+            <line x1="130" y1="300" x2="200" y2="220" stroke="#FDE047" stroke-width="10" stroke-linecap="round"/>
+            <line x1="130" y1="300" x2="200" y2="220" stroke="#0F172A" stroke-width="4" stroke-linecap="round"/>
+
+            <!-- 平行棱组 (3条: BC, EH, FG) -->
+            <g id="grpEdgePara" stroke="#059669" stroke-width="4" stroke-linecap="round">
+              <line x1="370" y1="300" x2="440" y2="220"/>
+              <line x1="130" y1="130" x2="200" y2="50"/>
+              <line x1="370" y1="130" x2="440" y2="50"/>
+            </g>
+
+            <!-- 相交棱组 (4条: AB, AE, DC, DH) -->
+            <g id="grpEdgeInter" stroke="#0284C7" stroke-width="3.5" stroke-linecap="round">
+              <line x1="130" y1="300" x2="370" y2="300"/>
+              <line x1="130" y1="300" x2="130" y2="130"/>
+              <line x1="200" y1="220" x2="440" y2="220"/>
+              <line x1="200" y1="220" x2="200" y2="50"/>
+            </g>
+
+            <!-- 异面棱组 (4条: EF, HG, FB, GC) -->
+            <g id="grpEdgeSkew" stroke="#E11D48" stroke-width="3.5" stroke-dasharray="6 4" stroke-linecap="round">
+              <line x1="130" y1="130" x2="370" y2="130"/>
+              <line x1="200" y1="50" x2="440" y2="50"/>
+              <line x1="370" y1="130" x2="370" y2="300"/>
+              <line x1="440" y1="50" x2="440" y2="220"/>
+            </g>
+
+            <!-- 顶点圆点与字母 -->
+            <g fill="#0F172A" font-size="14" font-weight="800">
+              <circle cx="130" cy="300" r="5"/><text x="108" y="315">A</text>
+              <circle cx="370" cy="300" r="5"/><text x="378" y="315">B</text>
+              <circle cx="440" cy="220" r="5"/><text x="450" y="225">C</text>
+              <circle cx="200" cy="220" r="5"/><text x="182" y="215">D</text>
+              <circle cx="130" cy="130" r="5"/><text x="108" y="135">E</text>
+              <circle cx="370" cy="130" r="5"/><text x="378" y="135">F</text>
+              <circle cx="440" cy="50" r="5"/><text x="450" y="55">G</text>
+              <circle cx="200" cy="50" r="5"/><text x="182" y="45">H</text>
+            </g>
+
+            <!-- 图例说明横幅 -->
+            <rect x="40" y="335" width="480" height="40" rx="10" fill="#FFFFFF" stroke="#CBD5E1"/>
+            <text id="txtEdgeSummary" x="280" y="360" font-size="13" font-weight="800" fill="#0F172A" text-anchor="middle">
+              基准棱 AD（黑黄） + 🟢平行 3 条 + 🔵相交 4 条 + 🔴异面 4 条 = 共 12 条棱
+            </text>
+          </svg>
+        </div>
+
+        <div class="live-stats">
+          <div class="stat-pill highlight">
+            <div class="stat-label">互相平行的棱对数</div>
+            <div class="stat-val">6 × 3 = 18 对</div>
+          </div>
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">互相相交的棱对数</div>
+            <div class="stat-val">3 × 8 = 24 对</div>
+          </div>
+          <div class="stat-pill highlight-rose">
+            <div class="stat-label">互相异面的棱对数</div>
+            <div class="stat-val">12×4÷2 = 24 对</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-info">
+        <div class="card">
+          <div class="section-head">
+            <span>📌</span> 第35/36讲必考填空秒杀表（例1~例7）
+          </div>
+          <div class="math-formula-box">
+            <strong>什么是“异面直线”？</strong><br>
+            在三维空间中，<strong>既不平行、也不相交</strong>（不在同一个平面内）的两条直线叫做异面直线！
+          </div>
+          <div style="font-size:12.5px; line-height:1.75; color:#334155;">
+            • <strong>看单条棱（以 AD 为例，共12条棱）</strong>：<br>
+            &nbsp;&nbsp;◦ 与它<strong>平行</strong>的棱有 <strong>3 条</strong>（BC、EH、FG）；<br>
+            &nbsp;&nbsp;◦ 与它<strong>相交</strong>的棱有 <strong>4 条</strong>（AB、AE、DC、DH）；<br>
+            &nbsp;&nbsp;◦ 与它<strong>异面</strong>的棱有 <strong>4 条</strong>（EF、HG、FB、GC）。<br>
+            • <strong>数全图总对数（例3、例4必考）</strong>：<br>
+            &nbsp;&nbsp;◦ <strong>平行棱对数</strong>：每组4条可配 6 对 × 3组 = <strong>18 对</strong>；<br>
+            &nbsp;&nbsp;◦ <strong>相交棱对数</strong>：每个顶点交3条可配 3 对 × 8个顶点 = <strong>24 对</strong>；<br>
+            &nbsp;&nbsp;◦ <strong>异面棱对数</strong>：12条 × 每条4个异面 ÷ 2（防重复）= <strong>24 对</strong>！<br>
+            • <strong>棱与面关系（例5~例7）</strong>：<br>
+            &nbsp;&nbsp;◦ 每条棱有 <strong>2 个</strong>平面与它垂直，<strong>2 个</strong>平面与它平行；<br>
+            &nbsp;&nbsp;◦ 每个面有 <strong>4 条</strong>棱与它垂直，<strong>4 条</strong>棱与它平行，<strong>4 个</strong>面与它垂直，<strong>1 个</strong>对面与它平行。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 3：📦 正方体 11 种展开图与“隔一 / Z字端”找相对面 -->
+  <!-- ============================================================== -->
+  <div id="panel-cube-nets" class="chapter-panel">
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title">
+            <span>📦</span> 正方体 11 种标准展开图交互图鉴（同色即为相对面！）
+          </div>
+        </div>
+
+        <div class="nets-selector" id="netsSelector"></div>
+
+        <div class="svg-wrapper" style="height:340px;">
+          <svg id="svgNet" class="canvas" viewBox="0 0 560 340">
+            <rect width="100%" height="100%" fill="url(#gridPat3D)" />
+            <g id="layerNet"></g>
+          </svg>
+        </div>
+
+        <div class="live-stats">
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">1-4-1 型（中间4格）</div>
+            <div class="stat-val">共 6 种</div>
+          </div>
+          <div class="stat-pill highlight-amber">
+            <div class="stat-label">2-3-1 型（中间3格）</div>
+            <div class="stat-val">共 3 种</div>
+          </div>
+          <div class="stat-pill highlight">
+            <div class="stat-label">2-2-2 阶梯 &amp; 3-3 型</div>
+            <div class="stat-val">各 1 种（共11种）</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-info">
+        <div class="card">
+          <div class="section-head">
+            <span>🎯</span> 课堂找对面两大黄金口诀
+          </div>
+          <div class="math-formula-box">
+            <strong>口诀 1：“隔一个是对面”（同行或同列）</strong><br>
+            在同一行或同一列连续排列时，中间<strong>隔开 1 个格</strong>的两个面必定是相对面（如 1-4-1 中间的第1格与第3格、第2格与第4格）。<br><br>
+            <strong>口诀 2：“Z 字两头是对面”（跨行跨列）</strong><br>
+            中间隔着两个相邻拐角格（像字母 <strong>Z</strong> 的两端），折叠后必定面对面平行！
+          </div>
+          <div style="font-size:12.5px; line-height:1.65; color:#991B1B; background:#FEF2F2; border:1px solid #FECACA; border-radius:8px; padding:9px 12px;">
+            🚫 <strong>绝对折不成正方体的“四大禁区”（例9）</strong>：<br>
+            • <strong>一线不过四</strong>（同一行超过 4 个格必重叠）<br>
+            • <strong>田字格、凹字型、7 字型</strong>（一旦出现“田”或“凹”，必定有两个面重合，不能围成正方体！）
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 篇章 4：🧱 挖洞变面、切刀问题与三视图求表面积 -->
+  <!-- ============================================================== -->
+  <div id="panel-surface-holes" class="chapter-panel">
+    <div class="lab-grid">
+      <div class="card board-card">
+        <div class="board-header">
+          <div class="board-title">
+            <span>🧱</span> 正方体三位置挖洞表面积变化演示（课堂例 4）
+          </div>
+          <div class="board-actions">
+            <button id="btnHoleCorner" class="pill-btn active" onclick="setHoleType('corner')">① 顶点(角)挖：不变 (+0)</button>
+            <button id="btnHoleEdge" class="pill-btn amber" onclick="setHoleType('edge')">② 棱上挖：+2个面</button>
+            <button id="btnHoleFace" class="pill-btn emerald" onclick="setHoleType('face')">③ 面中心挖：+4个面</button>
+          </div>
+        </div>
+
+        <div class="svg-wrapper" style="height:350px;">
+          <svg id="svgHoles" class="canvas" viewBox="0 0 560 350">
+            <rect width="100%" height="100%" fill="url(#gridPat3D)" />
+            <g id="layerHoles"></g>
+          </svg>
+        </div>
+
+        <div class="live-stats">
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">顶点(角上)挖小正方体</div>
+            <div class="stat-val">少3补3 ⇒ 表面积 +0</div>
+          </div>
+          <div class="stat-pill highlight-amber">
+            <div class="stat-label">棱上挖小正方体</div>
+            <div class="stat-val">少2补4 ⇒ 表面积 +2面</div>
+          </div>
+          <div class="stat-pill highlight-rose">
+            <div class="stat-label">面中心挖小正方体</div>
+            <div class="stat-val">少1补5 ⇒ 表面积 +4面</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-info">
+        <div class="card">
+          <div class="section-head">
+            <span>🏫</span> 第36讲压轴母题：例2~例5 秒杀汇总
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>【例2 &amp; 例3】三视图投影法求叠块表面积</strong>：<br>
+              不规则堆叠立体（无凹陷遮挡）表面积 = <strong>(正视图 + 左视图 + 俯视图) × 2</strong>！<br>
+              • 例2（19个小正方体）：(前10 + 上9 + 右8) × 2 = 27 × 2 = <strong>54 cm²</strong>。<br>
+              • 例3（棱长1,2,3,5四正方体紧贴）：(正38 + 右34 + 上25) × 2 = 97 × 2 = <strong>194 cm²</strong>。
+            </div>
+            <div class="case-step-line">
+              <strong>【例4】角、棱、面心各挖一个求小正方体边长</strong>：<br>
+              边长 20 的大正方体原表面积 = 6 × 20 × 20 = <strong>2400 cm²</strong>。<br>
+              • 角上挖：<strong>+0面</strong>；棱上挖：<strong>+2面</strong>；面心挖：<strong>+4面</strong>，一共多出 0 + 2 + 4 = <strong>6 个小正方形面</strong>！<br>
+              • 多出面积 = 2454 − 2400 = <strong>54 cm²</strong> ⇒ 每个小面 = 54 ÷ 6 = <strong>9 cm²</strong> ⇒ 挖掉的小立方体边长 = √9 = <strong>3 cm</strong>！
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>【例5】切刀问题（一刀多 2 个大面）</strong>：<br>
+              棱长 1 米正方体，水平锯成 3 片（<strong>2刀</strong>）、每片锯成 4 条（<strong>3刀</strong>）、每条锯成 5 块（<strong>4刀</strong>），共切 2 + 3 + 4 = <strong>9 刀</strong>！<br>
+              每切 1 刀增加 2 个面，共增加 9 × 2 = 18 个面，总表面积 = (6 + 18) × 1² = <strong>24 平方米</strong>！
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ================= 篇章切换 ================= */
+  const chapList = ['bee-ant', 'edges-faces', 'cube-nets', 'surface-holes'];
+  function switchChapter(key) {
+    chapList.forEach(k => {
+      const p = document.getElementById('panel-' + k);
+      if (p) p.classList.toggle('active', k === key);
+    });
+    document.querySelectorAll('.chap-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('onclick').includes(`'${key}'`));
+    });
+    if (key === 'bee-ant') renderCuboidScene();
+    if (key === 'cube-nets') renderNetDiagram();
+    if (key === 'surface-holes') renderHolesDiagram();
+  }
+
+  /* ================= 篇章 1：3D 蜜蜂 vs 蚂蚁 核心引擎 ================= */
+  let pathMode = 'bee'; // 'bee' | 'ant'
+  let dimC = 6; // 长 AB (X方向)
+  let dimA = 4; // 宽 BC (Z方向/深度)
+  let dimB = 3; // 高 CF (Y方向/高度)
+  let beeStep = 2; // 1: 仅底面勾股, 2: 底面+竖直金色切面
+  let selectedAntRoute = 0; // 0: (a+b)与c, 1: (c+a)与b, 2: (c+b)与a
+
+  // 3D 旋转角
+  let rotYaw = -0.52;   // 水平偏航角
+  let rotPitch = 0.42;  // 俯仰角
+  let isDragging3D = false;
+  let lastMousePt = { x: 0, y: 0 };
+
+  function setPathMode(mode) {
+    pathMode = mode;
+    document.getElementById('vsCardBee').classList.toggle('active', mode === 'bee');
+    document.getElementById('vsCardAnt').classList.toggle('active', mode === 'ant');
+    document.getElementById('btnModeBee').classList.toggle('active', mode === 'bee');
+    document.getElementById('btnModeAnt').classList.toggle('active', mode === 'ant');
+
+    document.getElementById('beeControlRow').style.display = mode === 'bee' ? 'flex' : 'none';
+    document.getElementById('antControlRow').style.display = mode === 'ant' ? 'flex' : 'none';
+    document.getElementById('sideCardBee').style.display = mode === 'bee' ? 'block' : 'none';
+    document.getElementById('sideCardAnt').style.display = mode === 'ant' ? 'block' : 'none';
+
+    document.getElementById('rightPaneTitle').textContent = mode === 'bee'
+      ? '📐 2D 真实无变形切面（两次 90° 直角勾股）'
+      : '📦 2D 纸盒摊平展开图（两边拉直成 180° 共线）';
+
+    renderCuboidScene();
+  }
+
+  function setBeeStep(s) {
+    beeStep = s;
+    document.getElementById('btnBeeStep1').classList.toggle('active', s === 1);
+    document.getElementById('btnBeeStep2').classList.toggle('active', s === 2);
+    renderCuboidScene();
+  }
+
+  function faceCutPlane() {
+    // 旋转视角使内部对角切面 AC-F 正对屏幕
+    const diagAngle = Math.atan2(dimA, dimC);
+    rotYaw = -diagAngle;
+    rotPitch = 0.22;
+    renderCuboidScene();
+  }
+
+  function loadPreset(c, a, b, mode) {
+    dimC = c; dimA = a; dimB = b;
+    document.getElementById('sliderDimC').value = c;
+    document.getElementById('sliderDimA').value = a;
+    document.getElementById('sliderDimB').value = b;
+    document.getElementById('valDimC').textContent = c;
+    document.getElementById('valDimA').textContent = a;
+    document.getElementById('valDimB').textContent = b;
+    // 自动选中最短的蚂蚁展开路线
+    selectBestAntRoute();
+    setPathMode(mode);
+  }
+
+  function onDimChange() {
+    dimC = parseInt(document.getElementById('sliderDimC').value, 10);
+    dimA = parseInt(document.getElementById('sliderDimA').value, 10);
+    dimB = parseInt(document.getElementById('sliderDimB').value, 10);
+    document.getElementById('valDimC').textContent = dimC;
+    document.getElementById('valDimA').textContent = dimA;
+    document.getElementById('valDimB').textContent = dimB;
+    selectBestAntRoute();
+    renderCuboidScene();
+  }
+
+  function selectBestAntRoute() {
+    const r0 = (dimA + dimB) * (dimA + dimB) + dimC * dimC;
+    const r1 = (dimC + dimA) * (dimC + dimA) + dimB * dimB;
+    const r2 = (dimC + dimB) * (dimC + dimB) + dimA * dimA;
+    if (r0 <= r1 && r0 <= r2) selectedAntRoute = 0;
+    else if (r2 <= r0 && r2 <= r1) selectedAntRoute = 2;
+    else selectedAntRoute = 1;
+  }
+
+  function project3D(pt, scale, cx, cy) {
+    // pt: {x, y, z} 其中 x向右, y向上, z向深处
+    const cosY = Math.cos(rotYaw), sinY = Math.sin(rotYaw);
+    const cosP = Math.cos(rotPitch), sinP = Math.sin(rotPitch);
+    const x1 = pt.x * cosY - pt.z * sinY;
+    const z1 = pt.x * sinY + pt.z * cosY;
+    const y2 = pt.y * cosP - z1 * sinP;
+    return {
+      x: cx + x1 * scale,
+      y: cy - y2 * scale
+    };
+  }
+
+  function formatSqrt(sqVal) {
+    const r = Math.round(Math.sqrt(sqVal));
+    if (r * r === sqVal) return `${r} (即 √${sqVal})`;
+    return `√${sqVal} ≈ ${Math.sqrt(sqVal).toFixed(2)}`;
+  }
+
+  function renderCuboidScene() {
+    const unfoldPct = parseInt(document.getElementById('sliderUnfold').value, 10);
+    document.getElementById('valUnfold').textContent = unfoldPct + '%';
+
+    const c = dimC, a = dimA, b = dimB;
+    const maxDim = Math.max(c, a, b, 4);
+    const scale3D = 155 / maxDim;
+    const cx3D = 162, cy3D = 215;
+
+    // 8 个顶点 (以中心为原点偏移):
+    // 下底: A(前左), B(前右), C(后右), D(后左)
+    // 上底: E(前左), F(后右-对角终点!), B'(前右), H(后左)
+    // 注意为与讲义一致：起点 A 为左下前(0,0,0)，对角终点 F 为右上后(c,b,a)
+    const hx = c / 2, hy = b / 2, hz = a / 2;
+    const V = {
+      A: { x: -hx, y: -hy, z: -hz }, // 左下前 (起点)
+      B: { x:  hx, y: -hy, z: -hz }, // 右下前
+      C: { x:  hx, y: -hy, z:  hz }, // 右下后
+      D: { x: -hx, y: -hy, z:  hz }, // 左下后
+      E: { x: -hx, y:  hy, z: -hz }, // 左上前
+      G: { x:  hx, y:  hy, z: -hz }, // 右上前
+      F: { x:  hx, y:  hy, z:  hz }, // 右上后 (对角终点)
+      H: { x: -hx, y:  hy, z:  hz }  // 左上后
+    };
+
+    const P = {};
+    for (const k in V) P[k] = project3D(V[k], scale3D, cx3D, cy3D);
+
+    let html3D = '';
+
+    if (pathMode === 'bee') {
+      // 1. 底面直角三角形 ABC (长c, 宽a)
+      html3D += `<polygon points="${P.A.x},${P.A.y} ${P.B.x},${P.B.y} ${P.C.x},${P.C.y}" fill="#BAE6FD" fill-opacity="0.65" stroke="#0284C7" stroke-width="2"/>`;
+
+      // 2. 竖直金色直角三角形 ACF (底AC, 高b)
+      if (beeStep === 2) {
+        html3D += `<polygon points="${P.A.x},${P.A.y} ${P.C.x},${P.C.y} ${P.F.x},${P.F.y}" fill="#FDE047" fill-opacity="0.6" stroke="#D97706" stroke-width="2"/>`;
+      }
+
+      // 3. 长方体 12 条棱框架
+      const edges = [
+        ['A','B'],['B','C'],['C','D'],['D','A'],
+        ['E','G'],['G','F'],['F','H'],['H','E'],
+        ['A','E'],['B','G'],['C','F'],['D','H']
+      ];
+      edges.forEach(([u, v]) => {
+        const isBack = (u === 'D' || v === 'D');
+        html3D += `<line x1="${P[u].x}" y1="${P[u].y}" x2="${P[v].x}" y2="${P[v].y}" stroke="#334155" stroke-width="${isBack ? 1.3 : 1.8}" ${isBack ? 'stroke-dasharray="4 3"' : ''}/>`;
+      });
+
+      // 底面对角线 AC (蓝色跳板)
+      html3D += `<line x1="${P.A.x}" y1="${P.A.y}" x2="${P.C.x}" y2="${P.C.y}" stroke="#0284C7" stroke-width="2.8" stroke-dasharray="5 3"/>`;
+
+      // 蜜蜂体对角线 AF (红色粗实线)
+      if (beeStep === 2) {
+        html3D += `<line x1="${P.A.x}" y1="${P.A.y}" x2="${P.F.x}" y2="${P.F.y}" stroke="#E11D48" stroke-width="3.5"/>`;
+      }
+
+      // 标注长 c, 宽 a, 高 b
+      html3D += `<text x="${(P.A.x+P.B.x)/2}" y="${(P.A.y+P.B.y)/2 + 16}" font-size="12.5" font-weight="800" fill="#0F172A" text-anchor="middle">c=${c}</text>`;
+      html3D += `<text x="${(P.B.x+P.C.x)/2 + 14}" y="${(P.B.y+P.C.y)/2 + 6}" font-size="12.5" font-weight="800" fill="#0F172A">a=${a}</text>`;
+      html3D += `<text x="${(P.C.x+P.F.x)/2 + 12}" y="${(P.C.y+P.F.y)/2}" font-size="12.5" font-weight="800" fill="#D97706">b=${b}</text>`;
+
+      // 起点 A(蜜蜂) 与终点 F
+      html3D += `<circle cx="${P.A.x}" cy="${P.A.y}" r="5.5" fill="#FDE047" stroke="#0F172A" stroke-width="2"/>`;
+      html3D += `<text x="${P.A.x - 14}" y="${P.A.y + 14}" font-size="12.5" font-weight="800" fill="#0F172A">A(🐝)</text>`;
+      html3D += `<circle cx="${P.C.x}" cy="${P.C.y}" r="4.5" fill="#0284C7"/>`;
+      html3D += `<text x="${P.C.x + 8}" y="${P.C.y + 14}" font-size="12" font-weight="800" fill="#0284C7">C</text>`;
+      html3D += `<circle cx="${P.F.x}" cy="${P.F.y}" r="5.5" fill="#E11D48" stroke="#FFFFFF" stroke-width="1.5"/>`;
+      html3D += `<text x="${P.F.x + 8}" y="${P.F.y - 6}" font-size="12.5" font-weight="800" fill="#E11D48">F(终点)</text>`;
+    } else {
+      // 蚂蚁模式 3D 图：高亮蚂蚁经过的两个相邻表面 + 跨棱折线
+      const edges = [
+        ['A','B'],['B','C'],['C','D'],['D','A'],
+        ['E','G'],['G','F'],['F','H'],['H','E'],
+        ['A','E'],['B','G'],['C','F'],['D','H']
+      ];
+
+      // 根据当前选中的路线高亮两个面与跨棱点
+      let face1Pts, face2Pts, midPt3D, midEdgeLabel;
+      if (selectedAntRoute === 0) {
+        // 路线0: (a+b) 与 c => 前面 ABGE (c×b) + 上面 EGFH (c×a), 越过棱 EG
+        face1Pts = [P.A, P.B, P.G, P.E];
+        face2Pts = [P.E, P.G, P.F, P.H];
+        const t = b / (a + b);
+        const M3 = { x: -hx + c * t, y: hy, z: -hz };
+        midPt3D = project3D(M3, scale3D, cx3D, cy3D);
+        midEdgeLabel = '越过前上棱';
+      } else if (selectedAntRoute === 1) {
+        // 路线1: (c+a) 与 b => 前面 ABGE (c×b) + 右面 BCGF (a×b), 越过棱 BG
+        face1Pts = [P.A, P.B, P.G, P.E];
+        face2Pts = [P.B, P.C, P.F, P.G];
+        const t = c / (c + a);
+        const M3 = { x: hx, y: -hy + b * t, z: -hz };
+        midPt3D = project3D(M3, scale3D, cx3D, cy3D);
+        midEdgeLabel = '越过前右棱';
+      } else {
+        // 路线2: (c+b) 与 a => 底面 ABCD (c×a) + 右面 BCGF (a×b), 越过棱 BC
+        face1Pts = [P.A, P.B, P.C, P.D];
+        face2Pts = [P.B, P.C, P.F, P.G];
+        const t = c / (c + b);
+        const M3 = { x: hx, y: -hy, z: -hz + a * t };
+        midPt3D = project3D(M3, scale3D, cx3D, cy3D);
+        midEdgeLabel = '越过下右棱';
+      }
+
+      html3D += `<polygon points="${face1Pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="#A7F3D0" fill-opacity="0.55" stroke="#059669" stroke-width="1.5"/>`;
+      html3D += `<polygon points="${face2Pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="#BAE6FD" fill-opacity="0.55" stroke="#0284C7" stroke-width="1.5"/>`;
+
+      edges.forEach(([u, v]) => {
+        const isBack = (u === 'D' || v === 'D');
+        html3D += `<line x1="${P[u].x}" y1="${P[u].y}" x2="${P[v].x}" y2="${P[v].y}" stroke="#334155" stroke-width="${isBack ? 1.3 : 1.8}" ${isBack ? 'stroke-dasharray="4 3"' : ''}/>`;
+      });
+
+      // 内部虚线蜜蜂路径对比
+      html3D += `<line x1="${P.A.x}" y1="${P.A.y}" x2="${P.F.x}" y2="${P.F.y}" stroke="#F59E0B" stroke-width="1.8" stroke-dasharray="4 4"/>`;
+
+      // 蚂蚁表面折线 A -> midPt3D -> F
+      html3D += `<polyline points="${P.A.x},${P.A.y} ${midPt3D.x},${midPt3D.y} ${P.F.x},${P.F.y}" fill="none" stroke="#059669" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+      html3D += `<circle cx="${midPt3D.x}" cy="${midPt3D.y}" r="4.5" fill="#10B981" stroke="#FFFFFF" stroke-width="1.5"/>`;
+      html3D += `<text x="${midPt3D.x}" y="${midPt3D.y - 8}" font-size="11" font-weight="800" fill="#065F46" text-anchor="middle">${midEdgeLabel}</text>`;
+
+      html3D += `<circle cx="${P.A.x}" cy="${P.A.y}" r="5.5" fill="#10B981" stroke="#0F172A" stroke-width="2"/>`;
+      html3D += `<text x="${P.A.x - 14}" y="${P.A.y + 14}" font-size="12.5" font-weight="800" fill="#0F172A">A(🐜)</text>`;
+      html3D += `<circle cx="${P.F.x}" cy="${P.F.y}" r="5.5" fill="#E11D48" stroke="#FFFFFF" stroke-width="1.5"/>`;
+      html3D += `<text x="${P.F.x + 8}" y="${P.F.y - 6}" font-size="12.5" font-weight="800" fill="#E11D48">F(终点)</text>`;
+    }
+
+    document.getElementById('layer3D').innerHTML = html3D;
+
+    // ================= 右半区 2D 真实拆解绘制 =================
+    let html2D = '';
+    const sqBee = c * c + a * a + b * b;
+    const sqGround = c * c + a * a;
+
+    if (pathMode === 'bee') {
+      // 上方画第1步：地面直角三角形 ABC (边长 c 与 a, 斜边 √(c²+a²))
+      html2D += `
+        <rect x="345" y="42" width="235" height="145" rx="10" fill="#FFFFFF" stroke="#BAE6FD" stroke-width="1.5"/>
+        <text x="355" y="62" font-size="12" font-weight="800" fill="#0369A1">① 地面直角 △ABC（真实 90° 俯视）：</text>
+        <polygon points="385,155 505,155 505,82" fill="#BAE6FD" fill-opacity="0.7" stroke="#0284C7" stroke-width="2" stroke-linejoin="round"/>
+        <polyline points="493,155 493,143 505,143" fill="none" stroke="#EF4444" stroke-width="1.5"/>
+        <text x="445" y="172" font-size="12" font-weight="800" fill="#0F172A" text-anchor="middle">长 c = ${c}</text>
+        <text x="512" y="122" font-size="12" font-weight="800" fill="#0F172A">宽 a = ${a}</text>
+        <text x="432" y="110" font-size="12" font-weight="800" fill="#0284C7" text-anchor="middle">AC = √(${c}²+${a}²) = √${sqGround}</text>
+      `;
+
+      // 下方画第2步：竖直金色切面 △ACF (底边 √(c²+a²), 高 b, 斜边 √(c²+a²+b²))
+      const op = beeStep === 2 ? '1' : '0.35';
+      html2D += `
+        <g opacity="${op}">
+          <rect x="345" y="202" width="235" height="175" rx="10" fill="#FFFFFF" stroke="#FDE68A" stroke-width="1.8"/>
+          <text x="355" y="222" font-size="12" font-weight="800" fill="#B45309">② 竖直切面 △ACF（真实 90° 侧视）：</text>
+          <polygon points="375,335 515,335 515,245" fill="#FEF08A" fill-opacity="0.75" stroke="#D97706" stroke-width="2.2" stroke-linejoin="round"/>
+          <line x1="375" y1="335" x2="515" y2="245" stroke="#E11D48" stroke-width="3"/>
+          <polyline points="503,335 503,323 515,323" fill="none" stroke="#EF4444" stroke-width="1.5"/>
+          <text x="445" y="353" font-size="12" font-weight="800" fill="#0284C7" text-anchor="middle">底 AC = √(${c}²+${a}²) = √${sqGround}</text>
+          <text x="522" y="295" font-size="12" font-weight="800" fill="#B45309">高 b = ${b}</text>
+          <text x="430" y="280" font-size="12.5" font-weight="900" fill="#E11D48" text-anchor="middle">🐝 AF = √(${sqGround}+${b}²) = √${sqBee}</text>
+          <text x="462" y="370" font-size="11.5" font-weight="800" fill="#065F46" text-anchor="middle">结论：(√(${c}²+${a}²))² + ${b}² = ${c}²+${a}²+${b}² = ${sqBee}</text>
+        </g>
+      `;
+
+      document.getElementById('beeDynamicExplain').innerHTML = `
+        <strong>当前数值实时推演（长=${c}, 宽=${a}, 高=${b}）</strong>：<br>
+        1️⃣ <strong>地面跳板 AC</strong>：<span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">${c}² + ${a}²</span></span> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">${c*c} + ${a*a}</span></span> = <strong><span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">${sqGround}</span></span></strong>；<br>
+        2️⃣ <strong>竖直勾股 AF</strong>：<span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">(√${sqGround})² + ${b}²</span></span> = <span class="sqrt"><span class="sqrt-rad">√</span><span class="sqrt-body">${sqGround} + ${b*b}</span></span> = <strong>${formatSqrt(sqBee)}</strong>！
+      `;
+    } else {
+      // 蚂蚁模式右半区：展示 2 个相邻面展开成平面大长方形的动画（随 unfoldPct 变化）
+      const routes = [
+        { name: '路线①：宽+高 合体 (a+b) 与 长 c', d1: a, d2: b, single: c, lbl1: `宽a=${a}`, lbl2: `高b=${b}`, lblSingle: `长c=${c}`, sq: (a+b)*(a+b) + c*c, extra: 2*a*b },
+        { name: '路线②：长+宽 合体 (c+a) 与 高 b', d1: c, d2: a, single: b, lbl1: `长c=${c}`, lbl2: `宽a=${a}`, lblSingle: `高b=${b}`, sq: (c+a)*(c+a) + b*b, extra: 2*c*a },
+        { name: '路线③：长+高 合体 (c+b) 与 宽 a', d1: c, d2: b, single: a, lbl1: `长c=${c}`, lbl2: `高b=${b}`, lblSingle: `宽a=${a}`, sq: (c+b)*(c+b) + a*a, extra: 2*c*b }
+      ];
+      const minSq = Math.min(routes[0].sq, routes[1].sq, routes[2].sq);
+
+      // 更新右侧 3 条路线选择列表
+      let pkHtml = '';
+      routes.forEach((r, idx) => {
+        const isBest = r.sq === minSq;
+        const isAct = idx === selectedAntRoute;
+        const sumVal = r.d1 + r.d2;
+        pkHtml += `
+          <div class="route-pk-item ${isAct ? 'active' : ''} ${isBest ? 'best' : ''}" onclick="selectedAntRoute=${idx}; renderCuboidScene();">
+            <div class="route-pk-top">
+              <span>${r.name}</span>
+              <span class="route-badge ${isBest ? 'best' : 'normal'}">${isBest ? '🏆 最短路线' : '较远'}</span>
+            </div>
+            <div style="font-family:var(--font-mono); color:#1E293B;">
+              √( (${r.d1}+${r.d2})² + ${r.single}² ) = √( ${sumVal}² + ${r.single}² ) = <strong>${formatSqrt(r.sq)}</strong>
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById('routePkList').innerHTML = pkHtml;
+
+      // 在右半区画出当前选中路线的展开图（含翻平角度动画）
+      const cur = routes[selectedAntRoute];
+      const totalH = cur.d1 + cur.d2;
+      const totalW = cur.single;
+      const scale2D = Math.min(180 / totalW, 210 / totalH);
+      const wPx = totalW * scale2D;
+      const h1Px = cur.d1 * scale2D;
+      const h2Px = cur.d2 * scale2D;
+
+      const x0 = 462 - wPx / 2;
+      const yBottom = 315;
+      const yMid = yBottom - h1Px;
+
+      // 随 unfoldPct (0..100) 将上半块面从折起斜视过渡到 100% 垂直拉平
+      const foldFactor = unfoldPct / 100;
+      const skewX = (1 - foldFactor) * 28;
+      const effH2 = h2Px * (0.45 + 0.55 * foldFactor);
+
+      const pA = { x: x0, y: yBottom };
+      const pB = { x: x0 + wPx, y: yBottom };
+      const pMidL = { x: x0, y: yMid };
+      const pMidR = { x: x0 + wPx, y: yMid };
+      const pTopL = { x: x0 + skewX, y: yMid - effH2 };
+      const pTopR = { x: x0 + wPx + skewX, y: yMid - effH2 };
+
+      // 计算折点在中间棱上的位置
+      const tCross = cur.d1 / (cur.d1 + cur.d2);
+      const pCross = { x: x0 + wPx * tCross, y: yMid };
+
+      html2D += `
+        <!-- 第一块面 -->
+        <polygon points="${pA.x},${pA.y} ${pB.x},${pB.y} ${pMidR.x},${pMidR.y} ${pMidL.x},${pMidL.y}" fill="#A7F3D0" fill-opacity="0.65" stroke="#059669" stroke-width="2"/>
+        <!-- 第二块面（随滑块翻平） -->
+        <polygon points="${pMidL.x},${pMidL.y} ${pMidR.x},${pMidR.y} ${pTopR.x},${pTopR.y} ${pTopL.x},${pTopL.y}" fill="#BAE6FD" fill-opacity="0.65" stroke="#0284C7" stroke-width="2"/>
+        <!-- 中间折叠棱 -->
+        <line x1="${pMidL.x}" y1="${pMidL.y}" x2="${pMidR.x}" y2="${pMidR.y}" stroke="#0F172A" stroke-width="2" stroke-dasharray="4 3"/>
+        <!-- 直角符号 -->
+        <polyline points="${pB.x-12},${pB.y} ${pB.x-12},${pB.y-12} ${pB.x},${pB.y-12}" fill="none" stroke="#EF4444" stroke-width="1.5"/>
+        <!-- 蚂蚁路径 A -> pCross -> pTopR -->
+        <polyline points="${pA.x},${pA.y} ${pCross.x},${pCross.y} ${pTopR.x},${pTopR.y}" fill="none" stroke="#E11D48" stroke-width="3.2"/>
+        <circle cx="${pA.x}" cy="${pA.y}" r="5" fill="#10B981" stroke="#0F172A" stroke-width="1.5"/>
+        <circle cx="${pTopR.x}" cy="${pTopR.y}" r="5" fill="#E11D48"/>
+        <!-- 尺寸标注 -->
+        <text x="${(pA.x+pB.x)/2}" y="${pB.y + 18}" font-size="12.5" font-weight="800" fill="#0F172A" text-anchor="middle">${cur.lblSingle}</text>
+        <text x="${pB.x + 8}" y="${(pB.y+pMidR.y)/2 + 4}" font-size="12" font-weight="800" fill="#059669">${cur.lbl1}</text>
+        <text x="${pTopR.x + 8}" y="${(pMidR.y+pTopR.y)/2 + 4}" font-size="12" font-weight="800" fill="#0284C7">${cur.lbl2}</text>
+        <text x="462" y="358" font-size="12.5" font-weight="900" fill="#065F46" text-anchor="middle">
+          摊平后两段拉直合体：(${cur.d1} + ${cur.d2}) = ${cur.d1 + cur.d2}
+        </text>
+        <text x="462" y="378" font-size="12.5" font-weight="900" fill="#E11D48" text-anchor="middle">
+          🐜 L = √( (${cur.d1}+${cur.d2})² + ${cur.single}² ) = ${formatSqrt(cur.sq)}
+        </text>
+      `;
+    }
+
+    document.getElementById('layer2D').innerHTML = html2D;
+
+    // 更新底部三个统计胶囊
+    const r0 = (a + b) * (a + b) + c * c;
+    const r1 = (c + a) * (c + a) + b * b;
+    const r2 = (c + b) * (c + b) + a * a;
+    const bestAntSq = Math.min(r0, r1, r2);
+    const extraVal = bestAntSq - sqBee;
+
+    document.getElementById('statBeeVal').textContent = formatSqrt(sqBee);
+    document.getElementById('statAntBestVal').textContent = formatSqrt(bestAntSq);
+    document.getElementById('statDiffVal').textContent = `${bestAntSq} vs ${sqBee} (多 +${extraVal})`;
+  }
+
+  // 3D 画板鼠标/触摸旋转事件
+  const svgCuboid = document.getElementById('svgCuboid');
+  svgCuboid.addEventListener('mousedown', e => {
+    const rect = svgCuboid.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * (600 / rect.width);
+    if (x < 325) {
+      isDragging3D = true;
+      lastMousePt = { x: e.clientX, y: e.clientY };
+    }
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDragging3D) return;
+    const dx = e.clientX - lastMousePt.x;
+    const dy = e.clientY - lastMousePt.y;
+    lastMousePt = { x: e.clientX, y: e.clientY };
+    rotYaw += dx * 0.01;
+    rotPitch = Math.max(-0.6, Math.min(1.1, rotPitch + dy * 0.01));
+    renderCuboidScene();
+  });
+  window.addEventListener('mouseup', () => isDragging3D = false);
+
+  svgCuboid.addEventListener('touchstart', e => {
+    const rect = svgCuboid.getBoundingClientRect();
+    const x = (e.touches[0].clientX - rect.left) * (600 / rect.width);
+    if (x < 325) {
+      isDragging3D = true;
+      lastMousePt = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  }, { passive: true });
+  window.addEventListener('touchmove', e => {
+    if (!isDragging3D) return;
+    const dx = e.touches[0].clientX - lastMousePt.x;
+    const dy = e.touches[0].clientY - lastMousePt.y;
+    lastMousePt = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    rotYaw += dx * 0.01;
+    rotPitch = Math.max(-0.6, Math.min(1.1, rotPitch + dy * 0.01));
+    renderCuboidScene();
+  }, { passive: true });
+  window.addEventListener('touchend', () => isDragging3D = false);
+
+  /* ================= 篇章 2：棱与面位置关系交互 ================= */
+  function setEdgeFilter(filter) {
+    document.getElementById('btnEdgeRelAll').classList.toggle('active', filter === 'all');
+    document.getElementById('btnEdgeRelPara').classList.toggle('active', filter === 'parallel');
+    document.getElementById('btnEdgeRelInter').classList.toggle('active', filter === 'intersect');
+    document.getElementById('btnEdgeRelSkew').classList.toggle('active', filter === 'skew');
+
+    document.getElementById('grpEdgePara').style.opacity = (filter === 'all' || filter === 'parallel') ? '1' : '0.15';
+    document.getElementById('grpEdgeInter').style.opacity = (filter === 'all' || filter === 'intersect') ? '1' : '0.15';
+    document.getElementById('grpEdgeSkew').style.opacity = (filter === 'all' || filter === 'skew') ? '1' : '0.15';
+
+    const txt = document.getElementById('txtEdgeSummary');
+    if (filter === 'parallel') txt.textContent = '🟢 与棱 AD 平行的棱（共 3 条）：BC、EH、FG（方向相同，永不相交）';
+    else if (filter === 'intersect') txt.textContent = '🔵 与棱 AD 相交的棱（共 4 条）：AB、AE、DC、DH（共享端点 A 或 D）';
+    else if (filter === 'skew') txt.textContent = '🔴 与棱 AD 异面的棱（共 4 条）：EF、HG、FB、GC（既不平行也不相交！）';
+    else txt.textContent = '基准棱 AD（黑黄） + 🟢平行 3 条 + 🔵相交 4 条 + 🔴异面 4 条 = 共 12 条棱';
+  }
+
+  /* ================= 篇章 3：正方体 11 种展开图交互 ================= */
+  // 每种展开图用 6 个格子的 [col, row, pairId, label] 定义，pairId: 1(蓝), 2(黄), 3(粉) 表示 3 组相对面
+  const CUBE_NETS = [
+    { name: '① 1-4-1型 (A)', cells: [[1,0,1,'上'], [0,1,2,'左'],[1,1,3,'前'],[2,1,2,'右'],[3,1,3,'后'], [1,2,1,'下']] },
+    { name: '② 1-4-1型 (B)', cells: [[0,0,1,'上'], [0,1,2,'左'],[1,1,3,'前'],[2,1,2,'右'],[3,1,3,'后'], [1,2,1,'下']] },
+    { name: '③ 1-4-1型 (C)', cells: [[0,0,1,'上'], [0,1,2,'左'],[1,1,3,'前'],[2,1,2,'右'],[3,1,3,'后'], [2,2,1,'下']] },
+    { name: '④ 1-4-1型 (D)', cells: [[0,0,1,'上'], [0,1,2,'左'],[1,1,3,'前'],[2,1,2,'右'],[3,1,3,'后'], [3,2,1,'下']] },
+    { name: '⑤ 1-4-1型 (E)', cells: [[1,0,1,'上'], [0,1,2,'左'],[1,1,3,'前'],[2,1,2,'右'],[3,1,3,'后'], [2,2,1,'下']] },
+    { name: '⑥ 1-4-1型 (F)', cells: [[2,0,1,'上'], [0,1,2,'左'],[1,1,3,'前'],[2,1,2,'右'],[3,1,3,'后'], [1,2,1,'下']] },
+    { name: '⑦ 2-3-1型 (A)', cells: [[0,0,2,'1'],[1,0,1,'2'], [1,1,3,'3'],[2,1,2,'4'],[3,1,3,'5'], [1,2,1,'6']] },
+    { name: '⑧ 2-3-1型 (B)', cells: [[0,0,2,'1'],[1,0,1,'2'], [1,1,3,'3'],[2,1,2,'4'],[3,1,3,'5'], [2,2,1,'6']] },
+    { name: '⑨ 2-3-1型 (C)', cells: [[0,0,2,'1'],[1,0,1,'2'], [1,1,3,'3'],[2,1,2,'4'],[3,1,3,'5'], [3,2,1,'6']] },
+    { name: '⑩ 2-2-2阶梯型', cells: [[0,0,1,'1'],[1,0,2,'2'], [1,1,3,'3'],[2,1,1,'4'], [2,2,2,'5'],[3,2,3,'6']] },
+    { name: '⑪ 3-3型', cells: [[0,0,1,'1'],[1,0,2,'2'],[2,0,1,'3'], [2,1,3,'4'],[3,1,2,'5'],[4,1,3,'6']] }
+  ];
+  let currentNetIdx = 0;
+
+  function initNetsSelector() {
+    const box = document.getElementById('netsSelector');
+    box.innerHTML = CUBE_NETS.map((n, i) =>
+      `<button class="net-btn ${i === 0 ? 'active' : ''}" onclick="selectNet(${i})">${n.name}</button>`
+    ).join('');
+  }
+
+  function selectNet(idx) {
+    currentNetIdx = idx;
+    document.querySelectorAll('.net-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+    renderNetDiagram();
+  }
+
+  function renderNetDiagram() {
+    const net = CUBE_NETS[currentNetIdx];
+    const size = 64;
+    const cols = net.cells.map(c => c[0]);
+    const rows = net.cells.map(c => c[1]);
+    const minC = Math.min(...cols), maxC = Math.max(...cols);
+    const minR = Math.min(...rows), maxR = Math.max(...rows);
+    const w = (maxC - minC + 1) * size;
+    const h = (maxR - minR + 1) * size;
+    const startX = (560 - w) / 2;
+    const startY = (290 - h) / 2 + 10;
+
+    const palette = {
+      1: { fill: '#BAE6FD', stroke: '#0284C7', text: '#0369A1', tag: '▲组对面' },
+      2: { fill: '#FDE68A', stroke: '#D97706', text: '#B45309', tag: '●组对面' },
+      3: { fill: '#FECDD3', stroke: '#E11D48', text: '#BE123C', tag: '★组对面' }
+    };
+    const sym = { 1: '▲', 2: '●', 3: '★' };
+
+    let html = '';
+    net.cells.forEach(([c, r, pairId]) => {
+      const x = startX + (c - minC) * size;
+      const y = startY + (r - minR) * size;
+      const col = palette[pairId];
+      html += `
+        <rect x="${x}" y="${y}" width="${size}" height="${size}" rx="6" fill="${col.fill}" stroke="${col.stroke}" stroke-width="2.5"/>
+        <text x="${x + size/2}" y="${y + size/2 + 6}" font-size="20" font-weight="900" fill="${col.text}" text-anchor="middle">${sym[pairId]}</text>
+      `;
+    });
+
+    html += `
+      <rect x="70" y="290" width="420" height="36" rx="8" fill="#FFFFFF" stroke="#CBD5E1"/>
+      <text x="280" y="313" font-size="12.5" font-weight="800" fill="#0F172A" text-anchor="middle">
+        当前：${net.name} —— 相同颜色与符号（▲与▲、●与●、★与★）折起后互为相对面！
+      </text>
+    `;
+    document.getElementById('layerNet').innerHTML = html;
+  }
+
+  /* ================= 篇章 4：正方体三位置挖洞演示 ================= */
+  let holeType = 'corner';
+  function setHoleType(type) {
+    holeType = type;
+    document.getElementById('btnHoleCorner').classList.toggle('active', type === 'corner');
+    document.getElementById('btnHoleEdge').classList.toggle('active', type === 'edge');
+    document.getElementById('btnHoleFace').classList.toggle('active', type === 'face');
+    renderHolesDiagram();
+  }
+
+  function renderHolesDiagram() {
+    let title, lostFaces, gainedFaces, netChange, color;
+    if (holeType === 'corner') {
+      title = '① 在【顶点（角上）】挖去一个小正方体';
+      lostFaces = '原本露在外面的 3 个小面（上、前、右）消失了（−3）';
+      gainedFaces = '凹坑内部新露出了 3 个一模一样的小面（+3）';
+      netChange = '表面积变化：−3 + 3 = 0（表面积完全不变！）';
+      color = '#4F46E5';
+    } else if (holeType === 'edge') {
+      title = '② 在【棱上（不在角）】挖去一个小正方体';
+      lostFaces = '原本露在外面的 2 个小面（上、前）消失了（−2）';
+      gainedFaces = '凹坑内部新露出了左、右、后、底共 4 个小面（+4）';
+      netChange = '表面积变化：−2 + 4 = +2（比原来增加了 2 个小正方形面！）';
+      color = '#D97706';
+    } else {
+      title = '③ 在【面中心（不靠棱）】挖去一个小正方体';
+      lostFaces = '原本露在外面的 1 个正面小面消失了（−1）';
+      gainedFaces = '凹坑四周壁 + 坑底新露出了 5 个小面（+5）';
+      netChange = '表面积变化：−1 + 5 = +4（比原来增加了 4 个小正方形面！）';
+      color = '#E11D48';
+    }
+
+    const html = `
+      <!-- 大正方体示意图 -->
+      <rect x="65" y="75" width="160" height="160" fill="#F8FAFC" stroke="#0F172A" stroke-width="2.2"/>
+      <polygon points="65,75 115,35 275,35 225,75" fill="#F1F5F9" stroke="#0F172A" stroke-width="2.2" stroke-linejoin="round"/>
+      <polygon points="225,75 275,35 275,195 225,235" fill="#E2E8F0" stroke="#0F172A" stroke-width="2.2" stroke-linejoin="round"/>
+
+      <!-- 3个典型挖洞位置示意 -->
+      <!-- 角上 -->
+      <rect x="190" y="75" width="35" height="35" fill="${holeType==='corner' ? '#C7D2FE' : '#FFFFFF'}" stroke="#4F46E5" stroke-width="${holeType==='corner' ? 3 : 1.5}"/>
+      <text x="207" y="97" font-size="12" font-weight="800" fill="#4F46E5" text-anchor="middle">角+0</text>
+
+      <!-- 棱上 -->
+      <rect x="125" y="75" width="35" height="35" fill="${holeType==='edge' ? '#FDE68A' : '#FFFFFF'}" stroke="#D97706" stroke-width="${holeType==='edge' ? 3 : 1.5}"/>
+      <text x="142" y="97" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">棱+2</text>
+
+      <!-- 面心 -->
+      <rect x="125" y="145" width="35" height="35" fill="${holeType==='face' ? '#FECDD3' : '#FFFFFF'}" stroke="#E11D48" stroke-width="${holeType==='face' ? 3 : 1.5}"/>
+      <text x="142" y="167" font-size="12" font-weight="800" fill="#BE123C" text-anchor="middle">面+4</text>
+
+      <!-- 右侧解析框 -->
+      <rect x="295" y="45" width="245" height="210" rx="12" fill="#FFFFFF" stroke="${color}" stroke-width="2"/>
+      <text x="310" y="75" font-size="13.5" font-weight="900" fill="${color}">${title}</text>
+      <text x="310" y="110" font-size="12" font-weight="700" fill="#475569">• 减少的面：</text>
+      <text x="315" y="130" font-size="12" font-weight="800" fill="#0F172A">${lostFaces}</text>
+      <text x="310" y="162" font-size="12" font-weight="700" fill="#475569">• 新露出的面：</text>
+      <text x="315" y="182" font-size="12" font-weight="800" fill="#059669">${gainedFaces}</text>
+      <rect x="308" y="202" width="220" height="36" rx="8" fill="#ECFDF5"/>
+      <text x="418" y="225" font-size="12" font-weight="900" fill="#065F46" text-anchor="middle">${netChange}</text>
+
+      <!-- 底部汇总横幅 -->
+      <rect x="45" y="280" width="470" height="46" rx="10" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1.5"/>
+      <text x="280" y="308" font-size="13" font-weight="800" fill="#92400E" text-anchor="middle">
+        💡 课堂例 4 秒杀口诀：“角挖加 0，棱挖加 2，面心挖加 4”（三处各挖一个共多出 6 个小正方形面！）
+      </text>
+    `;
+    document.getElementById('layerHoles').innerHTML = html;
+  }
+
+  // 初始化
+  initNetsSelector();
+  selectBestAntRoute();
+  renderCuboidScene();
+  renderNetDiagram();
+  renderHolesDiagram();
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const h = window.location.hash.replace('#', '');
+    if (chapList.includes(h)) {
+      switchChapter(h);
+    }
+  });
+</script>
+</body>
+</html>
