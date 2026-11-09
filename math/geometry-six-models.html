@@ -628,6 +628,152 @@
       background: var(--emerald);
       color: #FFFFFF;
     }
+
+    /* 课堂必考母题精讲专区样式 */
+    .cases-section {
+      margin-top: 6px;
+      margin-bottom: 28px;
+    }
+    .cases-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #EEF2FF 0%, #ECFDF5 100%);
+      border: 1px solid var(--indigo-border);
+      border-radius: 14px;
+    }
+    .cases-section-title {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: #1E1B4B;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cases-section-sub {
+      font-size: 12px;
+      font-weight: 700;
+      color: #4338CA;
+      background: #FFFFFF;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--indigo-border);
+    }
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .case-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .case-badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .case-tag {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--indigo-light);
+      color: var(--indigo);
+      border: 1px solid var(--indigo-border);
+    }
+    .case-tag.amber {
+      background: var(--amber-light);
+      color: var(--amber-dark);
+      border-color: var(--amber-border);
+    }
+    .case-tag.emerald {
+      background: var(--emerald-light);
+      color: var(--emerald-dark);
+      border-color: var(--emerald-border);
+    }
+    .case-tag.rose {
+      background: var(--rose-light);
+      color: var(--rose);
+      border-color: var(--rose-border);
+    }
+    .case-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0F172A;
+      margin: 0 0 8px 0;
+      line-height: 1.4;
+    }
+    .case-prob-text {
+      font-size: 12.5px;
+      color: #334155;
+      line-height: 1.6;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      padding: 9px 12px;
+      margin-bottom: 10px;
+    }
+    .case-svg-box {
+      width: 100%;
+      height: 185px;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .case-steps {
+      font-size: 12.5px;
+      color: #334155;
+      line-height: 1.7;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .case-step-line {
+      background: #F8FAFC;
+      border-left: 3px solid var(--indigo);
+      padding: 6px 10px;
+      border-radius: 0 8px 8px 0;
+    }
+    .case-step-line.ans {
+      background: #ECFDF5;
+      border-left-color: var(--emerald);
+      color: #064E3B;
+      font-weight: 700;
+    }
+    .frac {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      vertical-align: middle;
+      font-size: 0.88em;
+      line-height: 1.1;
+      margin: 0 2px;
+      font-weight: 700;
+    }
+    .frac > span:first-child {
+      border-bottom: 1.2px solid currentColor;
+      padding: 0 3px;
+    }
+    .frac > span:last-child {
+      padding: 0 3px;
+    }
   </style>
 </head>
 <body>
@@ -1024,6 +1170,135 @@
             当点 <em>P</em> 处于内部任意位置（形态 B），两对对顶三角形的高之和等于四边形的总高，因此它们各自的面积和恒等于总面积的一半！
           </p>
         </div>
+
+        <div class="card">
+          <div class="section-head">
+            <span>🧩</span> 课堂笔记：一半模型 6 大变形识别口诀
+          </div>
+          <div style="font-size:12.5px; line-height:1.65; color:#334155;">
+            • <strong>① 单三角 / ② 横向对顶双三角</strong>：过内部点作平行线，上下切开各占一半。<br>
+            • <strong>③ 锯齿多三角 (M/W型)</strong>：底边之和 = 长，高 = 宽，总面积仍为 ½。<br>
+            • <strong>④ 四边中点内接菱形</strong>：十字分割成 4 个小长方形，每格取半。<br>
+            • <strong>⑤ 顶点拉到长方形外</strong>：利用平行线“拉窗帘”拉回边上，依然占 ½！
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 一半模型：课堂必考母题精讲 -->
+    <div class="cases-section">
+      <div class="cases-section-header">
+        <div class="cases-section-title">
+          <span>🏫</span> 一半模型 · 课堂笔记必考母题精讲（重叠容斥大招）
+        </div>
+        <span class="cases-section-sub">源自第35讲课堂板书 · 例12 & 例15</span>
+      </div>
+
+      <div class="cases-grid">
+        <!-- 课堂例 12 -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag amber">课堂例 12 · 一半模型等量代换</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：34</span>
+          </div>
+          <h4 class="case-title">长方形内双“一半模型”重叠抵消</h4>
+          <div class="case-prob-text">
+            如图，一个长方形被一些直线分成了若干个小块，已知 △<em>ADG</em> 的面积是 <strong>11</strong>，△<em>BCH</em> 的面积是 <strong>23</strong>，求中间四边形 <em>EGFH</em> 的面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <rect x="40" y="20" width="240" height="135" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+              <!-- 阴影四边形 EGFH 在中间先画或后画 -->
+              <line x1="125" y1="20" x2="40" y2="155" stroke="#0F172A" stroke-width="1.6"/>
+              <line x1="125" y1="20" x2="280" y2="155" stroke="#0F172A" stroke-width="1.6"/>
+              <line x1="40" y1="20" x2="155" y2="155" stroke="#E11D48" stroke-width="2"/>
+              <line x1="280" y1="20" x2="155" y2="155" stroke="#0F172A" stroke-width="1.6"/>
+              <!-- 红色高亮左半模型 △AFD 与 △DEC -->
+              <polygon points="40,20 125,20 40,155" fill="#BAE6FD" fill-opacity="0.35"/>
+              <polygon points="125,20 155,155 280,155" fill="#FEF3C7" fill-opacity="0.45"/>
+              <!-- 标注文字 -->
+              <text x="26" y="22" font-size="12" font-weight="800" fill="#0F172A">A</text>
+              <text x="122" y="14" font-size="12" font-weight="800" fill="#0F172A">F</text>
+              <text x="286" y="22" font-size="12" font-weight="800" fill="#0F172A">B</text>
+              <text x="26" y="162" font-size="12" font-weight="800" fill="#0F172A">D</text>
+              <text x="152" y="170" font-size="12" font-weight="800" fill="#0F172A">E</text>
+              <text x="286" y="162" font-size="12" font-weight="800" fill="#0F172A">C</text>
+              <text x="68" y="92" font-size="13" font-weight="800" fill="#0284C7">11</text>
+              <text x="86" y="95" font-size="11" font-weight="800" fill="#0F172A">G</text>
+              <text x="242" y="95" font-size="13" font-weight="800" fill="#0284C7">23</text>
+              <text x="215" y="95" font-size="11" font-weight="800" fill="#0F172A">H</text>
+              <text x="148" y="92" font-size="13" font-weight="800" fill="#E11D48" text-anchor="middle">EGFH=?</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（找两个一半）</strong>：大三角形 △<em>FDC</em> 底为 <em>DC</em>、高为长方形宽，占长方形面积的 <strong>½</strong>；同理，左右两个三角形 △<em>ADE</em> + △<em>BCE</em> 的底之和也是 <em>DC</em>、高也是宽，加起来也占长方形的 <strong>½</strong>！
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（等式相减消去公共块）</strong>：<br>
+              <em>S</em><sub>△FDC</sub> = <em>S</em><sub>△ADE</sub> + <em>S</em><sub>△BCE</sub>。<br>
+              两边同时减去下方的两个空白小三角形 △<em>DGE</em> 和 △<em>EHC</em>，剩下的部分依然相等！
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>结论</strong>：<em>S</em><sub>四边形EGFH</sub> = <em>S</em><sub>△ADG</sub> + <em>S</em><sub>△BCH</sub> = 11 + 23 = <strong>34</strong>！
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 15 -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag rose">课堂例 15 · 一半模型 + 容斥重叠</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：10</span>
+          </div>
+          <h4 class="case-title">长方形内阴影总和为 70，求中心四边形 EFGO</h4>
+          <div class="case-prob-text">
+            如图，长方形 <em>ABCD</em> 内的阴影部分面积之和为 <strong>70</strong>，<em>AB</em> = 8，<em>AD</em> = 15，求中间空白四边形 <em>EFGO</em> 的面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <rect x="45" y="22" width="230" height="130" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+              <!-- 交点计算: A(45,22), B(45,152), C(275,152), D(275,22), O(160,87), F(135,152) -->
+              <!-- E 是 AF 与 BD 交点: A(45,22)->F(135,152), B(45,152)->D(275,22) => E(95.5, 95) -->
+              <!-- G 是 DF 与 AC 交点: D(275,22)->F(135,152), A(45,22)->C(275,152) => G(195.8, 95.5) -->
+              <!-- 三块阴影: △AOD, △ABE, △DGC -->
+              <polygon points="45,22 275,22 160,87" fill="#CBD5E1" stroke="#475569" stroke-width="1.2"/>
+              <polygon points="45,22 45,152 95.5,95" fill="#CBD5E1" stroke="#475569" stroke-width="1.2"/>
+              <polygon points="275,22 275,152 195.8,95.5" fill="#CBD5E1" stroke="#475569" stroke-width="1.2"/>
+              <!-- 核心四边形 EFGO 高亮 -->
+              <polygon points="160,87 95.5,95 135,152 195.8,95.5" fill="#FEF08A" fill-opacity="0.8" stroke="#E11D48" stroke-width="2"/>
+              <!-- 对角线与连线 -->
+              <line x1="45" y1="22" x2="275" y2="152" stroke="#0F172A" stroke-width="1.5"/>
+              <line x1="45" y1="152" x2="275" y2="22" stroke="#0F172A" stroke-width="1.5"/>
+              <line x1="45" y1="22" x2="135" y2="152" stroke="#0F172A" stroke-width="1.5"/>
+              <line x1="275" y1="22" x2="135" y2="152" stroke="#0F172A" stroke-width="1.5"/>
+              <!-- 标注 -->
+              <text x="32" y="24" font-size="11.5" font-weight="800" fill="#0F172A">A</text>
+              <text x="32" y="156" font-size="11.5" font-weight="800" fill="#0F172A">B</text>
+              <text x="281" y="156" font-size="11.5" font-weight="800" fill="#0F172A">C</text>
+              <text x="281" y="24" font-size="11.5" font-weight="800" fill="#0F172A">D</text>
+              <text x="160" y="16" font-size="11.5" font-weight="800" fill="#0284C7" text-anchor="middle">15</text>
+              <text x="32" y="92" font-size="11.5" font-weight="800" fill="#0284C7">8</text>
+              <text x="160" y="55" font-size="13" font-weight="800" fill="#BE123C" text-anchor="middle">30</text>
+              <text x="62" y="102" font-size="12" font-weight="800" fill="#BE123C">①</text>
+              <text x="248" y="102" font-size="12" font-weight="800" fill="#BE123C">②</text>
+              <text x="148" y="116" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">x=?</text>
+              <text x="132" y="168" font-size="11.5" font-weight="800" fill="#0F172A">F</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（算长方形与顶部△AOD）</strong>：<em>S</em><sub>长方形</sub> = 15 × 8 = <strong>120</strong>。对角线把长方形平分四份，顶部阴影 <em>S</em><sub>△AOD</sub> = 120 ÷ 4 = <strong>30</strong>。
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（锁定一半模型 △AFD）</strong>：空白大三角形 △<em>AFD</em> 底为 <em>AD</em>、高为宽，面积等于长方形的一半 = <strong>60</strong>；因此它外侧的两块大直角三角形 △<em>ABF</em> + △<em>DCF</em> 面积和也等于 <strong>60</strong>！
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（容斥原理秒杀）</strong>：观察下半部分，<em>S</em><sub>△DBC</sub> = 60。由课堂板书：阴影① + 阴影② + 30 + 四边形 <em>x</em> 刚好比长方形的一半（60）多出一个 <em>x</em>！<br>
+              故 <em>x</em> = 阴影总和 70 − 60 = <strong>10</strong>！
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1111,32 +1386,217 @@
       <div class="side-info">
         <div class="card">
           <div class="section-head">
-            <span>🦋</span> 蝴蝶模型两大法则实时诊断
+            <span>🦋</span> 梯形蝴蝶 &amp; 风筝模型三大法则诊断
           </div>
 
           <div id="ruleBoxWing" class="rule-status-box valid">
             <div style="font-size:13px; font-weight:800; color:#0F172A; margin-bottom:4px;">
-              法则 1：左翅 = 右翅 (S₃ = S₄)
+              法则 1（梯形蝴蝶）：左翅 = 右翅 (S₃ = S₄)
               <span id="badgeRuleWing" class="rule-badge valid">当前相等 ✓</span>
             </div>
             <div id="descRuleWing" style="font-size:12px; line-height:1.55; color:#334155;">
-              仅当<strong>上下底平行（梯形 AD // BC）</strong>时成立！因为 △ABC 与 △DBC 同底等高面积相等，减去公共底 △BOC 后，左翅 S₃ = 右翅 S₄。
+              仅当<strong>上下底平行（梯形 AD // BC）</strong>时成立！若上底:下底 = <em>a : b</em>，则四块份数比为 <strong>a² : b² : ab : ab</strong>，<strong>梯形总份数 = (a + b)²</strong>！
             </div>
           </div>
 
           <div id="ruleBoxProd" class="rule-status-box valid">
             <div style="font-size:13px; font-weight:800; color:#0F172A; margin-bottom:4px;">
-              法则 2：头 × 尾 = 翅 × 翅 (S₁×S₂ = S₃×S₄)
+              法则 2（风筝性质①）：头 × 尾 = 翅 × 翅
               <span id="badgeRuleProd" class="rule-badge valid">始终相等 ✓</span>
             </div>
             <div id="descRuleProd" style="font-size:12px; line-height:1.55; color:#334155;">
-              在<strong>任意凸四边形</strong>中均成立！即便拖动顶点使上下底不平行、左右翅膀一大一小（S₃ ≠ S₄），由等高三角形面积比等于底之比（S₁/S₃ = DO/BO = S₄/S₂），交叉相乘依然满足 <strong>S₁ × S₂ = S₃ × S₄</strong>！
+              课堂上把<strong>任意四边形</strong>对角线模型称为<strong>“风筝模型”</strong>。即便不平行（S₃ ≠ S₄），由等高底比 S₁/S₃ = DO/BO = S₄/S₂，交叉相乘恒有 <strong>S₁ × S₂ = S₃ × S₄</strong>！
             </div>
           </div>
 
-          <p style="font-size:12px; line-height:1.5; color:var(--subtext); margin:4px 0 0 0;">
-            💡 <strong>操作小贴士</strong>：拖动单个顶点破坏平行时，上方会立即提示<strong>“双翅不再相等 ✗”</strong>；若开启<strong>「🔒 锁定平行」</strong>或拖回绿色吸附虚线，双翅立刻恢复相等！
-          </p>
+          <div id="ruleBoxKiteRatio" class="rule-status-box valid" style="margin-bottom:4px;">
+            <div style="font-size:13px; font-weight:800; color:#0F172A; margin-bottom:4px;">
+              法则 3（风筝性质②）：对角线比 = 两侧面积和之比
+              <span class="rule-badge valid">课堂重点 ★</span>
+            </div>
+            <div style="font-size:12px; line-height:1.6; color:#334155;">
+              <strong>AO : OC = (S₁ + S₃) : (S₄ + S₂) = S<sub>△ABD</sub> : S<sub>△CBD</sub></strong><br>
+              <strong>DO : OB = (S₁ + S₄) : (S₃ + S₂) = S<sub>△ACD</sub> : S<sub>△ACB</sub></strong><br>
+              <span id="liveKiteRatioText" style="color:var(--indigo); font-weight:800; font-family:var(--font-mono);">当前 AO:OC = 1.00 : 1.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 蝴蝶模型 & 风筝模型：课堂必考母题精讲 -->
+    <div class="cases-section">
+      <div class="cases-section-header">
+        <div class="cases-section-title">
+          <span>🏫</span> 风筝模型 &amp; 梯形蝴蝶 · 课堂笔记必考母题精讲
+        </div>
+        <span class="cases-section-sub">源自第35讲课堂板书 · 例6、例7、例8(格点)、例10</span>
+      </div>
+
+      <div class="cases-grid">
+        <!-- 课堂例 6 & 例 7 -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag">课堂例 6 &amp; 例 7 · 风筝两大性质</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">例6答: 21 / 例7答: 2倍</span>
+          </div>
+          <h4 class="case-title">风筝模型性质①（交叉积）与性质②（对角线比）</h4>
+          <div class="case-prob-text">
+            <strong>【例6】</strong>四边形土地总面积 <strong>52</strong> 公顷，对角线分成 4 个小三角形，相邻两块为 <strong>6</strong> 和 <strong>7</strong> 公顷，求最大一块三角形面积。<br>
+            <strong>【例7】</strong>四边形 <em>ABCD</em> 中，<em>S</em><sub>△ABD</sub> = <span class="frac"><span>1</span><span>3</span></span> <em>S</em><sub>△BCD</sub>，且 <em>AO</em> = 2，<em>DO</em> = 3，求 <em>CO</em> 是 <em>DO</em> 的几倍？
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 170" width="100%" height="100%">
+              <!-- 左侧：例6 -->
+              <polygon points="45,25 140,45 155,140 15,140" fill="#F8FAFC" stroke="#0F172A" stroke-width="1.8"/>
+              <line x1="45" y1="25" x2="155" y2="140" stroke="#0F172A" stroke-width="1.4"/>
+              <line x1="15" y1="140" x2="140" y2="45" stroke="#0F172A" stroke-width="1.4"/>
+              <text x="92" y="55" font-size="12" font-weight="800" fill="#0F172A">6</text>
+              <text x="122" y="85" font-size="12" font-weight="800" fill="#0F172A">7</text>
+              <text x="52" y="90" font-size="13" font-weight="800" fill="#0284C7">b=18</text>
+              <text x="88" y="128" font-size="13" font-weight="800" fill="#E11D48">a=21</text>
+              <text x="85" y="160" font-size="11" font-weight="700" fill="#64748B" text-anchor="middle">例6：6a = 7b 且 a+b=39</text>
+
+              <!-- 分隔线 -->
+              <line x1="165" y1="15" x2="165" y2="155" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+              <!-- 右侧：例7 -->
+              <polygon points="210,40 285,32 308,135 180,135" fill="#F8FAFC" stroke="#0284C7" stroke-width="1.8"/>
+              <line x1="210" y1="40" x2="308" y2="135" stroke="#E11D48" stroke-width="2"/>
+              <line x1="180" y1="135" x2="285" y2="32" stroke="#0F172A" stroke-width="1.6"/>
+              <text x="198" y="38" font-size="11" font-weight="800">A</text>
+              <text x="290" y="32" font-size="11" font-weight="800">D</text>
+              <text x="168" y="142" font-size="11" font-weight="800">B</text>
+              <text x="308" y="150" font-size="11" font-weight="800">C</text>
+              <text x="236" y="96" font-size="11" font-weight="800">O</text>
+              <text x="225" y="68" font-size="12" font-weight="800" fill="#0284C7">2</text>
+              <text x="262" y="64" font-size="12" font-weight="800" fill="#0284C7">3</text>
+              <text x="275" y="102" font-size="13" font-weight="800" fill="#E11D48">OC=6</text>
+              <text x="245" y="160" font-size="11" font-weight="700" fill="#64748B" text-anchor="middle">例7：AO/OC = S(ABD)/S(BCD)</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>【例6 解析】</strong>设另外两块为 <em>a</em>（下）和 <em>b</em>（左）。<br>
+              ① 剩下的面积和：<em>a</em> + <em>b</em> = 52 − 6 − 7 = <strong>39</strong>；<br>
+              ② 风筝性质①（对顶乘积相等）：<strong>6<em>a</em> = 7<em>b</em></strong> ⇒ <em>a</em> : <em>b</em> = 7 : 6。<br>
+              按比例分配：<em>a</em> = 39 × <span class="frac"><span>7</span><span>7+6</span></span> = <strong>21 公顷</strong>（最大块）。
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>【例7 解析】</strong>直接用<strong>风筝性质②</strong>：<br>
+              <span class="frac"><span>AO</span><span>OC</span></span> = <span class="frac"><span>S<sub>△ABD</sub></span><span>S<sub>△BCD</sub></span></span> = <span class="frac"><span>1</span><span>3</span></span>。已知 <em>AO</em> = 2，则 <em>OC</em> = 2 × 3 = <strong>6</strong>。<br>
+              故 <em>CO</em> ÷ <em>DO</em> = 6 ÷ 3 = <strong>2 倍</strong>！
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 8 (格点 + 风筝模型交点) -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag rose">课堂例 8 · 格点点阵 + 风筝交点 🔥</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：12/11</span>
+          </div>
+          <h4 class="case-title">阴影顶点不在格点上？构造格点风筝求交点比！</h4>
+          <div class="case-prob-text">
+            如图，5×4 点阵中相邻两个格点间的距离是 <strong>1</strong>，阴影三角形 △<em>ABO</em> 的右下方顶点 <em>O</em> 是连线 <em>AC</em> 与 <em>BD</em> 的交点，求阴影面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <!-- 5x4 格点: 列 x = 50, 95, 140, 185, 230 (间距45); 行 y = 25, 65, 105, 145 (间距40) -->
+              <!-- A = (第3列140, 第1行25); B = (第1列50, 第3行105); C = (第2列95, 第4行145); D = (第5列230, 第2行65) -->
+              <!-- 红色外框辅助割补: x: 50..230, y: 25..145 -->
+              <rect x="50" y="25" width="180" height="120" fill="none" stroke="#EF4444" stroke-width="1.3" stroke-dasharray="3 2"/>
+              <!-- 外围格点四边形 ABCD 蓝色虚线 -->
+              <polygon points="140,25 50,105 95,145 230,65" fill="#EFF6FF" fill-opacity="0.6" stroke="#0284C7" stroke-width="1.8" stroke-dasharray="4 3"/>
+              <!-- 求 AC 与 BD 交点 O: A(140,25)->C(95,145), B(50,105)->D(230,65) -->
+              <!-- 计算得 O 约在 (111.4, 91.4) -->
+              <!-- 阴影三角形 ABO -->
+              <polygon points="140,25 50,105 111.4,91.4" fill="#94A3B8" fill-opacity="0.8" stroke="#0F172A" stroke-width="2"/>
+              <!-- 对角线 AC, BD -->
+              <line x1="140" y1="25" x2="95" y2="145" stroke="#E11D48" stroke-width="1.8"/>
+              <line x1="50" y1="105" x2="230" y2="65" stroke="#0F172A" stroke-width="1.8"/>
+              <!-- 20 个格点圆点 -->
+              <g fill="#0F172A">
+                <circle cx="50" cy="25" r="3.5"/><circle cx="95" cy="25" r="3.5"/><circle cx="140" cy="25" r="4.5"/><circle cx="185" cy="25" r="3.5"/><circle cx="230" cy="25" r="3.5"/>
+                <circle cx="50" cy="65" r="3.5"/><circle cx="95" cy="65" r="3.5"/><circle cx="140" cy="65" r="3.5"/><circle cx="185" cy="65" r="3.5"/><circle cx="230" cy="65" r="4.5"/>
+                <circle cx="50" cy="105" r="4.5"/><circle cx="95" cy="105" r="3.5"/><circle cx="140" cy="105" r="3.5"/><circle cx="185" cy="105" r="3.5"/><circle cx="230" cy="105" r="3.5"/>
+                <circle cx="50" cy="145" r="3.5"/><circle cx="95" cy="145" r="4.5"/><circle cx="140" cy="145" r="3.5"/><circle cx="185" cy="145" r="3.5"/><circle cx="230" cy="145" r="3.5"/>
+              </g>
+              <circle cx="111.4" cy="91.4" r="4" fill="#FDE047" stroke="#E11D48" stroke-width="2"/>
+              <!-- 字母与比例标注 -->
+              <text x="145" y="20" font-size="12" font-weight="800" fill="#0F172A">A</text>
+              <text x="34" y="110" font-size="12" font-weight="800" fill="#0F172A">B</text>
+              <text x="90" y="162" font-size="12" font-weight="800" fill="#0F172A">C</text>
+              <text x="238" y="70" font-size="12" font-weight="800" fill="#0F172A">D</text>
+              <text x="116" y="104" font-size="11.5" font-weight="800" fill="#E11D48">O</text>
+              <text x="82" y="108" font-size="12" font-weight="800" fill="#0284C7">4份</text>
+              <text x="165" y="76" font-size="12" font-weight="800" fill="#0284C7">7份</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（连格点四边形 ABCD 算大块面积）</strong>：用红框割补法（或毕克定理）可算得：<br>
+              • 左下 <em>S</em><sub>△ABC</sub> = <strong>2</strong>；<br>
+              • 右侧 <em>S</em><sub>△ACD</sub> = 梯形 7.5 − 1 − 3 = <strong>3.5</strong>；<br>
+              • 上方 <em>S</em><sub>△ABD</sub> = 长方形 6 − 2 − 1 = <strong>3</strong>。
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（用风筝性质②求 BO : OD）</strong>：在四边形 <em>ABCD</em> 中，对角线 <em>AC</em> 把 <em>BD</em> 分成两段：<br>
+              <em>BO</em> : <em>OD</em> = <em>S</em><sub>△ABC</sub> : <em>S</em><sub>△ACD</sub> = 2 : 3.5 = <strong>4 : 7</strong>！
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（等高切分 △ABD）</strong>：在 △<em>ABD</em>（面积为 3）中，△<em>ABO</em> 占 <span class="frac"><span>4</span><span>4+7</span></span>：<br>
+              <em>S</em><sub>阴影△ABO</sub> = 3 × <span class="frac"><span>4</span><span>11</span></span> = <strong><span class="frac"><span>12</span><span>11</span></span></strong>！
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 10 (梯形蝴蝶定理 (a+b)^2 份) -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag emerald">课堂例 10 · 梯形蝴蝶总份数 (a+b)²</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：25/4</span>
+          </div>
+          <h4 class="case-title">梯形蝴蝶四块比 a² : b² : ab : ab 与总份数 (a+b)²</h4>
+          <div class="case-prob-text">
+            如图，在梯形 <em>ABCD</em> 中，<em>AB // CD</em>，对角线相交于点 <em>O</em>。已知下底 <em>AB</em> = <strong>5</strong>，上底 <em>CD</em> = <strong>3</strong>，且梯形总面积为 <strong>16</strong>，求下底 △<em>AOB</em> 的面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 170" width="100%" height="100%">
+              <polygon points="105,35 215,35 265,140 55,140" fill="#F8FAFC" stroke="#0F172A" stroke-width="2" stroke-linejoin="round"/>
+              <polygon points="105,35 215,35 160,74.4" fill="#BAE6FD" fill-opacity="0.7"/>
+              <polygon points="55,140 265,140 160,74.4" fill="#BAE6FD" fill-opacity="0.9"/>
+              <polygon points="105,35 55,140 160,74.4" fill="#FDE68A" fill-opacity="0.8"/>
+              <polygon points="215,35 265,140 160,74.4" fill="#FDE68A" fill-opacity="0.8"/>
+              <line x1="105" y1="35" x2="265" y2="140" stroke="#0F172A" stroke-width="1.6"/>
+              <line x1="55" y1="140" x2="215" y2="35" stroke="#0F172A" stroke-width="1.6"/>
+              <text x="90" y="34" font-size="12" font-weight="800">D</text>
+              <text x="222" y="34" font-size="12" font-weight="800">C</text>
+              <text x="38" y="144" font-size="12" font-weight="800">A</text>
+              <text x="272" y="144" font-size="12" font-weight="800">B</text>
+              <text x="160" y="26" font-size="13" font-weight="800" fill="#0284C7" text-anchor="middle">a = 3</text>
+              <text x="160" y="160" font-size="13" font-weight="800" fill="#0284C7" text-anchor="middle">b = 5</text>
+              <text x="160" y="58" font-size="13" font-weight="800" fill="#0369A1" text-anchor="middle">3²=9份</text>
+              <text x="160" y="122" font-size="14" font-weight="800" fill="#E11D48" text-anchor="middle">5²=25份</text>
+              <text x="108" y="88" font-size="12.5" font-weight="800" fill="#B45309" text-anchor="middle">15份</text>
+              <text x="212" y="88" font-size="12.5" font-weight="800" fill="#B45309" text-anchor="middle">15份</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（写四块份数）</strong>：上底 <em>a</em> = 3，下底 <em>b</em> = 5。<br>
+              • 上三角 = 3² = <strong>9 份</strong>；下三角 = 5² = <strong>25 份</strong>；<br>
+              • 左翅 = 右翅 = 3 × 5 = <strong>15 份</strong>。
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（总份数完全平方公式）</strong>：<br>
+              总份数 = (<em>a</em> + <em>b</em>)² = (3 + 5)² = <strong>64 份</strong>（即 9 + 25 + 15 + 15 = 64）。<br>
+              1 份的面积 = 16 ÷ 64 = <strong><span class="frac"><span>1</span><span>4</span></span></strong>。
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（求 △AOB）</strong>：<em>S</em><sub>△AOB</sub> = 25 份 × <span class="frac"><span>1</span><span>4</span></span> = <strong><span class="frac"><span>25</span><span>4</span></span>（或 6.25）</strong>！
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1228,12 +1688,135 @@
           </div>
           <div class="math-formula-box">
             相似比定理：<br>
-            <span class="formula-highlight">S<sub>上</sub> / S<sub>下</sub> = (a / A)² = (h₁ / h₂)²</span>
+            <span class="formula-highlight">S<sub>上</sub> / S<sub>下</sub> = (a / A)² = (h₁ / h₂)²</span><br>
+            交叉线段比：<span class="formula-highlight">AO / OC = DO / OB = a / A</span>
           </div>
-          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
+          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0 0 8px 0;">
             沙漏形状上下两底平行，内错角相等，因此上下两三角形<strong>严格相似</strong>！<br>
-            不仅对应底边成比例，高也成相同比例，故面积比为<strong>边长比例的平方</strong>（底乘高双倍放大）。
+            不仅对应底边成比例，高与交叉线段也成相同比例 <em>a : A</em>，故面积比为<strong>边长比例的平方</strong>（底乘高双倍放大）。
           </p>
+          <div style="font-size:12px; line-height:1.55; color:#065F46; background:#ECFDF5; border:1px solid var(--emerald-border); border-radius:8px; padding:8px 10px;">
+            💡 <strong>课堂设份数秘籍</strong>：在正方形或平行四边形中看到中点、三等分点，立刻找平行边构成的<strong>沙漏</strong>，按 <em>a² : A² : aA</em> 标上份数就能秒破全局！
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 沙漏模型：课堂必考母题精讲 -->
+    <div class="cases-section">
+      <div class="cases-section-header">
+        <div class="cases-section-title">
+          <span>🏫</span> 沙漏 + 蝴蝶设份数 · 课堂笔记必考母题精讲
+        </div>
+        <span class="cases-section-sub">源自第35讲课堂板书 · 例13 &amp; 例14</span>
+      </div>
+
+      <div class="cases-grid">
+        <!-- 课堂例 13 -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag amber">课堂例 13 · 正方形中点 1:2 沙漏设份数</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：1 cm²</span>
+          </div>
+          <h4 class="case-title">正方形面积为 3，M 为 AD 中点，12 份法求双翼阴影</h4>
+          <div class="case-prob-text">
+            如图，正方形 <em>ABCD</em> 的面积为 <strong>3 平方厘米</strong>，<em>M</em> 是 <em>AD</em> 边上的中点。连接 <em>AC</em>、<em>BM</em>、<em>CM</em>，求图中两块阴影三角形面积之和。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <!-- 正方形 B(85,22) C(225,22) D(225,152) A(85,152), M(155,152) -->
+              <rect x="85" y="22" width="140" height="130" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+              <!-- G 是 BM 与 AC 交点: B(85,22)->M(155,152), A(85,152)->C(225,22) => AM:BC=1:2 => G 在 1/3 处: (131.7, 108.7) -->
+              <polygon points="85,22 85,152 131.7,108.7" fill="#94A3B8" fill-opacity="0.8"/>
+              <polygon points="225,22 155,152 131.7,108.7" fill="#94A3B8" fill-opacity="0.8"/>
+              <line x1="85" y1="152" x2="225" y2="22" stroke="#E11D48" stroke-width="1.8"/>
+              <line x1="85" y1="22" x2="155" y2="152" stroke="#0F172A" stroke-width="1.6"/>
+              <line x1="225" y1="22" x2="155" y2="152" stroke="#E11D48" stroke-width="1.8"/>
+              <text x="70" y="26" font-size="12" font-weight="800">B</text>
+              <text x="232" y="26" font-size="12" font-weight="800">C</text>
+              <text x="70" y="158" font-size="12" font-weight="800">A</text>
+              <text x="150" y="168" font-size="12" font-weight="800">M</text>
+              <text x="232" y="158" font-size="12" font-weight="800">D</text>
+              <text x="122" y="102" font-size="11.5" font-weight="800">G</text>
+              <!-- 课堂板书份数 -->
+              <text x="155" y="15" font-size="12.5" font-weight="800" fill="#0284C7" text-anchor="middle">2</text>
+              <text x="120" y="167" font-size="12.5" font-weight="800" fill="#0284C7" text-anchor="middle">1</text>
+              <text x="152" y="65" font-size="14" font-weight="800" fill="#E11D48">4份</text>
+              <text x="120" y="142" font-size="13" font-weight="800" fill="#E11D48">1份</text>
+              <text x="96" y="102" font-size="13" font-weight="800" fill="#0F172A">2份</text>
+              <text x="156" y="112" font-size="13" font-weight="800" fill="#0F172A">2份</text>
+              <text x="196" y="122" font-size="14" font-weight="800" fill="#E11D48">3份</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（找梯形 ABCM 中的 1:2 沙漏）</strong>：<em>AM // BC</em>，且 <em>AM</em> : <em>BC</em> = <strong>1 : 2</strong>。<br>
+              由梯形蝴蝶/沙漏定理：<em>S</em><sub>△AGM</sub> = 1² = <strong>1份</strong>，<em>S</em><sub>△BGC</sub> = 2² = <strong>4份</strong>，两翼 <em>S</em><sub>△ABG</sub> = <em>S</em><sub>△MCG</sub> = 1×2 = <strong>2份</strong>！
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（算正方形总份数）</strong>：对角线 <em>AC</em> 平分正方形，上半 △<em>ABC</em> = 2 + 4 = <strong>6 份</strong>，故整个正方形 = 6 × 2 = <strong>12 份</strong>！（右下 △<em>CDM</em> = 3 份）
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（求阴影）</strong>：两块阴影共 2 + 2 = <strong>4 份</strong>（占正方形的 <span class="frac"><span>4</span><span>12</span></span> = <span class="frac"><span>1</span><span>3</span></span>）。<br>
+              故 <em>S</em><sub>阴影</sub> = 3 × <span class="frac"><span>1</span><span>3</span></span> = <strong>1 平方厘米</strong>！
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 14 -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag emerald">课堂例 14 · 平行四边形延长线沙漏</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：21 cm²</span>
+          </div>
+          <h4 class="case-title">平行四边形底边延长 BC:CE = 3:2，已知 1 块求全部</h4>
+          <div class="case-prob-text">
+            如图，在平行四边形 <em>ABCD</em> 中，<em>BC</em> : <em>CE</em> = <strong>3 : 2</strong>，已知 △<em>ODE</em> 的面积为 <strong>6 cm²</strong>，求图中阴影部分（四边形 <em>ABCO</em> + △<em>ODE</em>）的面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <!-- A(95,32) D(215,32) C(175,140) B(55,140) E(255,140) -->
+              <!-- O 是 AE 与 DC 交点: A(95,32)->E(255,140), D(215,32)->C(175,140) => AD:CE = 3:2 => O 在 3/5 处: (191, 96.8) -->
+              <!-- 阴影四边形 ABCO + △ODE -->
+              <polygon points="95,32 55,140 175,140 191,96.8" fill="#94A3B8" fill-opacity="0.8"/>
+              <polygon points="215,32 255,140 191,96.8" fill="#94A3B8" fill-opacity="0.8"/>
+              <!-- 边框与连线 -->
+              <polygon points="95,32 215,32 175,140 55,140" fill="none" stroke="#0F172A" stroke-width="1.8"/>
+              <line x1="175" y1="140" x2="255" y2="140" stroke="#E11D48" stroke-width="2"/>
+              <line x1="215" y1="32" x2="255" y2="140" stroke="#0F172A" stroke-width="1.6"/>
+              <line x1="95" y1="32" x2="255" y2="140" stroke="#E11D48" stroke-width="1.8"/>
+              <!-- 辅助虚线 AC -->
+              <line x1="95" y1="32" x2="175" y2="140" stroke="#0284C7" stroke-width="1.8" stroke-dasharray="4 3"/>
+              <!-- 标注 -->
+              <text x="80" y="32" font-size="12" font-weight="800">A</text>
+              <text x="220" y="32" font-size="12" font-weight="800">D</text>
+              <text x="40" y="145" font-size="12" font-weight="800">B</text>
+              <text x="170" y="156" font-size="12" font-weight="800">C</text>
+              <text x="260" y="145" font-size="12" font-weight="800">E</text>
+              <text x="186" y="88" font-size="11.5" font-weight="800">O</text>
+              <text x="155" y="24" font-size="12.5" font-weight="800" fill="#E11D48" text-anchor="middle">3</text>
+              <text x="115" y="156" font-size="12.5" font-weight="800" fill="#E11D48" text-anchor="middle">3</text>
+              <text x="215" y="156" font-size="12.5" font-weight="800" fill="#E11D48" text-anchor="middle">2</text>
+              <text x="165" y="65" font-size="13" font-weight="800" fill="#B45309">9</text>
+              <text x="216" y="96" font-size="13" font-weight="800" fill="#0284C7">6</text>
+              <text x="195" y="132" font-size="12.5" font-weight="800" fill="#E11D48">4</text>
+              <text x="162" y="108" font-size="12.5" font-weight="800" fill="#0284C7">6</text>
+              <text x="102" y="115" font-size="14" font-weight="800" fill="#0284C7">15</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（连辅助线 AC，看梯形 ACED 蝴蝶/沙漏）</strong>：<em>AD // CE</em>，且 <em>AD</em> : <em>CE</em> = <strong>3 : 2</strong>。<br>
+              已知右翅 <em>S</em><sub>△ODE</sub> = <strong>6</strong>，则左翅 <em>S</em><sub>△OAC</sub> = <strong>6</strong>；下三角 <em>S</em><sub>△OCE</sub> = 6 × <span class="frac"><span>2</span><span>3</span></span> = <strong>4</strong>（上三角 △<em>OAD</em> = 9）。
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（等高模型算 △ABC）</strong>：在 △<em>ABE</em> 中，<em>BC</em> : <em>CE</em> = 3 : 2，且 <em>S</em><sub>△ACE</sub> = 6 + 4 = <strong>10</strong>。<br>
+              故 <em>S</em><sub>△ABC</sub> = 10 × <span class="frac"><span>3</span><span>2</span></span> = <strong>15</strong>！
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（汇总阴影）</strong>：<em>S</em><sub>阴影</sub> = <em>S</em><sub>△ABC</sub>(15) + <em>S</em><sub>△OAC</sub>(6) + <em>S</em><sub>△ODE</sub>(6) = <strong>27 cm²</strong>（注：若仅求四边形 <em>ABCO</em> 为 15+6=<strong>21</strong>，加右翼 6 共 27）。
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1314,13 +1897,178 @@
             <span>🐦</span> 鸟头模型（共角定理）本质
           </div>
           <div class="math-formula-box">
-            核心公式：<br>
-            <span class="formula-highlight">S<sub>黄</sub> / S<sub>蓝</sub> = (a × b) / (A × B)</span>
+            核心公式（共角相等或互补）：<br>
+            <span class="formula-highlight">S<sub>△ADE</sub> / S<sub>△ABC</sub> = (AD × AE) / (AB × AC)</span>
           </div>
-          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
-            两三角形共用一个角（或互补、对顶），面积比严格等于两边乘积之比。<br>
-            <strong>题目12妙用</strong>：四边形向外延展形成的角与内角互补，直接套用鸟头乘积比即可证明外围每个角三角形等于内侧对应三角形的 2 倍！
+          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0 0 10px 0;">
+            两个三角形中有一个角<strong>相等或互补（相加 180°）</strong>，这两个三角形叫做<strong>共角三角形</strong>，面积比等于对应角两夹边的乘积之比！
           </p>
+          <div style="font-size:12px; line-height:1.6; color:#334155; background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:8px 10px;">
+            🔥 <strong>课堂两大进阶大招</strong>：<br>
+            1. <strong>三向内缩鸟头（例11）</strong>：在 ∠A、∠B、∠C 三个角同时用鸟头算占全图的几分之几，再用 <strong>1 − 三角占比和</strong> 求中心三角形！<br>
+            2. <strong>三向外扩风车（例13）</strong>：三边顺次延长形成 3 个<strong>互补角鸟头</strong>，直接算每块倍数相加！
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 鸟头模型：课堂必考母题精讲 -->
+    <div class="cases-section">
+      <div class="cases-section-header">
+        <div class="cases-section-title">
+          <span>🏫</span> 鸟头模型 · 课堂笔记必考母题精讲（内缩 &amp; 外扩双子星）
+        </div>
+        <span class="cases-section-sub">源自第34讲课堂板书 · 例10、例11、例13</span>
+      </div>
+
+      <div class="cases-grid">
+        <!-- 课堂例 10 & 练 10 -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag">课堂例 10 &amp; 练 10 · 共角与互补角</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">例10: 70 / 练10: 45</span>
+          </div>
+          <h4 class="case-title">内共角（图①）与延长线互补角（图②）基础实战</h4>
+          <div class="case-prob-text">
+            <strong>【例10】</strong><em>D、E</em> 在 <em>AB、AC</em> 上，<em>AD</em>:<em>AB</em> = 2:5，<em>AE</em>:<em>AC</em> = 4:7，<em>S</em><sub>△ADE</sub> = 16，求 <em>S</em><sub>△ABC</sub>。<br>
+            <strong>【练10】</strong><em>D</em> 在 <em>BA</em> 延长线上，<em>AB</em>:<em>AD</em> = 5:2，<em>AE</em>:<em>AC</em> = 2:3，<em>S</em><sub>△ADE</sub> = 12，求 <em>S</em><sub>△ABC</sub>。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 170" width="100%" height="100%">
+              <!-- 左：例10 -->
+              <polygon points="80,25 30,145 135,145" fill="#F8FAFC" stroke="#0F172A" stroke-width="1.8"/>
+              <polygon points="80,25 60,73 111,96" fill="#BAE6FD" fill-opacity="0.75" stroke="#0284C7" stroke-width="1.8"/>
+              <text x="76" y="18" font-size="11.5" font-weight="800">A</text>
+              <text x="18" y="150" font-size="11.5" font-weight="800">B</text>
+              <text x="140" y="150" font-size="11.5" font-weight="800">C</text>
+              <text x="45" y="75" font-size="11" font-weight="800" fill="#0284C7">D(2/5)</text>
+              <text x="115" y="96" font-size="11" font-weight="800" fill="#0284C7">E(4/7)</text>
+              <text x="82" y="68" font-size="12" font-weight="800" fill="#E11D48" text-anchor="middle">16</text>
+              <text x="82" y="128" font-size="12" font-weight="800" fill="#0F172A" text-anchor="middle">总=70</text>
+
+              <line x1="165" y1="15" x2="165" y2="155" stroke="#E2E8F0" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+              <!-- 右：练10 (D在BA延长线上) -->
+              <polygon points="240,65 195,145 290,145" fill="#F8FAFC" stroke="#0F172A" stroke-width="1.8"/>
+              <polygon points="240,65 262,25 273,118" fill="#FEF08A" fill-opacity="0.8" stroke="#D97706" stroke-width="1.8"/>
+              <text x="225" y="66" font-size="11.5" font-weight="800">A</text>
+              <text x="266" y="24" font-size="11.5" font-weight="800" fill="#E11D48">D</text>
+              <text x="182" y="150" font-size="11.5" font-weight="800">B</text>
+              <text x="295" y="150" font-size="11.5" font-weight="800">C</text>
+              <text x="278" y="118" font-size="11" font-weight="800" fill="#0284C7">E</text>
+              <text x="258" y="68" font-size="11.5" font-weight="800" fill="#B45309">12</text>
+              <text x="240" y="128" font-size="12" font-weight="800" fill="#0F172A" text-anchor="middle">S(ABC)=45</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>【例10】</strong><span class="frac"><span>S<sub>△ADE</sub></span><span>S<sub>△ABC</sub></span></span> = <span class="frac"><span>AD × AE</span><span>AB × AC</span></span> = <span class="frac"><span>2 × 4</span><span>5 × 7</span></span> = <span class="frac"><span>8</span><span>35</span></span>。<br>
+              因 8 份 = 16（每份=2），故 <em>S</em><sub>△ABC</sub> = 35 × 2 = <strong>70 cm²</strong>！
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>【练10】</strong>∠<em>DAE</em> 与 ∠<em>BAC</em> <strong>互补（相加180°）</strong>，同样套鸟头公式：<br>
+              <span class="frac"><span>S<sub>△ADE</sub></span><span>S<sub>△ABC</sub></span></span> = <span class="frac"><span>AD × AE</span><span>AB × AC</span></span> = <span class="frac"><span>2 × 2</span><span>5 × 3</span></span> = <span class="frac"><span>4</span><span>15</span></span> ⇒ <em>S</em><sub>△ABC</sub> = 12 ÷ <span class="frac"><span>4</span><span>15</span></span> = <strong>45 cm²</strong>！
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 11 (三向内缩鸟头) -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag amber">课堂例 11 · 三方向内缩鸟头 🔥</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：24 cm²</span>
+          </div>
+          <h4 class="case-title">三个角同时用鸟头，整体“1 减空白”逆推总面积</h4>
+          <div class="case-prob-text">
+            如图，已知中间 △<em>DEF</em> 的面积为 <strong>7 平方厘米</strong>，且 <em>BE = CE</em>，<em>AD = 2BD</em>，<em>CF = 3AF</em>，求大三角形 △<em>ABC</em> 的面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <!-- A(165,20), B(55,145), C(275,145) -->
+              <!-- D 在 AB 上 AD=2BD => D(91.7, 103.3); E 在 BC 中点 => E(165, 145); F 在 AC 上 CF=3AF => F(192.5, 51.25) -->
+              <polygon points="165,20 91.7,103.3 192.5,51.25" fill="#BAE6FD" fill-opacity="0.7" stroke="#0284C7" stroke-width="1.8"/>
+              <polygon points="55,145 91.7,103.3 165,145" fill="#BAE6FD" fill-opacity="0.7" stroke="#0284C7" stroke-width="1.8"/>
+              <polygon points="275,145 165,145 192.5,51.25" fill="#FEF08A" fill-opacity="0.8" stroke="#D97706" stroke-width="1.8"/>
+              <polygon points="91.7,103.3 165,145 192.5,51.25" fill="#FFE4E6" fill-opacity="0.9" stroke="#E11D48" stroke-width="2"/>
+              <text x="162" y="14" font-size="12" font-weight="800">A</text>
+              <text x="40" y="150" font-size="12" font-weight="800">B</text>
+              <text x="282" y="150" font-size="12" font-weight="800">C</text>
+              <text x="72" y="102" font-size="11.5" font-weight="800">D</text>
+              <text x="162" y="162" font-size="11.5" font-weight="800">E</text>
+              <text x="200" y="52" font-size="11.5" font-weight="800">F</text>
+              <!-- 边比例份数标注 -->
+              <text x="115" y="55" font-size="11.5" font-weight="800" fill="#0284C7">2</text>
+              <text x="62" y="125" font-size="11.5" font-weight="800" fill="#0284C7">1</text>
+              <text x="186" y="36" font-size="11.5" font-weight="800" fill="#0284C7">1</text>
+              <text x="245" y="95" font-size="11.5" font-weight="800" fill="#D97706">3</text>
+              <text x="110" y="160" font-size="11.5" font-weight="800" fill="#0284C7">1</text>
+              <text x="220" y="160" font-size="11.5" font-weight="800" fill="#D97706">1</text>
+              <!-- 面积占比 -->
+              <text x="155" y="58" font-size="12" font-weight="800" fill="#0369A1" text-anchor="middle">1/6</text>
+              <text x="102" y="135" font-size="12" font-weight="800" fill="#0369A1" text-anchor="middle">1/6</text>
+              <text x="218" y="122" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">3/8</text>
+              <text x="155" y="105" font-size="12.5" font-weight="800" fill="#BE123C" text-anchor="middle">7 (7/24)</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（三个顶角分别套鸟头公式）</strong>：<br>
+              • 顶角 A：<span class="frac"><span>S<sub>△ADF</sub></span><span>S<sub>△ABC</sub></span></span> = <span class="frac"><span>2 × 1</span><span>3 × 4</span></span> = <strong><span class="frac"><span>1</span><span>6</span></span></strong>；<br>
+              • 左角 B：<span class="frac"><span>S<sub>△BDE</sub></span><span>S<sub>△ABC</sub></span></span> = <span class="frac"><span>1 × 1</span><span>3 × 2</span></span> = <strong><span class="frac"><span>1</span><span>6</span></span></strong>；<br>
+              • 右角 C：<span class="frac"><span>S<sub>△CFE</sub></span><span>S<sub>△ABC</sub></span></span> = <span class="frac"><span>3 × 1</span><span>4 × 2</span></span> = <strong><span class="frac"><span>3</span><span>8</span></span></strong>。
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第二步（整体减空白）</strong>：中心 △<em>DEF</em> 占比 = 1 − (<span class="frac"><span>1</span><span>6</span></span> + <span class="frac"><span>1</span><span>6</span></span> + <span class="frac"><span>3</span><span>8</span></span>) = 1 − <span class="frac"><span>17</span><span>24</span></span> = <strong><span class="frac"><span>7</span><span>24</span></span></strong>。<br>
+              故 <em>S</em><sub>△ABC</sub> = 7 ÷ <span class="frac"><span>7</span><span>24</span></span> = <strong>24 cm²</strong>！
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 13 (三向外扩风车鸟头) -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag rose">课堂例 13 · 三向外扩风车鸟头 🔥</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：18</span>
+          </div>
+          <h4 class="case-title">题目12的三角形姊妹篇：顺次延长三边求外扩面积</h4>
+          <div class="case-prob-text">
+            如图，已知 △<em>ABC</em> 面积为 <strong>1</strong>，延长 <em>AB</em> 至 <em>D</em> 使 <em>BD = AB</em>；延长 <em>BC</em> 至 <em>E</em> 使 <em>CE = 2BC</em>；延长 <em>CA</em> 至 <em>F</em> 使 <em>AF = 3AC</em>，求大 △<em>DEF</em> 的面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <!-- F(85,15), D(85,155), E(295,95) -->
+              <!-- 内部 ABC: A(135,75), B(112,115), C(162,102) -->
+              <polygon points="85,15 85,155 295,95" fill="#F8FAFC" stroke="#0F172A" stroke-width="2" stroke-linejoin="round"/>
+              <polygon points="85,15 85,155 135,75" fill="#FFE4E6" fill-opacity="0.7" stroke="#E11D48" stroke-width="1.4"/>
+              <polygon points="85,155 295,95 112,115" fill="#FEF3C7" fill-opacity="0.7" stroke="#D97706" stroke-width="1.4"/>
+              <polygon points="295,95 85,15 162,102" fill="#ECFDF5" fill-opacity="0.7" stroke="#059669" stroke-width="1.4"/>
+              <polygon points="135,75 112,115 162,102" fill="#FDE047" stroke="#0F172A" stroke-width="2"/>
+              <text x="70" y="20" font-size="12" font-weight="800">F</text>
+              <text x="70" y="160" font-size="12" font-weight="800">D</text>
+              <text x="302" y="98" font-size="12" font-weight="800">E</text>
+              <text x="132" y="68" font-size="11" font-weight="800">A</text>
+              <text x="100" y="114" font-size="11" font-weight="800">B</text>
+              <text x="164" y="115" font-size="11" font-weight="800">C</text>
+              <text x="136" y="100" font-size="12" font-weight="800" fill="#0F172A">1</text>
+              <text x="102" y="88" font-size="14" font-weight="800" fill="#E11D48">6</text>
+              <text x="195" y="72" font-size="14" font-weight="800" fill="#059669">8</text>
+              <text x="155" y="128" font-size="14" font-weight="800" fill="#B45309">3</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（找 3 组互补角鸟头）</strong>：外围三个大三角形与中心 △<em>ABC</em> 在顶点 A、B、C 处分别<strong>角互补（相加 180°）</strong>！
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（连用 3 次乘积比）</strong>：<br>
+              • 左翼 △<em>ADF</em>：夹边比 (<em>AD</em>/<em>AB</em>) × (<em>AF</em>/<em>AC</em>) = 2 × 3 = <strong>6</strong>；<br>
+              • 右上 △<em>CFE</em>：夹边比 (<em>CF</em>/<em>AC</em>) × (<em>CE</em>/<em>BC</em>) = (3+1) × 2 = <strong>8</strong>；<br>
+              • 下翼 △<em>BDE</em>：夹边比 (<em>BD</em>/<em>AB</em>) × (<em>BE</em>/<em>BC</em>) = 1 × (2+1) = <strong>3</strong>。
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（四块求和）</strong>：<em>S</em><sub>△DEF</sub> = 1 + 6 + 8 + 3 = <strong>18</strong>！
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1399,15 +2147,190 @@
       <div class="side-info">
         <div class="card">
           <div class="section-head">
-            <span>🕊️</span> 燕尾模型黄金三等比
+            <span>🕊️</span> 燕尾模型黄金三等比 &amp; 课堂口诀
           </div>
           <div class="math-formula-box">
-            核心定理：<br>
-            <span class="formula-highlight">S₁ / S₂ = S₃ / S₄ = d₁ / d₂</span>
+            燕尾三方向定理：<br>
+            • 蓝燕尾(向下)：<span class="formula-highlight">S<sub>左</sub> / S<sub>右</sub> = BD / DC</span><br>
+            • 黄燕尾(向右)：<span class="formula-highlight">S<sub>上</sub> / S<sub>下</sub> = AE / EC</span><br>
+            • 绿燕尾(向左)：<span class="formula-highlight">S<sub>上</sub> / S<sub>下</sub> = AF / FB</span>
           </div>
-          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
-            形状如同展开的燕子尾巴。当顶点 <em>A</em> 与点 <em>P</em> 的射线交底边于 <em>D</em> 时，左侧大面积与右侧大面积之比、下方两小面积之比，<strong>完全等同于底边线段分割比 <em>BD / CD</em></strong>！
+          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0 0 8px 0;">
+            <strong>推导原理（等比性质）</strong>：<br>
+            <span class="frac"><span>S<sub>△ABD</sub> − S<sub>△BOD</sub></span><span>S<sub>△ACD</sub> − S<sub>△COD</sub></span></span> = <span class="frac"><span>BD</span><span>DC</span></span> = <span class="frac"><span>S<sub>△ABO</sub></span><span>S<sub>△ACO</sub></span></span>
           </p>
+          <div style="font-size:12px; line-height:1.6; color:#991B1B; background:#FEF2F2; border:1px solid #FECACA; border-radius:8px; padding:8px 10px;">
+            🎯 <strong>课堂老师红字口诀</strong>：<br>
+            <strong>1. 找到开口方向</strong>（燕子尾巴朝哪条边张开）；<br>
+            <strong>2. 燕尾面积比 = 开口同侧的底边线段比！</strong><br>
+            <strong>3. 残缺燕尾必添线</strong>：只有两条连线相交时，主动把<strong>第三个顶点与交点连起来</strong>补齐燕尾！
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 燕尾模型：课堂必考母题精讲 -->
+    <div class="cases-section">
+      <div class="cases-section-header">
+        <div class="cases-section-title">
+          <span>🏫</span> 燕尾模型 · 课堂笔记三大必考题型精讲
+        </div>
+        <span class="cases-section-sub">源自第34讲课堂板书 · 例2、例3(添辅助线)、例4(知四求二)</span>
+      </div>
+
+      <div class="cases-grid">
+        <!-- 课堂例 2 (双燕尾求第三边比) -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag amber">课堂例 2 · 双燕尾求第三边比</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：27 : 16</span>
+          </div>
+          <h4 class="case-title">已知两边分点比，连用两次燕尾求第三边 AF : FB</h4>
+          <div class="case-prob-text">
+            如图，在 △<em>ABC</em> 中，三条线交于点 <em>G</em>，已知 <em>BD</em> : <em>DC</em> = <strong>4 : 9</strong>，<em>CE</em> : <em>EA</em> = <strong>4 : 3</strong>，求 <em>AF</em> : <em>FB</em>。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <polygon points="160,18 45,148 275,148" fill="#F8FAFC" stroke="#D97706" stroke-width="2" stroke-linejoin="round"/>
+              <line x1="160" y1="18" x2="125" y2="148" stroke="#0F172A" stroke-width="1.5"/>
+              <line x1="45" y1="148" x2="215" y2="80" stroke="#0F172A" stroke-width="1.5"/>
+              <line x1="275" y1="148" x2="110" y2="75" stroke="#0F172A" stroke-width="1.5"/>
+              <text x="156" y="13" font-size="12" font-weight="800">A</text>
+              <text x="30" y="152" font-size="12" font-weight="800">B</text>
+              <text x="282" y="152" font-size="12" font-weight="800">C</text>
+              <text x="120" y="164" font-size="11.5" font-weight="800">D</text>
+              <text x="222" y="80" font-size="11.5" font-weight="800">E</text>
+              <text x="95" y="75" font-size="11.5" font-weight="800">F</text>
+              <text x="148" y="102" font-size="11" font-weight="800">G</text>
+              <!-- 课堂板书数值 -->
+              <text x="85" y="162" font-size="12" font-weight="800" fill="#0284C7">4</text>
+              <text x="200" y="162" font-size="12" font-weight="800" fill="#0284C7">9</text>
+              <text x="200" y="50" font-size="12" font-weight="800" fill="#0284C7">3</text>
+              <text x="255" y="115" font-size="12" font-weight="800" fill="#0284C7">4</text>
+              <text x="172" y="78" font-size="12.5" font-weight="800" fill="#E11D48">3份</text>
+              <text x="195" y="112" font-size="12.5" font-weight="800" fill="#E11D48">4份</text>
+              <text x="108" y="102" font-size="12" font-weight="800" fill="#B45309">28/9</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（设右翼份数）</strong>：因 <em>AE</em> : <em>EC</em> = 3 : 4，设 <em>S</em><sub>△AGE</sub> = <strong>3份</strong>，<em>S</em><sub>△CGE</sub> = <strong>4份</strong>，则右翼大燕尾 <em>S</em><sub>△AGC</sub> = 3 + 4 = <strong>7份</strong>。
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（用下开口燕尾求左翼 △ABG）</strong>：<br>
+              <span class="frac"><span>S<sub>△ABG</sub></span><span>S<sub>△ACG</sub></span></span> = <span class="frac"><span>BD</span><span>DC</span></span> = <span class="frac"><span>4</span><span>9</span></span> ⇒ <em>S</em><sub>△ABG</sub> = 7 × <span class="frac"><span>4</span><span>9</span></span> = <strong><span class="frac"><span>28</span><span>9</span></span> 份</strong>。<br>
+              再用右开口燕尾：<span class="frac"><span>S<sub>△ABG</sub></span><span>S<sub>△CBG</sub></span></span> = <span class="frac"><span>AE</span><span>EC</span></span> = <span class="frac"><span>3</span><span>4</span></span> ⇒ <em>S</em><sub>△CBG</sub> = <span class="frac"><span>28</span><span>9</span></span> × <span class="frac"><span>4</span><span>3</span></span> = <strong><span class="frac"><span>112</span><span>27</span></span> 份</strong>。
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（用左开口燕尾求 AF : FB）</strong>：<br>
+              <span class="frac"><span>AF</span><span>FB</span></span> = <span class="frac"><span>S<sub>△ACG</sub></span><span>S<sub>△BCG</sub></span></span> = 7 ÷ <span class="frac"><span>112</span><span>27</span></span> = <strong><span class="frac"><span>27</span><span>16</span></span>（即 27 : 16）</strong>！
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 3 (残缺燕尾添辅助线) -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag rose">课堂例 3 · 残缺燕尾添辅助线 🔥</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：11/30</span>
+          </div>
+          <h4 class="case-title">只有两条交叉线？主动连 CF 补全燕尾 + 设 1 份法！</h4>
+          <div class="case-prob-text">
+            如图，△<em>ABC</em> 面积是 <strong>1</strong>，<em>E</em> 是 <em>AC</em> 中点（1:1），<em>BD</em> : <em>DC</em> = <strong>1 : 2</strong>，<em>AD</em> 与 <em>BE</em> 交于点 <em>F</em>。求右下角四边形 <em>DFEC</em> 的面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <polygon points="185,18 45,148 265,148" fill="#F8FAFC" stroke="#0284C7" stroke-width="2" stroke-linejoin="round"/>
+              <!-- 四边形 DFEC 着色 -->
+              <polygon points="118.3,148 135,98 225,83 265,148" fill="#FFE4E6" fill-opacity="0.8"/>
+              <line x1="185" y1="18" x2="118.3" y2="148" stroke="#E11D48" stroke-width="1.8"/>
+              <line x1="45" y1="148" x2="225" y2="83" stroke="#0F172A" stroke-width="1.8"/>
+              <!-- 关键辅助线 CF -->
+              <line x1="265" y1="148" x2="135" y2="98" stroke="#E11D48" stroke-width="2" stroke-dasharray="4 3"/>
+              <text x="182" y="13" font-size="12" font-weight="800">A</text>
+              <text x="30" y="152" font-size="12" font-weight="800">B</text>
+              <text x="272" y="152" font-size="12" font-weight="800">C</text>
+              <text x="114" y="164" font-size="12" font-weight="800">D</text>
+              <text x="232" y="85" font-size="12" font-weight="800">E</text>
+              <text x="122" y="94" font-size="12" font-weight="800" fill="#E11D48">F</text>
+              <!-- 份数 -->
+              <text x="82" y="162" font-size="12" font-weight="800" fill="#0284C7">1</text>
+              <text x="190" y="162" font-size="12" font-weight="800" fill="#0284C7">2</text>
+              <text x="218" y="52" font-size="12" font-weight="800" fill="#0284C7">1</text>
+              <text x="258" y="118" font-size="12" font-weight="800" fill="#0284C7">1</text>
+              <text x="98" y="138" font-size="13" font-weight="800" fill="#E11D48">1份</text>
+              <text x="165" y="138" font-size="13" font-weight="800" fill="#E11D48">2份</text>
+              <text x="115" y="75" font-size="13" font-weight="800" fill="#E11D48">3份</text>
+              <text x="182" y="78" font-size="12.5" font-weight="800" fill="#059669">3/4</text>
+              <text x="208" y="118" font-size="12.5" font-weight="800" fill="#059669">3/4</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（添辅助线 CF，设最小块为 1 份）</strong>：连接 <em>CF</em>！<br>
+              设左下最小块 <em>S</em><sub>△BDF</sub> = <strong>1 份</strong>。因 <em>BD</em>:<em>DC</em> = 1:2，则 <em>S</em><sub>△CDF</sub> = <strong>2 份</strong>。
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（连用两次燕尾推全图）</strong>：<br>
+              • 右开口燕尾：<span class="frac"><span>S<sub>△ABF</sub></span><span>S<sub>△CBF</sub></span></span> = <span class="frac"><span>AE</span><span>EC</span></span> = <span class="frac"><span>1</span><span>1</span></span> ⇒ <em>S</em><sub>△ABF</sub> = 1 + 2 = <strong>3 份</strong>！<br>
+              • 下开口燕尾：<span class="frac"><span>S<sub>△ABF</sub></span><span>S<sub>△ACF</sub></span></span> = <span class="frac"><span>BD</span><span>DC</span></span> = <span class="frac"><span>1</span><span>2</span></span> ⇒ <em>S</em><sub>△ACF</sub> = 3 ÷ 2 = <strong><span class="frac"><span>3</span><span>2</span></span> 份</strong>（平分给 △<em>AFE</em> 和 △<em>CFE</em> 各 <strong><span class="frac"><span>3</span><span>4</span></span> 份</strong>）。
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（按份数占比结算）</strong>：全图总份数 = 3 + 1 + 2 + <span class="frac"><span>3</span><span>2</span></span> = <strong><span class="frac"><span>15</span><span>2</span></span> 份</strong>；四边形 <em>DFEC</em> = 2 + <span class="frac"><span>3</span><span>4</span></span> = <strong><span class="frac"><span>11</span><span>4</span></span> 份</strong>。<br>
+              故 <em>S</em><sub>DFEC</sub> = <span class="frac"><span>11/4</span><span>15/2</span></span> = <strong><span class="frac"><span>11</span><span>30</span></span></strong>！
+            </div>
+          </div>
+        </div>
+
+        <!-- 课堂例 4 (6块知4块求总面积) -->
+        <div class="case-card">
+          <div class="case-badge-row">
+            <span class="case-tag emerald">课堂例 4 · 六块知四列双燕尾</span>
+            <span style="font-size:12px; font-weight:800; color:var(--emerald-dark);">秒杀答案：315</span>
+          </div>
+          <h4 class="case-title">△ABC 被分成 6 个小三角形，已知 4 块面积求全局</h4>
+          <div class="case-prob-text">
+            如图，△<em>ABC</em> 被 3 条交于点 <em>O</em> 的塞瓦线分成 6 个小三角形，已知其中 4 个的面积分别为 <strong>84、35、30、40</strong>，求 △<em>ABC</em> 的总面积。
+          </div>
+          <div class="case-svg-box">
+            <svg viewBox="0 0 320 175" width="100%" height="100%">
+              <polygon points="160,18 45,148 275,148" fill="#F8FAFC" stroke="#0284C7" stroke-width="2" stroke-linejoin="round"/>
+              <line x1="160" y1="18" x2="160" y2="148" stroke="#E11D48" stroke-width="1.6"/>
+              <line x1="45" y1="148" x2="225" y2="90" stroke="#E11D48" stroke-width="1.6"/>
+              <line x1="275" y1="148" x2="100" y2="85" stroke="#E11D48" stroke-width="1.6"/>
+              <text x="156" y="13" font-size="12" font-weight="800">A</text>
+              <text x="30" y="152" font-size="12" font-weight="800">B</text>
+              <text x="282" y="152" font-size="12" font-weight="800">C</text>
+              <text x="156" y="164" font-size="11.5" font-weight="800">D</text>
+              <text x="232" y="92" font-size="11.5" font-weight="800">E</text>
+              <text x="85" y="86" font-size="11.5" font-weight="800">F</text>
+              <!-- 6块数值 -->
+              <text x="135" y="78" font-size="12.5" font-weight="800" fill="#0F172A">84</text>
+              <text x="102" y="114" font-size="13" font-weight="800" fill="#059669">x=56</text>
+              <text x="132" y="140" font-size="12.5" font-weight="800" fill="#0F172A">40</text>
+              <text x="175" y="140" font-size="12.5" font-weight="800" fill="#0F172A">30</text>
+              <text x="202" y="116" font-size="12.5" font-weight="800" fill="#0F172A">35</text>
+              <text x="180" y="78" font-size="13" font-weight="800" fill="#0284C7">y=70</text>
+              <!-- 底比 4:3 -->
+              <text x="102" y="164" font-size="12" font-weight="800" fill="#0284C7">4</text>
+              <text x="215" y="164" font-size="12" font-weight="800" fill="#0284C7">3</text>
+            </svg>
+          </div>
+          <div class="case-steps">
+            <div class="case-step-line">
+              <strong>第一步（由下底 40 和 30 得 BD : DC = 4 : 3）</strong>：<br>
+              设左中未知块为 <em>x</em>，右上未知块为 <em>y</em>。<br>
+              由下开口燕尾：<span class="frac"><span>S<sub>△ABO</sub></span><span>S<sub>△ACO</sub></span></span> = <span class="frac"><span>84 + x</span><span>35 + y</span></span> = <span class="frac"><span>40</span><span>30</span></span> = <strong><span class="frac"><span>4</span><span>3</span></span></strong> ①。
+            </div>
+            <div class="case-step-line">
+              <strong>第二步（由右开口燕尾消去 84+x）</strong>：<br>
+              <span class="frac"><span>S<sub>△ABO</sub></span><span>S<sub>△CBO</sub></span></span> = <span class="frac"><span>84 + x</span><span>40 + 30</span></span> = <span class="frac"><span>y</span><span>35</span></span> ⇒ <strong>84 + <em>x</em> = 2<em>y</em></strong> ②。<br>
+              代入①式：<span class="frac"><span>2y</span><span>35 + y</span></span> = <span class="frac"><span>4</span><span>3</span></span> ⇒ 6<em>y</em> = 140 + 4<em>y</em> ⇒ <strong><em>y</em> = 70</strong>，进而 <strong><em>x</em> = 56</strong>！
+            </div>
+            <div class="case-step-line ans">
+              🎯 <strong>第三步（六块相加）</strong>：<em>S</em><sub>△ABC</sub> = 84 + 56 + 40 + 30 + 35 + 70 = <strong>315</strong>！
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2076,6 +2999,14 @@
       ruleBoxProd.className = 'rule-status-box invalid';
       badgeRuleProd.className = 'rule-badge invalid';
       badgeRuleProd.textContent = '非凸四边形 ✗';
+    }
+
+    const liveKiteRatioEl = document.getElementById('liveKiteRatioText');
+    if (liveKiteRatioEl && isConvex) {
+      const sABD = sHead + sLeft;
+      const sCBD = sRight + sTail;
+      const rAO_OC = sCBD > 0 ? (sABD / sCBD).toFixed(2) : '1.00';
+      liveKiteRatioEl.textContent = `当前 AO/OC = (${sHead.toFixed(1)}+${sLeft.toFixed(1)}) ÷ (${sRight.toFixed(1)}+${sTail.toFixed(1)}) = ${rAO_OC}`;
     }
   }
 
