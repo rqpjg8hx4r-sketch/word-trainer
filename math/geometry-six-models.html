@@ -320,6 +320,10 @@
       background: #EEF2FF;
       border-color: var(--indigo-border);
     }
+    .stat-pill.highlight-rose {
+      background: var(--rose-light);
+      border-color: var(--rose-border);
+    }
     .stat-label {
       font-size: 11px;
       font-weight: 700;
@@ -327,7 +331,7 @@
       margin-bottom: 2px;
     }
     .stat-val {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 800;
       color: #0F172A;
       font-family: var(--font-mono);
@@ -335,6 +339,40 @@
     .stat-pill.highlight .stat-val { color: var(--emerald-dark); }
     .stat-pill.highlight-amber .stat-val { color: var(--amber-dark); }
     .stat-pill.highlight-indigo .stat-val { color: var(--indigo); }
+    .stat-pill.highlight-rose .stat-val { color: var(--rose); }
+
+    .rule-status-box {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      background: #F8FAFC;
+      transition: all 0.2s;
+    }
+    .rule-status-box.valid {
+      background: #ECFDF5;
+      border-color: var(--emerald-border);
+    }
+    .rule-status-box.invalid {
+      background: #FFF1F2;
+      border-color: var(--rose-border);
+    }
+    .rule-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 6px;
+      margin-left: 6px;
+    }
+    .rule-badge.valid {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+    .rule-badge.invalid {
+      background: #FFE4E6;
+      color: #BE123C;
+    }
 
     /* 侧边信息栏 */
     .side-info {
@@ -998,17 +1036,21 @@
       <div class="card board-card">
         <div class="board-header">
           <div class="board-title">
-            <span>🦋</span> 蝴蝶模型动态画板：拖拽顶点体验“头×尾 = 翅×翅”
+            <span>🦋</span> 蝴蝶模型动态画板：自由拖拽顶点对比“双翅相等”与“乘积恒等”
           </div>
           <div class="board-actions">
-            <button id="btnBflyTrapezoid" class="pill-btn active" onclick="setBflyShape('trapezoid')">梯形蝴蝶</button>
-            <button id="btnBflyArbitrary" class="pill-btn" onclick="setBflyShape('arbitrary')">任意四边形</button>
+            <button id="btnBflyTrapezoid" class="pill-btn active" onclick="setBflyShape('trapezoid')">📐 重置梯形(平行)</button>
+            <button id="btnBflyLockParallel" class="pill-btn" onclick="toggleBflyLockParallel()">🔓 锁定平行: 关</button>
+            <button id="btnBflyArbitrary" class="pill-btn" onclick="setBflyShape('arbitrary')">🔀 任意四边形(不平行)</button>
           </div>
         </div>
 
         <div class="svg-wrapper" id="bflyBoard">
           <svg id="svgBfly" class="canvas" viewBox="0 0 560 390">
             <rect width="100%" height="100%" fill="url(#gridPattern1)" />
+
+            <!-- 平行吸附辅助参考虚线 -->
+            <line id="lineBflyParallelGuide" x1="30" y1="100" x2="530" y2="100" stroke="#10B981" stroke-width="1.5" stroke-dasharray="5 4" style="display:none;"/>
 
             <!-- 四个翅膀多边形 -->
             <polygon id="polyBflyHead" points="" fill="#BAE6FD" fill-opacity="0.85" stroke="#0284C7" stroke-width="1.8"/>
@@ -1020,34 +1062,48 @@
             <line id="lineBflyAC" x1="0" y1="0" x2="0" y2="0" stroke="#0F172A" stroke-width="2"/>
             <line id="lineBflyBD" x1="0" y1="0" x2="0" y2="0" stroke="#0F172A" stroke-width="2"/>
 
-            <!-- 区域文字标注 (头、尾、翅、翅) -->
+            <!-- 顶部实时状态横幅 (SVG内) -->
+            <rect id="bgBflyBanner" x="95" y="10" width="370" height="28" rx="8" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1.2"/>
+            <text id="txtBflyBanner" x="280" y="28" font-size="12" font-weight="800" fill="#065F46" text-anchor="middle">✓ 当前为梯形 (AD // BC)：左翅 S₃ = 右翅 S₄ 面积相等</text>
+
+            <!-- 区域文字标注 (头、尾、翅、翅 + 实时面积) -->
             <text id="lblBflyHead" font-size="12" font-weight="800" fill="#0369A1" text-anchor="middle">头 S₁</text>
             <text id="lblBflyTail" font-size="12" font-weight="800" fill="#0369A1" text-anchor="middle">尾 S₂</text>
-            <text id="lblBflyLeft" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">翅 S₃</text>
-            <text id="lblBflyRight" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">翅 S₄</text>
+            <text id="lblBflyLeft" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">左翅 S₃</text>
+            <text id="lblBflyRight" font-size="12" font-weight="800" fill="#B45309" text-anchor="middle">右翅 S₄</text>
 
-            <!-- 顶点 A, B, C, D -->
+            <!-- 顶点标签 A, B, C, D -->
+            <text id="lblBflyPtA" font-size="12.5" font-weight="800" fill="#0F172A">A</text>
+            <text id="lblBflyPtB" font-size="12.5" font-weight="800" fill="#0F172A">B</text>
+            <text id="lblBflyPtC" font-size="12.5" font-weight="800" fill="#0F172A">C</text>
+            <text id="lblBflyPtD" font-size="12.5" font-weight="800" fill="#0F172A">D</text>
+
+            <!-- 顶点 A, B, C, D 把手 -->
             <g cursor="grab">
-              <circle id="hBflyA" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
-              <circle id="hBflyB" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
-              <circle id="hBflyC" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
-              <circle id="hBflyD" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#0F172A" stroke-width="2"/>
+              <circle id="hBflyA" cx="0" cy="0" r="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.2"/>
+              <circle id="hBflyB" cx="0" cy="0" r="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.2"/>
+              <circle id="hBflyC" cx="0" cy="0" r="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.2"/>
+              <circle id="hBflyD" cx="0" cy="0" r="8" fill="#FFFFFF" stroke="#0F172A" stroke-width="2.2"/>
             </g>
           </svg>
         </div>
 
-        <div class="live-stats">
-          <div class="stat-pill highlight-indigo">
-            <div class="stat-label">头 × 尾 (S₁ × S₂)</div>
-            <div id="statBflyHeadTail" class="stat-val">120.0</div>
-          </div>
+        <div class="live-stats" style="grid-template-columns: repeat(2, 1fr);">
           <div class="stat-pill highlight-amber">
-            <div class="stat-label">翅 × 翅 (S₃ × S₄)</div>
-            <div id="statBflyWings" class="stat-val">120.0</div>
+            <div class="stat-label">左翅 S₃ vs 右翅 S₄ (双翅面积)</div>
+            <div id="statBflyWingCompare" class="stat-val">96.0 vs 96.0</div>
           </div>
-          <div class="stat-pill highlight">
-            <div class="stat-label">乘积恒等验证</div>
-            <div class="stat-val" style="color:var(--emerald-dark)">两积完全相等 ✓</div>
+          <div id="cardBflyWingStatus" class="stat-pill highlight">
+            <div class="stat-label">双翅面积验证 (梯形性质)</div>
+            <div id="statBflyWingStatusVal" class="stat-val">双翅完全相等 ✓</div>
+          </div>
+          <div class="stat-pill highlight-indigo">
+            <div class="stat-label">头×尾 (S₁×S₂) vs 翅×翅 (S₃×S₄)</div>
+            <div id="statBflyHeadTail" class="stat-val">9216 = 9216</div>
+          </div>
+          <div id="cardBflyProdStatus" class="stat-pill highlight">
+            <div class="stat-label">对顶乘积验证 (任意凸四边形)</div>
+            <div id="statBflyProdStatusVal" class="stat-val">两积依然相等 ✓</div>
           </div>
         </div>
       </div>
@@ -1055,16 +1111,31 @@
       <div class="side-info">
         <div class="card">
           <div class="section-head">
-            <span>🦋</span> 蝴蝶模型两大黄金法则
+            <span>🦋</span> 蝴蝶模型两大法则实时诊断
           </div>
-          <div class="math-formula-box">
-            法则 1（任意四边形通识）：<br>
-            <span class="formula-highlight">头 × 尾 = 翅 × 翅 （S₁ × S₂ = S₃ × S₄）</span><br><br>
-            法则 2（梯形特有性质）：<br>
-            <span class="formula-highlight">左翅 = 右翅 （S₃ = S₄）</span>
+
+          <div id="ruleBoxWing" class="rule-status-box valid">
+            <div style="font-size:13px; font-weight:800; color:#0F172A; margin-bottom:4px;">
+              法则 1：左翅 = 右翅 (S₃ = S₄)
+              <span id="badgeRuleWing" class="rule-badge valid">当前相等 ✓</span>
+            </div>
+            <div id="descRuleWing" style="font-size:12px; line-height:1.55; color:#334155;">
+              仅当<strong>上下底平行（梯形 AD // BC）</strong>时成立！因为 △ABC 与 △DBC 同底等高面积相等，减去公共底 △BOC 后，左翅 S₃ = 右翅 S₄。
+            </div>
           </div>
-          <p style="font-size:13px; line-height:1.6; color:#475569; margin:0;">
-            在任意四边形对角线划分出的 4 个三角形中，对顶三角形面积之积永远等于两侧三角形面积之积！若上下两底平行（梯形），两侧翅膀面积更是严丝合缝完全相等。
+
+          <div id="ruleBoxProd" class="rule-status-box valid">
+            <div style="font-size:13px; font-weight:800; color:#0F172A; margin-bottom:4px;">
+              法则 2：头 × 尾 = 翅 × 翅 (S₁×S₂ = S₃×S₄)
+              <span id="badgeRuleProd" class="rule-badge valid">始终相等 ✓</span>
+            </div>
+            <div id="descRuleProd" style="font-size:12px; line-height:1.55; color:#334155;">
+              在<strong>任意凸四边形</strong>中均成立！即便拖动顶点使上下底不平行、左右翅膀一大一小（S₃ ≠ S₄），由等高三角形面积比等于底之比（S₁/S₃ = DO/BO = S₄/S₂），交叉相乘依然满足 <strong>S₁ × S₂ = S₃ × S₄</strong>！
+            </div>
+          </div>
+
+          <p style="font-size:12px; line-height:1.5; color:var(--subtext); margin:4px 0 0 0;">
+            💡 <strong>操作小贴士</strong>：拖动单个顶点破坏平行时，上方会立即提示<strong>“双翅不再相等 ✗”</strong>；若开启<strong>「🔒 锁定平行」</strong>或拖回绿色吸附虚线，双翅立刻恢复相等！
           </p>
         </div>
       </div>
@@ -1079,7 +1150,10 @@
       <div class="card board-card">
         <div class="board-header">
           <div class="board-title">
-            <span>⏳</span> 沙漏模型动态画板：调节底边比例，观察“面积平方比”
+            <span>⏳</span> 沙漏模型动态画板：可直接拖拽上下底端点或滑块
+          </div>
+          <div class="board-actions">
+            <button class="pill-btn" onclick="resetHourglass()">重置比例 (1:2)</button>
           </div>
         </div>
 
@@ -1102,9 +1176,17 @@
             <!-- 交叉点 O -->
             <circle id="ptHgCross" cx="280" cy="170" r="5" fill="#0F172A"/>
 
+            <!-- 可拖拽端点把手 -->
+            <g cursor="ew-resize">
+              <circle id="hHgTopL" cx="220" cy="70" r="7" fill="#FFFFFF" stroke="#EA580C" stroke-width="2.2"/>
+              <circle id="hHgTopR" cx="340" cy="70" r="7" fill="#FFFFFF" stroke="#EA580C" stroke-width="2.2"/>
+              <circle id="hHgBotL" cx="160" cy="320" r="7" fill="#FFFFFF" stroke="#0284C7" stroke-width="2.2"/>
+              <circle id="hHgBotR" cx="400" cy="320" r="7" fill="#FFFFFF" stroke="#0284C7" stroke-width="2.2"/>
+            </g>
+
             <!-- 文字标注 -->
-            <text id="lblHgTop" x="280" y="55" font-size="13" font-weight="800" fill="#C2410C" text-anchor="middle">上底 a</text>
-            <text id="lblHgBottom" x="280" y="345" font-size="13" font-weight="800" fill="#0369A1" text-anchor="middle">下底 A</text>
+            <text id="lblHgTop" x="280" y="52" font-size="13" font-weight="800" fill="#C2410C" text-anchor="middle">上底 a (可拖两端)</text>
+            <text id="lblHgBottom" x="280" y="348" font-size="13" font-weight="800" fill="#0369A1" text-anchor="middle">下底 A (可拖两端)</text>
             <text id="lblHgTopArea" x="280" y="125" font-size="13" font-weight="800" fill="#EA580C" text-anchor="middle">S(上)</text>
             <text id="lblHgBottomArea" x="280" y="265" font-size="14" font-weight="800" fill="#0284C7" text-anchor="middle">S(下)</text>
           </svg>
@@ -1113,12 +1195,12 @@
         <div class="slider-box">
           <div class="slider-row">
             <label for="sliderHgA">上底边长 a：</label>
-            <input type="range" id="sliderHgA" min="60" max="220" step="10" value="120" oninput="updateHourglass()">
+            <input type="range" id="sliderHgA" min="60" max="260" step="4" value="120" oninput="updateHourglass()">
             <span id="valHgA" class="slider-val">120</span>
           </div>
           <div class="slider-row">
             <label for="sliderHgB">下底边长 A：</label>
-            <input type="range" id="sliderHgB" min="140" max="380" step="10" value="240" oninput="updateHourglass()">
+            <input type="range" id="sliderHgB" min="120" max="400" step="4" value="240" oninput="updateHourglass()">
             <span id="valHgB" class="slider-val">240</span>
           </div>
         </div>
@@ -1165,7 +1247,7 @@
       <div class="card board-card">
         <div class="board-header">
           <div class="board-title">
-            <span>🐦</span> 鸟头模型（共角定理）4 种形态动态演练
+            <span>🐦</span> 鸟头模型（共角定理）：可拖拽鸟冠端点或调节滑块
           </div>
           <div class="board-actions">
             <button class="variant-btn pill-btn active" onclick="setBirdVariant('internal')">形态1: 内共角</button>
@@ -1185,9 +1267,15 @@
             <polygon id="polySmallTri" points="" fill="#FEF08A" fill-opacity="0.9" stroke="#EAB308" stroke-width="2.5" stroke-linejoin="round"/>
 
             <!-- 共角红顶标记 -->
-            <circle id="sharedVertexPt" cx="0" cy="0" r="5" fill="#EF4444" />
+            <circle id="sharedVertexPt" cx="0" cy="0" r="5.5" fill="#EF4444" />
             <text id="lblVertexTop" font-size="13" font-weight="800" fill="#EF4444">共角 O</text>
-            <text id="lblBirdFormula" x="280" y="360" font-size="14" font-weight="800" fill="#0F172A" text-anchor="middle"></text>
+
+            <!-- 可拖拽小三角形端点 -->
+            <g cursor="grab">
+              <circle id="hBirdSm1" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#CA8A04" stroke-width="2.2"/>
+              <circle id="hBirdSm2" cx="0" cy="0" r="7.5" fill="#FFFFFF" stroke="#CA8A04" stroke-width="2.2"/>
+            </g>
+            <text id="lblBirdFormula" x="280" y="360" font-size="13.5" font-weight="800" fill="#0F172A" text-anchor="middle"></text>
           </svg>
         </div>
 
@@ -1798,13 +1886,33 @@
 
   /* ================= 篇章 3：蝴蝶模型画板 ================= */
   let bflyShape = 'trapezoid';
+  let bflyLockParallel = false;
   let bflyPts = [
-    { x: 180, y: 100 }, // A
-    { x: 100, y: 300 }, // B
-    { x: 460, y: 300 }, // C
-    { x: 380, y: 100 }  // D
+    { x: 180, y: 100 }, // A (左上)
+    { x: 100, y: 300 }, // B (左下)
+    { x: 460, y: 300 }, // C (右下)
+    { x: 380, y: 100 }  // D (右上)
   ];
   let activeBflyHandle = null;
+
+  function toggleBflyLockParallel() {
+    bflyLockParallel = !bflyLockParallel;
+    const btn = document.getElementById('btnBflyLockParallel');
+    btn.classList.toggle('active', bflyLockParallel);
+    btn.textContent = bflyLockParallel ? '🔒 锁定平行: 开' : '🔓 锁定平行: 关';
+    if (bflyLockParallel) {
+      // 将上底 AD 对齐为与下底 BC 平行
+      const avgTopY = (bflyPts[0].y + bflyPts[3].y) / 2;
+      const avgBotY = (bflyPts[1].y + bflyPts[2].y) / 2;
+      bflyPts[0].y = avgTopY;
+      bflyPts[3].y = avgTopY;
+      bflyPts[1].y = avgBotY;
+      bflyPts[2].y = avgBotY;
+      document.getElementById('btnBflyTrapezoid').classList.add('active');
+      document.getElementById('btnBflyArbitrary').classList.remove('active');
+      renderBfly();
+    }
+  }
 
   function setBflyShape(s) {
     bflyShape = s;
@@ -1813,24 +1921,40 @@
     if (s === 'trapezoid') {
       bflyPts = [{ x: 180, y: 100 }, { x: 100, y: 300 }, { x: 460, y: 300 }, { x: 380, y: 100 }];
     } else {
-      bflyPts = [{ x: 160, y: 110 }, { x: 80, y: 310 }, { x: 480, y: 280 }, { x: 400, y: 80 }];
+      bflyLockParallel = false;
+      const lockBtn = document.getElementById('btnBflyLockParallel');
+      lockBtn.classList.remove('active');
+      lockBtn.textContent = '🔓 锁定平行: 关';
+      bflyPts = [{ x: 170, y: 95 }, { x: 95, y: 305 }, { x: 465, y: 305 }, { x: 335, y: 165 }];
     }
     renderBfly();
   }
 
-  function lineIntersection(p1, p2, p3, p4) {
+  function lineIntersectionInfo(p1, p2, p3, p4) {
     const det = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
-    if (Math.abs(det) < 1e-5) return { x: (p1.x + p3.x) / 2, y: (p1.y + p3.y) / 2 };
+    if (Math.abs(det) < 1e-5) {
+      return { x: (p1.x + p3.x) / 2, y: (p1.y + p3.y) / 2, inside: false };
+    }
     const t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / det;
+    const u = -((p1.x - p2.x) * (p1.y - p3.y) - (p1.y - p2.y) * (p1.x - p3.x)) / det;
+    const inside = (t > 0.02 && t < 0.98 && u > 0.02 && u < 0.98);
     return {
       x: p1.x + t * (p2.x - p1.x),
-      y: p1.y + t * (p2.y - p1.y)
+      y: p1.y + t * (p2.y - p1.y),
+      inside
     };
+  }
+
+  function lineIntersection(p1, p2, p3, p4) {
+    const info = lineIntersectionInfo(p1, p2, p3, p4);
+    return { x: info.x, y: info.y };
   }
 
   function renderBfly() {
     const [A, B, C, D] = bflyPts;
-    const O = lineIntersection(A, C, B, D);
+    const inter = lineIntersectionInfo(A, C, B, D);
+    const O = { x: inter.x, y: inter.y };
+    const isConvex = inter.inside;
 
     setLine('lineBflyAC', A, C);
     setLine('lineBflyBD', B, D);
@@ -1843,21 +1967,182 @@
     setCircle('hBflyA', A); setCircle('hBflyB', B);
     setCircle('hBflyC', C); setCircle('hBflyD', D);
 
+    setLabel('lblBflyPtA', A, -16, -8);
+    setLabel('lblBflyPtB', B, -18, 16);
+    setLabel('lblBflyPtC', C, 10, 16);
+    setLabel('lblBflyPtD', D, 10, -8);
+
+    // 缩放为单位面积方便学生直观阅读
+    const sHead = polygonArea([A, D, O]) / 100;
+    const sTail = polygonArea([B, C, O]) / 100;
+    const sLeft = polygonArea([A, B, O]) / 100;
+    const sRight = polygonArea([D, C, O]) / 100;
+
+    const lblHead = document.getElementById('lblBflyHead');
+    const lblTail = document.getElementById('lblBflyTail');
+    const lblLeft = document.getElementById('lblBflyLeft');
+    const lblRight = document.getElementById('lblBflyRight');
+
+    lblHead.textContent = `头 S₁=${sHead.toFixed(1)}`;
+    lblTail.textContent = `尾 S₂=${sTail.toFixed(1)}`;
+    lblLeft.textContent = `左翅 S₃=${sLeft.toFixed(1)}`;
+    lblRight.textContent = `右翅 S₄=${sRight.toFixed(1)}`;
+
     setLabel('lblBflyHead', { x: (A.x + D.x + O.x) / 3, y: (A.y + D.y + O.y) / 3 + 4 }, 0, 0);
     setLabel('lblBflyTail', { x: (B.x + C.x + O.x) / 3, y: (B.y + C.y + O.y) / 3 + 4 }, 0, 0);
     setLabel('lblBflyLeft', { x: (A.x + B.x + O.x) / 3, y: (A.y + B.y + O.y) / 3 + 4 }, 0, 0);
     setLabel('lblBflyRight', { x: (D.x + C.x + O.x) / 3, y: (D.y + C.y + O.y) / 3 + 4 }, 0, 0);
 
-    const sHead = polygonArea([A, D, O]);
-    const sTail = polygonArea([B, C, O]);
-    const sLeft = polygonArea([A, B, O]);
-    const sRight = polygonArea([D, C, O]);
+    const wingDiff = Math.abs(sLeft - sRight);
+    const isWingsEqual = isConvex && (wingDiff < 0.35);
 
-    const prod1 = sHead * sTail / 10000;
-    const prod2 = sLeft * sRight / 10000;
+    // 同步顶部模式按钮高亮
+    document.getElementById('btnBflyTrapezoid').classList.toggle('active', isWingsEqual);
+    document.getElementById('btnBflyArbitrary').classList.toggle('active', !isWingsEqual);
 
-    document.getElementById('statBflyHeadTail').textContent = prod1.toFixed(1);
-    document.getElementById('statBflyWings').textContent = prod2.toFixed(1);
+    // 更新画板顶部状态横幅
+    const bgBanner = document.getElementById('bgBflyBanner');
+    const txtBanner = document.getElementById('txtBflyBanner');
+    if (!isConvex) {
+      bgBanner.setAttribute('fill', '#FFE4E6');
+      bgBanner.setAttribute('stroke', '#FECDD3');
+      txtBanner.setAttribute('fill', '#BE123C');
+      txtBanner.textContent = '⚠ 顶点拖出凸四边形范围，对角线未在内部相交！';
+    } else if (isWingsEqual) {
+      bgBanner.setAttribute('fill', '#ECFDF5');
+      bgBanner.setAttribute('stroke', '#A7F3D0');
+      txtBanner.setAttribute('fill', '#065F46');
+      txtBanner.textContent = `✓ 当前为梯形 (AD // BC)：左翅 S₃ (${sLeft.toFixed(1)}) = 右翅 S₄ (${sRight.toFixed(1)})`;
+    } else {
+      bgBanner.setAttribute('fill', '#FFF1F2');
+      bgBanner.setAttribute('stroke', '#FECDD3');
+      txtBanner.setAttribute('fill', '#BE123C');
+      txtBanner.textContent = `⚠ 上下底不平行 (非梯形)：左翅 S₃ (${sLeft.toFixed(1)}) ≠ 右翅 S₄ (${sRight.toFixed(1)})`;
+    }
+
+    // 更新双翅着色：相等时同为琥珀金，不等时右翅变为玫瑰粉以便视觉区分
+    document.getElementById('polyBflyRight').setAttribute('fill', isWingsEqual ? '#FDE68A' : '#FECDD3');
+    document.getElementById('polyBflyRight').setAttribute('stroke', isWingsEqual ? '#D97706' : '#E11D48');
+    lblRight.setAttribute('fill', isWingsEqual ? '#B45309' : '#BE123C');
+
+    // 更新下方 4 个实时数据卡片
+    document.getElementById('statBflyWingCompare').textContent = `${sLeft.toFixed(1)} vs ${sRight.toFixed(1)}`;
+    const wingCard = document.getElementById('cardBflyWingStatus');
+    const wingVal = document.getElementById('statBflyWingStatusVal');
+    if (isWingsEqual) {
+      wingCard.className = 'stat-pill highlight';
+      wingVal.textContent = '双翅完全相等 ✓';
+    } else {
+      wingCard.className = 'stat-pill highlight-rose';
+      wingVal.textContent = `双翅不再相等 ✗ (差 ${wingDiff.toFixed(1)})`;
+    }
+
+    const prod1 = sHead * sTail;
+    const prod2 = sLeft * sRight;
+    document.getElementById('statBflyHeadTail').textContent = `${prod1.toFixed(1)} vs ${prod2.toFixed(1)}`;
+    const prodCard = document.getElementById('cardBflyProdStatus');
+    const prodVal = document.getElementById('statBflyProdStatusVal');
+    if (isConvex) {
+      prodCard.className = 'stat-pill highlight';
+      prodVal.textContent = '两积依然相等 ✓';
+    } else {
+      prodCard.className = 'stat-pill highlight-rose';
+      prodVal.textContent = '对角线未在内部相交 ✗';
+    }
+
+    // 更新右侧法则实时诊断框
+    const ruleBoxWing = document.getElementById('ruleBoxWing');
+    const badgeRuleWing = document.getElementById('badgeRuleWing');
+    const descRuleWing = document.getElementById('descRuleWing');
+    if (isWingsEqual) {
+      ruleBoxWing.className = 'rule-status-box valid';
+      badgeRuleWing.className = 'rule-badge valid';
+      badgeRuleWing.textContent = '当前相等 ✓';
+      descRuleWing.innerHTML = `当前上下底 <strong>AD // BC（梯形）</strong>，△ABC 与 △DBC 同底等高面积相等，减去公共底 △BOC 后，<strong>左翅 S₃ (${sLeft.toFixed(1)}) = 右翅 S₄ (${sRight.toFixed(1)})</strong>！`;
+    } else {
+      ruleBoxWing.className = 'rule-status-box invalid';
+      badgeRuleWing.className = 'rule-badge invalid';
+      badgeRuleWing.textContent = '当前不等 ✗';
+      descRuleWing.innerHTML = `您拖动顶点打破了 <strong>AD // BC</strong> 平行关系，△ABC 与 △DBC 高不再相等，因此 <strong>左翅 S₃ (${sLeft.toFixed(1)}) ≠ 右翅 S₄ (${sRight.toFixed(1)})</strong>！点击上方「重置梯形」或拖回绿色虚线即可恢复相等。`;
+    }
+
+    const ruleBoxProd = document.getElementById('ruleBoxProd');
+    const badgeRuleProd = document.getElementById('badgeRuleProd');
+    if (isConvex) {
+      ruleBoxProd.className = 'rule-status-box valid';
+      badgeRuleProd.className = 'rule-badge valid';
+      badgeRuleProd.textContent = isWingsEqual ? '当前相等 ✓' : '依然相等 ✓';
+    } else {
+      ruleBoxProd.className = 'rule-status-box invalid';
+      badgeRuleProd.className = 'rule-badge invalid';
+      badgeRuleProd.textContent = '非凸四边形 ✗';
+    }
+  }
+
+  function handleBflyDragMove(pt) {
+    const idx = activeBflyHandle;
+    const x = Math.max(50, Math.min(510, pt.x));
+    let y = Math.max(55, Math.min(345, pt.y));
+    const guide = document.getElementById('lineBflyParallelGuide');
+
+    if (bflyLockParallel) {
+      // 锁定平行模式：上底 A(0) 与 D(3) 同高，下底 B(1) 与 C(2) 同高
+      guide.style.display = 'none';
+      if (idx === 0 || idx === 3) {
+        y = Math.min(y, bflyPts[1].y - 40);
+        bflyPts[0].y = y;
+        bflyPts[3].y = y;
+        bflyPts[idx].x = x;
+      } else {
+        y = Math.max(y, bflyPts[0].y + 40);
+        bflyPts[1].y = y;
+        bflyPts[2].y = y;
+        bflyPts[idx].x = x;
+      }
+    } else {
+      // 自由拖拽模式：带有平行线磁性吸附与绿色虚线提示
+      // 计算使 AD // BC 的目标 y 值
+      let targetParallelY = null;
+      if (idx === 0) {
+        // 使得 A->D 斜率等于 B->C 斜率
+        const dxBC = bflyPts[2].x - bflyPts[1].x;
+        if (Math.abs(dxBC) > 10) {
+          const slopeBC = (bflyPts[2].y - bflyPts[1].y) / dxBC;
+          targetParallelY = bflyPts[3].y - slopeBC * (bflyPts[3].x - x);
+        }
+      } else if (idx === 3) {
+        const dxBC = bflyPts[2].x - bflyPts[1].x;
+        if (Math.abs(dxBC) > 10) {
+          const slopeBC = (bflyPts[2].y - bflyPts[1].y) / dxBC;
+          targetParallelY = bflyPts[0].y + slopeBC * (x - bflyPts[0].x);
+        }
+      } else if (idx === 1) {
+        const dxAD = bflyPts[3].x - bflyPts[0].x;
+        if (Math.abs(dxAD) > 10) {
+          const slopeAD = (bflyPts[3].y - bflyPts[0].y) / dxAD;
+          targetParallelY = bflyPts[2].y - slopeAD * (bflyPts[2].x - x);
+        }
+      } else if (idx === 2) {
+        const dxAD = bflyPts[3].x - bflyPts[0].x;
+        if (Math.abs(dxAD) > 10) {
+          const slopeAD = (bflyPts[3].y - bflyPts[0].y) / dxAD;
+          targetParallelY = bflyPts[1].y + slopeAD * (x - bflyPts[1].x);
+        }
+      }
+
+      if (targetParallelY !== null && targetParallelY > 55 && targetParallelY < 345) {
+        const partnerIdx = (idx === 0) ? 3 : (idx === 3 ? 0 : (idx === 1 ? 2 : 1));
+        guide.style.display = 'block';
+        setLine('lineBflyParallelGuide', bflyPts[partnerIdx], { x, y: targetParallelY });
+        if (Math.abs(y - targetParallelY) < 9) {
+          y = targetParallelY; // 磁性吸附到平行位置
+        }
+      } else {
+        guide.style.display = 'none';
+      }
+      bflyPts[idx] = { x, y };
+    }
+    renderBfly();
   }
 
   const svgBfly = document.getElementById('svgBfly');
@@ -1866,40 +2151,53 @@
     for (let i = 0; i < 4; i++) {
       if (Math.hypot(pt.x - bflyPts[i].x, pt.y - bflyPts[i].y) < 22) {
         activeBflyHandle = i;
+        e.preventDefault();
         break;
       }
     }
   });
   window.addEventListener('mousemove', e => {
     if (activeBflyHandle === null) return;
-    const pt = getSvgPt(svgBfly, e);
-    bflyPts[activeBflyHandle] = { x: Math.max(50, Math.min(510, pt.x)), y: Math.max(50, Math.min(340, pt.y)) };
-    renderBfly();
+    handleBflyDragMove(getSvgPt(svgBfly, e));
   });
-  window.addEventListener('mouseup', () => activeBflyHandle = null);
+  window.addEventListener('mouseup', () => {
+    activeBflyHandle = null;
+    document.getElementById('lineBflyParallelGuide').style.display = 'none';
+  });
   svgBfly.addEventListener('touchstart', e => {
     const pt = getSvgPt(svgBfly, e);
     for (let i = 0; i < 4; i++) {
       if (Math.hypot(pt.x - bflyPts[i].x, pt.y - bflyPts[i].y) < 26) {
         activeBflyHandle = i;
+        e.preventDefault();
         break;
       }
     }
   }, { passive: false });
   window.addEventListener('touchmove', e => {
     if (activeBflyHandle === null) return;
-    const pt = getSvgPt(svgBfly, e);
-    bflyPts[activeBflyHandle] = { x: Math.max(50, Math.min(510, pt.x)), y: Math.max(50, Math.min(340, pt.y)) };
-    renderBfly();
+    e.preventDefault();
+    handleBflyDragMove(getSvgPt(svgBfly, e));
   }, { passive: false });
-  window.addEventListener('touchend', () => activeBflyHandle = null);
+  window.addEventListener('touchend', () => {
+    activeBflyHandle = null;
+    document.getElementById('lineBflyParallelGuide').style.display = 'none';
+  });
 
-  /* ================= 篇章 4：沙漏模型画板 ================= */
+  /* ================= 篇章 4：沙漏模型画板 (支持滑块与画板直接拖拽) ================= */
+  let activeHgHandle = null;
+
+  function resetHourglass() {
+    document.getElementById('sliderHgA').value = 120;
+    document.getElementById('sliderHgB').value = 240;
+    updateHourglass();
+  }
+
   function updateHourglass() {
     const a = parseFloat(document.getElementById('sliderHgA').value);
     const b = parseFloat(document.getElementById('sliderHgB').value);
-    document.getElementById('valHgA').textContent = a;
-    document.getElementById('valHgB').textContent = b;
+    document.getElementById('valHgA').textContent = Math.round(a);
+    document.getElementById('valHgB').textContent = Math.round(b);
     renderHourglass();
   }
 
@@ -1925,6 +2223,17 @@
     setLine('lineHgBottom', B1, B2);
     setCircle('ptHgCross', O);
 
+    setCircle('hHgTopL', A1); setCircle('hHgTopR', A2);
+    setCircle('hHgBotL', B1); setCircle('hHgBotR', B2);
+
+    const sTop = polygonArea([A1, A2, O]) / 100;
+    const sBot = polygonArea([B1, B2, O]) / 100;
+
+    document.getElementById('lblHgTop').textContent = `上底 a = ${Math.round(a)} (可拖拽两端)`;
+    document.getElementById('lblHgBottom').textContent = `下底 A = ${Math.round(b)} (可拖拽两端)`;
+    document.getElementById('lblHgTopArea').textContent = `S(上) = ${sTop.toFixed(1)}`;
+    document.getElementById('lblHgBottomArea').textContent = `S(下) = ${sBot.toFixed(1)}`;
+
     setLabel('lblHgTopArea', { x: midX, y: (yTop + O.y) / 2 + 5 }, 0, 0);
     setLabel('lblHgBottomArea', { x: midX, y: (yBottom + O.y) / 2 + 5 }, 0, 0);
 
@@ -1936,10 +2245,45 @@
     document.getElementById('statHgTimes').textContent = (1 / sqRatio).toFixed(2) + ' 倍';
   }
 
-  /* ================= 篇章 5：鸟头模型画板 ================= */
+  const svgHg = document.getElementById('svgHg');
+  function onHgDown(e) {
+    const pt = getSvgPt(svgHg, e);
+    const a = parseFloat(document.getElementById('sliderHgA').value);
+    const b = parseFloat(document.getElementById('sliderHgB').value);
+    if (Math.abs(pt.y - 70) < 25 && (Math.abs(pt.x - (280 - a / 2)) < 25 || Math.abs(pt.x - (280 + a / 2)) < 25)) {
+      activeHgHandle = 'top';
+      e.preventDefault();
+    } else if (Math.abs(pt.y - 320) < 25 && (Math.abs(pt.x - (280 - b / 2)) < 25 || Math.abs(pt.x - (280 + b / 2)) < 25)) {
+      activeHgHandle = 'bot';
+      e.preventDefault();
+    }
+  }
+  function onHgMove(e) {
+    if (!activeHgHandle) return;
+    const pt = getSvgPt(svgHg, e);
+    const halfSpan = Math.abs(pt.x - 280);
+    if (activeHgHandle === 'top') {
+      const newA = Math.max(60, Math.min(260, Math.round(halfSpan * 2)));
+      document.getElementById('sliderHgA').value = newA;
+    } else {
+      const newB = Math.max(120, Math.min(400, Math.round(halfSpan * 2)));
+      document.getElementById('sliderHgB').value = newB;
+    }
+    updateHourglass();
+  }
+  svgHg.addEventListener('mousedown', onHgDown);
+  window.addEventListener('mousemove', onHgMove);
+  window.addEventListener('mouseup', () => activeHgHandle = null);
+  svgHg.addEventListener('touchstart', onHgDown, { passive: false });
+  window.addEventListener('touchmove', e => { if (activeHgHandle) { e.preventDefault(); onHgMove(e); } }, { passive: false });
+  window.addEventListener('touchend', () => activeHgHandle = null);
+
+  /* ================= 篇章 5：鸟头模型画板 (支持滑块与画板直接拖拽) ================= */
   let birdVariant = 'internal';
   let ratioA = 0.5;
   let ratioB = 0.6;
+  let activeBirdHandle = null;
+  let birdGeomCache = {};
 
   function setBirdVariant(v) {
     birdVariant = v;
@@ -1958,51 +2302,90 @@
   }
 
   function renderBird() {
-    const O = { x: 280, y: 70 };
-    let Big1, Big2, Sm1, Sm2;
+    let O, Big1, Big2, Sm1, Sm2;
 
     if (birdVariant === 'internal') {
-      Big1 = { x: 130, y: 310 }; Big2 = { x: 430, y: 310 };
+      O = { x: 280, y: 65 };
+      Big1 = { x: 130, y: 315 }; Big2 = { x: 430, y: 315 };
       Sm1 = { x: O.x + (Big1.x - O.x) * ratioA, y: O.y + (Big1.y - O.y) * ratioA };
       Sm2 = { x: O.x + (Big2.x - O.x) * ratioB, y: O.y + (Big2.y - O.y) * ratioB };
-      setCircle('sharedVertexPt', O); setLabel('lblVertexTop', O, -20, -10);
+      setCircle('sharedVertexPt', O); setLabel('lblVertexTop', O, -22, -12);
     } else if (birdVariant === 'external') {
-      Big1 = { x: 160, y: 280 }; Big2 = { x: 380, y: 280 };
-      Sm1 = { x: O.x + (Big1.x - O.x) * (1 + ratioA * 0.8), y: O.y + (Big1.y - O.y) * (1 + ratioA * 0.8) };
+      O = { x: 280, y: 65 };
+      Big1 = { x: 170, y: 240 }; Big2 = { x: 390, y: 240 };
+      Sm1 = { x: O.x + (Big1.x - O.x) * (1 + ratioA * 0.6), y: O.y + (Big1.y - O.y) * (1 + ratioA * 0.6) };
       Sm2 = { x: O.x + (Big2.x - O.x) * ratioB, y: O.y + (Big2.y - O.y) * ratioB };
-      setCircle('sharedVertexPt', O); setLabel('lblVertexTop', O, -20, -10);
+      setCircle('sharedVertexPt', O); setLabel('lblVertexTop', O, -22, -12);
     } else if (birdVariant === 'vertical') {
-      const Center = { x: 280, y: 190 };
+      O = { x: 280, y: 185 };
       Big1 = { x: 150, y: 320 }; Big2 = { x: 410, y: 320 };
-      Sm1 = { x: Center.x - (Big1.x - Center.x) * ratioA, y: Center.y - (Big1.y - Center.y) * ratioA };
-      Sm2 = { x: Center.x - (Big2.x - Center.x) * ratioB, y: Center.y - (Big2.y - Center.y) * ratioB };
-      setCircle('sharedVertexPt', Center); setLabel('lblVertexTop', Center, 10, -5);
-      document.getElementById('polyBigTri').setAttribute('points', ptsToStr([Center, Big1, Big2]));
-      document.getElementById('polySmallTri').setAttribute('points', ptsToStr([Center, Sm1, Sm2]));
-      updateBirdStats();
-      return;
+      Sm1 = { x: O.x - (Big1.x - O.x) * ratioA, y: O.y - (Big1.y - O.y) * ratioA };
+      Sm2 = { x: O.x - (Big2.x - O.x) * ratioB, y: O.y - (Big2.y - O.y) * ratioB };
+      setCircle('sharedVertexPt', O); setLabel('lblVertexTop', O, 12, -4);
     } else if (birdVariant === 'supplement') {
-      const Base = { x: 280, y: 300 };
-      Big1 = { x: 120, y: 300 }; Big2 = { x: 220, y: 100 };
-      Sm1 = { x: 440, y: 300 };
-      Sm2 = { x: Base.x + (Big2.x - Base.x) * ratioB, y: Base.y + (Big2.y - Base.y) * ratioB };
-      setCircle('sharedVertexPt', Base); setLabel('lblVertexTop', Base, -20, 20);
-      document.getElementById('polyBigTri').setAttribute('points', ptsToStr([Base, Big1, Big2]));
-      document.getElementById('polySmallTri').setAttribute('points', ptsToStr([Base, Sm1, Sm2]));
-      updateBirdStats();
-      return;
+      O = { x: 280, y: 295 };
+      Big1 = { x: 110, y: 295 }; Big2 = { x: 210, y: 95 };
+      Sm1 = { x: O.x + (O.x - Big1.x) * ratioA, y: 295 };
+      Sm2 = { x: O.x + (Big2.x - O.x) * ratioB, y: O.y + (Big2.y - O.y) * ratioB };
+      setCircle('sharedVertexPt', O); setLabel('lblVertexTop', O, -22, 22);
     }
 
+    birdGeomCache = { O, Big1, Big2, Sm1, Sm2 };
     document.getElementById('polyBigTri').setAttribute('points', ptsToStr([O, Big1, Big2]));
     document.getElementById('polySmallTri').setAttribute('points', ptsToStr([O, Sm1, Sm2]));
+    setCircle('hBirdSm1', Sm1);
+    setCircle('hBirdSm2', Sm2);
     updateBirdStats();
   }
 
   function updateBirdStats() {
-    const areaPct = (ratioA * ratioB * 100).toFixed(1);
+    const effA = (birdVariant === 'external') ? (1 + ratioA * 0.6) : ratioA;
+    const areaPct = (effA * ratioB * 100).toFixed(1);
     document.getElementById('statBirdSmall').textContent = areaPct + '%';
-    document.getElementById('statBirdRatio').textContent = `(${ratioA.toFixed(2)}) × (${ratioB.toFixed(2)}) = ${areaPct}%`;
+    document.getElementById('statBirdRatio').textContent = `(${effA.toFixed(2)}) × (${ratioB.toFixed(2)}) = ${areaPct}%`;
+    document.getElementById('lblBirdFormula').textContent = `S(黄) / S(蓝) = ${effA.toFixed(2)} × ${ratioB.toFixed(2)} = ${areaPct}% （可直接拖拽黄色鸟冠顶点）`;
   }
+
+  const svgBird = document.getElementById('svgBird');
+  function onBirdDown(e) {
+    const pt = getSvgPt(svgBird, e);
+    if (!birdGeomCache.Sm1) return;
+    if (Math.hypot(pt.x - birdGeomCache.Sm1.x, pt.y - birdGeomCache.Sm1.y) < 24) {
+      activeBirdHandle = 1;
+      e.preventDefault();
+    } else if (Math.hypot(pt.x - birdGeomCache.Sm2.x, pt.y - birdGeomCache.Sm2.y) < 24) {
+      activeBirdHandle = 2;
+      e.preventDefault();
+    }
+  }
+  function onBirdMove(e) {
+    if (!activeBirdHandle) return;
+    const pt = getSvgPt(svgBird, e);
+    const { O, Big1, Big2 } = birdGeomCache;
+    if (activeBirdHandle === 1) {
+      const fullDist = Math.hypot(Big1.x - O.x, Big1.y - O.y);
+      const curDist = Math.hypot(pt.x - O.x, pt.y - O.y);
+      let r = curDist / fullDist;
+      if (birdVariant === 'external') r = (r - 1) / 0.6;
+      ratioA = Math.max(0.15, Math.min(0.9, Math.round(r * 20) / 20));
+      document.getElementById('sliderRatio1').value = ratioA;
+      document.getElementById('sliderVal1Text').textContent = ratioA.toFixed(2);
+    } else {
+      const fullDist = Math.hypot(Big2.x - O.x, Big2.y - O.y);
+      const curDist = Math.hypot(pt.x - O.x, pt.y - O.y);
+      const r = curDist / fullDist;
+      ratioB = Math.max(0.15, Math.min(0.9, Math.round(r * 20) / 20));
+      document.getElementById('sliderRatio2').value = ratioB;
+      document.getElementById('sliderVal2Text').textContent = ratioB.toFixed(2);
+    }
+    renderBird();
+  }
+  svgBird.addEventListener('mousedown', onBirdDown);
+  window.addEventListener('mousemove', onBirdMove);
+  window.addEventListener('mouseup', () => activeBirdHandle = null);
+  svgBird.addEventListener('touchstart', onBirdDown, { passive: false });
+  window.addEventListener('touchmove', e => { if (activeBirdHandle) { e.preventDefault(); onBirdMove(e); } }, { passive: false });
+  window.addEventListener('touchend', () => activeBirdHandle = null);
 
   /* ================= 篇章 6：燕尾模型画板 ================= */
   let ptSwallowP = { x: 280, y: 220 };
