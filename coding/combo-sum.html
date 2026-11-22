@@ -563,6 +563,39 @@
       from { transform: scale(0.8); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
+
+    /* 顶部大 Tab 切换 */
+    .lesson-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .lesson-tab {
+      flex: 1;
+      min-width: 220px;
+      padding: 11px 16px;
+      border-radius: 14px;
+      border: 1.5px solid var(--card-border);
+      background: #FFFFFF;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+    .lesson-tab:hover { border-color: var(--accent-border); color: var(--accent); }
+    .lesson-tab.active {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.22);
+    }
   </style>
 </head>
 <body>
@@ -602,7 +635,103 @@
     </p>
   </div>
 
-  <div class="card">
+  <!-- 顶部大 Tab -->
+  <div class="lesson-tabs" role="tablist">
+    <button id="tabWarmup" class="lesson-tab" onclick="switchLessonTab('warmup')">
+      <span>🌱</span> 入门热身：1+2+...+n 与阶乘（单线递归）
+    </button>
+    <button id="tabCombo" class="lesson-tab active" onclick="switchLessonTab('combo')">
+      <span>🃏</span> 进阶实战：挑数字算总和（多分支递归）
+    </button>
+  </div>
+
+  <!-- Tab 1: 递归入门热身 -->
+  <div id="warmupPanel" class="card" style="display:none;">
+    <div class="sim-toolbar">
+      <div class="input-group">
+        <span class="input-label">模式:</span>
+        <button id="wModeAdd" class="preset-btn" style="background:var(--accent); color:#fff; border-color:var(--accent);" onclick="setWarmupMode('add')">➕ 累加 1+2+...+n</button>
+        <button id="wModeMul" class="preset-btn" onclick="setWarmupMode('mul')">✖️ 阶乘 n!</button>
+        <span class="input-label" style="margin-left:8px;">输入 n:</span>
+        <input id="wNInput" class="sim-input" type="number" value="4" min="1" max="6">
+        <button class="preset-btn" onclick="applyWarmupN(3)">n = 3</button>
+        <button class="preset-btn" onclick="applyWarmupN(4)">n = 4</button>
+        <button class="preset-btn" onclick="applyWarmupN(5)">n = 5</button>
+      </div>
+      <div class="control-btns">
+        <button id="wBtnStep" class="ctl-btn primary" onclick="stepWarmup()"><span>⏭</span> 单步步进 (Step)</button>
+        <button id="wBtnPlay" class="ctl-btn secondary" onclick="togglePlayWarmup()"><span id="wPlayIcon">▶</span> 连续播放</button>
+        <button class="ctl-btn secondary" onclick="resetWarmup()"><span>🔄</span> 重置</button>
+      </div>
+    </div>
+
+    <div class="sim-stage-grid">
+      <div class="code-panel">
+        <div class="panel-header">
+          <span>🐍 单线递归入门代码</span>
+          <span id="wCodeTip" style="color:var(--accent);">准备就绪</span>
+        </div>
+        <div class="code-view">
+          <div class="code-line" id="wline1"><span class="line-num">1</span><span class="line-text"><span class="code-keyword">def</span> <span class="code-fn">calc</span>(n):</span></div>
+          <div class="code-line" id="wline2"><span class="line-num">2</span><span class="line-text">    <span class="code-keyword">if</span> n == 1:</span></div>
+          <div class="code-line" id="wline3"><span class="line-num">3</span><span class="line-text">        <span class="code-keyword">return</span> 1</span></div>
+          <div class="code-line" id="wline4"><span class="line-num">4</span><span class="line-text">    <span class="code-keyword">return</span> n <span id="wOpCode">+</span> <span class="code-fn">calc</span>(n - 1)</span></div>
+          <div class="code-line" id="wline5"><span class="line-num">5</span><span class="line-text"></span></div>
+          <div class="code-line" id="wline6"><span class="line-num">6</span><span class="line-text"><span class="code-var">ans</span> = <span class="code-fn">calc</span>(<span id="wCallN">4</span>)</span></div>
+          <div class="code-line" id="wline7"><span class="line-num">7</span><span class="line-text"><span class="code-fn">print</span>(ans)</span></div>
+        </div>
+        <div class="vars-monitor">
+          <div class="var-card">
+            <div class="var-title">当前阶段</div>
+            <div id="wValPhase" class="var-val">准备</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">当前分身参数 n</div>
+            <div id="wValN" class="var-val">-</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">调用栈深度</div>
+            <div id="wValDepth" class="var-val">0 层</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">最终结果 ans</div>
+            <div id="wValAns" class="var-val">_</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="world-panel">
+        <div class="panel-header">
+          <span>🪞 “递（派分身）” 与 “归（带答案）” 舞台</span>
+          <span id="wStageHint" style="color:#0284C7;">等待启动</span>
+        </div>
+        <div class="world-canvas">
+          <div>
+            <div class="zone-sub-title">
+              <span>🪜 递归分身调用栈（先一路往下派分身，触底 n==1 后再一路把答案传回来）</span>
+              <span id="wStackTag">0 层</span>
+            </div>
+            <div id="wStackBox" class="stack-box">
+              <span style="font-size:12px; color:#64748B;">点击单步步进，看 calc(n) 如何一层层召唤分身！</span>
+            </div>
+          </div>
+          <div id="wLog" class="conveyor-log">
+            💡 <b>1+2+...+n</b> 和 <b>阶乘 n!</b> 代码几乎一样，只是把 <code>+</code> 换成 <code>*</code>！点“单步步进”体验一次完整的“递”和“归”。
+          </div>
+        </div>
+        <div class="terminal-box">
+          <div>
+            <span class="terminal-prompt">&gt;&gt;&gt; print(ans)</span>
+            <span id="wTerminalOut" class="terminal-out">_</span>
+          </div>
+          <span id="wTerminalDesc" class="terminal-desc">等待运行结束</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 挑数字算总和 -->
+  <div id="comboPanel" class="card">
     <!-- 五阶段进度 -->
     <div class="pipeline-bar">
       <div id="pStage1" class="stage-step active">
@@ -1171,7 +1300,215 @@ function resetSimulator() {
   renderStep(sim.steps[0]);
 }
 
-window.addEventListener("DOMContentLoaded", resetSimulator);
+/* ==================== 顶部 Tab 切换 & 单线递归热身 ==================== */
+function switchLessonTab(tab) {
+  stopPlay();
+  stopWarmupPlay();
+  const isWarmup = tab === "warmup";
+  document.getElementById("tabWarmup").classList.toggle("active", isWarmup);
+  document.getElementById("tabCombo").classList.toggle("active", !isWarmup);
+  document.getElementById("warmupPanel").style.display = isWarmup ? "block" : "none";
+  document.getElementById("comboPanel").style.display = isWarmup ? "none" : "block";
+}
+
+let wSim = { mode: "add", n: 4, steps: [], cursor: 0, timer: null, isPlaying: false };
+
+function setWarmupMode(mode) {
+  wSim.mode = mode;
+  const addBtn = document.getElementById("wModeAdd");
+  const mulBtn = document.getElementById("wModeMul");
+  if (mode === "add") {
+    addBtn.style.cssText = "background:var(--accent); color:#fff; border-color:var(--accent);";
+    mulBtn.style.cssText = "";
+    document.getElementById("wOpCode").innerText = "+";
+  } else {
+    mulBtn.style.cssText = "background:var(--accent); color:#fff; border-color:var(--accent);";
+    addBtn.style.cssText = "";
+    document.getElementById("wOpCode").innerText = "*";
+  }
+  resetWarmup();
+}
+
+function applyWarmupN(val) {
+  document.getElementById("wNInput").value = val;
+  resetWarmup();
+}
+
+function buildWarmupSteps(n, mode) {
+  const op = mode === "add" ? "+" : "*";
+  const steps = [];
+  const stack = [];
+
+  steps.push({
+    lines: ["wline6"],
+    phase: "准备调用",
+    curN: "-",
+    stack: [],
+    ans: "_",
+    tip: `准备调用 calc(${n})`,
+    log: `🚀 准备执行 <code>ans = calc(${n})</code>，看看要召唤多少层分身！`
+  });
+
+  // 1. 递：一路往下召唤分身
+  for (let cur = n; cur >= 1; cur--) {
+    const depth = n - cur + 1;
+    const role = depth === 1 ? "原始 calc" : `第${depth}层分身`;
+    if (cur === 1) {
+      stack.push({ depth, n: 1, status: "触底！return 1" });
+      steps.push({
+        lines: ["wline1", "wline2", "wline3"],
+        phase: "⬇ 触底条件",
+        curN: 1,
+        stack: stack.map(f => ({ ...f })),
+        ans: "_",
+        sound: 700,
+        tip: "触底！n == 1 返回 1",
+        log: `🛑 <b>${role} calc(1)</b> 碰到出口 <code>if n == 1: return 1</code>！不用再往下派分身了，准备把答案 <b>1</b> 往回传！`
+      });
+    } else {
+      stack.push({ depth, n: cur, status: `等待 calc(${cur - 1})` });
+      steps.push({
+        lines: ["wline1", "wline4"],
+        phase: "⬇ 递 (派分身)",
+        curN: cur,
+        stack: stack.map(f => ({ ...f })),
+        ans: "_",
+        sound: 440 + depth * 55,
+        tip: `${role} calc(${cur}) 召唤 calc(${cur - 1})`,
+        log: `⬇ <b>${role} calc(${cur})</b> 需要先知道 <code>calc(${cur - 1})</code> 是多少，于是暂停等待，召唤下一个分身 <code>calc(${cur - 1})</code>！`
+      });
+    }
+  }
+
+  // 2. 归：一路把答案往回传
+  let childVal = 1;
+  stack.pop(); // 弹出 calc(1)
+  for (let cur = 2; cur <= n; cur++) {
+    const myVal = mode === "add" ? cur + childVal : cur * childVal;
+    const topIdx = stack.length - 1;
+    stack[topIdx].status = `收到 ${childVal} ➔ ${cur} ${op} ${childVal} = ${myVal}`;
+    const depth = stack[topIdx].depth;
+    const role = depth === 1 ? "原始 calc" : `第${depth}层分身`;
+    steps.push({
+      lines: ["wline4"],
+      phase: "⬆ 归 (传答案)",
+      curN: cur,
+      stack: stack.map(f => ({ ...f })),
+      ans: "_",
+      sound: 600 + cur * 50,
+      tip: `${role} 算出 ${cur} ${op} ${childVal} = ${myVal}`,
+      log: `⬆ <b>${role} calc(${cur})</b> 终于收到下层传回来的 <b>${childVal}</b>！算出 <code>${cur} ${op} ${childVal} = ${myVal}</code>，再把 <b>${myVal}</b> 传回上一层！`
+    });
+    childVal = myVal;
+    stack.pop();
+  }
+
+  steps.push({
+    lines: ["wline6", "wline7"],
+    phase: "🎉 完成",
+    curN: "-",
+    stack: [],
+    ans: String(childVal),
+    sound: "success",
+    tip: `执行完毕 · 输出 ${childVal}`,
+    log: `🎉 所有分身全部返回！<code>ans = ${childVal}</code>，<code>print(ans)</code> 输出 <b>${childVal}</b>！`
+  });
+
+  return steps;
+}
+
+function renderWarmupStep(step) {
+  document.querySelectorAll("#warmupPanel .code-line").forEach(el => el.classList.remove("active"));
+  step.lines.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("active");
+  });
+
+  document.getElementById("wCodeTip").innerText = step.tip;
+  document.getElementById("wStageHint").innerText = step.tip;
+  document.getElementById("wValPhase").innerText = step.phase;
+  document.getElementById("wValN").innerText = step.curN;
+  document.getElementById("wValDepth").innerText = `${step.stack.length} 层`;
+  document.getElementById("wValAns").innerText = step.ans;
+  document.getElementById("wStackTag").innerText = `${step.stack.length} 层`;
+
+  const box = document.getElementById("wStackBox");
+  if (step.stack.length === 0) {
+    box.innerHTML = `<span style="font-size:12px; color:#64748B;">${step.ans === "_" ? "尚未进入 calc 函数" : "所有分身已返回完毕"}</span>`;
+  } else {
+    box.innerHTML = "";
+    step.stack.forEach((f, idx) => {
+      const isTop = idx === step.stack.length - 1;
+      const role = f.depth === 1 ? "第1层(原始)" : `第${f.depth}层(分身)`;
+      const div = document.createElement("div");
+      div.className = "stack-frame" + (isTop ? " active-frame" : "");
+      div.innerHTML = `
+        <div>
+          <span class="stack-badge">${role}${isTop ? " ◀ 当前执行" : ""}</span>
+          <code style="margin-left:6px; font-weight:800;">calc(${f.n})</code>
+        </div>
+        <span class="stack-concat">${f.status}</span>
+      `;
+      box.appendChild(div);
+    });
+  }
+
+  document.getElementById("wLog").innerHTML = step.log;
+  document.getElementById("wTerminalOut").innerText = step.ans;
+  document.getElementById("wTerminalDesc").innerText =
+    step.ans === "_" ? "正在推演中..." : (wSim.mode === "add" ? `1+...+${wSim.n} = ${step.ans}` : `${wSim.n}! = ${step.ans}`);
+
+  if (step.sound === "success") sfx.playSuccess();
+  else if (typeof step.sound === "number") sfx.playPop(step.sound);
+}
+
+function stepWarmup() {
+  if (wSim.cursor < wSim.steps.length - 1) {
+    wSim.cursor++;
+    renderWarmupStep(wSim.steps[wSim.cursor]);
+    if (wSim.cursor === wSim.steps.length - 1) {
+      stopWarmupPlay();
+      document.getElementById("wBtnStep").disabled = true;
+    }
+  }
+}
+
+function stopWarmupPlay() {
+  wSim.isPlaying = false;
+  if (wSim.timer) { clearInterval(wSim.timer); wSim.timer = null; }
+  const btn = document.getElementById("wBtnPlay");
+  if (btn) btn.innerHTML = `<span id="wPlayIcon">▶</span> 连续播放`;
+}
+
+function togglePlayWarmup() {
+  if (wSim.isPlaying) { stopWarmupPlay(); return; }
+  if (wSim.cursor >= wSim.steps.length - 1) resetWarmup();
+  wSim.isPlaying = true;
+  document.getElementById("wBtnPlay").innerHTML = `<span id="wPlayIcon">⏸</span> 暂停播放`;
+  wSim.timer = setInterval(() => {
+    if (wSim.cursor < wSim.steps.length - 1) stepWarmup();
+    else stopWarmupPlay();
+  }, 750);
+}
+
+function resetWarmup() {
+  stopWarmupPlay();
+  let n = parseInt(document.getElementById("wNInput").value, 10);
+  if (isNaN(n) || n < 1) n = 1;
+  if (n > 6) n = 6;
+  document.getElementById("wNInput").value = n;
+  document.getElementById("wCallN").innerText = n;
+  wSim.n = n;
+  wSim.steps = buildWarmupSteps(n, wSim.mode);
+  wSim.cursor = 0;
+  document.getElementById("wBtnStep").disabled = false;
+  renderWarmupStep(wSim.steps[0]);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  resetSimulator();
+  resetWarmup();
+});
 </script>
 </body>
 </html>
