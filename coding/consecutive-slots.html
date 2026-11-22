@@ -605,6 +605,34 @@
       </div>
     </div>
   </div>
+
+  <!-- 通用算法归纳总结卡片 -->
+  <div class="card" style="background:linear-gradient(135deg, #FFFFFF, #F8FAFC); border-color:#C7D2FE;">
+    <h3 style="margin:0 0 10px 0; font-size:16px; font-weight:800; color:#0F172A;">
+      🧠 更深一步：这套代码能归纳成什么“万能算法”？
+    </h3>
+    <p style="margin:0 0 12px 0; font-size:13px; color:#334155; line-height:1.65;">
+      这套写法在算法里叫做<b>「最长连续段」模型</b>。只要记住<b>“连续计数三件套：<code>cnt</code> 记当前、<code>maxn</code> 记最大、断了就归零”</b>，只需要换掉 <code>if</code> 里的<b>牵手条件</b>，同一套代码就能通杀一整类题目：
+    </p>
+    <div class="isomorph-grid" style="margin-top:0; margin-bottom:12px;">
+      <div class="iso-box">
+        <strong><code>ls[i] + 1 == ls[i + 1]</code></strong>
+        最长连续数字（仓库货位、电影院连座、扑克顺子）
+      </div>
+      <div class="iso-box">
+        <strong><code>ls[i] &lt; ls[i + 1]</code></strong>
+        最长连续上升段（气温连续升高最多几天、股票连涨天数）
+      </div>
+      <div class="iso-box">
+        <strong><code>ls[i] == ls[i + 1]</code></strong>
+        最长连续相同段（扔硬币连续正面最多次数、游戏最长连胜）
+      </div>
+    </div>
+    <div style="background:#EEF2FF; border:1px solid #C7D2FE; border-radius:12px; padding:10px 14px; font-size:12.5px; color:#1E293B; line-height:1.6;">
+      <b>🚀 进阶扩展：如果数字是乱序的呢？</b><br>
+      刚才这题默认输入是从小到大排好的；如果以后遇到<b>乱序</b>的卡片（比如 <code>109, 102, 106, 103</code>），只要在循环前加上<b>去重 + 排序</b>（<code>ls = sorted(set(ls))</code>），后面的代码<b>一字不改</b>照样跑，这就是算法题库里非常著名的<b>“最长连续序列”</b>通用解法！
+    </div>
+  </div>
 </div>
 
 <script>
