@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>挑数字算总和：递归组合与集合去重 · Alex Coding Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --card-border: #E2E8F0;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --accent-border: #C7D2FE;
+      --cyan: #0284C7;
+      --cyan-light: #E0F2FE;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --amber: #D97706;
+      --amber-light: #FEF3C7;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --text: #1E293B;
+      --subtext: #64748B;
+      --code-bg: #F8FAFC;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(12px + env(safe-area-inset-top)) 12px calc(24px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container { width: 100%; max-width: 1080px; }
+
+    /* 顶部导航 */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge-case {
+      background: #E0E7FF;
+      border: 1px solid #A5B4FC;
+      color: #3730A3;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .title-group h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .title-group .sub {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
+    .nav-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-link:hover {
+      background: #F1F5F9;
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .mode-switch-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .theme-skin-toggle { display: flex; align-items: center; gap: 8px; }
+    .theme-label { font-size: 12px; color: var(--subtext); font-weight: 700; }
+    .preset-chip {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-hero {
+      background: linear-gradient(135deg, #FFFFFF, #EFF6FF);
+      border: 1px solid #BFDBFE;
+      border-radius: 18px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .story-hero h2 {
+      margin: 0 0 6px 0;
+      font-size: 17px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .story-hero p {
+      margin: 0;
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.65;
+    }
+
+    /* 五阶段进度条 */
+    .pipeline-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 720px) {
+      .pipeline-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stage-step {
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: all 0.2s;
+    }
+    .stage-step.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12);
+    }
+    .stage-step.done {
+      background: var(--success-light);
+      border-color: #A7F3D0;
+    }
+    .stage-num { font-size: 10px; font-weight: 800; color: var(--subtext); }
+    .stage-step.active .stage-num { color: var(--accent); }
+    .stage-step.done .stage-num { color: #059669; }
+    .stage-name { font-size: 12px; font-weight: 800; color: var(--text); }
+
+    /* 控制条 */
+    .sim-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .input-label { font-size: 12px; font-weight: 800; color: #334155; }
+    .sim-input {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      font-size: 13px;
+      font-weight: 700;
+      width: 60px;
+      color: var(--text);
+      background: #FFFFFF;
+    }
+    .sim-input.wide { width: 150px; }
+    .preset-btn {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-light);
+    }
+    .control-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ctl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1px solid var(--card-border);
+      transition: all 0.15s;
+    }
+    .ctl-btn.primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+    .ctl-btn.primary:hover { background: #4338CA; }
+    .ctl-btn.secondary {
+      background: #FFFFFF;
+      color: #334155;
+    }
+    .ctl-btn.secondary:hover { background: #F1F5F9; }
+    .ctl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* 左右主舞台 */
+    .sim-stage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.12fr;
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .sim-stage-grid { grid-template-columns: 1fr; }
+    }
+
+    .code-panel, .world-panel {
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+    }
+    .panel-header {
+      padding: 10px 14px;
+      background: #F1F5F9;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 800;
+      color: #334155;
+    }
+    .code-view {
+      padding: 10px 0;
+      background: var(--code-bg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      overflow-x: auto;
+      flex: 1;
+    }
+    .code-line {
+      display: flex;
+      padding: 1.5px 12px;
+      border-left: 3px solid transparent;
+      transition: background 0.15s;
+      white-space: pre;
+    }
+    .code-line.active {
+      background: #FEF3C7;
+      border-left-color: #D97706;
+    }
+    .line-num {
+      width: 24px;
+      color: #94A3B8;
+      user-select: none;
+      flex-shrink: 0;
+      font-size: 11px;
+    }
+    .code-comment { color: #64748B; font-style: italic; }
+    .code-keyword { color: #7C3AED; font-weight: 700; }
+    .code-fn { color: #0284C7; font-weight: 700; }
+    .code-var { color: #0F172A; font-weight: 600; }
+
+    /* 变量监控 */
+    .vars-monitor {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      padding: 10px;
+      background: #F8FAFC;
+      border-top: 1px solid var(--card-border);
+    }
+    .var-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+    .var-title { font-size: 10px; font-weight: 800; color: var(--subtext); margin-bottom: 3px; }
+    .var-val {
+      font-family: ui-monospace, monospace;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    /* 右侧可视化舞台 */
+    .world-canvas {
+      padding: 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+      color: #FFFFFF;
+    }
+    .zone-sub-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #94A3B8;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    /* 卡片列表 ls */
+    .cards-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 4px 2px;
+    }
+    .num-card {
+      width: 62px;
+      height: 70px;
+      background: #334155;
+      border: 2px solid #64748B;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.22s ease;
+    }
+    .num-card .idx-tag {
+      position: absolute;
+      top: 3px;
+      left: 6px;
+      font-size: 9px;
+      color: #CBD5E1;
+      font-family: monospace;
+    }
+    .num-card .card-num { font-size: 20px; font-weight: 900; color: #FFFFFF; }
+    .num-card .card-state { font-size: 9px; font-weight: 700; color: #94A3B8; margin-top: 2px; }
+    .num-card.in-res {
+      background: linear-gradient(135deg, #4F46E5, #3730A3);
+      border-color: #818CF8;
+      transform: translateY(-4px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
+    }
+    .num-card.in-res .card-state { color: #C7D2FE; }
+    .num-card.trying {
+      border-color: #FBBF24;
+      box-shadow: 0 0 14px rgba(251, 191, 36, 0.65);
+    }
+    .num-card.skipped {
+      opacity: 0.35;
+      transform: scale(0.94);
+    }
+
+    /* 手中已选槽 res */
+    .hand-box {
+      background: rgba(255,255,255,0.06);
+      border: 1px dashed rgba(255,255,255,0.22);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-height: 54px;
+    }
+    .hand-slot {
+      padding: 6px 12px;
+      border-radius: 9px;
+      background: #4F46E5;
+      border: 1.5px solid #A5B4FC;
+      font-size: 15px;
+      font-weight: 900;
+      color: #FFFFFF;
+      animation: popScale 0.2s ease;
+    }
+    .hand-slot.empty {
+      background: rgba(255,255,255,0.05);
+      border-style: dashed;
+      border-color: #475569;
+      color: #64748B;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .hand-sum-eq {
+      margin-left: auto;
+      font-size: 13px;
+      font-weight: 800;
+      color: #34D399;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      padding: 5px 10px;
+      border-radius: 8px;
+    }
+
+    /* sums 与 set(sums) 区 */
+    .bucket-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 8px 10px;
+      min-height: 46px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .sum-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      background: #1E40AF;
+      border: 1px solid #60A5FA;
+      color: #EFF6FF;
+      animation: popScale 0.2s ease;
+    }
+    .sum-pill.dup {
+      background: #78350F;
+      border-color: #FBBF24;
+      color: #FEF3C7;
+    }
+    .sum-pill.unique {
+      background: #065F46;
+      border-color: #34D399;
+      color: #ECFDF5;
+    }
+
+    .conveyor-log {
+      background: rgba(0,0,0,0.38);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #E2E8F0;
+      line-height: 1.5;
+    }
+
+    .terminal-box {
+      background: #0F172A;
+      border-top: 1px solid #334155;
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .terminal-prompt { color: #34D399; font-weight: bold; }
+    .terminal-out { color: #FFFFFF; font-weight: 900; font-size: 16px; margin-left: 8px; }
+    .terminal-desc { color: #94A3B8; font-size: 11px; }
+
+    @keyframes popScale {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- 顶部导航 -->
+  <div class="topbar">
+    <div class="brand-group">
+      <span class="badge-case">🎯 探案档案 #005</span>
+      <div class="title-group">
+        <h1>挑数字算总和：递归组合与集合去重</h1>
+        <div class="sub">Python 递归挑数 · 列表长度 len · 集合去重 set · Alex Coding Lab</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-link"><span>📂</span> 任务大厅</a>
+      <a href="package-kth.html" class="nav-link"><span>📦</span> 上一关：快递包裹第 k 重</a>
+    </div>
+  </div>
+
+  <div class="mode-switch-bar">
+    <div style="font-size:12px; font-weight:800; color:var(--subtext);">
+      📌 核心思路：读取数字卡片 ls ➔ 递归函数 pick(index, res) 不回头挑 k 张 ➔ 收集所有总和 sums ➔ set(sums) 去重计数
+    </div>
+    <div class="theme-skin-toggle">
+      <span class="theme-label">声音音效</span>
+      <button class="preset-chip" id="soundToggleBtn" onclick="toggleAudio()"><span>🔊</span> 音效已开</button>
+    </div>
+  </div>
+
+  <!-- 剧情卡片 -->
+  <div class="story-hero">
+    <h2><span>🃏</span> 小剧场：挑数字卡片，算一算有几种不同的和</h2>
+    <p>
+      桌上有 <b>n</b> 张数字卡片（比如年会要挑 <b>k</b> 首曲目串烧算总时长）。每次从剩下的卡片里<b>只往后挑、不回头</b>，凑够 <b>k</b> 张就把它们的和放进 <code>sums</code>。<br>
+      不同挑法可能会算出一样的得数！最后用 <code>set(sums)</code> 把重复的得数合并，看看一共有几种不同的结果。
+    </p>
+  </div>
+
+  <div class="card">
+    <!-- 五阶段进度 -->
+    <div class="pipeline-bar">
+      <div id="pStage1" class="stage-step active">
+        <span class="stage-num">阶段 ①</span>
+        <span class="stage-name">读取 n, k 与 ls</span>
+      </div>
+      <div id="pStage2" class="stage-step">
+        <span class="stage-num">阶段 ②</span>
+        <span class="stage-name">递归挑数 pick</span>
+      </div>
+      <div id="pStage3" class="stage-step">
+        <span class="stage-num">阶段 ③</span>
+        <span class="stage-name">凑齐 k 个求 sum</span>
+      </div>
+      <div id="pStage4" class="stage-step">
+        <span class="stage-num">阶段 ④</span>
+        <span class="stage-name">集合去重 set</span>
+      </div>
+      <div id="pStage5" class="stage-step">
+        <span class="stage-num">阶段 ⑤</span>
+        <span class="stage-name">输出种类 len</span>
+      </div>
+    </div>
+
+    <!-- 控制条 -->
+    <div class="sim-toolbar">
+      <div class="input-group">
+        <span class="input-label">卡片数字:</span>
+        <input id="numsInput" class="sim-input wide" type="text" value="5 10 15 20">
+        <span class="input-label" style="margin-left:4px;">挑 k 个:</span>
+        <input id="kInput" class="sim-input" type="number" value="2" min="1" max="6">
+        <button class="preset-btn" onclick="applyPreset('5 10 15 20', 2)">样例 (4选2)</button>
+        <button class="preset-btn" onclick="applyPreset('1 2 4', 2)">全不同 (3选2)</button>
+        <button class="preset-btn" onclick="applyPreset('5 5 10 10', 2)">有重复卡片</button>
+        <button class="preset-btn" onclick="applyPreset('2 4 6 8 10', 3)">5选3挑战</button>
+      </div>
+
+      <div class="control-btns">
+        <button id="btnStep" class="ctl-btn primary" onclick="stepSimulator()">
+          <span>⏭</span> 单步步进 (Step)
+        </button>
+        <button id="btnPlay" class="ctl-btn secondary" onclick="togglePlaySimulator()">
+          <span id="playIcon">▶</span> 连续播放
+        </button>
+        <button id="btnReset" class="ctl-btn secondary" onclick="resetSimulator()">
+          <span>🔄</span> 重置
+        </button>
+      </div>
+    </div>
+
+    <!-- 左右分栏 -->
+    <div class="sim-stage-grid">
+      <!-- 左侧代码区 -->
+      <div class="code-panel">
+        <div class="panel-header">
+          <span>🐍 Python 递归程序</span>
+          <span id="codeStepTip" style="color:var(--accent);">准备就绪 · 点击单步执行</span>
+        </div>
+
+        <div class="code-view">
+          <div class="code-line" id="line1"><span class="line-num">1</span><span class="line-text"><span class="code-var">a</span> = <span class="code-fn">input</span>().<span class="code-fn">split</span>(<span class="code-var">" "</span>)</span></div>
+          <div class="code-line" id="line2"><span class="line-num">2</span><span class="line-text"><span class="code-var">b</span> = <span class="code-fn">input</span>().<span class="code-fn">split</span>(<span class="code-var">" "</span>)</span></div>
+          <div class="code-line" id="line3"><span class="line-num">3</span><span class="line-text"><span class="code-var">a1</span> = []</span></div>
+          <div class="code-line" id="line4"><span class="line-num">4</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-var">a</span>: a1.<span class="code-fn">append</span>(<span class="code-fn">int</span>(i))</span></div>
+          <div class="code-line" id="line5"><span class="line-num">5</span><span class="line-text"><span class="code-var">ls</span> = []</span></div>
+          <div class="code-line" id="line6"><span class="line-num">6</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-var">b</span>: ls.<span class="code-fn">append</span>(<span class="code-fn">int</span>(i))</span></div>
+          <div class="code-line" id="line7"><span class="line-num">7</span><span class="line-text"><span class="code-var">n</span>, <span class="code-var">k</span> = a1[0], a1[1]</span></div>
+          <div class="code-line" id="line8"><span class="line-num">8</span><span class="line-text"><span class="code-var">sums</span> = []</span></div>
+          <div class="code-line" id="line9"><span class="line-num">9</span><span class="line-text"><span class="code-keyword">def</span> <span class="code-fn">pick</span>(index, res):</span></div>
+          <div class="code-line" id="line10"><span class="line-num">10</span><span class="line-text">    <span class="code-keyword">if</span> <span class="code-fn">len</span>(res) == k:</span></div>
+          <div class="code-line" id="line11"><span class="line-num">11</span><span class="line-text">        sums.<span class="code-fn">append</span>(<span class="code-fn">sum</span>(res))</span></div>
+          <div class="code-line" id="line12"><span class="line-num">12</span><span class="line-text">        <span class="code-keyword">return</span></span></div>
+          <div class="code-line" id="line13"><span class="line-num">13</span><span class="line-text">    <span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(index, n):</span></div>
+          <div class="code-line" id="line14"><span class="line-num">14</span><span class="line-text">        <span class="code-fn">pick</span>(i + 1, res + [ls[i]])</span></div>
+          <div class="code-line" id="line15"><span class="line-num">15</span><span class="line-text"><span class="code-fn">pick</span>(0, [])</span></div>
+          <div class="code-line" id="line16"><span class="line-num">16</span><span class="line-text"><span class="code-var">res</span> = <span class="code-fn">set</span>(sums)</span></div>
+          <div class="code-line" id="line17"><span class="line-num">17</span><span class="line-text"><span class="code-fn">print</span>(<span class="code-fn">len</span>(res))</span></div>
+        </div>
+
+        <div class="vars-monitor">
+          <div class="var-card">
+            <div class="var-title">当前起点 index</div>
+            <div id="valIndex" class="var-val">-</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">已选卡片 res (len/k)</div>
+            <div id="valRes" class="var-val">[] (0/2)</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">所有总和 sums</div>
+            <div id="valSums" class="var-val">[]</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">去重集合 set(sums)</div>
+            <div id="valSet" class="var-val">{}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧动画舞台 -->
+      <div class="world-panel">
+        <div class="panel-header">
+          <span>🎬 递归挑数与去重实景舞台</span>
+          <span id="stageHint" style="color:#0284C7;">等待启动</span>
+        </div>
+
+        <div class="world-canvas">
+          <!-- 1. 桌面卡片 ls -->
+          <div>
+            <div class="zone-sub-title">
+              <span>🃏 桌面上的数字卡片 ls（只往后挑，不回头）</span>
+              <span id="nKInfo">n=4, k=2</span>
+            </div>
+            <div id="cardsRow" class="cards-row"></div>
+          </div>
+
+          <!-- 2. 手中已选卡片 res -->
+          <div>
+            <div class="zone-sub-title">
+              <span>✋ 手里已挑的卡片 res（凑齐 k 张就求和）</span>
+            </div>
+            <div id="handBox" class="hand-box"></div>
+          </div>
+
+          <!-- 3. sums 收集箱 -->
+          <div>
+            <div class="zone-sub-title">
+              <span>📥 所有挑法的总和 sums（金色表示和之前重复啦）</span>
+              <span id="sumsCountTag">0 个</span>
+            </div>
+            <div id="sumsBucket" class="bucket-box">
+              <span style="font-size:12px; color:#64748B;">暂无总和，等待凑齐 k 张卡片...</span>
+            </div>
+          </div>
+
+          <!-- 4. set(sums) 去重箱 -->
+          <div>
+            <div class="zone-sub-title">
+              <span>✨ 集合去重 res = set(sums)（相同得数只留 1 个）</span>
+              <span id="setCountTag">0 种</span>
+            </div>
+            <div id="setBucket" class="bucket-box">
+              <span style="font-size:12px; color:#64748B;">等 pick(0, []) 全部跑完后统一去重...</span>
+            </div>
+          </div>
+
+          <!-- 解说条 -->
+          <div id="conveyorLog" class="conveyor-log">
+            💡 点击 <b>单步步进</b> 或 <b>连续播放</b>，看看递归函数 <code>pick(index, res)</code> 是怎么一张一张挑出所有组合的！
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div>
+            <span class="terminal-prompt">&gt;&gt;&gt; print(len(res))</span>
+            <span id="terminalOut" class="terminal-out">_</span>
+          </div>
+          <span id="terminalDesc" class="terminal-desc">程序尚未运行结束</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+class SoundFx {
+  constructor() { this.ctx = null; this.muted = false; }
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
+  }
+  playPop(freq = 500) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.2, now + 0.07);
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(now); osc.stop(now + 0.08);
+  }
+  playSuccess() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
+      const now = this.ctx.currentTime + idx * 0.07;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(f, now);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(now); osc.stop(now + 0.22);
+    });
+  }
+}
+const sfx = new SoundFx();
+
+function toggleAudio() {
+  sfx.muted = !sfx.muted;
+  const btn = document.getElementById("soundToggleBtn");
+  btn.innerHTML = sfx.muted ? "<span>🔇</span> 音效已静音" : "<span>🔊</span> 音效已开";
+  btn.style.opacity = sfx.muted ? "0.6" : "1";
+}
+
+/* 预生成整套单步教学剧本 */
+let sim = {
+  ls: [],
+  n: 4,
+  k: 2,
+  steps: [],
+  cursor: -1,
+  timer: null,
+  isPlaying: false
+};
+
+function parseInputs() {
+  const raw = document.getElementById("numsInput").value.trim().split(/[\s,，]+/).filter(Boolean);
+  let ls = raw.map(x => parseInt(x, 10)).filter(x => !isNaN(x));
+  if (ls.length === 0) ls = [5, 10, 15, 20];
+  if (ls.length > 7) ls = ls.slice(0, 7); // 演示区最多展示7张卡片，避免步骤过多
+  let k = parseInt(document.getElementById("kInput").value, 10);
+  if (isNaN(k) || k < 1) k = 1;
+  if (k > ls.length) k = ls.length;
+  document.getElementById("numsInput").value = ls.join(" ");
+  document.getElementById("kInput").value = k;
+  return { ls, k };
+}
+
+function buildSteps(ls, k) {
+  const n = ls.length;
+  const steps = [];
+  const sums = [];
+
+  // 步骤 1: 初始化数据
+  steps.push({
+    stage: 0,
+    lines: ["line1", "line2", "line3", "line4", "line5", "line6", "line7", "line8"],
+    index: "-",
+    resIndices: [],
+    tryingIdx: -1,
+    sums: [],
+    uniqueSet: null,
+    output: "_",
+    tip: `读取输入：n=${n}, k=${k}`,
+    log: `📥 读入卡片 <b>ls = [${ls.join(", ")}]</b>，共 <b>${n}</b> 张，需要挑选 <b>${k}</b> 张，准备空列表 <code>sums = []</code>。`
+  });
+
+  // 递归生成每一步
+  function simulatePick(index, resIndices) {
+    if (resIndices.length === k) {
+      const vals = resIndices.map(idx => ls[idx]);
+      const total = vals.reduce((a, b) => a + b, 0);
+      const isDup = sums.includes(total);
+      sums.push(total);
+      steps.push({
+        stage: 2,
+        lines: ["line10", "line11", "line12"],
+        index: index,
+        resIndices: [...resIndices],
+        tryingIdx: -1,
+        sums: [...sums],
+        uniqueSet: null,
+        output: "_",
+        sound: isDup ? 380 : 660,
+        tip: `凑齐 ${k} 个！sum = ${total}`,
+        log: `✅ <b>len(res) == ${k}</b>！把 <code>[${vals.join(" + ")}]</code> 相加得 <b>${total}</b>，放进 <code>sums</code>${isDup ? "（⚠️ 和之前重复了，先留着，最后再统一去重）" : ""}，然后 <code>return</code> 返回上一步。`
+      });
+      return;
+    }
+
+    for (let i = index; i < n; i++) {
+      const nextRes = [...resIndices, i];
+      const nextVals = nextRes.map(idx => ls[idx]);
+      steps.push({
+        stage: 1,
+        lines: ["line13", "line14"],
+        index: index,
+        resIndices: nextRes,
+        tryingIdx: i,
+        sums: [...sums],
+        uniqueSet: null,
+        output: "_",
+        sound: 500 + nextRes.length * 60,
+        tip: `挑选卡片 #${i} (${ls[i]})`,
+        log: `👉 从位置 <code>index=${index}</code> 往后找：挑中第 <b>#${i}</b> 张卡片（数字 <b>${ls[i]}</b>），当前已选 <code>res = [${nextVals.join(", ")}]</code>，继续往下找 <code>pick(${i + 1}, ...)</code>。`
+      });
+      simulatePick(i + 1, nextRes);
+    }
+  }
+
+  steps.push({
+    stage: 1,
+    lines: ["line15", "line9"],
+    index: 0,
+    resIndices: [],
+    tryingIdx: -1,
+    sums: [],
+    uniqueSet: null,
+    output: "_",
+    sound: 440,
+    tip: "调用 pick(0, [])",
+    log: `🚀 开始执行 <code>pick(0, [])</code>：从第 0 张卡片开始，手里还是空的。`
+  });
+
+  simulatePick(0, []);
+
+  // 集合去重
+  const uniqueArr = Array.from(new Set(sums));
+  steps.push({
+    stage: 3,
+    lines: ["line16"],
+    index: "-",
+    resIndices: [],
+    tryingIdx: -1,
+    sums: [...sums],
+    uniqueSet: uniqueArr,
+    output: "_",
+    sound: 740,
+    tip: "set(sums) 去重完成",
+    log: `✨ 所有挑法都试完啦！<code>sums</code> 里共有 <b>${sums.length}</b> 个和，经过 <code>res = set(sums)</code> 去重后，剩下 <b>${uniqueArr.length}</b> 种不同的结果！`
+  });
+
+  // 输出结果
+  steps.push({
+    stage: 4,
+    lines: ["line17"],
+    index: "-",
+    resIndices: [],
+    tryingIdx: -1,
+    sums: [...sums],
+    uniqueSet: uniqueArr,
+    output: String(uniqueArr.length),
+    sound: "success",
+    tip: `执行完毕 · 输出 ${uniqueArr.length}`,
+    log: `🎉 大功告成！<code>print(len(res))</code> 输出最终答案：<b>${uniqueArr.length}</b> 种不同的总和！`
+  });
+
+  return steps;
+}
+
+function renderStep(step) {
+  // 阶段条
+  document.querySelectorAll(".stage-step").forEach((el, idx) => {
+    el.classList.remove("active", "done");
+    if (idx < step.stage) el.classList.add("done");
+    if (idx === step.stage) el.classList.add("active");
+  });
+
+  // 高亮代码行
+  document.querySelectorAll(".code-line").forEach(el => el.classList.remove("active"));
+  step.lines.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("active");
+  });
+
+  const resVals = step.resIndices.map(i => sim.ls[i]);
+  document.getElementById("codeStepTip").innerText = step.tip;
+  document.getElementById("stageHint").innerText = step.tip;
+  document.getElementById("valIndex").innerText = step.index;
+  document.getElementById("valRes").innerText = `[${resVals.join(", ")}] (${resVals.length}/${sim.k})`;
+  document.getElementById("valSums").innerText = `[${step.sums.join(", ")}]`;
+  document.getElementById("valSet").innerText = step.uniqueSet ? `{${step.uniqueSet.join(", ")}}` : "{}";
+
+  // 渲染桌面卡片
+  const cardsRow = document.getElementById("cardsRow");
+  cardsRow.innerHTML = "";
+  sim.ls.forEach((val, idx) => {
+    const card = document.createElement("div");
+    card.className = "num-card";
+    const inRes = step.resIndices.includes(idx);
+    if (inRes) card.classList.add("in-res");
+    if (idx === step.tryingIdx) card.classList.add("trying");
+    if (!inRes && typeof step.index === "number" && idx < step.index) {
+      card.classList.add("skipped");
+    }
+
+    let stateText = "可选";
+    if (inRes) stateText = "已选";
+    else if (typeof step.index === "number" && idx < step.index) stateText = "已过";
+
+    card.innerHTML = `<span class="idx-tag">#${idx}</span><div class="card-num">${val}</div><div class="card-state">${stateText}</div>`;
+    cardsRow.appendChild(card);
+  });
+
+  // 渲染手中卡片 res
+  const handBox = document.getElementById("handBox");
+  handBox.innerHTML = "";
+  for (let i = 0; i < sim.k; i++) {
+    const slot = document.createElement("div");
+    if (i < resVals.length) {
+      slot.className = "hand-slot";
+      slot.innerText = resVals[i];
+    } else {
+      slot.className = "hand-slot empty";
+      slot.innerText = "空位";
+    }
+    handBox.appendChild(slot);
+  }
+  const sumEq = document.createElement("div");
+  sumEq.className = "hand-sum-eq";
+  const curSum = resVals.reduce((a, b) => a + b, 0);
+  sumEq.innerText = `当前和 = ${curSum}`;
+  handBox.appendChild(sumEq);
+
+  // 渲染 sums
+  const sumsBucket = document.getElementById("sumsBucket");
+  document.getElementById("sumsCountTag").innerText = `${step.sums.length} 个`;
+  if (step.sums.length === 0) {
+    sumsBucket.innerHTML = `<span style="font-size:12px; color:#64748B;">暂无总和，等待凑齐 ${sim.k} 张卡片...</span>`;
+  } else {
+    sumsBucket.innerHTML = "";
+    const seen = new Set();
+    step.sums.forEach(s => {
+      const pill = document.createElement("span");
+      const isDup = seen.has(s);
+      seen.add(s);
+      pill.className = "sum-pill" + (isDup ? " dup" : "");
+      pill.innerText = isDup ? `${s} (重复)` : s;
+      sumsBucket.appendChild(pill);
+    });
+  }
+
+  // 渲染 set(sums)
+  const setBucket = document.getElementById("setBucket");
+  if (!step.uniqueSet) {
+    document.getElementById("setCountTag").innerText = "0 种";
+    setBucket.innerHTML = `<span style="font-size:12px; color:#64748B;">等 pick(0, []) 全部跑完后统一去重...</span>`;
+  } else {
+    document.getElementById("setCountTag").innerText = `${step.uniqueSet.length} 种`;
+    setBucket.innerHTML = "";
+    step.uniqueSet.forEach(s => {
+      const pill = document.createElement("span");
+      pill.className = "sum-pill unique";
+      pill.innerText = s;
+      setBucket.appendChild(pill);
+    });
+  }
+
+  document.getElementById("conveyorLog").innerHTML = step.log;
+  document.getElementById("terminalOut").innerText = step.output;
+  document.getElementById("terminalDesc").innerText =
+    step.output === "_" ? "正在推演中..." : `共算出 ${step.uniqueSet.length} 种不同的总和`;
+
+  if (step.sound === "success") sfx.playSuccess();
+  else if (typeof step.sound === "number") sfx.playPop(step.sound);
+}
+
+function stepSimulator() {
+  if (sim.cursor < sim.steps.length - 1) {
+    sim.cursor++;
+    renderStep(sim.steps[sim.cursor]);
+    if (sim.cursor === sim.steps.length - 1) {
+      stopPlay();
+      document.getElementById("btnStep").disabled = true;
+    }
+  }
+}
+
+function stopPlay() {
+  sim.isPlaying = false;
+  if (sim.timer) { clearInterval(sim.timer); sim.timer = null; }
+  document.getElementById("playIcon").innerText = "▶";
+  document.getElementById("btnPlay").innerHTML = `<span id="playIcon">▶</span> 连续播放`;
+}
+
+function togglePlaySimulator() {
+  if (sim.isPlaying) {
+    stopPlay();
+    return;
+  }
+  if (sim.cursor >= sim.steps.length - 1) resetSimulator();
+  sim.isPlaying = true;
+  document.getElementById("btnPlay").innerHTML = `<span id="playIcon">⏸</span> 暂停播放`;
+  sim.timer = setInterval(() => {
+    if (sim.cursor < sim.steps.length - 1) {
+      stepSimulator();
+    } else {
+      stopPlay();
+    }
+  }, 650);
+}
+
+function applyPreset(str, targetK) {
+  document.getElementById("numsInput").value = str;
+  document.getElementById("kInput").value = targetK;
+  resetSimulator();
+}
+
+function resetSimulator() {
+  stopPlay();
+  const { ls, k } = parseInputs();
+  sim.ls = ls;
+  sim.n = ls.length;
+  sim.k = k;
+  sim.steps = buildSteps(ls, k);
+  sim.cursor = 0;
+  document.getElementById("btnStep").disabled = false;
+  document.getElementById("nKInfo").innerText = `n=${sim.n}, k=${sim.k}`;
+  renderStep(sim.steps[0]);
+}
+
+window.addEventListener("DOMContentLoaded", resetSimulator);
+</script>
+</body>
+</html>
