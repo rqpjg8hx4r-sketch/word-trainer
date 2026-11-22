@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#F8FAFC">
+  <title>连续递增计数：数字顺子与仓库货位 · Alex Coding Lab</title>
+  <style>
+    :root {
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --card-border: #E2E8F0;
+      --accent: #4F46E5;
+      --accent-light: #EEF2FF;
+      --accent-border: #C7D2FE;
+      --cyan: #0284C7;
+      --cyan-light: #E0F2FE;
+      --success: #10B981;
+      --success-light: #ECFDF5;
+      --amber: #D97706;
+      --amber-light: #FEF3C7;
+      --danger: #EF4444;
+      --danger-light: #FEE2E2;
+      --text: #1E293B;
+      --subtext: #64748B;
+      --code-bg: #F8FAFC;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      margin: 0;
+      padding: calc(12px + env(safe-area-inset-top)) 12px calc(24px + env(safe-area-inset-bottom));
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container { width: 100%; max-width: 1080px; }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .brand-group { display: flex; align-items: center; gap: 10px; }
+    .badge-case {
+      background: #E0E7FF;
+      border: 1px solid #A5B4FC;
+      color: #3730A3;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .title-group h1 { margin: 0; font-size: 18px; font-weight: 800; color: var(--text); }
+    .title-group .sub { font-size: 12px; color: var(--subtext); margin-top: 2px; }
+    .nav-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #334155;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.2s;
+    }
+    .nav-link:hover { background: #F1F5F9; color: var(--accent); border-color: var(--accent-border); }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .mode-switch-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .skin-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .skin-tab {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .skin-tab.active {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+    .preset-chip {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-hero {
+      background: linear-gradient(135deg, #FFFFFF, #EFF6FF);
+      border: 1px solid #BFDBFE;
+      border-radius: 18px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .story-hero h2 {
+      margin: 0 0 6px 0;
+      font-size: 17px;
+      font-weight: 800;
+      color: #0F172A;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .story-hero p { margin: 0; font-size: 13px; color: #334155; line-height: 1.65; }
+
+    /* 同构场景卡片条 */
+    .isomorph-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+    @media (max-width: 720px) {
+      .isomorph-grid { grid-template-columns: 1fr; }
+    }
+    .iso-box {
+      background: #FFFFFF;
+      border: 1px solid #DBEAFE;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #475569;
+      line-height: 1.5;
+    }
+    .iso-box strong { color: #1E293B; display: block; margin-bottom: 2px; font-size: 12.5px; }
+
+    .pipeline-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 720px) {
+      .pipeline-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stage-step {
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      transition: all 0.2s;
+    }
+    .stage-step.active {
+      background: var(--accent-light);
+      border-color: var(--accent);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.12);
+    }
+    .stage-step.done { background: var(--success-light); border-color: #A7F3D0; }
+    .stage-num { font-size: 10px; font-weight: 800; color: var(--subtext); }
+    .stage-step.active .stage-num { color: var(--accent); }
+    .stage-step.done .stage-num { color: #059669; }
+    .stage-name { font-size: 12px; font-weight: 800; color: var(--text); }
+
+    .sim-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      background: #F8FAFC;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+    .input-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .input-label { font-size: 12px; font-weight: 800; color: #334155; }
+    .sim-input {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #CBD5E1;
+      font-size: 13px;
+      font-weight: 700;
+      width: 175px;
+      color: var(--text);
+      background: #FFFFFF;
+    }
+    .preset-btn {
+      padding: 5px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      background: #FFFFFF;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .preset-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+    .control-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .ctl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1px solid var(--card-border);
+    }
+    .ctl-btn.primary { background: var(--accent); color: #FFFFFF; border-color: var(--accent); }
+    .ctl-btn.primary:hover { background: #4338CA; }
+    .ctl-btn.secondary { background: #FFFFFF; color: #334155; }
+    .ctl-btn.secondary:hover { background: #F1F5F9; }
+    .ctl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .sim-stage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 16px;
+    }
+    @media (max-width: 900px) {
+      .sim-stage-grid { grid-template-columns: 1fr; }
+    }
+
+    .code-panel, .world-panel {
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+    }
+    .panel-header {
+      padding: 10px 14px;
+      background: #F1F5F9;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 800;
+      color: #334155;
+    }
+    .code-view {
+      padding: 10px 0;
+      background: var(--code-bg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      overflow-x: auto;
+      flex: 1;
+    }
+    .code-line {
+      display: flex;
+      padding: 1.5px 12px;
+      border-left: 3px solid transparent;
+      white-space: pre;
+    }
+    .code-line.active { background: #FEF3C7; border-left-color: #D97706; }
+    .line-num { width: 24px; color: #94A3B8; user-select: none; flex-shrink: 0; font-size: 11px; }
+    .code-keyword { color: #7C3AED; font-weight: 700; }
+    .code-fn { color: #0284C7; font-weight: 700; }
+    .code-var { color: #0F172A; font-weight: 600; }
+
+    .vars-monitor {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      padding: 10px;
+      background: #F8FAFC;
+      border-top: 1px solid var(--card-border);
+    }
+    .var-card {
+      background: #FFFFFF;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+    .var-title { font-size: 10px; font-weight: 800; color: var(--subtext); margin-bottom: 3px; }
+    .var-val { font-family: ui-monospace, monospace; font-size: 12px; font-weight: 800; color: var(--accent); }
+
+    .world-canvas {
+      padding: 16px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      background: linear-gradient(180deg, #1E293B 0%, #0F172A 100%);
+      color: #FFFFFF;
+    }
+    .zone-sub-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: #94A3B8;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* 货位/卡片队列与牵手连线 */
+    .slots-track {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 10px 6px;
+      background: rgba(255,255,255,0.04);
+      border: 1px dashed rgba(255,255,255,0.16);
+      border-radius: 14px;
+      min-height: 110px;
+    }
+    .slot-item {
+      width: 66px;
+      height: 74px;
+      background: #334155;
+      border: 2px solid #64748B;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.22s ease;
+    }
+    .slot-item.comparing {
+      border-color: #FBBF24;
+      box-shadow: 0 0 14px rgba(251, 191, 36, 0.65);
+      transform: translateY(-3px);
+    }
+    .slot-item.linked {
+      background: linear-gradient(135deg, #059669, #047857);
+      border-color: #34D399;
+    }
+    .slot-item.broken {
+      background: #475569;
+      border-color: #94A3B8;
+    }
+    .slot-idx {
+      position: absolute;
+      top: 3px;
+      left: 6px;
+      font-size: 9px;
+      color: #CBD5E1;
+      font-family: monospace;
+    }
+    .slot-icon { font-size: 14px; line-height: 1; margin-bottom: 2px; }
+    .slot-num { font-size: 17px; font-weight: 900; color: #FFFFFF; }
+
+    .link-bridge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #64748B;
+      transition: all 0.2s;
+    }
+    .link-bridge.ok { color: #34D399; transform: scale(1.1); }
+    .link-bridge.no { color: #F87171; }
+
+    .score-board {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .score-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .score-card .sc-label { font-size: 11px; color: #94A3B8; font-weight: 700; }
+    .score-card .sc-num { font-size: 20px; font-weight: 900; color: #FFFFFF; margin-top: 4px; }
+    .score-card .sc-sub { font-size: 11px; color: #34D399; margin-top: 2px; }
+
+    .conveyor-log {
+      background: rgba(0,0,0,0.38);
+      border-radius: 10px;
+      padding: 9px 12px;
+      font-size: 12px;
+      color: #E2E8F0;
+      line-height: 1.55;
+    }
+
+    .terminal-box {
+      background: #0F172A;
+      border-top: 1px solid #334155;
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .terminal-prompt { color: #34D399; font-weight: bold; }
+    .terminal-out { color: #FFFFFF; font-weight: 900; font-size: 16px; margin-left: 8px; }
+    .terminal-desc { color: #94A3B8; font-size: 11px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="topbar">
+    <div class="brand-group">
+      <span class="badge-case">🎯 探案档案 #006</span>
+      <div class="title-group">
+        <h1>连续递增计数：数字顺子与仓库货位</h1>
+        <div class="sub">一码多用 · 相邻牵手比对 · 最长连续段 · Alex Coding Lab</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-link"><span>📂</span> 任务大厅</a>
+      <a href="combo-sum.html" class="nav-link"><span>🃏</span> 上一关：挑数字算总和</a>
+    </div>
+  </div>
+
+  <div class="mode-switch-bar">
+    <div class="skin-tabs">
+      <button class="skin-tab active" onclick="setSkin('cards', this)">🃏 外壳1：数字卡片找顺子</button>
+      <button class="skin-tab" onclick="setSkin('warehouse', this)">🏭 外壳2：智能仓库空货位</button>
+      <button class="skin-tab" onclick="setSkin('cinema', this)">🎬 外壳3：电影院连座号</button>
+    </div>
+    <button class="preset-chip" id="soundToggleBtn" onclick="toggleAudio()"><span>🔊</span> 音效已开</button>
+  </div>
+
+  <!-- 剧情与一码多用说明 -->
+  <div class="story-hero">
+    <h2><span id="heroIcon">🃏</span> <span id="heroTitle">核心模型：从一排数字里找出最长的“连续顺子”</span></h2>
+    <p id="heroDesc">
+      不管题目讲的是“数字卡片找顺子”、“仓库找连续空货位”，还是“电影院找连座”，<b>代码完全不用改！</b><br>
+      只要让相邻两个数两两“牵手”比对：如果 <code>ls[i] + 1 == ls[i + 1]</code> 就把牵手次数 <code>cnt + 1</code>，断开就归零，最后记住：<b>牵手 maxn 次 = 连着 maxn + 1 个</b>（一次都没牵手输出 <b>0</b>）。
+    </p>
+    <div class="isomorph-grid">
+      <div class="iso-box"><strong>🃏 卡片找顺子</strong>桌上一排数字卡，最多有几张能连成顺子？</div>
+      <div class="iso-box"><strong>🏭 仓库空货位（原题）</strong>输入空余货位编号，能放大型设备的最大连续货位是几？</div>
+      <div class="iso-box"><strong>🎬 电影院连座 / 连续打卡</strong>空座位号或打卡日期里，最长连续有多少个？</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="pipeline-bar">
+      <div id="pStage1" class="stage-step active">
+        <span class="stage-num">阶段 ①</span>
+        <span class="stage-name">逗号切割 split(",")</span>
+      </div>
+      <div id="pStage2" class="stage-step">
+        <span class="stage-num">阶段 ②</span>
+        <span class="stage-name">转成数字列表 ls</span>
+      </div>
+      <div id="pStage3" class="stage-step">
+        <span class="stage-num">阶段 ③</span>
+        <span class="stage-name">两两牵手比对</span>
+      </div>
+      <div id="pStage4" class="stage-step">
+        <span class="stage-num">阶段 ④</span>
+        <span class="stage-name">刷新最大牵手 maxn</span>
+      </div>
+      <div id="pStage5" class="stage-step">
+        <span class="stage-num">阶段 ⑤</span>
+        <span class="stage-name">输出 maxn+1 或 0</span>
+      </div>
+    </div>
+
+    <div class="sim-toolbar">
+      <div class="input-group">
+        <span class="input-label">编号串:</span>
+        <input id="numsInput" class="sim-input" type="text" value="102,103,106,109">
+        <button class="preset-btn" onclick="applyPreset('102,103,106,109')">样例 (得2)</button>
+        <button class="preset-btn" onclick="applyPreset('102,105,108,112')">全不连续 (得0)</button>
+        <button class="preset-btn" onclick="applyPreset('5,6,7,10,11')">三连顺子 (得3)</button>
+        <button class="preset-btn" onclick="applyPreset('1,2,3,4,5')">全部连续 (得5)</button>
+      </div>
+
+      <div class="control-btns">
+        <button id="btnStep" class="ctl-btn primary" onclick="stepSimulator()"><span>⏭</span> 单步步进 (Step)</button>
+        <button id="btnPlay" class="ctl-btn secondary" onclick="togglePlaySimulator()"><span id="playIcon">▶</span> 连续播放</button>
+        <button id="btnReset" class="ctl-btn secondary" onclick="resetSimulator()"><span>🔄</span> 重置</button>
+      </div>
+    </div>
+
+    <div class="sim-stage-grid">
+      <!-- 左侧代码区 -->
+      <div class="code-panel">
+        <div class="panel-header">
+          <span>🐍 Python 通用模板（一码通解）</span>
+          <span id="codeStepTip" style="color:var(--accent);">准备就绪 · 点击单步执行</span>
+        </div>
+
+        <div class="code-view">
+          <div class="code-line" id="line1"><span class="line-num">1</span><span class="line-text"><span class="code-var">a</span> = <span class="code-fn">input</span>().<span class="code-fn">split</span>(<span class="code-var">","</span>)</span></div>
+          <div class="code-line" id="line2"><span class="line-num">2</span><span class="line-text"><span class="code-var">ls</span> = []</span></div>
+          <div class="code-line" id="line3"><span class="line-num">3</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-var">a</span>:</span></div>
+          <div class="code-line" id="line4"><span class="line-num">4</span><span class="line-text">    ls.<span class="code-fn">append</span>(<span class="code-fn">int</span>(i))</span></div>
+          <div class="code-line" id="line5"><span class="line-num">5</span><span class="line-text"><span class="code-var">cnt</span> = 0</span></div>
+          <div class="code-line" id="line6"><span class="line-num">6</span><span class="line-text"><span class="code-var">maxn</span> = 0</span></div>
+          <div class="code-line" id="line7"><span class="line-num">7</span><span class="line-text"><span class="code-keyword">for</span> i <span class="code-keyword">in</span> <span class="code-fn">range</span>(<span class="code-fn">len</span>(ls) - 1):</span></div>
+          <div class="code-line" id="line8"><span class="line-num">8</span><span class="line-text">    <span class="code-keyword">if</span> ls[i] + 1 == ls[i + 1]:</span></div>
+          <div class="code-line" id="line9"><span class="line-num">9</span><span class="line-text">        cnt = cnt + 1</span></div>
+          <div class="code-line" id="line10"><span class="line-num">10</span><span class="line-text">        <span class="code-keyword">if</span> cnt &gt; maxn:</span></div>
+          <div class="code-line" id="line11"><span class="line-num">11</span><span class="line-text">            maxn = cnt</span></div>
+          <div class="code-line" id="line12"><span class="line-num">12</span><span class="line-text">    <span class="code-keyword">else</span>:</span></div>
+          <div class="code-line" id="line13"><span class="line-num">13</span><span class="line-text">        cnt = 0</span></div>
+          <div class="code-line" id="line14"><span class="line-num">14</span><span class="line-text"><span class="code-keyword">if</span> maxn &gt; 0:</span></div>
+          <div class="code-line" id="line15"><span class="line-num">15</span><span class="line-text">    <span class="code-fn">print</span>(maxn + 1)</span></div>
+          <div class="code-line" id="line16"><span class="line-num">16</span><span class="line-text"><span class="code-keyword">else</span>:</span></div>
+          <div class="code-line" id="line17"><span class="line-num">17</span><span class="line-text">    <span class="code-fn">print</span>(0)</span></div>
+        </div>
+
+        <div class="vars-monitor">
+          <div class="var-card">
+            <div class="var-title">当前下标 i</div>
+            <div id="valI" class="var-val">-</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">相邻比对 ls[i]+1 == ls[i+1]</div>
+            <div id="valCmp" class="var-val">-</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">当前牵手 cnt</div>
+            <div id="valCnt" class="var-val">0</div>
+          </div>
+          <div class="var-card">
+            <div class="var-title">最大牵手 maxn</div>
+            <div id="valMaxn" class="var-val">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧舞台 -->
+      <div class="world-panel">
+        <div class="panel-header">
+          <span id="stageTitle">🎬 数字卡片牵手动画舞台</span>
+          <span id="stageHint" style="color:#0284C7;">等待启动</span>
+        </div>
+
+        <div class="world-canvas">
+          <div>
+            <div class="zone-sub-title">
+              <span id="trackLabel">🃏 一排数字卡片 ls（相邻差 1 就牵手 🤝，否则断开 💔）</span>
+              <span id="lenInfo">共 4 个</span>
+            </div>
+            <div id="slotsTrack" class="slots-track"></div>
+          </div>
+
+          <div class="score-board">
+            <div class="score-card">
+              <div class="sc-label">当前连续牵手次数 (cnt)</div>
+              <div id="boardCnt" class="sc-num">0 次</div>
+              <div id="boardCntSub" class="sc-sub">尚未开始</div>
+            </div>
+            <div class="score-card">
+              <div class="sc-label">历史最大牵手次数 (maxn)</div>
+              <div id="boardMaxn" class="sc-num">0 次</div>
+              <div id="boardMaxnSub" class="sc-sub">对应连续个数：0 个</div>
+            </div>
+          </div>
+
+          <div id="conveyorLog" class="conveyor-log">
+            💡 切换上方的“外壳”可以看到：无论是卡片、仓库货位还是电影院座位，下面跑的都是同一份代码！点击 <b>单步步进</b> 开始观察。
+          </div>
+        </div>
+
+        <div class="terminal-box">
+          <div>
+            <span class="terminal-prompt">&gt;&gt;&gt; 最终输出</span>
+            <span id="terminalOut" class="terminal-out">_</span>
+          </div>
+          <span id="terminalDesc" class="terminal-desc">程序尚未运行结束</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SKINS = {
+  cards: {
+    icon: "🃏",
+    title: "核心模型：从一排数字卡片里找出最长的“连续顺子”",
+    stageTitle: "🎬 数字卡片牵手动画舞台",
+    trackLabel: "🃏 桌面上的数字卡片 ls（相邻差 1 就牵手 🤝，否则断开 💔）"
+  },
+  warehouse: {
+    icon: "📦",
+    title: "原题场景：智能仓库找最长的“连续空余货位”",
+    stageTitle: "🏭 智能仓库货位巡检舞台",
+    trackLabel: "🏭 空余货位编号 ls（编号差 1 才能挨着放大型设备！）"
+  },
+  cinema: {
+    icon: "💺",
+    title: "扩展场景：电影院买票找最多的“连座空位”",
+    stageTitle: "🎬 电影院空座位巡检舞台",
+    trackLabel: "💺 空余座位编号 ls（编号差 1 才能连在一起坐！）"
+  }
+};
+let currentSkin = "cards";
+
+function setSkin(skinKey, btnEl) {
+  currentSkin = skinKey;
+  document.querySelectorAll(".skin-tab").forEach(b => b.classList.remove("active"));
+  if (btnEl) btnEl.classList.add("active");
+  const s = SKINS[skinKey];
+  document.getElementById("heroIcon").innerText = s.icon;
+  document.getElementById("heroTitle").innerText = s.title;
+  document.getElementById("stageTitle").innerText = s.stageTitle;
+  document.getElementById("trackLabel").innerText = s.trackLabel;
+  if (sim.steps.length && sim.cursor >= 0) renderStep(sim.steps[sim.cursor]);
+}
+
+class SoundFx {
+  constructor() { this.ctx = null; this.muted = false; }
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
+  }
+  playPop(freq = 520) {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, now);
+    osc.frequency.exponentialRampToValueAtTime(freq * 1.2, now + 0.07);
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    osc.connect(gain); gain.connect(this.ctx.destination);
+    osc.start(now); osc.stop(now + 0.08);
+  }
+  playSuccess() {
+    if (this.muted) return;
+    this.init();
+    if (!this.ctx) return;
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
+      const now = this.ctx.currentTime + idx * 0.07;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(f, now);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+      osc.connect(gain); gain.connect(this.ctx.destination);
+      osc.start(now); osc.stop(now + 0.22);
+    });
+  }
+}
+const sfx = new SoundFx();
+
+function toggleAudio() {
+  sfx.muted = !sfx.muted;
+  const btn = document.getElementById("soundToggleBtn");
+  btn.innerHTML = sfx.muted ? "<span>🔇</span> 音效已静音" : "<span>🔊</span> 音效已开";
+  btn.style.opacity = sfx.muted ? "0.6" : "1";
+}
+
+let sim = { ls: [], steps: [], cursor: 0, timer: null, isPlaying: false };
+
+function parseInputs() {
+  const raw = document.getElementById("numsInput").value.trim().split(/[,，\s]+/).filter(Boolean);
+  let ls = raw.map(x => parseInt(x, 10)).filter(x => !isNaN(x));
+  if (ls.length === 0) ls = [102, 103, 106, 109];
+  if (ls.length > 10) ls = ls.slice(0, 10);
+  document.getElementById("numsInput").value = ls.join(",");
+  return ls;
+}
+
+function buildSteps(ls) {
+  const steps = [];
+  const bridgeStates = new Array(Math.max(0, ls.length - 1)).fill("pending"); // pending | ok | no
+
+  steps.push({
+    stage: 0,
+    lines: ["line1", "line2", "line3", "line4", "line5", "line6"],
+    i: "-",
+    cmpText: "-",
+    cnt: 0,
+    maxn: 0,
+    bridges: [...bridgeStates],
+    output: "_",
+    tip: `读入 ${ls.length} 个编号，初始化 cnt=0, maxn=0`,
+    log: `📥 读入列表 <code>ls = [${ls.join(", ")}]</code>，准备两个计数器：当前牵手 <code>cnt = 0</code>，最大牵手 <code>maxn = 0</code>。`
+  });
+
+  let cnt = 0;
+  let maxn = 0;
+
+  for (let i = 0; i < ls.length - 1; i++) {
+    const isOk = ls[i] + 1 === ls[i + 1];
+    if (isOk) {
+      cnt = cnt + 1;
+      const updatedMax = cnt > maxn;
+      if (updatedMax) maxn = cnt;
+      bridgeStates[i] = "ok";
+      steps.push({
+        stage: updatedMax ? 3 : 2,
+        lines: updatedMax ? ["line7", "line8", "line9", "line10", "line11"] : ["line7", "line8", "line9", "line10"],
+        i: i,
+        cmpText: `${ls[i]}+1 == ${ls[i + 1]} (是)`,
+        cnt: cnt,
+        maxn: maxn,
+        bridges: [...bridgeStates],
+        output: "_",
+        sound: 540 + cnt * 80,
+        tip: `i=${i}：牵手成功！cnt=${cnt}`,
+        log: `🤝 <b>${ls[i]} + 1 == ${ls[i + 1]}</b> 成立！牵手成功，<code>cnt</code> 变成 <b>${cnt}</b>（连着 ${cnt + 1} 个）${updatedMax ? `，刷新最大牵手 <code>maxn = ${maxn}</code>！` : "。"}`
+      });
+    } else {
+      cnt = 0;
+      bridgeStates[i] = "no";
+      steps.push({
+        stage: 2,
+        lines: ["line7", "line8", "line12", "line13"],
+        i: i,
+        cmpText: `${ls[i]}+1 != ${ls[i + 1]} (否)`,
+        cnt: 0,
+        maxn: maxn,
+        bridges: [...bridgeStates],
+        output: "_",
+        sound: 320,
+        tip: `i=${i}：断开了，cnt 归零`,
+        log: `💔 <b>${ls[i]} + 1 != ${ls[i + 1]}</b>，编号不连续！进入 <code>else</code>，当前牵手 <code>cnt</code> 清零为 <b>0</b>。`
+      });
+    }
+  }
+
+  const finalAns = maxn > 0 ? maxn + 1 : 0;
+  steps.push({
+    stage: 4,
+    lines: maxn > 0 ? ["line14", "line15"] : ["line16", "line17"],
+    i: "-",
+    cmpText: "循环结束",
+    cnt: cnt,
+    maxn: maxn,
+    bridges: [...bridgeStates],
+    output: String(finalAns),
+    sound: "success",
+    tip: `完成！输出 ${finalAns}`,
+    log: maxn > 0
+      ? `🎉 循环结束！最大牵手次数 <code>maxn = ${maxn}</code>，所以最长连续个数为 <code>maxn + 1 = ${finalAns}</code>！`
+      : `📢 循环结束！<code>maxn = 0</code>（一次都没牵手），说明全都不连续，输出 <b>0</b>！`
+  });
+
+  return steps;
+}
+
+function renderStep(step) {
+  document.querySelectorAll(".stage-step").forEach((el, idx) => {
+    el.classList.remove("active", "done");
+    if (idx < step.stage) el.classList.add("done");
+    if (idx === step.stage) el.classList.add("active");
+  });
+
+  document.querySelectorAll(".code-line").forEach(el => el.classList.remove("active"));
+  step.lines.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("active");
+  });
+
+  document.getElementById("codeStepTip").innerText = step.tip;
+  document.getElementById("stageHint").innerText = step.tip;
+  document.getElementById("valI").innerText = step.i;
+  document.getElementById("valCmp").innerText = step.cmpText;
+  document.getElementById("valCnt").innerText = step.cnt;
+  document.getElementById("valMaxn").innerText = step.maxn;
+
+  document.getElementById("boardCnt").innerText = `${step.cnt} 次`;
+  document.getElementById("boardCntSub").innerText = step.cnt > 0 ? `当前连着 ${step.cnt + 1} 个` : "当前未连上";
+  document.getElementById("boardMaxn").innerText = `${step.maxn} 次`;
+  document.getElementById("boardMaxnSub").innerText = step.maxn > 0 ? `对应连续个数：${step.maxn + 1} 个` : "对应连续个数：0 个";
+
+  // 渲染轨道
+  const track = document.getElementById("slotsTrack");
+  track.innerHTML = "";
+  const icon = SKINS[currentSkin].icon;
+
+  sim.ls.forEach((val, idx) => {
+    const box = document.createElement("div");
+    box.className = "slot-item";
+    if (typeof step.i === "number" && (idx === step.i || idx === step.i + 1)) {
+      box.classList.add("comparing");
+    }
+    const leftOk = idx > 0 && step.bridges[idx - 1] === "ok";
+    const rightOk = idx < step.bridges.length && step.bridges[idx] === "ok";
+    if (leftOk || rightOk) box.classList.add("linked");
+
+    box.innerHTML = `<span class="slot-idx">[${idx}]</span><div class="slot-icon">${icon}</div><div class="slot-num">${val}</div>`;
+    track.appendChild(box);
+
+    if (idx < sim.ls.length - 1) {
+      const br = document.createElement("div");
+      const st = step.bridges[idx];
+      br.className = "link-bridge" + (st === "ok" ? " ok" : st === "no" ? " no" : "");
+      br.innerHTML = st === "ok" ? "<span>🤝</span><span>+1</span>" : st === "no" ? "<span>💔</span><span>断开</span>" : "<span>•</span>";
+      track.appendChild(br);
+    }
+  });
+
+  document.getElementById("conveyorLog").innerHTML = step.log;
+  document.getElementById("terminalOut").innerText = step.output;
+  document.getElementById("terminalDesc").innerText =
+    step.output === "_" ? "正在推演中..." : `最大连续长度 = ${step.output}`;
+
+  if (step.sound === "success") sfx.playSuccess();
+  else if (typeof step.sound === "number") sfx.playPop(step.sound);
+}
+
+function stepSimulator() {
+  if (sim.cursor < sim.steps.length - 1) {
+    sim.cursor++;
+    renderStep(sim.steps[sim.cursor]);
+    if (sim.cursor === sim.steps.length - 1) {
+      stopPlay();
+      document.getElementById("btnStep").disabled = true;
+    }
+  }
+}
+
+function stopPlay() {
+  sim.isPlaying = false;
+  if (sim.timer) { clearInterval(sim.timer); sim.timer = null; }
+  document.getElementById("btnPlay").innerHTML = `<span id="playIcon">▶</span> 连续播放`;
+}
+
+function togglePlaySimulator() {
+  if (sim.isPlaying) { stopPlay(); return; }
+  if (sim.cursor >= sim.steps.length - 1) resetSimulator();
+  sim.isPlaying = true;
+  document.getElementById("btnPlay").innerHTML = `<span id="playIcon">⏸</span> 暂停播放`;
+  sim.timer = setInterval(() => {
+    if (sim.cursor < sim.steps.length - 1) stepSimulator();
+    else stopPlay();
+  }, 800);
+}
+
+function applyPreset(str) {
+  document.getElementById("numsInput").value = str;
+  resetSimulator();
+}
+
+function resetSimulator() {
+  stopPlay();
+  const ls = parseInputs();
+  sim.ls = ls;
+  sim.steps = buildSteps(ls);
+  sim.cursor = 0;
+  document.getElementById("btnStep").disabled = false;
+  document.getElementById("lenInfo").innerText = `共 ${ls.length} 个`;
+  renderStep(sim.steps[0]);
+}
+
+window.addEventListener("DOMContentLoaded", resetSimulator);
+</script>
+</body>
+</html>
