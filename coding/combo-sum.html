@@ -451,6 +451,58 @@
       border-radius: 8px;
     }
 
+    /* 递归分身调用栈 */
+    .stack-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 12px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 58px;
+    }
+    .stack-frame {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 6px 10px;
+      border-radius: 9px;
+      background: rgba(51, 65, 85, 0.7);
+      border: 1px solid #475569;
+      font-size: 12px;
+      color: #CBD5E1;
+      transition: all 0.2s;
+    }
+    .stack-frame.active-frame {
+      background: rgba(79, 70, 229, 0.35);
+      border-color: #FBBF24;
+      color: #FFFFFF;
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.28);
+    }
+    .stack-badge {
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      background: #334155;
+      color: #94A3B8;
+    }
+    .stack-frame.active-frame .stack-badge {
+      background: #FBBF24;
+      color: #78350F;
+    }
+    .stack-concat {
+      font-family: ui-monospace, monospace;
+      font-size: 11px;
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.12);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
     /* sums 与 set(sums) 区 */
     .bucket-box {
       background: rgba(255,255,255,0.05);
@@ -675,6 +727,17 @@
             <div id="handBox" class="hand-box"></div>
           </div>
 
+          <!-- 2.5 递归分身调用栈 -->
+          <div>
+            <div class="zone-sub-title">
+              <span>🪞 递归分身调用栈（当前是在“分身”里执行，而不是原始 pick）</span>
+              <span id="stackDepthTag">0 层</span>
+            </div>
+            <div id="callStackBox" class="stack-box">
+              <span style="font-size:12px; color:#64748B;">尚未进入 pick 函数...</span>
+            </div>
+          </div>
+
           <!-- 3. sums 收集箱 -->
           <div>
             <div class="zone-sub-title">
@@ -802,6 +865,7 @@ function buildSteps(ls, k) {
     index: "-",
     resIndices: [],
     tryingIdx: -1,
+    stack: [],
     sums: [],
     uniqueSet: null,
     output: "_",
@@ -809,8 +873,11 @@ function buildSteps(ls, k) {
     log: `📥 读入卡片 <b>ls = [${ls.join(", ")}]</b>，共 <b>${n}</b> 张，需要挑选 <b>${k}</b> 张，准备空列表 <code>sums = []</code>。`
   });
 
-  // 递归生成每一步
-  function simulatePick(index, resIndices) {
+  // 递归生成每一步（带调用栈，清晰区分“原始 pick”和“分身 pick”）
+  function simulatePick(index, resIndices, stack) {
+    const curDepth = stack.length;
+    const roleLabel = curDepth === 1 ? "原始 pick" : `第 ${curDepth} 层分身`;
+
     if (resIndices.length === k) {
       const vals = resIndices.map(idx => ls[idx]);
       const total = vals.reduce((a, b) => a + b, 0);
@@ -822,51 +889,66 @@ function buildSteps(ls, k) {
         index: index,
         resIndices: [...resIndices],
         tryingIdx: -1,
+        stack: stack.map(f => ({ ...f })),
         sums: [...sums],
         uniqueSet: null,
         output: "_",
         sound: isDup ? 380 : 660,
-        tip: `凑齐 ${k} 个！sum = ${total}`,
-        log: `✅ <b>len(res) == ${k}</b>！把 <code>[${vals.join(" + ")}]</code> 相加得 <b>${total}</b>，放进 <code>sums</code>${isDup ? "（⚠️ 和之前重复了，先留着，最后再统一去重）" : ""}，然后 <code>return</code> 返回上一步。`
+        tip: `${roleLabel} 凑齐 ${k} 个！sum=${total}`,
+        log: `✅ 当前在 <b>${roleLabel}</b> 里：<b>len(res) == ${k}</b>！把 <code>[${vals.join(" + ")}]</code> 相加得 <b>${total}</b> 放进 <code>sums</code>${isDup ? "（⚠️ 重复了，先留着）" : ""}，然后 <code>return</code> 关闭这个分身，回到第 ${curDepth - 1} 层！`
       });
       return;
     }
 
     for (let i = index; i < n; i++) {
+      const oldVals = resIndices.map(idx => ls[idx]);
       const nextRes = [...resIndices, i];
       const nextVals = nextRes.map(idx => ls[idx]);
+      const concatExpr = `[${oldVals.join(", ")}] + [${ls[i]}] ➔ [${nextVals.join(", ")}]`;
+      const nextStack = [
+        ...stack,
+        {
+          depth: curDepth + 1,
+          index: i + 1,
+          resVals: nextVals,
+          concatExpr
+        }
+      ];
       steps.push({
         stage: 1,
         lines: ["line13", "line14"],
-        index: index,
+        index: i + 1,
         resIndices: nextRes,
         tryingIdx: i,
+        stack: nextStack,
         sums: [...sums],
         uniqueSet: null,
         output: "_",
         sound: 500 + nextRes.length * 60,
-        tip: `挑选卡片 #${i} (${ls[i]})`,
-        log: `👉 从位置 <code>index=${index}</code> 往后找：挑中第 <b>#${i}</b> 张卡片（数字 <b>${ls[i]}</b>），当前已选 <code>res = [${nextVals.join(", ")}]</code>，继续往下找 <code>pick(${i + 1}, ...)</code>。`
+        tip: `进入第 ${curDepth + 1} 层分身 pick(${i + 1}, [${nextVals.join(", ")}])`,
+        log: `👉 在 <b>${roleLabel}</b> 里执行 <code>res + [ls[${i}]]</code>：把旧列表和 <code>[${ls[i]}]</code> 拼成新列表 <code>${concatExpr}</code>（原列表不变！），开启 <b>第 ${curDepth + 1} 层分身</b> <code>pick(${i + 1}, [${nextVals.join(", ")}])</code>。`
       });
-      simulatePick(i + 1, nextRes);
+      simulatePick(i + 1, nextRes, nextStack);
     }
   }
 
+  const rootStack = [{ depth: 1, index: 0, resVals: [], concatExpr: "初始空列表 []" }];
   steps.push({
     stage: 1,
     lines: ["line15", "line9"],
     index: 0,
     resIndices: [],
     tryingIdx: -1,
+    stack: rootStack,
     sums: [],
     uniqueSet: null,
     output: "_",
     sound: 440,
-    tip: "调用 pick(0, [])",
-    log: `🚀 开始执行 <code>pick(0, [])</code>：从第 0 张卡片开始，手里还是空的。`
+    tip: "调用第 1 层原始 pick(0, [])",
+    log: `🚀 开始执行第 1 层（原始）<code>pick(0, [])</code>：从第 0 张卡片开始，手里还是空的。`
   });
 
-  simulatePick(0, []);
+  simulatePick(0, [], rootStack);
 
   // 集合去重
   const uniqueArr = Array.from(new Set(sums));
@@ -876,12 +958,13 @@ function buildSteps(ls, k) {
     index: "-",
     resIndices: [],
     tryingIdx: -1,
+    stack: [],
     sums: [...sums],
     uniqueSet: uniqueArr,
     output: "_",
     sound: 740,
     tip: "set(sums) 去重完成",
-    log: `✨ 所有挑法都试完啦！<code>sums</code> 里共有 <b>${sums.length}</b> 个和，经过 <code>res = set(sums)</code> 去重后，剩下 <b>${uniqueArr.length}</b> 种不同的结果！`
+    log: `✨ 所有分身都返回结束啦！<code>sums</code> 里共有 <b>${sums.length}</b> 个和，经过 <code>res = set(sums)</code> 去重后，剩下 <b>${uniqueArr.length}</b> 种不同的结果！`
   });
 
   // 输出结果
@@ -891,6 +974,7 @@ function buildSteps(ls, k) {
     index: "-",
     resIndices: [],
     tryingIdx: -1,
+    stack: [],
     sums: [...sums],
     uniqueSet: uniqueArr,
     output: String(uniqueArr.length),
@@ -965,6 +1049,30 @@ function renderStep(step) {
   const curSum = resVals.reduce((a, b) => a + b, 0);
   sumEq.innerText = `当前和 = ${curSum}`;
   handBox.appendChild(sumEq);
+
+  // 渲染递归分身调用栈
+  const stackBox = document.getElementById("callStackBox");
+  const stack = step.stack || [];
+  document.getElementById("stackDepthTag").innerText = `${stack.length} 层`;
+  if (stack.length === 0) {
+    stackBox.innerHTML = `<span style="font-size:12px; color:#64748B;">当前不在 pick 函数内</span>`;
+  } else {
+    stackBox.innerHTML = "";
+    stack.forEach((frame, fIdx) => {
+      const isTop = fIdx === stack.length - 1;
+      const div = document.createElement("div");
+      div.className = "stack-frame" + (isTop ? " active-frame" : "");
+      const role = frame.depth === 1 ? "第1层(原始)" : `第${frame.depth}层(分身)`;
+      div.innerHTML = `
+        <div>
+          <span class="stack-badge">${role}${isTop ? " ◀ 当前执行" : " (等待返回)"}</span>
+          <code style="margin-left:6px; font-weight:800;">pick(${frame.index}, [${frame.resVals.join(", ")}])</code>
+        </div>
+        <span class="stack-concat">${frame.concatExpr}</span>
+      `;
+      stackBox.appendChild(div);
+    });
+  }
 
   // 渲染 sums
   const sumsBucket = document.getElementById("sumsBucket");
