@@ -738,7 +738,7 @@ test('listening automatically supports audio-only and text with cue segments', a
       segments:{ q1:{ start:0.2, end:1.1 }, a1:{ start:1.3, end:2.8 } }
     })
   }));
-  const sampleAudio = path.resolve(__dirname, '..', 'english', 'speaking', 'speaking001.m4a');
+  const sampleAudio = path.resolve(__dirname, '..', 'english', 'speaking', 'speaking001.mp3');
   await page.route('**/english/listening/general001.m4a', route => route.fulfill({ status:200, contentType:'audio/mp4', path:sampleAudio }));
   await page.route('**/english/listening/listening001.mp3', route => route.fulfill({ status:200, contentType:'audio/mpeg', path:sampleAudio }));
 
@@ -888,7 +888,7 @@ for (const hasLegacyCues of [false, true]) test(`writing keeps whole recordings 
   const page = await context.newPage();
   const text = 'QUESTION\nInvite a friend.\n\nANSWER\nHi Jay, come to the cinema with me.\n\nWRITING TIP\nGive a reason.';
   let cueRequests = 0;
-  const audio = fs.readFileSync(path.resolve(__dirname, '..', 'english', 'speaking', 'speaking001.m4a'));
+  const audio = fs.readFileSync(path.resolve(__dirname, '..', 'english', 'speaking', 'speaking001.mp3'));
   await page.route('**/__english-index.json?category=writing', route => route.fulfill({
     contentType:'application/json', body:JSON.stringify({ files:['writing901.txt','writing901.m4a', ...(hasLegacyCues ? ['writing901.cues.json'] : [])] })
   }));
