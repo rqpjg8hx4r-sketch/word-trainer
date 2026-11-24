@@ -560,7 +560,7 @@
     {
       "id": "OLL-01",
       "name": "OLL-01 (点型)",
-      "category": "点型",
+      "category": "点",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/27",
@@ -585,7 +585,7 @@
     {
       "id": "OLL-02",
       "name": "OLL-02 (点型)",
-      "category": "点型",
+      "category": "点",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -622,7 +622,7 @@
     {
       "id": "OLL-03",
       "name": "OLL-03 (点型)",
-      "category": "点型",
+      "category": "点",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -659,7 +659,7 @@
     {
       "id": "OLL-04",
       "name": "OLL-04 (点型)",
-      "category": "点型",
+      "category": "点",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -696,7 +696,7 @@
     {
       "id": "OLL-05",
       "name": "OLL-05 (方块型)",
-      "category": "方块型",
+      "category": "方块",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -727,7 +727,7 @@
     {
       "id": "OLL-06",
       "name": "OLL-06 (方块型)",
-      "category": "方块型",
+      "category": "方块",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -755,7 +755,7 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "r U R' U R U2 r'",
+          "exp": "r U R' U R U'2 r'",
           "setup": "r U2 R' U' R U' r'",
           "note": "精选手感推荐解"
         }
@@ -774,7 +774,7 @@
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "r' U' R U' R' U2 r",
+          "exp": "r' U' R U' R' U'2 r",
           "setup": "r' U2 R U R' U r",
           "note": "精选手感推荐解"
         },
@@ -792,7 +792,7 @@
         },
         {
           "name": "Top 3 (备选)",
-          "exp": "y2 r' U' R U' R' U2 r",
+          "exp": "y2 r' U' R U' R' U'2 r",
           "setup": "r' U2 R U R' U r y2",
           "note": "主流标准解"
         }
@@ -802,7 +802,7 @@
     {
       "id": "OLL-09",
       "name": "OLL-09 (鱼形)",
-      "category": "鱼形",
+      "category": "鱼",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -821,7 +821,7 @@
     {
       "id": "OLL-10",
       "name": "OLL-10 (鱼形)",
-      "category": "鱼形",
+      "category": "鱼",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -902,7 +902,7 @@
     {
       "id": "OLL-13",
       "name": "OLL-13 (马步/拐角)",
-      "category": "马步/拐角",
+      "category": "马步",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -933,7 +933,7 @@
     {
       "id": "OLL-14",
       "name": "OLL-14 (马步/拐角)",
-      "category": "马步/拐角",
+      "category": "马步",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -952,7 +952,7 @@
     {
       "id": "OLL-15",
       "name": "OLL-15 (马步/拐角)",
-      "category": "马步/拐角",
+      "category": "马步",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -983,7 +983,7 @@
     {
       "id": "OLL-16",
       "name": "OLL-16 (马步/拐角)",
-      "category": "马步/拐角",
+      "category": "马步",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1002,7 +1002,7 @@
     {
       "id": "OLL-17",
       "name": "OLL-17 (点型)",
-      "category": "点型",
+      "category": "点",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1033,7 +1033,7 @@
     {
       "id": "OLL-18",
       "name": "OLL-18 (点型)",
-      "category": "点型",
+      "category": "点",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1058,7 +1058,7 @@
     {
       "id": "OLL-19",
       "name": "OLL-19 (点型)",
-      "category": "点型",
+      "category": "点",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1083,7 +1083,7 @@
     {
       "id": "OLL-20",
       "name": "OLL-20 (点型)",
-      "category": "点型",
+      "category": "点",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/54",
@@ -1114,7 +1114,7 @@
     {
       "id": "OLL-21",
       "name": "OLL-21 (十字型)",
-      "category": "十字型",
+      "category": "十字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/27",
@@ -1139,7 +1139,7 @@
     {
       "id": "OLL-22",
       "name": "OLL-22 (十字型)",
-      "category": "十字型",
+      "category": "十字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1164,7 +1164,7 @@
     {
       "id": "OLL-23",
       "name": "OLL-23 (十字型)",
-      "category": "十字型",
+      "category": "十字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1189,7 +1189,7 @@
     {
       "id": "OLL-24",
       "name": "OLL-24 (十字型)",
-      "category": "十字型",
+      "category": "十字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1214,7 +1214,7 @@
     {
       "id": "OLL-25",
       "name": "OLL-25 (十字型)",
-      "category": "十字型",
+      "category": "十字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1239,7 +1239,7 @@
     {
       "id": "OLL-26",
       "name": "OLL-26 (十字型)",
-      "category": "十字型",
+      "category": "十字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1264,7 +1264,7 @@
     {
       "id": "OLL-27",
       "name": "OLL-27 (十字型)",
-      "category": "十字型",
+      "category": "十字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1289,7 +1289,7 @@
     {
       "id": "OLL-28",
       "name": "OLL-28 (四角翻好)",
-      "category": "四角翻好",
+      "category": "四角",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1314,7 +1314,7 @@
     {
       "id": "OLL-29",
       "name": "OLL-29 (折角型)",
-      "category": "折角型",
+      "category": "折角",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1333,7 +1333,7 @@
     {
       "id": "OLL-30",
       "name": "OLL-30 (折角型)",
-      "category": "折角型",
+      "category": "折角",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1358,7 +1358,7 @@
     {
       "id": "OLL-31",
       "name": "OLL-31 (P字型)",
-      "category": "P字型",
+      "category": "P",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1377,7 +1377,7 @@
     {
       "id": "OLL-32",
       "name": "OLL-32 (P字型)",
-      "category": "P字型",
+      "category": "P",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1408,7 +1408,7 @@
     {
       "id": "OLL-33",
       "name": "OLL-33 (T字型)",
-      "category": "T字型",
+      "category": "T",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1427,7 +1427,7 @@
     {
       "id": "OLL-34",
       "name": "OLL-34 (C字型)",
-      "category": "C字型",
+      "category": "C",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1452,7 +1452,7 @@
     {
       "id": "OLL-35",
       "name": "OLL-35 (鱼形)",
-      "category": "鱼形",
+      "category": "鱼",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1477,7 +1477,7 @@
     {
       "id": "OLL-36",
       "name": "OLL-36 (W字型)",
-      "category": "W字型",
+      "category": "W",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1502,7 +1502,7 @@
     {
       "id": "OLL-37",
       "name": "OLL-37 (鱼形)",
-      "category": "鱼形",
+      "category": "鱼",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1527,7 +1527,7 @@
     {
       "id": "OLL-38",
       "name": "OLL-38 (W字型)",
-      "category": "W字型",
+      "category": "W",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1590,7 +1590,7 @@
     {
       "id": "OLL-41",
       "name": "OLL-41 (折角型)",
-      "category": "折角型",
+      "category": "折角",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1609,7 +1609,7 @@
     {
       "id": "OLL-42",
       "name": "OLL-42 (折角型)",
-      "category": "折角型",
+      "category": "折角",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1628,7 +1628,7 @@
     {
       "id": "OLL-43",
       "name": "OLL-43 (P字型)",
-      "category": "P字型",
+      "category": "P",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1659,7 +1659,7 @@
     {
       "id": "OLL-44",
       "name": "OLL-44 (P字型)",
-      "category": "P字型",
+      "category": "P",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1690,7 +1690,7 @@
     {
       "id": "OLL-45",
       "name": "OLL-45 (T字型)",
-      "category": "T字型",
+      "category": "T",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1709,7 +1709,7 @@
     {
       "id": "OLL-46",
       "name": "OLL-46 (C字型)",
-      "category": "C字型",
+      "category": "C",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1728,7 +1728,7 @@
     {
       "id": "OLL-47",
       "name": "OLL-47 (小L型)",
-      "category": "小L型",
+      "category": "小L",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1759,7 +1759,7 @@
     {
       "id": "OLL-48",
       "name": "OLL-48 (小L型)",
-      "category": "小L型",
+      "category": "小L",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1778,7 +1778,7 @@
     {
       "id": "OLL-49",
       "name": "OLL-49 (小L型)",
-      "category": "小L型",
+      "category": "小L",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1803,7 +1803,7 @@
     {
       "id": "OLL-50",
       "name": "OLL-50 (小L型)",
-      "category": "小L型",
+      "category": "小L",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1828,7 +1828,7 @@
     {
       "id": "OLL-51",
       "name": "OLL-51 (一字/线型)",
-      "category": "一字/线型",
+      "category": "一字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1853,7 +1853,7 @@
     {
       "id": "OLL-52",
       "name": "OLL-52 (一字/线型)",
-      "category": "一字/线型",
+      "category": "一字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1884,7 +1884,7 @@
     {
       "id": "OLL-53",
       "name": "OLL-53 (小L型)",
-      "category": "小L型",
+      "category": "小L",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1921,7 +1921,7 @@
     {
       "id": "OLL-54",
       "name": "OLL-54 (小L型)",
-      "category": "小L型",
+      "category": "小L",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
@@ -1946,7 +1946,7 @@
     {
       "id": "OLL-55",
       "name": "OLL-55 (一字/线型)",
-      "category": "一字/线型",
+      "category": "一字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/27",
@@ -1977,7 +1977,7 @@
     {
       "id": "OLL-56",
       "name": "OLL-56 (一字/线型)",
-      "category": "一字/线型",
+      "category": "一字",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/27",
@@ -2008,7 +2008,7 @@
     {
       "id": "OLL-57",
       "name": "OLL-57 (四角翻好)",
-      "category": "四角翻好",
+      "category": "四角",
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/27",

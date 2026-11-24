@@ -189,14 +189,12 @@
     .filter-bar {
       display: flex;
       align-items: center;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
+      flex-wrap: wrap;
+      gap: 6px;
       padding-bottom: 2px;
     }
-    .filter-bar::-webkit-scrollbar { display: none; }
     .filter-chip {
-      padding: 4px 12px;
+      padding: 4px 10px;
       border-radius: 8px;
       font-size: 12px;
       font-weight: 700;
@@ -760,7 +758,7 @@
   <script src="lib/three.min.js"></script>
   <script src="lib/OrbitControls.js"></script>
   <script src="lib/cube-engine.js?v=2.3"></script>
-  <script src="data/cube-algs.js?v=2.3"></script>
+  <script src="data/cube-algs.js?v=2.4"></script>
 
   <script>
     // 页面全局状态
