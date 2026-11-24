@@ -1857,19 +1857,19 @@
       "stripMode": "OLL",
       "order": 3,
       "prob": "1/13.5",
-      "setup": "R B U B' U R' U' R U' R'",
+      "setup": "R' U' R U' R' U F' U F R",
       "setupRelation": "转此逆公式即可在实体魔方上摆出该形态",
       "algs": [
         {
           "name": "⭐ 顺手推荐",
-          "exp": "R U R' U R U' B U' B' R'",
-          "setup": "R B U B' U R' U' R U' R'",
+          "exp": "R' F' U' F U' R U R' U R",
+          "setup": "R' U' R U' R' U F' U F R",
           "note": "精选手感推荐解"
         },
         {
           "name": "Top 1 (SpeedCubeDB)",
-          "exp": "y2 R' F' U' F U' R U R' U R",
-          "setup": "R' U' R U' R' U F' U F R y2",
+          "exp": "R U R' U R U' B U' B' R'",
+          "setup": "R B U B' U R' U' R U' R'",
           "note": "主流标准解"
         },
         {
